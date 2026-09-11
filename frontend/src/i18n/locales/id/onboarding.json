@@ -1,0 +1,139 @@
+{
+  "welcome": {
+    "tagline": "Kasir, stok, dan laporan untung-rugi tokomu — dalam satu aplikasi.",
+    "cta": "Buat Toko Baru",
+    "restoreCta": "Saya sudah punya backup",
+    "joinCta": "Saya karyawan — gabung ke toko"
+  },
+  "language": {
+    "title": "Pilih Bahasa"
+  },
+  "business": {
+    "title": "Jualan apa?",
+    "subtitle": "Kami siapkan kategori, satuan, dan produk contoh yang cocok untuk usahamu.",
+    "prepared": "Yang disiapkan untuk {{type}}"
+  },
+  "store": {
+    "title": "Nama tokomu?",
+    "subtitle": "Nama ini yang akan tercetak di struk pelanggan.",
+    "storeName": "Nama Toko",
+    "storeNamePlaceholder": "Contoh: Toko Berkah Jaya",
+    "optionalToggle": "Tambah alamat & telepon",
+    "address": "Alamat",
+    "addressPlaceholder": "Contoh: Jl. Merdeka No. 10, Jakarta",
+    "phone": "Nomor Telepon",
+    "phonePlaceholder": "Contoh: 08123456789",
+    "sampleTitle": "Isi produk awal",
+    "sampleOn": "Produk contoh",
+    "sampleOnDesc": "{{count}} produk siap pakai",
+    "sampleOff": "Mulai kosong",
+    "sampleOffDesc": "isi sendiri",
+    "safeTitle": "Data tersimpan di HP kamu",
+    "safeDesc": "Tanpa internet, tanpa server, tanpa biaya bulanan.",
+    "cta": "Buka Toko"
+  },
+  "success": {
+    "title": "{{name}} siap!",
+    "subtitle": "Tokomu sudah bisa dipakai jualan sekarang.",
+    "categories": "{{count}} kategori dibuat",
+    "products": "{{count}} produk contoh dimasukkan",
+    "payments": "Tunai, Transfer, QRIS aktif"
+  },
+  "restore": {
+    "title": "Pulihkan data",
+    "desc": "Ambil data toko dari backup lama — tanpa perlu setup ulang.",
+    "backupButton": "Pilih file backup (.json)",
+    "restoring": "Memulihkan data...",
+    "or": "atau",
+    "cloudTitle": "Restore dari Cloud",
+    "cloudLogin": "Login Google untuk melihat backup di cloud.",
+    "googleContinue": "Lanjut dengan Google",
+    "account": "Akun Google",
+    "switchAccount": "Ganti",
+    "noBackups": "Tidak ada backup di cloud untuk akun ini.",
+    "restoringInProgress": "Memulihkan data… jangan tutup aplikasi."
+  },
+  "tnc": {
+    "prefix": "Dengan melanjutkan, kamu setuju",
+    "terms": "Syarat & Ketentuan",
+    "and": "dan",
+    "privacy": "Kebijakan Privasi"
+  },
+  "navigation": {
+    "back": "Kembali",
+    "next": "Lanjut",
+    "saving": "Menyiapkan toko..."
+  },
+  "toast": {
+    "googleLoginFailed": "Login Google gagal",
+    "restoreSuccess": "Data berhasil di-restore!",
+    "restoreError": "Gagal membaca / restore file backup",
+    "cloudRestoreSuccess": "Data berhasil di-restore dari cloud!",
+    "cloudRestoreError": "Gagal restore dari cloud",
+    "cloudLoadError": "Gagal memuat daftar backup cloud",
+    "setupError": "Gagal menyiapkan toko. Coba lagi."
+  },
+  "join": {
+    "title": "Gabung ke Toko",
+    "desc": "Untuk karyawan yang sudah diundang pemilik toko. Anda tidak perlu membuat toko sendiri.",
+    "loginFirst": "Login dengan akun Google yang diundang pemilik toko.",
+    "codeLabel": "Kode undangan",
+    "codeHint": "Kode 8 karakter dari pemilik toko. Hanya berlaku untuk akun Google yang diundang.",
+    "submit": "Gabung ke toko",
+    "success": "Berhasil gabung ke {{name}}",
+    "failed": "Gagal gabung ke toko",
+    "pulled": "{{count}} data produk & kategori ditarik dari toko.",
+    "pullFailed": "Katalog belum bisa ditarik. Akan dicoba lagi otomatis saat online."
+  },
+  "pin": {
+    "title": "Buat PIN kamu",
+    "subtitle": "Dipakai tiap buka kasir di HP ini. Pemilik toko tidak bisa melihat PIN-mu.",
+    "confirmTitle": "Ulangi PIN",
+    "confirmSubtitle": "Ketik sekali lagi supaya tidak ada salah ketik.",
+    "label": "PIN baru",
+    "confirmLabel": "Ulangi PIN",
+    "hint": "4–6 angka.",
+    "submit": "Simpan PIN",
+    "back": "Ganti PIN",
+    "saved": "PIN tersimpan",
+    "accessTitle": "Hak aksesmu di toko ini",
+    "accessStaff": "Kasir & riwayat transaksi sendiri. Laporan untung-rugi dan pengaturan hanya untuk pemilik.",
+    "accessOwner": "Kamu pemilik toko ini — semua menu terbuka, termasuk laporan dan pengaturan.",
+    "errorFormat": "PIN harus 4–6 angka.",
+    "errorMismatch": "PIN tidak sama. Coba lagi.",
+    "errorSave": "Gagal menyimpan PIN.",
+    "errorNoDevice": "Perangkat belum siap. Tutup dan buka lagi aplikasinya."
+  },
+  "auth": {
+    "googleCta": "Masuk / Daftar dengan Google",
+    "joinCta": "Saya karyawan, punya kode undangan",
+    "restoreCta": "Pulihkan backup",
+    "skipCta": "Lanjut tanpa akun",
+    "checking": "Mengecek akun",
+    "checkingDesc": "Mengecek tokomu… Kalau kamu pernah pakai KanPOS di HP lain, tokonya akan muncul di sini.",
+    "continueOffline": "Lanjut offline",
+    "bootstrapFailed": "Tidak bisa menghubungi server. Kamu tetap bisa membuat toko sekarang.",
+    "pickerTitle": "Toko kamu",
+    "pickerSubtitle": "Pilih toko yang mau dibuka di HP ini.",
+    "storeCount": "{{count}} toko tersedia",
+    "noAddress": "Alamat belum diisi",
+    "roleOwner": "Pemilik",
+    "roleStaff": "Kasir",
+    "oneStoreTitle": "Satu HP = satu toko aktif",
+    "oneStoreDesc": "Data toko lain tidak diunduh ke HP ini. Kamu bisa ganti toko lewat Pengaturan → Toko Cloud.",
+    "openStore": "Buka {{name}}",
+    "pickOne": "Pilih toko dulu",
+    "createNewStore": "Buat toko baru",
+    "storeQuotaReached": "Paketmu hanya boleh punya {{count}} toko. Upgrade dulu untuk menambah toko baru.",
+    "hydrTitle": "Menyiapkan {{name}}",
+    "hydrSubtitle": "Jangan tutup aplikasi. Biasanya butuh 10–30 detik.",
+    "hydrSettings": "Pengaturan toko",
+    "hydrMembers": "Karyawan & hak akses",
+    "hydrData": "Produk, stok & transaksi",
+    "hydrHistoryNote": "Riwayat lama tetap tersimpan di cloud dan bisa dibuka dari menu Laporan kapan saja.",
+    "hydrateFailed": "Gagal menarik data toko. Coba lagi.",
+    "inviteFound": "Ada undangan dari {{name}}",
+    "inviteFoundDesc": "Masukkan kodenya di bawah untuk gabung ke toko itu.",
+    "codeMustMatch": "Kode harus dikirim ke email ini"
+  }
+}

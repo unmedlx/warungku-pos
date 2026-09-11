@@ -1,0 +1,111 @@
+{
+  "title": {
+    "storeNameFallback": "KanPOS"
+  },
+  "setup": {
+    "title": "Sediakan kedai",
+    "progress": "{{done}} daripada {{total}} selesai",
+    "dismiss": "Sembunyikan",
+    "items": {
+      "store": "Kedai dibuat",
+      "product": "Tambah produk pertama",
+      "transaction": "Rekod jualan pertama",
+      "backup": "Amankan data (backup)"
+    }
+  },
+  "install": {
+    "title": "Pasang di skrin utama",
+    "desc": "Buka terus tanpa pelayar.",
+    "cta": "Pasang",
+    "dismiss": "Tutup",
+    "success": "Berjaya pasang KanPOS!",
+    "iosHint": "Dalam Safari: ketik Share (↑) → \"Add to Home Screen\""
+  },
+  "stats": {
+    "salesToday": "Jualan Hari Ini",
+    "transactions": "{{count}} transaksi",
+    "salesSub": "{{count}} transaksi, {{trend}}% vs semalam",
+    "avgTransaction": "Purata",
+    "perTransaction": "setiap transaksi",
+    "profitToday": "Untung",
+    "expensesToday": "Perbelanjaan",
+    "expenseNotes": "{{count}} catatan"
+  },
+  "attention": {
+    "title": "Perlu Perhatian",
+    "empty": "Tiada notifikasi"
+  },
+  "openBills": {
+    "title": "Bil Terbuka",
+    "description": "{{count}} bil menunggu pembayaran"
+  },
+  "quickActions": {
+    "title": "Akses Pantas",
+    "all": "Lainnya",
+    "cashier": "Kasir",
+    "products": "Produk",
+    "history": "Sejarah",
+    "reports": "Laporan",
+    "expenses": "Perbelanjaan",
+    "customers": "Pelanggan",
+    "supplier": "Pembekal",
+    "stockIn": "Stok Masuk",
+    "stockOut": "Stok Keluar"
+  },
+  "recentTransactions": {
+    "title": "Transaksi Terkini",
+    "viewAll": "Lihat Semua",
+    "cashFallback": "Tunai",
+    "itemCount": "{{count}} produk",
+    "itemCount_plural": "{{count}} produk",
+    "emptyTitle": "Belum ada transaksi hari ini",
+    "emptyDesc": "Buat transaksi pertama untuk melihat sejarah jualan."
+  },
+  "chart": {
+    "weeklySales": "Jualan 7 Hari",
+    "noData": "Belum ada data jualan",
+    "todayLabel": "Hari ini"
+  },
+  "searchPlaceholder": "Cari produk, transaksi...",
+  "lowStock": {
+    "title": "Stok Hampir Habis",
+    "summary": "{{count}} produk perlu restok",
+    "remaining": "Baki {{stock}} {{unit}}"
+  },
+  "topProducts": {
+    "title": "Produk Terlaris Hari Ini",
+    "sold": "terjual",
+    "emptyTitle": "Belum ada jualan hari ini",
+    "emptyDesc": "Mulakan transaksi pertama untuk melihat produk terlaris."
+  },
+  "pll": {
+    "in": "Masuk",
+    "out": "Keluar",
+    "debt": "Hutang"
+  },
+  "sessionExpired": {
+    "title": "Sesi awan tamat",
+    "desc": "Kaunter tetap berjalan. Log masuk semula untuk menyambung penyegerakan.",
+    "descPending": "Kaunter tetap berjalan. {{count}} transaksi menunggu disegerakkan.",
+    "cta": "Log masuk semula",
+    "success": "Sesi awan aktif semula",
+    "failed": "Gagal log masuk. Cuba lagi."
+  },
+  "linkAccount": {
+    "title": "Lindungi data kedai anda",
+    "desc": "Data anda hanya ada dalam telefon ini. Jika telefon hilang, rosak, atau aplikasi dipadam — semuanya turut hilang.",
+    "benefit1": "Pulih automatik apabila tukar telefon",
+    "benefit2": "Tambah pekerja dengan hak akses",
+    "benefit3": "Buka kaunter dari beberapa telefon serentak",
+    "cta": "Hubungkan akaun Google",
+    "linking": "Menghubungkan…",
+    "later": "Nanti sahaja",
+    "toast": {
+      "linked": "{{name}} kini terhubung ke awan",
+      "linkedSynced": "{{name}} terhubung — data tempatan telah dihantar ke awan",
+      "hasStores": "Akaun ini sudah mempunyai kedai di awan. Pilih kedai mana untuk digunakan.",
+      "quota": "Kuota kedai pakej anda penuh. Uruskan di halaman Kedai Awan.",
+      "failed": "Gagal menghubungkan akaun. Cuba lagi."
+    }
+  }
+}

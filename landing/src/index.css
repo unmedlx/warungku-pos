@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * Token Shark UI — port dari `sharkui-inc/shark-ui/styles/globals.css`, ditulis
+ * sebagai HSL triplet supaya cocok dengan `hsl(var(--x))` di tailwind.config.
+ * Nilainya identik dengan `frontend/src/index.css` (kasir) dan
+ * `dashboard/src/index.css`, kecuali `--card` yang di sini putih: seksi
+ * berselang antara putih dan #fafafa, jadi kartu perlu beda dari keduanya.
+ *
+ * Tidak ada blok `.dark` — landing hanya mode terang. Lihat catatan di config.
+ */
+@layer base {
+  :root {
+    --background: 0 0% 98%; /* neutral-50  #fafafa */
+    --foreground: 0 0% 15%; /* neutral-800 #262626 */
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 15%;
+
+    --primary: 227 57% 48%; /* #3554C1 brand KanPOS */
+    --primary-foreground: 220 100% 97%; /* #eff4ff */
+    --primary-dark: 227 71% 19%; /* #0E1A52 — ujung gelap gradien */
+
+    --muted: 0 0% 94%;
+    --muted-foreground: 0 0% 37%; /* #5e5e5e */
+
+    --destructive: 0 84% 60%; /* red-500 */
+    --destructive-text: 0 74% 42%; /* red-700 — untuk TEKS */
+
+    --success: 160 84% 39%; /* emerald-500 */
+    --success-text: 163 94% 24%; /* emerald-700 */
+
+    --warning: 38 92% 50%; /* amber-500 */
+    --warning-text: 26 90% 37%; /* amber-700 */
+
+    --info: 217 91% 60%; /* blue-500 */
+    --info-text: 224 76% 48%; /* blue-700 */
+
+    --wa: 142 70% 49%; /* #25D366 */
+    --wa-text: 154 76% 31%; /* cukup gelap untuk teks di atas putih */
+
+    --border: 0 0% 89%;
+    --input: 0 0% 86%;
+    --ring: 227 57% 48%;
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Header 64px + sedikit ruang, supaya judul seksi tidak tertutup. */
+    scroll-padding-top: 80px;
+  }
+
+  body {
+    @apply bg-card text-foreground font-sans antialiased;
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  :where(a, button, summary, [tabindex]):focus-visible {
+    @apply outline-none ring-2 ring-ring/40 ring-offset-2 ring-offset-background;
+  }
+}
+
+/**
+ * Kelas komponen sengaja terbatas pada kerangka halaman (pembungkus, jarak
+ * seksi, kepala seksi). Tombol, badge, kartu, dan kotak ikon ada sebagai
+ * komponen React di `src/components/ui.tsx` supaya variannya tidak perlu
+ * dihafal lewat nama kelas.
+ */
+@layer components {
+  .bungkus {
+    @apply mx-auto w-full max-w-bungkus px-5 desktop:px-6;
+  }
+  .bungkus-lg {
+    @apply mx-auto w-full max-w-bungkus-lg px-5 desktop:px-6;
+  }
+
+  .seksi {
+    @apply py-12 desktop:py-16;
+  }
+  /* Seksi berlatar abu dengan garis pemisah di atas dan bawah. */
+  .seksi-alt {
+    @apply border-y border-border bg-background;
+  }
+}

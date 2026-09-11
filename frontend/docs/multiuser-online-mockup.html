@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KanPOS — Multi-user hanya mode online</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#3554C1; --primary-fg:#FFFFFF; --fg:#0D0D12;
+    --accent:#EFF5FF; --accent-strong:#C0CAEC; --muted-fg:#818898; --muted:#ECEFF3;
+    --bg:#EDF1F9; --surface-alt:#F8FAFE; --card:#FFFFFF;
+    --border:#DFE1E7; --border-soft:#ECEFF3; --border-input:#EFF2F6; --border-tab:#C1C7D0;
+    --success:#5ABC61; --success-tint:#EFF8EF;
+    --warning:#F9A616; --warning-tint:#FFF6E0;
+    --destructive:#DF1C41; --destructive-tint:#FFF0F3;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Sora',system-ui,sans-serif;background:#0F1420;color:var(--fg);padding:40px 32px 80px;-webkit-font-smoothing:antialiased}
+
+  .doc-head{max-width:1200px;margin:0 auto 40px;color:#fff}
+  .doc-head h1{font-size:26px;font-weight:700;letter-spacing:-.02em}
+  .doc-head p{font-size:14px;color:#9AA4BC;margin-top:8px;line-height:1.6;max-width:820px}
+  .doc-head .meta{margin-top:16px;display:flex;gap:8px;flex-wrap:wrap}
+  .doc-head .meta span{font-size:11px;font-weight:500;color:#B8C4E0;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);padding:5px 11px;border-radius:8px}
+
+  .flowmap{max-width:1200px;margin:0 auto 36px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:20px 22px;color:#C3CCE2}
+  .flowmap b{display:block;color:#fff;font-size:13px;font-weight:600;margin-bottom:12px}
+  .flowmap pre{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:12px;line-height:1.85;color:#9FB0D4;white-space:pre;overflow-x:auto}
+  .flowmap pre .hl{color:#8FD79A}
+
+
+  .rail{max-width:1200px;margin:0 auto;display:flex;gap:28px;overflow-x:auto;padding-bottom:28px;scroll-snap-type:x mandatory;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.22) rgba(255,255,255,.06)}
+  .rail::-webkit-scrollbar{height:8px}
+  .rail::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:4px}
+  .rail::-webkit-scrollbar-track{background:rgba(255,255,255,.04);border-radius:4px}
+  .rail + .rail{margin-top:8px}
+
+  .rail-title{max-width:1200px;margin:34px auto 16px;color:#fff;display:flex;align-items:center;gap:10px}
+  .rail-title h3{font-size:16px;font-weight:600;letter-spacing:-.01em}
+  .rail-title span{font-size:11px;font-weight:500;color:#B8C4E0;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);padding:4px 10px;border-radius:8px}
+
+  .frame-wrap{flex:0 0 auto;scroll-snap-align:start}
+  .frame-label{color:#fff;margin-bottom:12px;padding-left:2px}
+  .frame-label .n{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:11px;background:var(--primary);color:#fff;font-size:11px;font-weight:700;margin-right:8px}
+  .frame-label .n.alt{background:#5A6B9E}
+  .frame-label .t{font-size:14px;font-weight:600;letter-spacing:-.01em}
+  .frame-label .s{font-size:11.5px;color:#8E9AB4;margin-top:5px;padding-left:30px;line-height:1.5;max-width:340px}
+
+  .frame{width:375px;height:812px;background:var(--bg);border-radius:36px;overflow:hidden;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.42);display:flex;flex-direction:column}
+  .statusbar{height:44px;flex:0 0 44px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:12.5px;font-weight:600;color:var(--fg)}
+  .statusbar .icons{display:flex;gap:5px;align-items:center;opacity:.85}
+  .screen{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+  .pad{padding-left:16px;padding-right:16px}
+
+  .btn{height:52px;border-radius:26px;border:none;font-family:inherit;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;cursor:pointer;transition:.18s;letter-spacing:-.01em}
+  .btn-primary{background:var(--primary);color:#fff}
+  .btn-primary:active{transform:scale(.985)}
+  .btn-primary:disabled{background:var(--accent-strong);cursor:not-allowed}
+  .btn-success{background:var(--success);color:#fff}
+  .btn-ghost{background:transparent;color:var(--muted-fg)}
+  .btn-outline{background:#fff;color:var(--fg);border:1px solid var(--border)}
+  .btn-google{background:#fff;color:var(--fg);border:1px solid var(--border);font-weight:600}
+
+  .input{height:52px;border-radius:26px;background:#fff;border:1px solid var(--border-input);display:flex;align-items:center;gap:10px;padding:0 20px;font-size:14.5px;color:var(--fg);width:100%}
+  .input .ph{color:#A8B0BF}
+  .input.focused{border-color:var(--primary);box-shadow:0 0 0 3px rgba(53,84,193,.1)}
+  .input .caret{width:1.5px;height:19px;background:var(--primary);animation:blink 1.1s step-end infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  .card{background:#fff;border-radius:24px}
+  .blob{width:72px;height:72px;border-radius:36px;background:var(--accent);color:var(--primary);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .blob-44{width:44px;height:44px;border-radius:22px;background:var(--accent);color:var(--primary);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .blob-36{width:36px;height:36px;border-radius:18px;background:var(--accent);color:var(--primary);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+
+  h2.title{font-size:24px;font-weight:700;letter-spacing:-.03em;line-height:1.25}
+  p.sub{font-size:13.5px;color:var(--muted-fg);line-height:1.6}
+
+  .dots{display:flex;align-items:center;justify-content:center;gap:6px}
+  .dots i{height:6px;width:6px;border-radius:3px;background:rgba(129,136,152,.25);transition:.3s}
+  .dots i.on{width:24px;background:var(--primary)}
+
+  .topbar{height:48px;display:flex;align-items:center;gap:12px;flex:0 0 48px}
+  .circle-btn{width:44px;height:44px;border-radius:22px;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex:0 0 auto;cursor:pointer}
+
+  .brandmark{width:96px;height:96px;border-radius:30px;background:linear-gradient(150deg,#4867D9,#2A44A8);display:flex;align-items:center;justify-content:center;box-shadow:0 16px 34px rgba(53,84,193,.32)}
+  .lang-row{display:flex;gap:8px;width:100%}
+  .lang{flex:1;height:56px;border-radius:20px;background:#fff;border:1px solid var(--border-soft);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;transition:.16s}
+  .lang.on{border-color:var(--primary);box-shadow:0 0 0 1px var(--primary) inset}
+  .lang .flag{font-size:19px;line-height:1}
+  .lang .lb{font-size:10.5px;font-weight:600;color:var(--muted-fg)}
+  .lang.on .lb{color:var(--primary)}
+  .tnc{font-size:11px;color:var(--muted-fg);text-align:center;line-height:1.65}
+  .tnc a{color:var(--primary);font-weight:500;text-decoration:none;border-bottom:1px solid rgba(53,84,193,.3)}
+
+  /* pemilih toko */
+  .store-row{background:#fff;border-radius:20px;border:1px solid var(--border-soft);padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:.16s}
+  .store-row:hover{border-color:var(--accent-strong)}
+  .store-row.on{border-color:var(--primary);box-shadow:0 0 0 1px var(--primary) inset,0 6px 16px rgba(53,84,193,.14)}
+  .store-row .nm{font-size:13.5px;font-weight:600;letter-spacing:-.01em}
+  .store-row .mt{font-size:11px;color:var(--muted-fg);margin-top:3px;display:flex;align-items:center;gap:5px}
+  .badge{font-size:9.5px;font-weight:600;padding:3px 8px;border-radius:8px;letter-spacing:.01em}
+  .badge-owner{background:var(--accent);color:var(--primary)}
+  .badge-staff{background:var(--muted);color:#6C7484}
+  .badge-warn{background:var(--warning-tint);color:#8A5B05}
+  .store-logo{width:42px;height:42px;border-radius:14px;background:var(--accent);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex:0 0 auto}
+  .store-logo.staff{background:var(--muted);color:#6C7484}
+
+  .acct{background:#fff;border-radius:20px;border:1px solid var(--border-soft);padding:10px 12px;display:flex;align-items:center;gap:10px}
+  .acct .av{width:36px;height:36px;border-radius:18px;background:linear-gradient(150deg,#4867D9,#2A44A8);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex:0 0 auto}
+  .acct .em{font-size:12px;font-weight:600;letter-spacing:-.01em}
+  .acct .sub2{font-size:10.5px;color:var(--muted-fg);margin-top:2px}
+  .acct .switch{font-size:11px;font-weight:600;color:var(--primary);cursor:pointer}
+
+  /* kode undangan */
+  .codebox{display:flex;gap:7px;justify-content:center}
+  .codebox i{width:38px;height:52px;border-radius:16px;background:#fff;border:1px solid var(--border-input);display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:700;font-style:normal;letter-spacing:-.02em}
+  .codebox i.filled{border-color:var(--accent-strong)}
+  .codebox i.active{border-color:var(--primary);box-shadow:0 0 0 3px rgba(53,84,193,.1)}
+
+  /* progress hidrasi */
+  .hydr{background:#fff;border-radius:24px;padding:16px;width:100%}
+  .hstep{display:flex;align-items:center;gap:10px;padding:9px 0}
+  .hstep .ic{width:24px;height:24px;border-radius:12px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;background:var(--muted)}
+  .hstep.done .ic{background:var(--success)}
+  .hstep.now .ic{background:var(--accent);color:var(--primary)}
+  .hstep .lb{font-size:12.5px;font-weight:600;flex:1}
+  .hstep:not(.done):not(.now) .lb{color:#A8B0BF;font-weight:500}
+  .hstep .ct{font-size:11px;color:var(--muted-fg)}
+  .spin{width:14px;height:14px;border-radius:7px;border:2px solid rgba(53,84,193,.25);border-top-color:var(--primary);animation:sp .8s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .progress-track{height:6px;border-radius:3px;background:var(--muted);overflow:hidden}
+  .progress-fill{height:100%;border-radius:3px;background:var(--primary)}
+
+  /* banner */
+  .banner{border-radius:20px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start}
+  .banner-warn{background:var(--warning-tint);border:1px solid rgba(249,166,22,.28)}
+  .banner-info{background:var(--surface-alt);border:1px solid var(--border-soft)}
+  .banner .bt{font-size:12px;font-weight:600;line-height:1.5}
+  .banner .bd{font-size:11px;color:var(--muted-fg);line-height:1.55;margin-top:3px}
+
+  /* biz grid (dipakai ulang dari onboarding v1) */
+  .biz-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .biz{height:70px;border-radius:20px;background:#fff;border:1px solid var(--border-soft);padding:10px 12px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:.16s;position:relative}
+  .biz:hover{border-color:var(--accent-strong)}
+  .biz.on{border-color:var(--primary);box-shadow:0 0 0 1px var(--primary) inset,0 6px 16px rgba(53,84,193,.14)}
+  .biz .ico{width:30px;height:30px;border-radius:15px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:15px;line-height:1}
+  .biz.on .ico{background:var(--primary)}
+  .biz .nm{font-size:12.5px;font-weight:600;letter-spacing:-.01em;line-height:1.3}
+  .biz .tick{position:absolute;top:10px;right:10px;width:18px;height:18px;border-radius:9px;background:var(--primary);display:none;align-items:center;justify-content:center}
+  .biz.on .tick{display:flex}
+
+  .field-label{font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:6px;margin-bottom:8px}
+  .req{color:var(--destructive)}
+  .disclosure{height:48px;border-radius:24px;background:#fff;border:1px solid var(--border-soft);display:flex;align-items:center;justify-content:space-between;padding:0 18px 0 14px;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted-fg)}
+
+  .success-ring{width:112px;height:112px;border-radius:56px;background:var(--success-tint);display:flex;align-items:center;justify-content:center}
+  .success-core{width:76px;height:76px;border-radius:38px;background:var(--success);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 26px rgba(90,188,97,.35)}
+
+  .divider{display:flex;align-items:center;gap:10px;color:#A8B0BF;font-size:11px;font-weight:500}
+  .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border-soft)}
+
+  .stack{display:flex;flex-direction:column}
+  .row{display:flex;align-items:center}
+  .gap-4{gap:4px}.gap-6{gap:6px}.gap-8{gap:8px}.gap-10{gap:10px}.gap-12{gap:12px}
+  .gap-16{gap:16px}.gap-20{gap:20px}.gap-24{gap:24px}.gap-32{gap:32px}
+  .grow{flex:1;min-height:0}
+  .center{align-items:center;justify-content:center;text-align:center}
+  .scroll{overflow-y:auto;scrollbar-width:none}
+  .scroll::-webkit-scrollbar{display:none}
+
+  .notes{max-width:1200px;margin:56px auto 0;color:#C3CCE2}
+  .notes h3{color:#fff;font-size:17px;font-weight:600;margin-bottom:18px;letter-spacing:-.01em}
+  .notes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+  .note{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:18px}
+  .note b{display:block;color:#fff;font-size:13px;font-weight:600;margin-bottom:8px}
+  .note p{font-size:12px;line-height:1.7;color:#96A2BC}
+  .note p + p{margin-top:8px}
+  .note code{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11px;color:#B8C4E0;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:5px}
+  .note .del{color:#E3899E}
+  .note .add{color:#8FD79A}
+  .note .warn{color:#F2C46B}
+</style>
+<style>
+  .matrix{max-width:1200px;margin:0 auto 36px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:20px 22px;color:#C3CCE2;overflow-x:auto}
+  .matrix b.hd{display:block;color:#fff;font-size:13px;font-weight:600;margin-bottom:14px}
+  table{border-collapse:collapse;width:100%;min-width:720px}
+  th{text-align:left;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:#8E9AB4;padding:0 12px 10px;border-bottom:1px solid rgba(255,255,255,.1)}
+  td{font-size:12px;line-height:1.6;color:#B4BFD6;padding:11px 12px;border-bottom:1px solid rgba(255,255,255,.06);vertical-align:top}
+  td.scr{color:#fff;font-weight:600}
+  td code,th code,.matrix code{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11px;color:#B8C4E0;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:5px}
+  .pill{display:inline-block;font-size:10px;font-weight:600;padding:3px 8px;border-radius:7px;white-space:nowrap}
+  .pill-on{background:rgba(143,215,154,.16);color:#8FD79A}
+  .pill-off{background:rgba(227,137,158,.16);color:#E3899E}
+  .pill-keep{background:rgba(255,255,255,.08);color:#9AA4BC}
+
+  .principles{max-width:1200px;margin:0 auto 34px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+  .principle{border-radius:18px;padding:18px 20px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.05)}
+  .principle.good{border-color:rgba(143,215,154,.3);background:rgba(143,215,154,.08)}
+  .principle.bad{border-color:rgba(227,137,158,.3);background:rgba(227,137,158,.07)}
+  .principle .tag{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:9px;display:block}
+  .principle.good .tag{color:#8FD79A}
+  .principle.bad .tag{color:#E3899E}
+  .principle b{display:block;color:#fff;font-size:14px;font-weight:600;margin-bottom:7px;letter-spacing:-.01em}
+  .principle p{font-size:12px;line-height:1.7;color:#9FAAC4}
+
+  .steps{max-width:1200px;margin:0 auto 30px;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+  .stepcard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:15px 16px;color:#B4BFD6}
+  .stepcard .k{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:10px;background:var(--primary);color:#fff;font-size:10.5px;font-weight:700;margin-bottom:9px}
+  .stepcard .k.del{background:#B3455F}
+  .stepcard b{display:block;color:#fff;font-size:12.5px;font-weight:600;margin-bottom:6px;letter-spacing:-.01em}
+  .stepcard p{font-size:11.5px;line-height:1.65;color:#8E9AB4}
+  .stepcard code{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10.5px;color:#B8C4E0;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:5px}
+
+  /* elemen layar khusus mockup ini */
+  .prereq{background:#fff;border-radius:20px;border:1px solid var(--border-soft);padding:12px 14px;display:flex;align-items:flex-start;gap:11px}
+  .prereq .tick{width:24px;height:24px;border-radius:12px;flex:0 0 auto;display:flex;align-items:center;justify-content:center}
+  .prereq.ok .tick{background:var(--success);color:#fff}
+  .prereq.no .tick{background:var(--warning-tint);color:#8A5B05;border:1px solid rgba(249,166,22,.35)}
+  .prereq .nm{font-size:12.5px;font-weight:600;letter-spacing:-.01em}
+  .prereq .dt{font-size:11px;color:var(--muted-fg);margin-top:3px;line-height:1.5}
+  .prereq .act{font-size:11px;font-weight:600;color:var(--primary);margin-top:6px;display:inline-block}
+
+  .cashier-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .cashier{background:#fff;border-radius:22px;border:1px solid var(--border-soft);padding:16px 12px;display:flex;flex-direction:column;align-items:center;gap:9px;cursor:pointer;transition:.16s}
+  .cashier:hover{border-color:var(--accent-strong)}
+  .cashier.on{border-color:var(--primary);box-shadow:0 0 0 1px var(--primary) inset,0 8px 20px rgba(53,84,193,.16)}
+  .cashier .av{width:54px;height:54px;border-radius:27px;background:var(--accent);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:700}
+  .cashier.owner .av{background:linear-gradient(150deg,#4867D9,#2A44A8);color:#fff}
+  .cashier .nm{font-size:13px;font-weight:600;letter-spacing:-.01em;text-align:center}
+  .cashier .rl{font-size:10.5px;color:var(--muted-fg)}
+
+  .keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .key{height:60px;border-radius:22px;background:#fff;border:1px solid var(--border-soft);display:flex;align-items:center;justify-content:center;font-size:23px;font-weight:600;letter-spacing:-.02em;cursor:pointer}
+  .key.blank{background:transparent;border:none}
+  .key.fn{font-size:14px;font-weight:600;color:var(--muted-fg)}
+  .pindots{display:flex;gap:14px;justify-content:center}
+  .pindots i{width:14px;height:14px;border-radius:7px;background:var(--muted);display:block}
+  .pindots i.on{background:var(--primary)}
+
+  .locked{background:#fff;border-radius:24px;padding:18px;text-align:center}
+  .strike{text-decoration:line-through;opacity:.5}
+
+  .notes{max-width:1200px;margin:56px auto 0;color:#C3CCE2}
+  .notes h3{color:#fff;font-size:17px;font-weight:600;margin-bottom:18px;letter-spacing:-.01em}
+</style>
+
+</head>
+<body>
+
+<div class="doc-head">
+  <h1>Kasir bergantian jadi fitur cloud — dan username dihapus</h1>
+  <p>Dua perubahan yang saling menguatkan. <b>Satu:</b> multi-user hanya bisa <em>diaktifkan</em> lewat akun cloud, sehingga daftar karyawan
+     punya satu sumber kebenaran dan pencabutan akses berlaku dari server. <b>Dua:</b> username dihapus dari alur login — ia tidak pernah
+     memberi keamanan, hanya beban ingatan.</p>
+  <p style="margin-top:10px">Yang <b>tidak</b> berubah: login harian tetap PIN yang diperiksa di perangkat, tanpa jaringan.
+     Internet dibutuhkan untuk <em>keanggotaan</em>, bukan untuk <em>sesi</em>.</p>
+  <div class="meta">
+    <span>375 × 812</span>
+    <span>Sora</span>
+    <span>PIN tetap</span>
+    <span>Username dihapus</span>
+    <span>User lokal baru ditutup</span>
+    <span>Pengguna lama di-grandfather</span>
+  </div>
+</div>
+
+<div class="principles">
+  <div class="principle good">
+    <span class="tag">Aturan yang dipegang</span>
+    <b>Online untuk keanggotaan</b>
+    <p>Mengaktifkan, mengundang, mengubah peran, dan mencabut akses — semuanya lewat server. Di sinilah konsistensi antar-HP dan pencabutan jarak jauh didapat.</p>
+  </div>
+  <div class="principle good">
+    <span class="tag">Aturan yang dipegang</span>
+    <b>Offline untuk sesi</b>
+    <p>Pilih nama, ketik PIN, jualan. Diperiksa lokal lewat <code>hashPin</code>. Sinyal mati tidak pernah boleh menutup kasir — termasuk saat ganti shift di jam sibuk.</p>
+  </div>
+  <div class="principle bad">
+    <span class="tag">Yang ditolak</span>
+    <b>Login harian lewat internet</b>
+    <p>Kalau tiap ganti kasir butuh koneksi, kasir berhenti tiap sinyal hilang. Ini membatalkan janji utama aplikasi, dan tidak ada nilai tambah yang sepadan.</p>
+  </div>
+</div>
+
+<div class="matrix">
+  <b class="hd">Apa yang berubah, per kemampuan</b>
+  <table>
+    <thead><tr><th>Kemampuan</th><th>Sekarang</th><th>Sesudah</th><th>Butuh internet?</th><th></th></tr></thead>
+    <tbody>
+      <tr><td class="scr">Aktifkan kasir bergantian</td><td>Offline, gratis, langsung</td><td>Butuh akun + toko cloud + langganan Sync</td><td>Ya, sekali</td><td><span class="pill pill-off">berubah</span></td></tr>
+      <tr><td class="scr">Tambah kasir</td><td>Form username + PIN di HP ini</td><td>Undangan email, kode dikirim manual</td><td>Ya</td><td><span class="pill pill-off">berubah</span></td></tr>
+      <tr><td class="scr">Login kasir harian</td><td>Ketik username + PIN</td><td>Ketuk nama + PIN</td><td><b>Tidak</b></td><td><span class="pill pill-on">lebih ringan</span></td></tr>
+      <tr><td class="scr">Buat PIN sendiri</td><td>Lewat menu Karyawan</td><td>Saat perangkat disiapkan</td><td>Tidak</td><td><span class="pill pill-keep">tetap</span></td></tr>
+      <tr><td class="scr">Cabut akses karyawan</td><td>Hanya di HP tempat dia dihapus</td><td>Berlaku di semua HP</td><td>Ya</td><td><span class="pill pill-on">lebih kuat</span></td></tr>
+      <tr><td class="scr">Riwayat &ldquo;siapa kasirnya&rdquo;</td><td><code>createdBy</code> → users lokal</td><td>Sama persis, baris lama dipertahankan</td><td>Tidak</td><td><span class="pill pill-keep">tetap</span></td></tr>
+      <tr><td class="scr">Toko satu orang</td><td>Tidak pernah lihat login</td><td>Tidak berubah sama sekali</td><td>Tidak</td><td><span class="pill pill-keep">tetap</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="rail-title"><h3>Jalur A — pemilik mengaktifkan &amp; mengundang</h3><span>butuh internet, sekali di awal</span></div>
+<div class="rail">
+  <div class="frame-wrap">
+    <div class="frame-label">
+      <span class="n">1</span><span class="t">Pintu masuk — sekarang bersyarat</span>
+      <div class="s">Entri multi-user tetap di tempat yang sama, tapi statusnya jujur: butuh akun cloud. Tidak disembunyikan, supaya pemilik tahu fiturnya ada dan apa syaratnya.</div>
+    </div>
+    <div class="frame">
+      <div class="statusbar"><span>9:41</span><span class="icons">
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.3" y="5" width="3" height="6" rx="1"/><rect x="8.6" y="2.5" width="3" height="8.5" rx="1"/><rect x="12.9" y="0" width="3" height="11" rx="1"/></svg>
+        <svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x=".5" y=".5" width="18" height="10" rx="3" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="14" height="7" rx="1.8" fill="currentColor"/><path d="M20.5 4v3a2 2 0 000-3z" fill="currentColor" opacity=".4"/></svg>
+      </span></div>
+      <div class="screen">
+        <div class="pad topbar gap-12" style="padding-top:6px">
+          <div class="circle-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+          <div style="font-size:16px;font-weight:700;letter-spacing:-.02em">Karyawan</div>
+        </div>
+        <div class="pad stack gap-12" style="padding-top:16px">
+          <div class="card" style="padding:16px">
+            <div class="row gap-12">
+              <div class="blob-44"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/></svg></div>
+              <div style="flex:1">
+                <div style="font-size:14px;font-weight:700;letter-spacing:-.02em">Kasir bergantian</div>
+                <div style="font-size:11.5px;color:var(--muted-fg);line-height:1.6;margin-top:4px">Tiap kasir punya PIN sendiri. Riwayat transaksi tercatat atas namanya.</div>
+              </div>
+            </div>
+            <div class="banner banner-info" style="margin-top:14px">
+              <span class="blob-36" style="background:var(--warning-tint);color:#8A5B05"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v5M12 17h.01"/></svg></span>
+              <div>
+                <div class="bt">Butuh akun KanPOS Cloud</div>
+                <div class="bd">Karyawan diundang lewat email, jadi daftarnya sama di semua HP dan bisa dicabut dari jauh.</div>
+              </div>
+            </div>
+            <button class="btn btn-primary" style="height:46px;margin-top:12px;font-size:13.5px">Aktifkan kasir bergantian</button>
+          </div>
+
+          <div class="card" style="padding:14px 16px">
+            <div style="font-size:12px;font-weight:600;color:var(--muted-fg)">Sedang dipakai</div>
+            <div style="font-size:13px;font-weight:600;margin-top:6px">Mode satu pengguna</div>
+            <div style="font-size:11px;color:var(--muted-fg);margin-top:3px;line-height:1.55">Semua orang yang pegang HP ini punya akses penuh.</div>
+          </div>
+        </div>
+        <div class="grow"></div></div>
+    </div>
+  </div>
+  <div class="frame-wrap">
+    <div class="frame-label">
+      <span class="n">2</span><span class="t">Prasyarat, bukan dinding</span>
+      <div class="s">Tiga syarat ditampilkan sebagai daftar yang bisa dikerjakan satu per satu, masing-masing dengan jalan keluarnya. Tombolnya mati sampai ketiganya hijau.</div>
+    </div>
+    <div class="frame">
+      <div class="statusbar"><span>9:41</span><span class="icons">
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.3" y="5" width="3" height="6" rx="1"/><rect x="8.6" y="2.5" width="3" height="8.5" rx="1"/><rect x="12.9" y="0" width="3" height="11" rx="1"/></svg>
+        <svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x=".5" y=".5" width="18" height="10" rx="3" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="14" height="7" rx="1.8" fill="currentColor"/><path d="M20.5 4v3a2 2 0 000-3z" fill="currentColor" opacity=".4"/></svg>
+      </span></div>
+      <div class="screen">
+        <div class="pad topbar gap-12" style="padding-top:6px">
+          <div class="circle-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+          <div style="font-size:16px;font-weight:700;letter-spacing:-.02em">Aktifkan kasir bergantian</div>
+        </div>
+        <div class="pad stack gap-10 grow scroll" style="padding-top:14px">
+          <p class="sub">Kasir bergantian dikelola lewat akun cloud supaya daftar karyawan dan hak aksesnya sama di semua HP.</p>
+
+          <div class="prereq ok">
+            <span class="tick"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+            <div style="flex:1">
+              <div class="nm">Akun Google</div>
+              <div class="dt">budi.santoso@gmail.com</div>
+            </div>
+          </div>
+
+          <div class="prereq ok">
+            <span class="tick"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+            <div style="flex:1">
+              <div class="nm">Toko terhubung cloud</div>
+              <div class="dt">Warung Bu Sri · tersinkron 5 menit lalu</div>
+            </div>
+          </div>
+
+          <div class="prereq no">
+            <span class="tick"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v5M12 17h.01"/></svg></span>
+            <div style="flex:1">
+              <div class="nm">Langganan Sync aktif</div>
+              <div class="dt">Paket kamu sekarang: Cloud Backup. Kasir bergantian ada di paket Sync.</div>
+              <span class="act">Lihat paket →</span>
+            </div>
+          </div>
+
+          <div class="banner banner-info" style="margin-top:2px">
+            <span class="blob-36"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+            <div>
+              <div class="bt">Setelah aktif, kasir tetap jalan tanpa internet</div>
+              <div class="bd">Internet cuma dibutuhkan saat mengundang atau mencabut karyawan. Login harian pakai PIN, diperiksa di HP ini.</div>
+            </div>
+          </div>
+        </div>
+        <div class="pad" style="padding-bottom:22px"><button class="btn btn-primary" disabled>Lanjut</button></div></div>
+    </div>
+  </div>
+  <div class="frame-wrap">
+    <div class="frame-label">
+      <span class="n">3</span><span class="t">Undang karyawan</span>
+      <div class="s">Satu-satunya cara menambah kasir sekarang. Form buat-user-lokal dihapus — itulah sumber kedua yang selama ini bikin daftar karyawan bercabang.</div>
+    </div>
+    <div class="frame">
+      <div class="statusbar"><span>9:41</span><span class="icons">
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.3" y="5" width="3" height="6" rx="1"/><rect x="8.6" y="2.5" width="3" height="8.5" rx="1"/><rect x="12.9" y="0" width="3" height="11" rx="1"/></svg>
+        <svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x=".5" y=".5" width="18" height="10" rx="3" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="14" height="7" rx="1.8" fill="currentColor"/><path d="M20.5 4v3a2 2 0 000-3z" fill="currentColor" opacity=".4"/></svg>
+      </span></div>
+      <div class="screen">
+        <div class="pad topbar gap-12" style="padding-top:6px">
+          <div class="circle-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+          <div style="font-size:16px;font-weight:700;letter-spacing:-.02em">Undang karyawan</div>
+        </div>
+        <div class="pad stack gap-14 grow scroll" style="padding-top:16px">
+          <div class="stack gap-8">
+            <div class="field-label">Email karyawan <span class="req">*</span></div>
+            <div class="input focused"><span>rina.aprilia@gmail.com</span><span class="caret"></span></div>
+            <div style="font-size:11px;color:var(--muted-fg);line-height:1.55">Dia harus punya akun Google. Kode undangan cuma bisa dipakai oleh email ini.</div>
+          </div>
+
+          <div class="stack gap-8">
+            <div class="field-label">Peran</div>
+            <div class="biz-grid">
+              <div class="biz on" style="height:auto;padding:12px">
+                <div class="tick"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                <div class="nm">Kasir</div>
+                <div style="font-size:10.5px;color:var(--muted-fg);margin-top:4px;line-height:1.45">Jual &amp; riwayat sendiri</div>
+              </div>
+              <div class="biz" style="height:auto;padding:12px">
+                <div class="nm">Admin</div>
+                <div style="font-size:10.5px;color:var(--muted-fg);margin-top:4px;line-height:1.45">Semua kecuali tagihan</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="banner banner-info">
+            <span class="blob-36"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+            <div>
+              <div class="bt">Sisa kuota: 2 dari 5 karyawan</div>
+              <div class="bd">Undangan berlaku 7 hari. Kodenya kamu kirim sendiri lewat WhatsApp.</div>
+            </div>
+          </div>
+        </div>
+        <div class="pad" style="padding-bottom:22px"><button class="btn btn-primary">Buat kode undangan</button></div></div>
+    </div>
+  </div>
+  <div class="frame-wrap">
+    <div class="frame-label">
+      <span class="n">4</span><span class="t">Kode untuk dibagikan</span>
+      <div class="s">Tidak ada email otomatis — pemilik mengirim kodenya lewat WhatsApp, sesuai perilaku yang sudah jadi kebiasaan. Kode dibuat tanpa huruf yang mudah tertukar.</div>
+    </div>
+    <div class="frame">
+      <div class="statusbar"><span>9:41</span><span class="icons">
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.3" y="5" width="3" height="6" rx="1"/><rect x="8.6" y="2.5" width="3" height="8.5" rx="1"/><rect x="12.9" y="0" width="3" height="11" rx="1"/></svg>
+        <svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x=".5" y=".5" width="18" height="10" rx="3" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="14" height="7" rx="1.8" fill="currentColor"/><path d="M20.5 4v3a2 2 0 000-3z" fill="currentColor" opacity=".4"/></svg>
+      </span></div>
+      <div class="screen">
+        <div class="pad topbar gap-12" style="padding-top:6px">
+          <div class="circle-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+          <div style="font-size:16px;font-weight:700;letter-spacing:-.02em">Undangan dibuat</div>
+        </div>
+        <div class="grow stack center pad gap-20" style="padding-top:10px">
+          <div class="success-ring"><div class="success-core"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div></div>
+          <div class="stack gap-8 center">
+            <h2 class="title" style="font-size:21px">Kode untuk Rina</h2>
+            <p class="sub" style="max-width:245px">Kirim kode ini ke rina.aprilia@gmail.com. Berlaku 7 hari.</p>
+          </div>
+          <div class="codebox">
+            <i class="filled">K</i><i class="filled">7</i><i class="filled">M</i><i class="filled">Q</i>
+            <i class="filled">3</i><i class="filled">R</i><i class="filled">X</i><i class="filled">9</i>
+          </div>
+        </div>
+        <div class="pad stack gap-10" style="padding-bottom:22px">
+          <button class="btn btn-success"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 00-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1012 2z" opacity=".9"/></svg> Kirim lewat WhatsApp</button>
+          <button class="btn btn-outline" style="height:48px;font-size:14px">Salin kode</button>
+          <button class="btn btn-ghost" style="height:42px;font-size:13px">Selesai</button>
+        </div></div>
+    </div>
+  </div></div>
+<div class="rail-title"><h3>Jalur B — login harian kasir</h3><span>100% offline, username dihapus</span></div>
+<div class="rail">
+  <div class="frame-wrap">
+    <div class="frame-label">
+      <span class="n">5</span><span class="t">Login: ketuk wajahmu</span>
+      <div class="s">Username hilang dari layar. Daftarnya dibaca dari <code>db.users</code> di HP ini, jadi tetap muncul tanpa internet. Tidak ada lagi yang perlu diingat selain PIN.</div>
+    </div>
+    <div class="frame">
+      <div class="statusbar"><span>9:41</span><span class="icons">
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.3" y="5" width="3" height="6" rx="1"/><rect x="8.6" y="2.5" width="3" height="8.5" rx="1"/><rect x="12.9" y="0" width="3" height="11" rx="1"/></svg>
+        <svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x=".5" y=".5" width="18" height="10" rx="3" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="14" height="7" rx="1.8" fill="currentColor"/><path d="M20.5 4v3a2 2 0 000-3z" fill="currentColor" opacity=".4"/></svg>
+      </span></div>
+      <div class="screen">
+        <div class="grow stack pad gap-20" style="padding-top:40px">
+          <div class="stack gap-8 center">
+            <div class="store-logo" style="width:52px;height:52px;border-radius:18px;font-size:18px">WS</div>
+            <h2 class="title" style="font-size:21px;margin-top:6px">Siapa yang jaga kasir?</h2>
+            <p class="sub">Warung Bu Sri</p>
+          </div>
+          <div class="cashier-grid">
+            <div class="cashier owner">
+              <div class="av">BS</div>
+              <div class="nm">Bu Sri</div>
+              <div class="rl">Pemilik</div>
+            </div>
+            <div class="cashier on">
+              <div class="av">RA</div>
+              <div class="nm">Rina A.</div>
+              <div class="rl">Kasir</div>
+            </div>
+            <div class="cashier">
+              <div class="av">DP</div>
+              <div class="nm">Dedi P.</div>
+              <div class="rl">Kasir</div>
+            </div>
+            <div class="cashier">
+              <div class="av">YL</div>
+              <div class="nm">Yuli</div>
+              <div class="rl">Admin</div>
+            </div>
+          </div>
+        </div>
+        <div class="pad" style="padding-bottom:22px"><p class="tnc">Tidak ada namamu? Minta pemilik toko mengundangmu.</p></div></div>
+    </div>
+  </div>
+  <div class="frame-wrap">
+    <div class="frame-label">
+      <span class="n">6</span><span class="t">PIN, tanpa papan ketik</span>
+      <div class="s">Angka besar, bisa dipakai satu tangan sambil melayani. Diperiksa lokal lewat <code>hashPin</code> — layar ini tidak pernah menyentuh jaringan.</div>
+    </div>
+    <div class="frame">
+      <div class="statusbar"><span>9:41</span><span class="icons">
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.3" y="5" width="3" height="6" rx="1"/><rect x="8.6" y="2.5" width="3" height="8.5" rx="1"/><rect x="12.9" y="0" width="3" height="11" rx="1"/></svg>
+        <svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x=".5" y=".5" width="18" height="10" rx="3" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="14" height="7" rx="1.8" fill="currentColor"/><path d="M20.5 4v3a2 2 0 000-3z" fill="currentColor" opacity=".4"/></svg>
+      </span></div>
+      <div class="screen">
+        <div class="pad topbar gap-12" style="padding-top:6px">
+          <div class="circle-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+          <div class="row gap-8" style="flex:1">
+            <div class="store-logo staff" style="width:34px;height:34px;border-radius:12px;font-size:12px">RA</div>
+            <div>
+              <div style="font-size:13.5px;font-weight:700;letter-spacing:-.01em">Rina A.</div>
+              <div style="font-size:10.5px;color:var(--muted-fg)">Kasir</div>
+            </div>
+          </div>
+        </div>
+        <div class="grow stack pad gap-24" style="padding-top:26px">
+          <div class="stack gap-16 center">
+            <p class="sub">Masukkan PIN</p>
+            <div class="pindots"><i class="on"></i><i class="on"></i><i></i><i></i></div>
+          </div>
+          <div class="keypad">
+            <div class="key">1</div><div class="key">2</div><div class="key">3</div>
+            <div class="key">4</div><div class="key">5</div><div class="key">6</div>
+            <div class="key">7</div><div class="key">8</div><div class="key">9</div>
+            <div class="key fn">Lupa</div><div class="key">0</div><div class="key fn">⌫</div>
+          </div>
+        </div>
+        <div class="pad" style="padding-bottom:22px"><p class="tnc">Lupa PIN? Pemilik toko bisa meresetnya dari menu Karyawan.</p></div></div>
+    </div>
+  </div></div>
+<div class="rail-title"><h3>Kasus batas</h3><span>penentu perubahan ini terasa adil atau memaksa</span></div>
+<div class="rail">
+  <div class="frame-wrap">
+    <div class="frame-label">
+      <span class="n alt">7</span><span class="t">Pengguna lama tetap jalan</span>
+      <div class="s">Yang sudah memakai multi-user lokal <b>tidak</b> dimatikan — mencabut fitur yang sedang dipakai orang berjualan itu mahal. Yang ditutup cuma pendaftaran kasir baru.</div>
+    </div>
+    <div class="frame">
+      <div class="statusbar"><span>9:41</span><span class="icons">
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.3" y="5" width="3" height="6" rx="1"/><rect x="8.6" y="2.5" width="3" height="8.5" rx="1"/><rect x="12.9" y="0" width="3" height="11" rx="1"/></svg>
+        <svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x=".5" y=".5" width="18" height="10" rx="3" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="14" height="7" rx="1.8" fill="currentColor"/><path d="M20.5 4v3a2 2 0 000-3z" fill="currentColor" opacity=".4"/></svg>
+      </span></div>
+      <div class="screen">
+        <div class="pad topbar gap-12" style="padding-top:6px">
+          <div class="circle-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+          <div style="font-size:16px;font-weight:700;letter-spacing:-.02em">Karyawan</div>
+        </div>
+        <div class="pad stack gap-12" style="padding-top:16px">
+          <div class="banner banner-warn">
+            <span class="blob-36" style="background:rgba(249,166,22,.18);color:#8A5B05"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v5M12 17h.01"/></svg></span>
+            <div style="flex:1">
+              <div class="bt">Kasir bergantian versi lama</div>
+              <div class="bd">Tiga kasirmu tetap bisa login seperti biasa. Untuk menambah kasir baru, hubungkan toko ke akun cloud dulu.</div>
+              <button class="btn btn-primary" style="height:36px;border-radius:18px;font-size:12px;margin-top:10px;width:auto;padding:0 16px">Hubungkan sekarang</button>
+            </div>
+          </div>
+
+          <div class="card" style="padding:6px 0">
+            <div class="store-row" style="border:none;border-radius:0;background:transparent">
+              <div class="store-logo">BS</div>
+              <div style="flex:1"><div class="nm">Bu Sri</div><div class="mt">Pemilik · lokal</div></div>
+            </div>
+            <div class="store-row" style="border:none;border-radius:0;background:transparent">
+              <div class="store-logo staff">DP</div>
+              <div style="flex:1"><div class="nm">Dedi P.</div><div class="mt">Kasir · lokal</div></div>
+            </div>
+            <div class="store-row" style="border:none;border-radius:0;background:transparent">
+              <div class="store-logo staff">YL</div>
+              <div style="flex:1"><div class="nm">Yuli</div><div class="mt">Kasir · lokal</div></div>
+            </div>
+          </div>
+
+          <div class="card" style="padding:14px 16px;opacity:.55">
+            <div class="row gap-10">
+              <div class="blob-36" style="background:var(--muted);color:#8E96A6"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:600">Tambah kasir baru</div>
+                <div style="font-size:11px;color:var(--muted-fg);margin-top:2px">Perlu akun cloud</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="grow"></div></div>
+    </div>
+  </div>
+  <div class="frame-wrap">
+    <div class="frame-label">
+      <span class="n alt">8</span><span class="t">Offline saat mengundang</span>
+      <div class="s">Batas yang harus tegas: mengundang butuh server, tapi kasir tidak boleh ikut berhenti. Pesannya menyebut apa yang tetap jalan, bukan cuma apa yang gagal.</div>
+    </div>
+    <div class="frame">
+      <div class="statusbar"><span>9:41</span><span class="icons">
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.3" y="5" width="3" height="6" rx="1"/><rect x="8.6" y="2.5" width="3" height="8.5" rx="1"/><rect x="12.9" y="0" width="3" height="11" rx="1"/></svg>
+        <svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x=".5" y=".5" width="18" height="10" rx="3" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="14" height="7" rx="1.8" fill="currentColor"/><path d="M20.5 4v3a2 2 0 000-3z" fill="currentColor" opacity=".4"/></svg>
+      </span></div>
+      <div class="screen">
+        <div class="pad topbar gap-12" style="padding-top:6px">
+          <div class="circle-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+          <div style="font-size:16px;font-weight:700;letter-spacing:-.02em">Undang karyawan</div>
+        </div>
+        <div class="grow stack center pad gap-20">
+          <div class="blob" style="background:var(--warning-tint);color:#8A5B05"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l22 22"/><path d="M16.7 16.7A11 11 0 015 5"/><path d="M5 12.5a11 11 0 0114 0"/></svg></div>
+          <h2 class="title" style="font-size:20px;text-align:center">Undangan butuh internet</h2>
+          <p class="sub" style="max-width:255px;text-align:center">Kode undangan dibuat di server supaya berlaku di semua HP. Coba lagi kalau sinyal sudah kembali.</p>
+          <div class="banner banner-info" style="width:100%">
+            <span class="blob-36"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+            <div>
+              <div class="bt">Kasir tetap jalan normal</div>
+              <div class="bd">Kasir yang sudah terdaftar tetap bisa login dan berjualan sekarang juga.</div>
+            </div>
+          </div>
+        </div>
+        <div class="pad stack gap-10" style="padding-bottom:22px">
+          <button class="btn btn-primary">Coba lagi</button>
+          <button class="btn btn-ghost" style="height:44px;font-size:13px">Kembali ke kasir</button>
+        </div></div>
+    </div>
+  </div></div>
+
+<div class="rail-title"><h3>Yang berubah di kode</h3><span>5 sentuhan</span></div>
+<div class="steps">
+  <div class="stepcard">
+    <span class="k">1</span><b>Aktivasi bersyarat</b>
+    <p><code>MultiUserActivateDialog</code> diganti layar prasyarat: cek <code>isLoggedIn</code>, <code>cloudStoreId</code>, dan <code>syncSubscription</code> sebelum menyalakan <code>multiUserEnabled</code>.</p>
+  </div>
+  <div class="stepcard">
+    <span class="k del">2</span><b>Hapus pembuatan user lokal</b>
+    <p>Form buat-karyawan di <code>Users.tsx</code> ditutup. Satu-satunya jalan masuk jadi <code>inviteStoreMember</code> → <code>acceptInvite</code> → <code>syncCloudMembers</code>.</p>
+  </div>
+  <div class="stepcard">
+    <span class="k del">3</span><b>Username keluar dari UI</b>
+    <p><code>LoginScreen</code> jadi pemilih kasir + keypad PIN. Kolom <code>username</code> <b>tetap ada di DB</b> sebagai pengenal internal — tidak ada migrasi skema.</p>
+  </div>
+  <div class="stepcard">
+    <span class="k">4</span><b>Grandfather</b>
+    <p>Toko yang <code>multiUserEnabled</code> tapi tanpa <code>cloudStoreId</code> tetap berjalan penuh; hanya tombol tambah kasir yang dikunci, disertai ajakan menghubungkan.</p>
+  </div>
+  <div class="stepcard">
+    <span class="k">5</span><b>Perbaiki join dari Pengaturan</b>
+    <p><code>CloudMembersSettings.handleJoin</code> harus memanggil <code>hydrateStore()</code> seperti dua jalur lain — bug yang sudah ada, dan jadi makin penting kalau ini satu-satunya jalur.</p>
+  </div>
+</div>
+
+<div class="notes">
+  <h3>Catatan</h3>
+  <div class="notes-grid">
+    <div class="note">
+      <b>Kenapa ini menyederhanakan, bukan sekadar memonetisasi</b>
+      <p><span class="add">✓</span> Hari ini ada dua sumber kebenaran identitas. <code>syncCloudMembers</code> harus sengaja tidak menyentuh baris tanpa <code>cloudUserId</code> — kerumitan permanen dari punya dua jalur.</p>
+      <p><span class="add">✓</span> Bug PIN pemilik dan bug <code>handleJoin</code> dua-duanya lahir dari percabangan ini.</p>
+      <p><span class="add">✓</span> Backend sudah setengah jalan: undangan sudah menolak tanpa langganan Sync aktif. Yang belum konsisten justru sisi lokalnya.</p>
+    </div>
+    <div class="note">
+      <b class="warn">Risiko yang belum terukur</b>
+      <p><span class="warn">?</span> Berapa banyak toko yang benar-benar memakai multi-user lokal hari ini? Tidak ada telemetri untuk ini, jadi besarnya dampak tidak bisa diperkirakan dari kode.</p>
+      <p><span class="warn">?</span> Toko dengan internet buruk tapi banyak kasir kehilangan jalur penambahan kasir sepenuhnya.</p>
+      <p><span class="warn">?</span> Perlukah masa tenggang sebelum tombol tambah kasir dikunci untuk pengguna lama?</p>
+    </div>
+    <div class="note">
+      <b>Yang sengaja tidak disentuh</b>
+      <p><span class="add">✓</span> PIN tetap dibuat di perangkat karyawan dan tidak pernah dikirim ke server — <code>hashPin</code> digarami <code>deviceId</code>.</p>
+      <p><span class="add">✓</span> Baris <code>users</code> lama tidak dihapus, hanya dinonaktifkan: <code>createdBy</code> di transaksi, produk, pengeluaran, dan utang masih merujuknya.</p>
+      <p><span class="add">✓</span> Toko satu orang tidak melihat perubahan apa pun.</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

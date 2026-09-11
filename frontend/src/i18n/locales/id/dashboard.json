@@ -1,0 +1,111 @@
+{
+  "title": {
+    "storeNameFallback": "KanPOS"
+  },
+  "setup": {
+    "title": "Siapkan toko",
+    "progress": "{{done}} dari {{total}} selesai",
+    "dismiss": "Sembunyikan",
+    "items": {
+      "store": "Toko dibuat",
+      "product": "Tambah produk pertama",
+      "transaction": "Catat transaksi pertama",
+      "backup": "Amankan data (backup)"
+    }
+  },
+  "install": {
+    "title": "Install di layar utama",
+    "desc": "Buka langsung tanpa lewat browser.",
+    "cta": "Install",
+    "dismiss": "Tutup",
+    "success": "Berhasil install KanPOS!",
+    "iosHint": "Di Safari: ketuk tombol Share (↑) → \"Add to Home Screen\""
+  },
+  "stats": {
+    "salesToday": "Penjualan Hari Ini",
+    "transactions": "{{count}} transaksi",
+    "salesSub": "{{count}} transaksi, {{trend}}% vs kemarin",
+    "avgTransaction": "Rata-rata",
+    "perTransaction": "per transaksi",
+    "profitToday": "Profit",
+    "expensesToday": "Pengeluaran",
+    "expenseNotes": "{{count}} catatan"
+  },
+  "attention": {
+    "title": "Perlu Perhatian",
+    "empty": "Tidak ada notifikasi"
+  },
+  "openBills": {
+    "title": "Open Bills",
+    "description": "{{count}} bill menunggu pembayaran"
+  },
+  "quickActions": {
+    "title": "Akses Cepat",
+    "all": "Lainnya",
+    "cashier": "Kasir",
+    "products": "Produk",
+    "history": "Riwayat",
+    "reports": "Laporan",
+    "expenses": "Pengeluaran",
+    "customers": "Pelanggan",
+    "supplier": "Supplier",
+    "stockIn": "Stok Masuk",
+    "stockOut": "Stok Keluar"
+  },
+  "recentTransactions": {
+    "title": "Transaksi Terakhir",
+    "viewAll": "Lihat Semua",
+    "cashFallback": "Tunai",
+    "itemCount": "{{count}} produk",
+    "itemCount_plural": "{{count}} produk",
+    "emptyTitle": "Belum ada transaksi hari ini",
+    "emptyDesc": "Buat transaksi pertama untuk melihat riwayat penjualan."
+  },
+  "chart": {
+    "weeklySales": "Penjualan 7 Hari",
+    "noData": "Belum ada data penjualan",
+    "todayLabel": "Hari ini"
+  },
+  "searchPlaceholder": "Cari produk, transaksi...",
+  "lowStock": {
+    "title": "Stok Menipis",
+    "summary": "{{count}} produk perlu restock",
+    "remaining": "Sisa {{stock}} {{unit}}"
+  },
+  "topProducts": {
+    "title": "Produk Terlaris Hari Ini",
+    "sold": "terjual",
+    "emptyTitle": "Belum ada penjualan hari ini",
+    "emptyDesc": "Mulai transaksi pertama untuk melihat produk terlaris."
+  },
+  "pll": {
+    "in": "Masuk",
+    "out": "Keluar",
+    "debt": "Kasbon"
+  },
+  "sessionExpired": {
+    "title": "Sesi cloud berakhir",
+    "desc": "Kasir tetap jalan normal. Masuk lagi untuk melanjutkan sinkronisasi.",
+    "descPending": "Kasir tetap jalan normal. {{count}} transaksi menunggu disinkronkan.",
+    "cta": "Masuk lagi",
+    "success": "Sesi cloud aktif lagi",
+    "failed": "Gagal masuk. Coba lagi."
+  },
+  "linkAccount": {
+    "title": "Amankan data tokomu",
+    "desc": "Datamu sekarang hanya ada di HP ini. Kalau HP hilang, rusak, atau aplikasi dihapus — semuanya ikut hilang.",
+    "benefit1": "Pulihkan otomatis saat ganti HP",
+    "benefit2": "Tambah karyawan dengan hak akses",
+    "benefit3": "Buka kasir dari beberapa HP sekaligus",
+    "cta": "Hubungkan akun Google",
+    "linking": "Menghubungkan…",
+    "later": "Nanti saja",
+    "toast": {
+      "linked": "{{name}} sudah terhubung ke cloud",
+      "linkedSynced": "{{name}} terhubung — data lokal sudah dikirim ke cloud",
+      "hasStores": "Akun ini sudah punya toko di cloud. Pilih toko mana yang dipakai.",
+      "quota": "Kuota toko paketmu penuh. Atur di halaman Toko Cloud.",
+      "failed": "Gagal menghubungkan akun. Coba lagi."
+    }
+  }
+}

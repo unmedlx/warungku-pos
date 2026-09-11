@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mockup — Toko &amp; Cabang + Pengaturan (Dashboard Cloud KanPOS)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   Token — disalin dari dashboard/tailwind.config.js, yang sendirinya
+   mengikuti frontend/DESIGN-SPEC.md. Jangan menambah warna baru di sini:
+   apa pun yang muncul di mockup ini harus bisa dibangun dari daftar ini.
+   ============================================================ */
+:root{
+  --biru:#3554C1; --biru-tua:#2B44A0; --biru-muda:#EFF5FF; --biru-pucat:#C0CAEC;
+  --hijau:#5ABC61; --hijau-tua:#3E8E45; --hijau-muda:#EFF8EF;
+  --kuning:#F9A616; --kuning-tua:#B37400; --kuning-muda:#FFF6E0;
+  --merah:#DF1C41; --merah-muda:#FFF0F3;
+  --hitam:#0D0D12; --abu:#5B6474; --abu-terang:#818898;
+  --garis:#DFE1E7; --garis-tipis:#ECEFF3;
+  --latar:#EDF1F9; --latar-alt:#F8FAFE; --kartu:#fff;
+
+  --r-kartu:24px; --r-seksi:20px; --r-dalam:12px;
+
+  /* Skala jarak — semua margin/padding di bawah memakai ini, tidak ada angka lepas. */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:20px; --s6:26px; --s7:34px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:Sora,system-ui,-apple-system,sans-serif;
+  background:var(--latar);color:var(--hitam);
+  font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased;
+}
+
+/* ---------- Ikon: satu sprite lucide, ukuran & tebal garis seragam ---------- */
+.ic{width:16px;height:16px;flex:none;stroke:currentColor;stroke-width:2;
+    stroke-linecap:round;stroke-linejoin:round;fill:none;display:block}
+.ic-14{width:14px;height:14px}
+.ic-18{width:18px;height:18px}
+.ic-20{width:20px;height:20px}
+
+/* ============================================================
+   Kerangka aplikasi
+   ============================================================ */
+.shell{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:660px}
+
+.side{background:var(--kartu);border-right:1px solid var(--garis-tipis);
+      padding:var(--s5) 14px;display:flex;flex-direction:column;gap:22px}
+.side-logo{display:flex;align-items:center;gap:10px;padding:0 var(--s2);font-weight:700;font-size:16px}
+.side-logo .mark{width:30px;height:30px;border-radius:9px;background:var(--biru);color:#fff;
+                 display:grid;place-items:center;flex:none}
+.nav-lbl{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;
+         color:var(--abu-terang);padding:0 10px;font-weight:600;margin-bottom:var(--s1)}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav a{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:11px;
+       color:var(--abu-terang);text-decoration:none;font-weight:500;font-size:13.5px}
+.nav a.on{background:var(--biru-muda);color:var(--biru);font-weight:600}
+.nav a:hover:not(.on){background:var(--garis-tipis)}
+
+.side-bawah{margin-top:auto;display:flex;flex-direction:column;gap:var(--s3)}
+.kuota{background:var(--latar-alt);border:1px solid var(--garis-tipis);
+       border-radius:var(--r-seksi);padding:13px}
+.kuota-nm{font-weight:600;font-size:13px}
+.bar{height:5px;border-radius:3px;background:var(--garis-tipis);margin:9px 0 6px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:3px;background:var(--biru)}
+.kuota-sm{font-size:11px;color:var(--abu-terang)}
+.aku{display:flex;align-items:center;gap:10px;padding:0 var(--s1)}
+.avatar{border-radius:999px;background:var(--biru-muda);color:var(--biru);
+        display:grid;place-items:center;font-weight:700;flex:none}
+.avatar-32{width:32px;height:32px;font-size:12px}
+.avatar-48{width:48px;height:48px;font-size:17px}
+.aku-tx{min-width:0;flex:1}
+.aku-nm{font-size:12.5px;font-weight:600;line-height:1.3}
+.aku-em{font-size:11px;color:var(--abu-terang)}
+.ikon-btn{background:none;border:0;color:var(--abu-terang);cursor:pointer;
+          display:grid;place-items:center;padding:var(--s1);border-radius:8px}
+.ikon-btn:hover{background:var(--garis-tipis);color:var(--hitam)}
+.ikon-btn.bahaya:hover{color:var(--merah);background:var(--merah-muda)}
+
+.main{padding:22px var(--s6) 40px;max-width:1240px;width:100%;min-width:0}
+
+/* ---------- Kepala halaman ---------- */
+.kepala{display:flex;align-items:flex-start;justify-content:space-between;
+        gap:var(--s4);flex-wrap:wrap;margin-bottom:var(--s5)}
+h1{font-size:22px;font-weight:700;letter-spacing:-.01em}
+.kepala .sub{color:var(--abu-terang);font-size:13px;margin-top:3px}
+
+/* ---------- Tombol ---------- */
+.pil{display:inline-flex;align-items:center;justify-content:center;gap:7px;
+     height:36px;padding:0 15px;border-radius:999px;border:1px solid var(--garis);
+     background:var(--kartu);font:inherit;font-size:13px;font-weight:500;
+     cursor:pointer;white-space:nowrap;color:inherit}
+.pil:hover{background:var(--latar-alt)}
+.pil-utama{background:var(--biru);border-color:var(--biru);color:#fff;font-weight:600}
+.pil-utama:hover{background:var(--biru-tua)}
+.pil-ikon{width:36px;padding:0}
+.pil[disabled]{opacity:.5;cursor:not-allowed}
+.pil[disabled]:hover{background:var(--kartu)}
+.pil-utama[disabled]:hover{background:var(--biru)}
+
+/* ---------- Seksi & kartu ---------- */
+.seksi{margin-bottom:var(--s7)}
+.seksi:last-child{margin-bottom:0}
+.seksi-kepala{display:flex;align-items:center;justify-content:space-between;
+              gap:var(--s3);margin-bottom:var(--s3)}
+.seksi-kepala h2{font-size:15px;font-weight:600}
+.petunjuk{font-size:12px;color:var(--abu-terang)}
+.kartu{background:var(--kartu);border:1px solid var(--garis-tipis);
+       border-radius:var(--r-kartu);padding:var(--s4) 18px}
+
+/* ---------- Tabel toko ----------
+   Tabel, bukan tumpukan baris: kolom aksi jadi rata sempurna antar baris,
+   yang di versi sebelumnya bergerigi karena lebar tombolnya berbeda-beda. */
+.tabel{width:100%;border-collapse:collapse;table-layout:fixed}
+.tabel th{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;
+          color:var(--abu-terang);text-align:left;padding:0 var(--s3) var(--s2);
+          border-bottom:1px solid var(--garis-tipis)}
+.tabel td{padding:var(--s3);border-bottom:1px solid var(--garis-tipis);vertical-align:middle}
+.tabel tr:last-child td{border-bottom:0}
+.tabel .kol-toko{width:38%}
+.tabel .kol-kontak{width:24%}
+.tabel .kol-status{width:15%}
+.tabel .kol-aksi{width:23%;text-align:right}
+.sel-toko{display:flex;align-items:center;gap:var(--s3);min-width:0}
+.logo-toko{width:38px;height:38px;border-radius:var(--r-dalam);background:var(--biru-muda);
+           color:var(--biru);display:grid;place-items:center;flex:none;overflow:hidden}
+.logo-toko img{width:100%;height:100%;object-fit:cover}
+.sel-tx{min-width:0}
+.sel-nm{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sel-ds{font-size:12px;color:var(--abu-terang);margin-top:1px;
+        white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kosong-nilai{color:var(--biru-pucat)}
+.aksi{display:flex;gap:var(--s2);justify-content:flex-end;align-items:center}
+
+.label{display:inline-flex;align-items:center;gap:5px;border-radius:8px;
+       padding:3px var(--s2);font-size:11px;font-weight:600;white-space:nowrap}
+.label-pub{background:var(--hijau-muda);color:var(--hijau-tua)}
+.label-prv{background:var(--garis-tipis);color:var(--abu-terang)}
+
+/* ---------- Form ---------- */
+.form{display:flex;gap:var(--s3);align-items:flex-end;flex-wrap:wrap}
+.fld{display:flex;flex-direction:column;gap:5px;min-width:0}
+.fld-lb{font-size:12px;font-weight:600;color:var(--abu-terang)}
+.fld input{height:36px;border:1px solid var(--garis);border-radius:var(--r-dalam);
+           padding:0 var(--s3);font:inherit;font-size:13px;background:#fff;outline:none;width:100%}
+.fld input:focus{border-color:var(--biru);box-shadow:0 0 0 3px var(--biru-muda)}
+.fld-tumbuh{flex:1;min-width:190px}
+
+/* ---------- Keadaan kosong / pemberitahuan ---------- */
+.kosong{background:var(--kartu);border:1px solid var(--garis-tipis);
+        border-radius:var(--r-kartu);padding:var(--s7);text-align:center}
+.kosong-t{font-size:15px;font-weight:600}
+.kosong-d{font-size:13px;color:var(--abu-terang);margin:5px auto 0;max-width:430px}
+.notif{display:flex;gap:10px;align-items:flex-start;border-radius:var(--r-kartu);
+       padding:13px var(--s4);font-size:13px;margin-bottom:var(--s5)}
+.notif-kuning{background:var(--kuning-muda);color:var(--kuning-tua)}
+.notif-merah{background:var(--merah-muda);color:var(--merah)}
+
+/* ---------- Baris pengaturan ---------- */
+.baris-set{display:flex;align-items:center;gap:var(--s4);
+           padding:14px 18px;border-bottom:1px solid var(--garis-tipis)}
+.baris-set:last-child{border-bottom:0}
+.baris-set .kiri{min-width:0;flex:1}
+.baris-set .lb{font-size:13.5px;font-weight:600}
+.baris-set .ds{font-size:12px;color:var(--abu-terang);margin-top:1px}
+.baris-set .kanan{margin-left:auto;text-align:right;font-size:13px;white-space:nowrap}
+.grup{background:var(--kartu);border:1px solid var(--garis-tipis);
+      border-radius:var(--r-kartu);overflow:hidden}
+
+.penyimpanan-hd{display:flex;justify-content:space-between;align-items:baseline;
+                gap:10px;flex-wrap:wrap}
+.penyimpanan-hd .angka{font-size:18px;font-weight:700;letter-spacing:-.01em}
+.penyimpanan-hd .angka span{font-size:13px;font-weight:400;color:var(--abu-terang)}
+.bar-besar{height:6px;border-radius:3px;background:var(--garis-tipis);
+           margin-top:var(--s3);overflow:hidden}
+.bar-besar i{display:block;height:100%;border-radius:3px;background:var(--biru)}
+.bar-besar i.panas{background:var(--merah)}
+
+.paket-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3)}
+.paket .cap{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;
+            letter-spacing:.07em;text-transform:uppercase;color:var(--abu-terang)}
+.paket .nm{font-size:15px;font-weight:600;margin-top:10px}
+.paket .hg{font-size:13px;color:var(--abu-terang);margin-top:2px}
+.paket .rg{font-size:12.5px;color:var(--abu-terang);margin-top:var(--s2)}
+.paket .st{font-size:12.5px;font-weight:600;margin-top:10px;color:var(--hijau-tua)}
+.paket .st.mati{color:var(--merah)}
+.paket .kosong-tx{font-size:13px;color:var(--abu-terang);margin-top:10px}
+
+/* ============================================================
+   Kerangka dokumen mockup (bukan bagian dari aplikasi)
+   ============================================================ */
+.doc{max-width:1460px;margin:0 auto;padding:var(--s7) var(--s5) 70px}
+.doc-hd{margin-bottom:var(--s7)}
+.doc-hd h1{font-size:24px}
+.doc-hd .meta{font-size:12.5px;color:var(--abu-terang);margin-top:var(--s2)}
+.doc-hd p{font-size:13.5px;color:var(--abu);max-width:760px;margin-top:var(--s3);line-height:1.6}
+.daftar-isi{display:flex;gap:var(--s2);flex-wrap:wrap;margin-top:var(--s4)}
+.daftar-isi a{font-size:12.5px;font-weight:500;text-decoration:none;color:var(--biru);
+              background:var(--biru-muda);border-radius:999px;padding:6px 13px}
+.blok{margin-bottom:var(--s7);scroll-margin-top:var(--s5)}
+.blok-hd{display:flex;align-items:baseline;gap:10px;margin-bottom:var(--s2)}
+.blok-hd .no{font-size:12px;font-weight:700;color:var(--biru);
+             background:var(--biru-muda);border-radius:7px;padding:2px 8px;flex:none}
+.blok-hd h2{font-size:16px;font-weight:700;letter-spacing:-.01em}
+.blok>p{font-size:13px;color:var(--abu);max-width:800px;margin-bottom:var(--s3);line-height:1.6}
+.bingkai{border:1px solid var(--garis);border-radius:var(--r-seksi);overflow:hidden;
+         background:var(--latar);box-shadow:0 1px 3px rgba(13,13,18,.06)}
+.ket{display:flex;gap:9px;align-items:flex-start;background:var(--kartu);
+     border:1px dashed var(--biru-pucat);border-radius:var(--r-dalam);
+     padding:11px 14px;font-size:12.5px;color:var(--abu);margin-top:var(--s3);line-height:1.55}
+.ket b{color:var(--biru);font-weight:600}
+.ket code,.doc code{background:var(--garis-tipis);border-radius:5px;
+                    padding:1px 5px;font-size:11.5px;font-family:ui-monospace,Menlo,monospace}
+
+/* Turunan kecil — didefinisikan di sini, bukan sebagai style inline yang berserakan. */
+.sel-tel{font-size:12.5px;color:var(--abu-terang);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kuota-sm + .kuota-sm{margin-top:var(--s1)}
+.kartu-tabel{padding:var(--s4) var(--s5)}
+.notif-dalam{margin-top:var(--s3);margin-bottom:0}
+.grup-sempit{max-width:800px}
+.fld-telepon{width:160px}
+.sel-form{padding:var(--s4) 0}
+@media(max-width:1080px){.paket-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- Sprite ikon: path asli lucide-react v0.462.0, sama dengan yang dipakai aplikasi. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="i-store" viewBox="0 0 24 24"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-log-out" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+  <symbol id="i-trash-2" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-refresh-cw" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></symbol>
+  <symbol id="i-layout-grid" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></symbol>
+  <symbol id="i-git-compare" viewBox="0 0 24 24"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M11 18H8a2 2 0 0 1-2-2V9"/></symbol>
+  <symbol id="i-chart-column" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></symbol>
+  <symbol id="i-hard-drive" viewBox="0 0 24 24"><line x1="22" x2="2" y1="12" y2="12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/><line x1="6" x2="6.01" y1="16" y2="16"/><line x1="10" x2="10.01" y1="16" y2="16"/></symbol>
+  <symbol id="i-triangle-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol></defs></svg>
+
+<div class="doc">
+
+<header class="doc-hd">
+  <h1>Toko &amp; Cabang + Pengaturan</h1>
+  <div class="meta">Mockup · Dashboard Cloud KanPOS · <code>dashboard/docs/toko-pengaturan-mockup.html</code></div>
+  <p>
+    Dua halaman baru yang menggantikan dua menu di grup <b>Akun</b> — sebelumnya cuma link mati
+    ke domain produksi. Seluruh warna, radius, dan komponen diambil dari
+    <code>tailwind.config.js</code> dashboard; ikonnya memakai path lucide yang sama persis
+    dengan yang di-render aplikasi. Tidak ada elemen visual baru yang diperkenalkan di sini.
+  </p>
+  <nav class="daftar-isi">
+    <a href="#b1">1 · Toko — daftar</a>
+    <a href="#b2">2 · Toko — tambah &amp; ubah</a>
+    <a href="#b3">3 · Toko — kuota penuh</a>
+    <a href="#b4">4 · Toko — belum ada toko</a>
+    <a href="#b5">5 · Pengaturan</a>
+    <a href="#b6">6 · Pengaturan — keadaan kritis</a>
+    <a href="#catatan">Catatan &amp; yang ditahan</a>
+  </nav>
+</header>
+
+<section class="blok" id="b1">
+  <div class="blok-hd"><span class="no">1</span><h2>Toko &amp; Cabang — daftar</h2></div>
+  <p>Keadaan yang paling sering dilihat. Tiga toko: satu publik beralamat lengkap, satu privat, satu yang alamat dan teleponnya masih kosong.</p>
+<div class="bingkai">
+  <div class="shell">
+    <aside class="side">
+      <div class="side-logo"><span class="mark"><svg class="ic-18" aria-hidden="true"><use href="#i-store"/></svg></span> KanPOS</div>
+
+      <div>
+        <div class="nav-lbl">Laporan</div>
+        <nav class="nav">
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-layout-grid"/></svg>Ringkasan</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-git-compare"/></svg>Bandingkan Cabang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg>Tren Jangka Panjang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-heart"/></svg>Status Data</a>
+        </nav>
+      </div>
+
+      <div>
+        <div class="nav-lbl">Akun</div>
+        <nav class="nav">
+        <a href="#" class="on"><svg class="ic" aria-hidden="true"><use href="#i-store"/></svg>Toko & Cabang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-settings"/></svg>Pengaturan</a>
+        </nav>
+      </div>
+
+      <div class="side-bawah">
+        <div class="kuota">
+          <div class="kuota-nm">Paket Bisnis</div>
+          <div class="bar"><i style="width:41%"></i></div>
+          <div class="kuota-sm">412 MB / 1.000 MB · 3 dari 5 toko</div>
+          <div class="kuota-sm">Aktif s/d 14 Des 2026</div>
+        </div>
+        <div class="aku">
+          <div class="avatar avatar-32">B</div>
+          <div class="aku-tx">
+            <div class="aku-nm">Bani Devv</div>
+            <div class="aku-em">bani@kankitu.com</div>
+          </div>
+          <button class="ikon-btn bahaya" title="Keluar"><svg class="ic" aria-hidden="true"><use href="#i-log-out"/></svg></button>
+        </div>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="kepala">
+        <div>
+          <h1>Toko &amp; Cabang</h1>
+          <div class="sub">3 dari 5 toko terpakai</div>
+        </div>
+        <button class="pil pil-utama"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg> Tambah toko</button>
+      </div>
+
+      <section class="seksi">
+        <div class="seksi-kepala">
+          <h2>Daftar toko</h2>
+          <span class="petunjuk">diurutkan dari yang terbaru</span>
+        </div>
+      <div class="kartu kartu-tabel">
+        <table class="tabel">
+          <thead>
+            <tr>
+              <th class="kol-toko">Toko</th>
+              <th class="kol-kontak">Telepon</th>
+              <th class="kol-status">Status</th>
+              <th class="kol-aksi">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="sel-toko">
+                  <span class="logo-toko"><svg class="ic-18" aria-hidden="true"><use href="#i-store"/></svg></span>
+                  <span class="sel-tx">
+                    <span class="sel-nm">KanPOS Pusat Serpong</span>
+                    <span class="sel-ds">Jl. Raya Serpong No. 41, Serpong, Tangerang Selatan</span>
+                  </span>
+                </div>
+              </td>
+              <td><div class="sel-tel">0812-3344-5566</div></td>
+              <td><span class="label label-pub"><svg class="ic-14" aria-hidden="true"><use href="#i-globe"/></svg> Publik</span></td>
+              <td>
+                <div class="aksi">
+                  <button class="pil">Jadikan privat</button>
+                  <button class="pil pil-ikon" title="Ubah"><svg class="ic" aria-hidden="true"><use href="#i-pencil"/></svg></button>
+                  <button class="pil pil-ikon" title="Hapus toko"><svg class="ic" aria-hidden="true"><use href="#i-trash-2"/></svg></button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="sel-toko">
+                  <span class="logo-toko"><svg class="ic-18" aria-hidden="true"><use href="#i-store"/></svg></span>
+                  <span class="sel-tx">
+                    <span class="sel-nm">KanPOS Cabang Bintaro</span>
+                    <span class="sel-ds">Jl. Bintaro Utama 3A, Pesanggrahan, Jakarta Selatan</span>
+                  </span>
+                </div>
+              </td>
+              <td><div class="sel-tel">0813-9911-2200</div></td>
+              <td><span class="label label-prv"><svg class="ic-14" aria-hidden="true"><use href="#i-lock"/></svg> Privat</span></td>
+              <td>
+                <div class="aksi">
+                  <button class="pil">Jadikan publik</button>
+                  <button class="pil pil-ikon" title="Ubah"><svg class="ic" aria-hidden="true"><use href="#i-pencil"/></svg></button>
+                  <button class="pil pil-ikon" title="Hapus toko"><svg class="ic" aria-hidden="true"><use href="#i-trash-2"/></svg></button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="sel-toko">
+                  <span class="logo-toko"><svg class="ic-18" aria-hidden="true"><use href="#i-store"/></svg></span>
+                  <span class="sel-tx">
+                    <span class="sel-nm">KanPOS Cabang Depok</span>
+                    <span class="sel-ds"><span class="kosong-nilai">Belum diisi</span></span>
+                  </span>
+                </div>
+              </td>
+              <td><div class="sel-tel"><span class="kosong-nilai">—</span></div></td>
+              <td><span class="label label-prv"><svg class="ic-14" aria-hidden="true"><use href="#i-lock"/></svg> Privat</span></td>
+              <td>
+                <div class="aksi">
+                  <button class="pil">Jadikan publik</button>
+                  <button class="pil pil-ikon" title="Ubah"><svg class="ic" aria-hidden="true"><use href="#i-pencil"/></svg></button>
+                  <button class="pil pil-ikon" title="Hapus toko"><svg class="ic" aria-hidden="true"><use href="#i-trash-2"/></svg></button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      </section>
+    </main>
+  </div>
+</div>
+<div class="ket"><svg class="ic-14" aria-hidden="true"><use href="#i-pencil"/></svg><div><b>Kenapa tabel, bukan tumpukan kartu:</b> kolom aksi jadi rata sempurna antar baris. Di versi mockup sebelumnya tombolnya ditaruh mengambang di kanan tiap kartu, dan karena teks <code>Jadikan privat</code> lebih panjang dari <code>Jadikan publik</code>, tepi kanannya bergerigi. Ubah dan Hapus juga diringkas jadi tombol ikon supaya lebar kolomnya tetap.</div></div>
+</section>
+
+<section class="blok" id="b2">
+  <div class="blok-hd"><span class="no">2</span><h2>Toko — form tambah &amp; mode ubah</h2></div>
+  <p>Dua form sekaligus supaya bisa dibandingkan; di aplikasi keduanya bisa terbuka bersamaan.</p>
+<div class="bingkai">
+  <div class="shell">
+    <aside class="side">
+      <div class="side-logo"><span class="mark"><svg class="ic-18" aria-hidden="true"><use href="#i-store"/></svg></span> KanPOS</div>
+
+      <div>
+        <div class="nav-lbl">Laporan</div>
+        <nav class="nav">
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-layout-grid"/></svg>Ringkasan</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-git-compare"/></svg>Bandingkan Cabang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg>Tren Jangka Panjang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-heart"/></svg>Status Data</a>
+        </nav>
+      </div>
+
+      <div>
+        <div class="nav-lbl">Akun</div>
+        <nav class="nav">
+        <a href="#" class="on"><svg class="ic" aria-hidden="true"><use href="#i-store"/></svg>Toko & Cabang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-settings"/></svg>Pengaturan</a>
+        </nav>
+      </div>
+
+      <div class="side-bawah">
+        <div class="kuota">
+          <div class="kuota-nm">Paket Bisnis</div>
+          <div class="bar"><i style="width:41%"></i></div>
+          <div class="kuota-sm">412 MB / 1.000 MB · 3 dari 5 toko</div>
+          <div class="kuota-sm">Aktif s/d 14 Des 2026</div>
+        </div>
+        <div class="aku">
+          <div class="avatar avatar-32">B</div>
+          <div class="aku-tx">
+            <div class="aku-nm">Bani Devv</div>
+            <div class="aku-em">bani@kankitu.com</div>
+          </div>
+          <button class="ikon-btn bahaya" title="Keluar"><svg class="ic" aria-hidden="true"><use href="#i-log-out"/></svg></button>
+        </div>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="kepala">
+        <div>
+          <h1>Toko &amp; Cabang</h1>
+          <div class="sub">3 dari 5 toko terpakai</div>
+        </div>
+      </div>
+
+      <section class="seksi">
+        <div class="seksi-kepala"><h2>Toko baru</h2></div>
+        <div class="kartu">
+          <form class="form">
+            <label class="fld fld-tumbuh">
+              <span class="fld-lb">Nama toko</span>
+              <input value="KanPOS Cabang Cinere">
+            </label>
+            <button class="pil pil-utama"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg> Simpan</button>
+            <button class="pil">Batal</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="seksi">
+        <div class="seksi-kepala"><h2>Daftar toko</h2></div>
+        <div class="kartu kartu-tabel">
+          <table class="tabel">
+            <thead>
+              <tr>
+                <th class="kol-toko">Toko</th>
+                <th class="kol-kontak">Telepon</th>
+                <th class="kol-status">Status</th>
+                <th class="kol-aksi">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="4" class="sel-form">
+                  <form class="form">
+                    <label class="fld fld-tumbuh">
+                      <span class="fld-lb">Nama toko</span>
+                      <input value="KanPOS Pusat Serpong">
+                    </label>
+                    <label class="fld fld-telepon">
+                      <span class="fld-lb">Telepon</span>
+                      <input value="0812-3344-5566">
+                    </label>
+                    <label class="fld fld-tumbuh">
+                      <span class="fld-lb">Alamat</span>
+                      <input value="Jl. Raya Serpong No. 41">
+                    </label>
+                    <button class="pil pil-utama"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg> Simpan</button>
+                    <button class="pil">Batal</button>
+                  </form>
+                </td>
+              </tr>
+            <tr>
+              <td>
+                <div class="sel-toko">
+                  <span class="logo-toko"><svg class="ic-18" aria-hidden="true"><use href="#i-store"/></svg></span>
+                  <span class="sel-tx">
+                    <span class="sel-nm">KanPOS Cabang Bintaro</span>
+                    <span class="sel-ds">Jl. Bintaro Utama 3A, Pesanggrahan, Jakarta Selatan</span>
+                  </span>
+                </div>
+              </td>
+              <td><div class="sel-tel">0813-9911-2200</div></td>
+              <td><span class="label label-prv"><svg class="ic-14" aria-hidden="true"><use href="#i-lock"/></svg> Privat</span></td>
+              <td>
+                <div class="aksi">
+                  <button class="pil">Jadikan publik</button>
+                  <button class="pil pil-ikon" title="Ubah"><svg class="ic" aria-hidden="true"><use href="#i-pencil"/></svg></button>
+                  <button class="pil pil-ikon" title="Hapus toko"><svg class="ic" aria-hidden="true"><use href="#i-trash-2"/></svg></button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="sel-toko">
+                  <span class="logo-toko"><svg class="ic-18" aria-hidden="true"><use href="#i-store"/></svg></span>
+                  <span class="sel-tx">
+                    <span class="sel-nm">KanPOS Cabang Depok</span>
+                    <span class="sel-ds"><span class="kosong-nilai">Belum diisi</span></span>
+                  </span>
+                </div>
+              </td>
+              <td><div class="sel-tel"><span class="kosong-nilai">—</span></div></td>
+              <td><span class="label label-prv"><svg class="ic-14" aria-hidden="true"><use href="#i-lock"/></svg> Privat</span></td>
+              <td>
+                <div class="aksi">
+                  <button class="pil">Jadikan publik</button>
+                  <button class="pil pil-ikon" title="Ubah"><svg class="ic" aria-hidden="true"><use href="#i-pencil"/></svg></button>
+                  <button class="pil pil-ikon" title="Hapus toko"><svg class="ic" aria-hidden="true"><use href="#i-trash-2"/></svg></button>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+<div class="ket"><svg class="ic-14" aria-hidden="true"><use href="#i-pencil"/></svg><div><b>Keputusan desain:</b> mengubah toko dilakukan <b>inline</b> — barisnya melebar jadi form di tempat, bukan membuka modal. Alasannya cuma tiga field, dan modal akan menutupi daftar toko lain yang justru sering jadi rujukan saat menamai cabang. Kalau kamu lebih suka modal, ini bagian yang paling gampang ditukar.</div></div>
+</section>
+
+<section class="blok" id="b3">
+  <div class="blok-hd"><span class="no">3</span><h2>Toko — kuota paket penuh</h2></div>
+<div class="bingkai">
+  <div class="shell">
+    <aside class="side">
+      <div class="side-logo"><span class="mark"><svg class="ic-18" aria-hidden="true"><use href="#i-store"/></svg></span> KanPOS</div>
+
+      <div>
+        <div class="nav-lbl">Laporan</div>
+        <nav class="nav">
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-layout-grid"/></svg>Ringkasan</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-git-compare"/></svg>Bandingkan Cabang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg>Tren Jangka Panjang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-heart"/></svg>Status Data</a>
+        </nav>
+      </div>
+
+      <div>
+        <div class="nav-lbl">Akun</div>
+        <nav class="nav">
+        <a href="#" class="on"><svg class="ic" aria-hidden="true"><use href="#i-store"/></svg>Toko & Cabang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-settings"/></svg>Pengaturan</a>
+        </nav>
+      </div>
+
+      <div class="side-bawah">
+        <div class="kuota">
+          <div class="kuota-nm">Paket Bisnis</div>
+          <div class="bar"><i style="width:41%"></i></div>
+          <div class="kuota-sm">412 MB / 1.000 MB · 3 dari 5 toko</div>
+          <div class="kuota-sm">Aktif s/d 14 Des 2026</div>
+        </div>
+        <div class="aku">
+          <div class="avatar avatar-32">B</div>
+          <div class="aku-tx">
+            <div class="aku-nm">Bani Devv</div>
+            <div class="aku-em">bani@kankitu.com</div>
+          </div>
+          <button class="ikon-btn bahaya" title="Keluar"><svg class="ic" aria-hidden="true"><use href="#i-log-out"/></svg></button>
+        </div>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="kepala">
+        <div>
+          <h1>Toko &amp; Cabang</h1>
+          <div class="sub">5 dari 5 toko terpakai</div>
+        </div>
+        <button class="pil pil-utama" disabled><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg> Tambah toko</button>
+      </div>
+
+      <div class="notif notif-kuning">
+        <svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg>
+        <div>Kuota toko paket kamu sudah penuh (5). Naikkan paket lebih dulu untuk menambah cabang.</div>
+      </div>
+
+      <section class="seksi">
+        <div class="seksi-kepala"><h2>Daftar toko</h2></div>
+      <div class="kartu kartu-tabel">
+        <table class="tabel">
+          <thead>
+            <tr>
+              <th class="kol-toko">Toko</th>
+              <th class="kol-kontak">Telepon</th>
+              <th class="kol-status">Status</th>
+              <th class="kol-aksi">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="sel-toko">
+                  <span class="logo-toko"><svg class="ic-18" aria-hidden="true"><use href="#i-store"/></svg></span>
+                  <span class="sel-tx">
+                    <span class="sel-nm">KanPOS Pusat Serpong</span>
+                    <span class="sel-ds">Jl. Raya Serpong No. 41, Serpong, Tangerang Selatan</span>
+                  </span>
+                </div>
+              </td>
+              <td><div class="sel-tel">0812-3344-5566</div></td>
+              <td><span class="label label-pub"><svg class="ic-14" aria-hidden="true"><use href="#i-globe"/></svg> Publik</span></td>
+              <td>
+                <div class="aksi">
+                  <button class="pil">Jadikan privat</button>
+                  <button class="pil pil-ikon" title="Ubah"><svg class="ic" aria-hidden="true"><use href="#i-pencil"/></svg></button>
+                  <button class="pil pil-ikon" title="Hapus toko"><svg class="ic" aria-hidden="true"><use href="#i-trash-2"/></svg></button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="sel-toko">
+                  <span class="logo-toko"><svg class="ic-18" aria-hidden="true"><use href="#i-store"/></svg></span>
+                  <span class="sel-tx">
+                    <span class="sel-nm">KanPOS Cabang Bintaro</span>
+                    <span class="sel-ds">Jl. Bintaro Utama 3A, Pesanggrahan, Jakarta Selatan</span>
+                  </span>
+                </div>
+              </td>
+              <td><div class="sel-tel">0813-9911-2200</div></td>
+              <td><span class="label label-prv"><svg class="ic-14" aria-hidden="true"><use href="#i-lock"/></svg> Privat</span></td>
+              <td>
+                <div class="aksi">
+                  <button class="pil">Jadikan publik</button>
+                  <button class="pil pil-ikon" title="Ubah"><svg class="ic" aria-hidden="true"><use href="#i-pencil"/></svg></button>
+                  <button class="pil pil-ikon" title="Hapus toko"><svg class="ic" aria-hidden="true"><use href="#i-trash-2"/></svg></button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="sel-toko">
+                  <span class="logo-toko"><svg class="ic-18" aria-hidden="true"><use href="#i-store"/></svg></span>
+                  <span class="sel-tx">
+                    <span class="sel-nm">KanPOS Cabang Depok</span>
+                    <span class="sel-ds"><span class="kosong-nilai">Belum diisi</span></span>
+                  </span>
+                </div>
+              </td>
+              <td><div class="sel-tel"><span class="kosong-nilai">—</span></div></td>
+              <td><span class="label label-prv"><svg class="ic-14" aria-hidden="true"><use href="#i-lock"/></svg> Privat</span></td>
+              <td>
+                <div class="aksi">
+                  <button class="pil">Jadikan publik</button>
+                  <button class="pil pil-ikon" title="Ubah"><svg class="ic" aria-hidden="true"><use href="#i-pencil"/></svg></button>
+                  <button class="pil pil-ikon" title="Hapus toko"><svg class="ic" aria-hidden="true"><use href="#i-trash-2"/></svg></button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      </section>
+    </main>
+  </div>
+</div>
+<div class="ket"><svg class="ic-14" aria-hidden="true"><use href="#i-pencil"/></svg><div>Tombol <b>Tambah toko</b> mati dan pemberitahuannya berwarna kuning, bukan merah — kuota penuh itu batasan, bukan kesalahan. Backend juga menolak lewat <code>POST /api/stores</code>; ini sekadar memberi tahu lebih awal.</div></div>
+</section>
+
+<section class="blok" id="b4">
+  <div class="blok-hd"><span class="no">4</span><h2>Toko — belum ada toko sama sekali</h2></div>
+<div class="bingkai">
+  <div class="shell">
+    <aside class="side">
+      <div class="side-logo"><span class="mark"><svg class="ic-18" aria-hidden="true"><use href="#i-store"/></svg></span> KanPOS</div>
+
+      <div>
+        <div class="nav-lbl">Laporan</div>
+        <nav class="nav">
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-layout-grid"/></svg>Ringkasan</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-git-compare"/></svg>Bandingkan Cabang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg>Tren Jangka Panjang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-heart"/></svg>Status Data</a>
+        </nav>
+      </div>
+
+      <div>
+        <div class="nav-lbl">Akun</div>
+        <nav class="nav">
+        <a href="#" class="on"><svg class="ic" aria-hidden="true"><use href="#i-store"/></svg>Toko & Cabang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-settings"/></svg>Pengaturan</a>
+        </nav>
+      </div>
+
+      <div class="side-bawah">
+        <div class="kuota">
+          <div class="kuota-nm">Paket Bisnis</div>
+          <div class="bar"><i style="width:41%"></i></div>
+          <div class="kuota-sm">412 MB / 1.000 MB · 3 dari 5 toko</div>
+          <div class="kuota-sm">Aktif s/d 14 Des 2026</div>
+        </div>
+        <div class="aku">
+          <div class="avatar avatar-32">B</div>
+          <div class="aku-tx">
+            <div class="aku-nm">Bani Devv</div>
+            <div class="aku-em">bani@kankitu.com</div>
+          </div>
+          <button class="ikon-btn bahaya" title="Keluar"><svg class="ic" aria-hidden="true"><use href="#i-log-out"/></svg></button>
+        </div>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="kepala">
+        <div>
+          <h1>Toko &amp; Cabang</h1>
+          <div class="sub">Belum ada toko</div>
+        </div>
+        <button class="pil pil-utama"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg> Tambah toko</button>
+      </div>
+
+      <section class="seksi">
+        <div class="seksi-kepala"><h2>Daftar toko</h2></div>
+        <div class="kosong">
+          <div class="kosong-t">Belum ada toko</div>
+          <div class="kosong-d">Tambahkan toko pertamamu di sini, atau aktifkan Cloud di
+            aplikasi kasir supaya tokonya terdaftar otomatis.</div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+<div class="ket"><svg class="ic-14" aria-hidden="true"><use href="#i-pencil"/></svg><div>Dipisah dari bingkai 3 karena keduanya tidak pernah muncul bersamaan — di mockup sebelumnya saya gabung dan itu justru membingungkan.</div></div>
+</section>
+
+<section class="blok" id="b5">
+  <div class="blok-hd"><span class="no">5</span><h2>Pengaturan</h2></div>
+  <p>Tiga seksi: akun, penyimpanan, langganan.</p>
+<div class="bingkai">
+  <div class="shell">
+    <aside class="side">
+      <div class="side-logo"><span class="mark"><svg class="ic-18" aria-hidden="true"><use href="#i-store"/></svg></span> KanPOS</div>
+
+      <div>
+        <div class="nav-lbl">Laporan</div>
+        <nav class="nav">
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-layout-grid"/></svg>Ringkasan</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-git-compare"/></svg>Bandingkan Cabang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg>Tren Jangka Panjang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-heart"/></svg>Status Data</a>
+        </nav>
+      </div>
+
+      <div>
+        <div class="nav-lbl">Akun</div>
+        <nav class="nav">
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-store"/></svg>Toko & Cabang</a>
+        <a href="#" class="on"><svg class="ic" aria-hidden="true"><use href="#i-settings"/></svg>Pengaturan</a>
+        </nav>
+      </div>
+
+      <div class="side-bawah">
+        <div class="kuota">
+          <div class="kuota-nm">Paket Bisnis</div>
+          <div class="bar"><i style="width:41%"></i></div>
+          <div class="kuota-sm">412 MB / 1.000 MB · 3 dari 5 toko</div>
+          <div class="kuota-sm">Aktif s/d 14 Des 2026</div>
+        </div>
+        <div class="aku">
+          <div class="avatar avatar-32">B</div>
+          <div class="aku-tx">
+            <div class="aku-nm">Bani Devv</div>
+            <div class="aku-em">bani@kankitu.com</div>
+          </div>
+          <button class="ikon-btn bahaya" title="Keluar"><svg class="ic" aria-hidden="true"><use href="#i-log-out"/></svg></button>
+        </div>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="kepala">
+        <div>
+          <h1>Pengaturan</h1>
+          <div class="sub">Akun, paket, dan penyimpanan cloud</div>
+        </div>
+        <button class="pil"><svg class="ic" aria-hidden="true"><use href="#i-refresh-cw"/></svg> Muat ulang</button>
+      </div>
+
+      <section class="seksi">
+        <div class="seksi-kepala"><h2>Akun</h2></div>
+        <div class="grup">
+          <div class="baris-set">
+            <div class="avatar avatar-48">B</div>
+            <div class="kiri">
+              <div class="lb">Bani Devv</div>
+              <div class="ds">bani@kankitu.com</div>
+            </div>
+            <button class="pil"><svg class="ic" aria-hidden="true"><use href="#i-log-out"/></svg> Keluar</button>
+          </div>
+          <div class="baris-set">
+            <div class="kiri">
+              <div class="lb">Bergabung</div>
+              <div class="ds">Tanggal akun ini pertama kali masuk lewat Google</div>
+            </div>
+            <div class="kanan">12 Jan 2026</div>
+          </div>
+          <div class="baris-set">
+            <div class="kiri">
+              <div class="lb">Batas toko</div>
+              <div class="ds">Ditentukan paket yang sedang aktif</div>
+            </div>
+            <div class="kanan">5 toko</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="seksi">
+        <div class="seksi-kepala">
+          <h2>Penyimpanan cloud</h2>
+          <span class="petunjuk">24 berkas cadangan</span>
+        </div>
+        <div class="kartu">
+          <div class="penyimpanan-hd">
+            <div class="angka">412 MB <span>dari 1.000 MB</span></div>
+            <div class="petunjuk">sisa 588 MB</div>
+          </div>
+          <div class="bar-besar"><i style="width:41%"></i></div>
+        </div>
+      </section>
+
+      <section class="seksi">
+        <div class="seksi-kepala"><h2>Langganan</h2></div>
+        <div class="paket-grid">
+          <div class="kartu paket">
+            <div class="cap"><svg class="ic-14" aria-hidden="true"><use href="#i-hard-drive"/></svg> Paket penyimpanan</div>
+            <div class="nm">Bisnis 1 GB</div>
+            <div class="hg">Rp 49.000</div>
+            <div class="rg">14 Des 2025 – 14 Des 2026</div>
+            <div class="st">Aktif · sisa 115 hari</div>
+          </div>
+          <div class="kartu paket">
+            <div class="cap"><svg class="ic-14" aria-hidden="true"><use href="#i-refresh-cw"/></svg> Paket sinkronisasi</div>
+            <div class="kosong-tx">Belum berlangganan paket sinkronisasi.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+<div class="ket"><svg class="ic-14" aria-hidden="true"><use href="#i-pencil"/></svg><div><b>Perubahan dari versi sebelumnya:</b> data akun tidak lagi ditumpuk sebagai teks kecil di bawah nama, tapi dipecah jadi <b>baris pengaturan</b> (label kiri, nilai kanan) — pola yang sama dengan halaman Pengaturan di aplikasi kasir. “Batas toko” yang dulu jadi catatan lepas di bawah kartu langganan sekarang punya barisnya sendiri.</div></div>
+</section>
+
+<section class="blok" id="b6">
+  <div class="blok-hd"><span class="no">6</span><h2>Pengaturan — keadaan kritis</h2></div>
+  <p>Kuota hampir penuh dan satu langganan sudah lewat tanggal.</p>
+<div class="bingkai">
+  <div class="shell">
+    <aside class="side">
+      <div class="side-logo"><span class="mark"><svg class="ic-18" aria-hidden="true"><use href="#i-store"/></svg></span> KanPOS</div>
+
+      <div>
+        <div class="nav-lbl">Laporan</div>
+        <nav class="nav">
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-layout-grid"/></svg>Ringkasan</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-git-compare"/></svg>Bandingkan Cabang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg>Tren Jangka Panjang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-heart"/></svg>Status Data</a>
+        </nav>
+      </div>
+
+      <div>
+        <div class="nav-lbl">Akun</div>
+        <nav class="nav">
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-store"/></svg>Toko & Cabang</a>
+        <a href="#" class="on"><svg class="ic" aria-hidden="true"><use href="#i-settings"/></svg>Pengaturan</a>
+        </nav>
+      </div>
+
+      <div class="side-bawah">
+        <div class="kuota">
+          <div class="kuota-nm">Paket Bisnis</div>
+          <div class="bar"><i style="width:41%"></i></div>
+          <div class="kuota-sm">412 MB / 1.000 MB · 3 dari 5 toko</div>
+          <div class="kuota-sm">Aktif s/d 14 Des 2026</div>
+        </div>
+        <div class="aku">
+          <div class="avatar avatar-32">B</div>
+          <div class="aku-tx">
+            <div class="aku-nm">Bani Devv</div>
+            <div class="aku-em">bani@kankitu.com</div>
+          </div>
+          <button class="ikon-btn bahaya" title="Keluar"><svg class="ic" aria-hidden="true"><use href="#i-log-out"/></svg></button>
+        </div>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="kepala">
+        <div>
+          <h1>Pengaturan</h1>
+          <div class="sub">Akun, paket, dan penyimpanan cloud</div>
+        </div>
+        <button class="pil"><svg class="ic" aria-hidden="true"><use href="#i-refresh-cw"/></svg> Muat ulang</button>
+      </div>
+
+      <section class="seksi">
+        <div class="seksi-kepala">
+          <h2>Penyimpanan cloud</h2>
+          <span class="petunjuk">61 berkas cadangan</span>
+        </div>
+        <div class="kartu">
+          <div class="penyimpanan-hd">
+            <div class="angka">948 MB <span>dari 1.000 MB</span></div>
+            <div class="petunjuk">sisa 52 MB</div>
+          </div>
+          <div class="bar-besar"><i class="panas" style="width:95%"></i></div>
+        </div>
+        <div class="notif notif-merah notif-dalam">
+          <svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg>
+          <div>Kuota hampir penuh. Hapus cadangan lama atau naikkan paket agar sinkronisasi tidak berhenti.</div>
+        </div>
+      </section>
+
+      <section class="seksi">
+        <div class="seksi-kepala"><h2>Langganan</h2></div>
+        <div class="paket-grid">
+          <div class="kartu paket">
+            <div class="cap"><svg class="ic-14" aria-hidden="true"><use href="#i-hard-drive"/></svg> Paket penyimpanan</div>
+            <div class="nm">Bisnis 1 GB</div>
+            <div class="hg">Rp 49.000</div>
+            <div class="rg">14 Des 2024 – 14 Des 2025</div>
+            <div class="st mati">Sudah berakhir</div>
+          </div>
+          <div class="kartu paket">
+            <div class="cap"><svg class="ic-14" aria-hidden="true"><use href="#i-refresh-cw"/></svg> Paket sinkronisasi</div>
+            <div class="nm">Sync Pro</div>
+            <div class="hg">Rp 25.000</div>
+            <div class="rg">1 Agu 2026 – 1 Sep 2026</div>
+            <div class="st">Aktif · sisa 11 hari</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+<div class="ket"><svg class="ic-14" aria-hidden="true"><use href="#i-pencil"/></svg><div><b>Ambang batas:</b> bar berubah merah dan peringatannya muncul pada <b>≥90%</b>. Kartu langganan menghitung sisa hari dari <code>endDate</code>; begitu negatif, labelnya jadi “Sudah berakhir” merah, bukan sisa hari bernilai minus.</div></div>
+</section>
+
+<section class="blok" id="catatan">
+  <div class="blok-hd"><span class="no">·</span><h2>Yang sengaja ditahan</h2></div>
+  <p>
+    Backend sudah menyediakan tiga hal lain yang belum saya masukkan supaya iterasi pertama
+    tidak kepenuhan. Semuanya tinggal dipakai:
+  </p>
+  <div class="grup grup-sempit">
+    <div class="baris-set">
+      <div class="kiri">
+        <div class="lb">Logo toko</div>
+        <div class="ds">Unggah &amp; hapus lewat <code>POST/DELETE /api/stores/:id/logo</code>, maks 5 MB</div>
+      </div>
+      <div class="kanan petunjuk">kolom logo sudah disiapkan</div>
+    </div>
+    <div class="baris-set">
+      <div class="kiri">
+        <div class="lb">Identifier toko</div>
+        <div class="ds">Slug untuk URL publik, lengkap dengan cek ketersediaan</div>
+      </div>
+      <div class="kanan petunjuk">butuh satu field + validasi</div>
+    </div>
+    <div class="baris-set">
+      <div class="kiri">
+        <div class="lb">Alamat terstruktur</div>
+        <div class="ds">Provinsi / kota / kecamatan + koordinat, bukan satu baris teks bebas</div>
+      </div>
+      <div class="kanan petunjuk">butuh dropdown bertingkat</div>
+    </div>
+  </div>
+</section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mockup — Redesign halaman Ringkasan (Dashboard Cloud KanPOS)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   Token — disalin dari dashboard/tailwind.config.js. Tidak ada warna baru:
+   apa pun di mockup ini harus bisa dibangun dari daftar ini.
+   ============================================================ */
+:root{
+  --biru:#3554C1; --biru-tua:#2B44A0; --biru-muda:#EFF5FF; --biru-pucat:#C0CAEC;
+  --hijau:#5ABC61; --hijau-tua:#3E8E45; --hijau-muda:#EFF8EF;
+  --kuning:#F9A616; --kuning-tua:#B37400; --kuning-muda:#FFF6E0;
+  --merah:#DF1C41; --merah-muda:#FFF0F3;
+  --hitam:#0D0D12; --abu:#5B6474; --abu-terang:#818898;
+  --garis:#DFE1E7; --garis-tipis:#ECEFF3;
+  --latar:#EDF1F9; --latar-alt:#F8FAFE; --kartu:#fff;
+  --r-kartu:24px; --r-seksi:20px; --r-dalam:12px;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:20px; --s6:26px; --s7:34px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Sora,system-ui,-apple-system,sans-serif;background:var(--latar);
+     color:var(--hitam);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+.ic{width:16px;height:16px;flex:none;stroke:currentColor;stroke-width:2;
+    stroke-linecap:round;stroke-linejoin:round;fill:none;display:block}
+.ic-13{width:13px;height:13px}.ic-14{width:14px;height:14px}
+.ic-18{width:18px;height:18px}.ic-20{width:20px;height:20px}
+
+/* ---------- Kerangka ---------- */
+.shell{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:700px}
+.side{background:var(--kartu);border-right:1px solid var(--garis-tipis);
+      padding:var(--s5) 14px;display:flex;flex-direction:column;gap:22px}
+.side-logo{display:flex;align-items:center;gap:10px;padding:0 var(--s2);font-weight:700;font-size:16px}
+.side-logo .mark{width:30px;height:30px;border-radius:9px;background:var(--biru);color:#fff;
+                 display:grid;place-items:center;flex:none}
+.nav-lbl{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--abu-terang);
+         padding:0 10px;font-weight:600;margin-bottom:var(--s1)}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav a{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:11px;
+       color:var(--abu-terang);text-decoration:none;font-weight:500;font-size:13.5px}
+.nav a.on{background:var(--biru-muda);color:var(--biru);font-weight:600}
+.side-bawah{margin-top:auto;display:flex;flex-direction:column;gap:var(--s3)}
+.kuota{background:var(--latar-alt);border:1px solid var(--garis-tipis);
+       border-radius:var(--r-seksi);padding:13px}
+.kuota-nm{font-weight:600;font-size:13px}
+.bar{height:5px;border-radius:3px;background:var(--garis-tipis);margin:9px 0 6px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:3px;background:var(--biru)}
+.bar i.panas{background:var(--merah)}
+.kuota-sm{font-size:11px;color:var(--abu-terang)}
+.kuota-sm + .kuota-sm{margin-top:var(--s1)}
+.aku{display:flex;align-items:center;gap:10px;padding:0 var(--s1)}
+.avatar{border-radius:999px;background:var(--biru-muda);color:var(--biru);display:grid;
+        place-items:center;font-weight:700;flex:none;width:32px;height:32px;font-size:12px}
+.aku-tx{min-width:0;flex:1}
+.aku-nm{font-size:12.5px;font-weight:600;line-height:1.3}
+.aku-em{font-size:11px;color:var(--abu-terang)}
+.ikon-btn{background:none;border:0;color:var(--abu-terang);cursor:pointer;display:grid;
+          place-items:center;padding:var(--s1);border-radius:8px}
+.main{padding:22px var(--s6) 40px;width:100%;min-width:0}
+
+/* ---------- Kepala & kontrol ---------- */
+.kepala{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s4);
+        flex-wrap:wrap;margin-bottom:var(--s5)}
+h1{font-size:22px;font-weight:700;letter-spacing:-.01em}
+.kepala .sub{color:var(--abu-terang);font-size:13px;margin-top:3px}
+.ktr{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.pil{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:36px;
+     padding:0 15px;border-radius:999px;border:1px solid var(--garis);background:var(--kartu);
+     font:inherit;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;color:inherit}
+.pil-utama{background:var(--biru);border-color:var(--biru);color:#fff;font-weight:600}
+.pil-ikon{width:36px;padding:0}
+.seg{display:inline-flex;background:var(--garis-tipis);border-radius:999px;padding:3px}
+.seg span{padding:6px 14px;border-radius:999px;font-size:12.5px;font-weight:500;color:var(--abu-terang);cursor:pointer}
+.seg span.on{background:var(--kartu);color:var(--hitam);font-weight:600;box-shadow:0 1px 2px rgba(13,13,18,.07)}
+
+/* ---------- Seksi & kartu ---------- */
+.seksi{margin-bottom:var(--s7)}
+.seksi:last-child{margin-bottom:0}
+.seksi-kepala{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);margin-bottom:var(--s3)}
+.seksi-kepala h2{font-size:15px;font-weight:600}
+.petunjuk{font-size:12px;color:var(--abu-terang)}
+.tautan{font-size:12.5px;font-weight:600;color:var(--biru);text-decoration:none;
+        display:inline-flex;align-items:center;gap:4px}
+.kartu{background:var(--kartu);border:1px solid var(--garis-tipis);border-radius:var(--r-kartu);padding:18px}
+.kartu-rapat{padding:var(--s4)}
+
+/* ---------- Baris perhatian ---------- */
+.perhatian{display:flex;gap:var(--s2);flex-wrap:wrap;margin-bottom:var(--s5)}
+.chip{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:7px 14px;
+      font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid transparent}
+.chip-kuning{background:var(--kuning-muda);color:var(--kuning-tua)}
+.chip-merah{background:var(--merah-muda);color:var(--merah)}
+.chip-netral{background:var(--kartu);border-color:var(--garis);color:var(--abu-terang);font-weight:500}
+.chip .ekor{opacity:.55}
+
+/* ---------- Hero laba ---------- */
+.hero{display:grid;grid-template-columns:minmax(230px,300px) minmax(0,1fr);gap:var(--s6);align-items:center}
+.hero-kiri .lbl{font-size:12.5px;color:var(--abu-terang);font-weight:500}
+.hero-kiri .angka{font-size:40px;font-weight:700;letter-spacing:-.03em;line-height:1.05;margin:6px 0 2px}
+.hero-kiri .penuh{font-size:12px;color:var(--abu-terang)}
+.hero-kiri .baris-delta{display:flex;align-items:center;gap:var(--s2);margin-top:var(--s3);flex-wrap:wrap}
+.lencana{display:inline-flex;align-items:center;gap:4px;border-radius:9px;padding:4px 9px;
+         font-size:12px;font-weight:700}
+.lencana-naik{background:var(--hijau-muda);color:var(--hijau-tua)}
+.lencana-turun{background:var(--merah-muda);color:var(--merah)}
+.lencana-diam{background:var(--garis-tipis);color:var(--abu-terang)}
+
+/* Batang komposisi: satu batang 100% omzet, dipecah modal/biaya/laba. */
+.komposisi{display:flex;height:38px;border-radius:var(--r-dalam);overflow:hidden;
+           background:var(--garis-tipis)}
+.komposisi span{display:grid;place-items:center;font-size:11.5px;font-weight:700;color:#fff;
+                white-space:nowrap;overflow:hidden}
+.k-modal{background:var(--biru-pucat);color:var(--biru-tua)!important}
+.k-biaya{background:var(--kuning)}
+.k-laba{background:var(--hijau)}
+.legenda{display:flex;gap:var(--s5);flex-wrap:wrap;margin-top:var(--s3)}
+.legenda div{font-size:12px;color:var(--abu-terang)}
+.legenda b{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.legenda .nilai{color:var(--hitam);font-weight:600;margin-left:5px}
+
+/* ---------- KPI ---------- */
+.kpis{display:grid;gap:var(--s3)}
+.kpis-4{grid-template-columns:repeat(4,1fr)}
+.kpi .lbl{font-size:12px;color:var(--abu-terang);font-weight:500}
+.kpi .val{font-size:21px;font-weight:700;letter-spacing:-.02em;margin:5px 0 6px}
+.kpi .kaki{font-size:11.5px;color:var(--abu-terang);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.kpi-rapat .val{font-size:18px}
+
+/* ---------- Peringkat toko ---------- */
+.peringkat{display:flex;flex-direction:column}
+.pr-baris{display:grid;grid-template-columns:26px minmax(0,1.5fr) minmax(0,1fr) 92px 108px 74px;
+          gap:var(--s3);align-items:center;padding:13px var(--s3);
+          border-bottom:1px solid var(--garis-tipis)}
+.pr-baris:last-child{border-bottom:0}
+.pr-baris.kepala-tabel{padding-top:0;padding-bottom:var(--s2);font-size:11px;font-weight:600;
+                       letter-spacing:.07em;text-transform:uppercase;color:var(--abu-terang)}
+.pr-no{font-size:12px;font-weight:700;color:var(--abu-terang);text-align:center}
+.pr-toko{display:flex;align-items:center;gap:10px;min-width:0}
+.pr-av{width:34px;height:34px;border-radius:var(--r-dalam);background:var(--biru-muda);color:var(--biru);
+       display:grid;place-items:center;font-size:12px;font-weight:700;flex:none}
+.pr-av.basi{background:var(--kuning-muda);color:var(--kuning-tua)}
+.pr-nm{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pr-st{font-size:11px;color:var(--abu-terang);display:flex;align-items:center;gap:5px;margin-top:1px}
+.titik{width:6px;height:6px;border-radius:999px;flex:none}
+.titik-hijau{background:var(--hijau)}.titik-kuning{background:var(--kuning)}
+.pr-kontrib{display:flex;align-items:center;gap:10px}
+.pr-bar{height:7px;border-radius:4px;background:var(--garis-tipis);flex:1;overflow:hidden;min-width:40px}
+.pr-bar i{display:block;height:100%;border-radius:4px;background:var(--biru)}
+.pr-bar i.pudar{background:var(--biru-pucat)}
+.pr-pct{font-size:12px;color:var(--abu-terang);font-variant-numeric:tabular-nums;width:38px;text-align:right}
+.pr-angka{font-size:13.5px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.pr-sub{font-size:11px;color:var(--abu-terang);text-align:right;margin-top:1px}
+.pr-delta{text-align:right}
+.ka{text-align:right}
+.naik{color:var(--hijau-tua);font-weight:600}
+.turun{color:var(--merah);font-weight:600}
+.dorong{margin-left:auto}
+.sempit{min-width:0}
+
+/* ---------- Grafik ---------- */
+.grafik{width:100%;height:auto;display:block}
+.grafik-legenda{display:flex;gap:var(--s5);flex-wrap:wrap;margin-top:10px;font-size:11.5px;color:var(--abu-terang)}
+.grafik-legenda b{display:inline-block;width:9px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+
+/* ---------- Bento (arah B) ---------- */
+.bento{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--s3)}
+.b-6{grid-column:span 6}.b-4{grid-column:span 4}.b-3{grid-column:span 3}
+.b-12{grid-column:span 12}.b-8{grid-column:span 8}
+.tile{background:var(--kartu);border:1px solid var(--garis-tipis);border-radius:var(--r-seksi);padding:var(--s4)}
+.tile-lbl{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;
+          color:var(--abu-terang);display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.tile .besar{font-size:26px;font-weight:700;letter-spacing:-.02em}
+.tile .kecil{font-size:11.5px;color:var(--abu-terang);margin-top:4px}
+.mini-list{display:flex;flex-direction:column;gap:9px}
+.mini-row{display:flex;align-items:center;gap:9px;font-size:12.5px}
+.mini-row .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini-row .vl{font-weight:600;font-variant-numeric:tabular-nums}
+
+/* ---------- Master-detail (arah C) ---------- */
+.md{display:grid;grid-template-columns:274px minmax(0,1fr);gap:var(--s5);align-items:start}
+.md-rail{background:var(--kartu);border:1px solid var(--garis-tipis);border-radius:var(--r-kartu);
+         overflow:hidden;position:sticky;top:var(--s5)}
+.md-cari{display:flex;align-items:center;gap:8px;padding:12px var(--s4);
+         border-bottom:1px solid var(--garis-tipis);color:var(--abu-terang);font-size:12.5px}
+.md-item{display:flex;gap:10px;align-items:center;padding:12px var(--s4);
+         border-bottom:1px solid var(--garis-tipis);cursor:pointer;border-left:3px solid transparent}
+.md-item:last-child{border-bottom:0}
+.md-item.on{background:var(--biru-muda);border-left-color:var(--biru)}
+.md-item .tx{min-width:0;flex:1}
+.md-item .nm{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.md-item .vl{font-size:11.5px;color:var(--abu-terang);margin-top:1px;display:flex;align-items:center;gap:5px}
+.md-item.on .vl{color:var(--biru-tua)}
+.md-spark{width:52px;height:22px;flex:none}
+.md-kepala{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s4);
+           flex-wrap:wrap;margin-bottom:var(--s4)}
+.md-kepala h2{font-size:18px;font-weight:700;letter-spacing:-.01em}
+
+/* ---------- Kosong / notifikasi ---------- */
+.notif{display:flex;gap:10px;align-items:flex-start;border-radius:var(--r-kartu);
+       padding:13px var(--s4);font-size:13px}
+.notif-kuning{background:var(--kuning-muda);color:var(--kuning-tua)}
+
+/* ============================================================
+   Kerangka dokumen (bukan bagian aplikasi)
+   ============================================================ */
+.doc{max-width:1520px;margin:0 auto;padding:var(--s7) var(--s5) 80px}
+.doc-hd{margin-bottom:var(--s7)}
+.doc-hd h1{font-size:25px}
+.doc-hd .meta{font-size:12.5px;color:var(--abu-terang);margin-top:var(--s2)}
+.doc-hd p{font-size:13.5px;color:var(--abu);max-width:790px;margin-top:var(--s3);line-height:1.65}
+.daftar-isi{display:flex;gap:var(--s2);flex-wrap:wrap;margin-top:var(--s4)}
+.daftar-isi a{font-size:12.5px;font-weight:500;text-decoration:none;color:var(--biru);
+              background:var(--biru-muda);border-radius:999px;padding:6px 13px}
+.blok{margin-bottom:var(--s7);scroll-margin-top:var(--s5)}
+.blok-hd{display:flex;align-items:baseline;gap:10px;margin-bottom:var(--s2);flex-wrap:wrap}
+.blok-hd .no{font-size:12px;font-weight:700;color:var(--biru);background:var(--biru-muda);
+             border-radius:7px;padding:2px 8px;flex:none}
+.blok-hd h2{font-size:17px;font-weight:700;letter-spacing:-.01em}
+.blok-hd .tag{font-size:11.5px;font-weight:600;color:var(--abu-terang);
+              border:1px solid var(--garis);border-radius:999px;padding:2px 10px}
+.blok>p{font-size:13px;color:var(--abu);max-width:820px;margin-bottom:var(--s3);line-height:1.65}
+.bingkai{border:1px solid var(--garis);border-radius:var(--r-seksi);overflow:hidden;
+         background:var(--latar);box-shadow:0 1px 3px rgba(13,13,18,.06)}
+.ket{display:flex;gap:9px;align-items:flex-start;background:var(--kartu);
+     border:1px dashed var(--biru-pucat);border-radius:var(--r-dalam);padding:12px 15px;
+     font-size:12.5px;color:var(--abu);margin-top:var(--s3);line-height:1.6}
+.ket b{color:var(--biru);font-weight:600}
+code{background:var(--garis-tipis);border-radius:5px;padding:1px 5px;font-size:11.5px;
+     font-family:ui-monospace,Menlo,monospace}
+.banding{width:100%;border-collapse:collapse;background:var(--kartu);
+         border:1px solid var(--garis-tipis);border-radius:var(--r-kartu);overflow:hidden}
+.banding th,.banding td{padding:13px var(--s4);text-align:left;font-size:13px;
+                        border-bottom:1px solid var(--garis-tipis);vertical-align:top}
+.banding th{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--abu-terang)}
+.banding tr:last-child td{border-bottom:0}
+.banding .ya{color:var(--hijau-tua);font-weight:600}
+.banding .tdk{color:var(--abu-terang)}
+.daftar{margin:var(--s3) 0 0;padding-left:0;list-style:none;max-width:820px}
+.daftar li{display:flex;gap:10px;font-size:13px;color:var(--abu);line-height:1.6;margin-bottom:10px}
+.daftar li b{color:var(--hitam);font-weight:600}
+.daftar .mk{color:var(--merah);flex:none;margin-top:3px}
+.daftar .ok{color:var(--hijau-tua);flex:none;margin-top:3px}
+@media(max-width:1200px){.hero{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- Sprite ikon: path asli lucide-react v0.462.0, sama dengan yang dipakai aplikasi. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="i-store" viewBox="0 0 24 24"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-log-out" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></symbol>
+  <symbol id="i-refresh-cw" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></symbol>
+  <symbol id="i-layout-grid" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></symbol>
+  <symbol id="i-git-compare" viewBox="0 0 24 24"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M11 18H8a2 2 0 0 1-2-2V9"/></symbol>
+  <symbol id="i-chart-column" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></symbol>
+  <symbol id="i-hard-drive" viewBox="0 0 24 24"><line x1="22" x2="2" y1="12" y2="12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/><line x1="6" x2="6.01" y1="16" y2="16"/><line x1="10" x2="10.01" y1="16" y2="16"/></symbol>
+  <symbol id="i-triangle-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></symbol>
+  <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></symbol>
+  <symbol id="i-circle-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></symbol>
+  <symbol id="i-circle-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-activity" viewBox="0 0 24 24"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></symbol>
+  <symbol id="i-banknote" viewBox="0 0 24 24"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></symbol>
+  <symbol id="i-percent" viewBox="0 0 24 24"><line x1="19" x2="5" y1="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></symbol>
+  <symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></symbol>
+  <symbol id="i-arrow-down-right" viewBox="0 0 24 24"><path d="m7 7 10 10"/><path d="M17 7v10H7"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+</defs></svg>
+
+<div class="doc">
+<header class="doc-hd">
+  <h1>Redesign halaman Ringkasan</h1>
+  <div class="meta">Mockup · Dashboard Cloud KanPOS · <code>dashboard/docs/redesign-ringkasan-mockup.html</code></div>
+  <p>
+    Tiga arah desain yang benar-benar berbeda untuk halaman <code>/</code>, bukan tiga variasi warna.
+    Ketiganya memakai angka contoh yang sama persis supaya bisa dibandingkan langsung, dan hanya
+    memakai data yang sudah dikirim API hari ini. Warna, radius, dan ikon diambil dari
+    <code>tailwind.config.js</code> serta path lucide yang sama dengan yang di-render aplikasi.
+  </p>
+  <nav class="daftar-isi">
+    <a href="#diagnosis">0 · Kenapa perlu dirombak</a>
+    <a href="#a">A · Jawaban dulu</a>
+    <a href="#b">B · Papan padat</a>
+    <a href="#c">C · Pilih toko dulu</a>
+    <a href="#rekomendasi">Perbandingan &amp; rekomendasi</a>
+  </nav>
+</header>
+
+
+<section class="blok" id="diagnosis">
+  <div class="blok-hd"><span class="no">0</span><h2>Kenapa perlu dirombak</h2></div>
+  <p>Sebelum mengusulkan bentuk baru, ini yang saya temukan pada halaman Ringkasan yang sekarang. Bukan soal selera — kelimanya bisa ditunjuk di kode.</p>
+  <ul class="daftar">
+    <li><span class="mk"><svg class="ic-14" aria-hidden="true"><use href="#i-circle-alert"/></svg></span><span><b>Tidak ada hierarki.</b> Empat seksi dengan bobot visual yang sama, digulir dari atas ke bawah. Tidak ada yang memberi tahu mana yang penting hari ini.</span></li>
+    <li><span class="mk"><svg class="ic-14" aria-hidden="true"><use href="#i-circle-alert"/></svg></span><span><b>Dua kerangka waktu bercampur.</b> KPI di atas memakai rentang terpilih (30 hari), tapi kartu per-toko di bawahnya menampilkan angka <b>hari ini</b>. Dua satuan waktu berbeda dalam satu layar, tanpa penanda yang jelas.</span></li>
+    <li><span class="mk"><svg class="ic-14" aria-hidden="true"><use href="#i-circle-alert"/></svg></span><span><b>Isinya tumpang tindih.</b> Kartu “Per toko” dan tabel “Bandingkan cabang” menyajikan data yang hampir sama dua kali, dengan bentuk berbeda.</span></li>
+    <li><span class="mk"><svg class="ic-14" aria-hidden="true"><use href="#i-circle-alert"/></svg></span><span><b>Peringatan terkubur.</b> Toko yang belum sinkron dan kuota penyimpanan hampir penuh ada di seksi paling bawah — justru yang paling jarang terlihat.</span></li>
+    <li><span class="ok"><svg class="ic-14" aria-hidden="true"><use href="#i-circle-check"/></svg></span><span><b>Data yang belum dipakai.</b> <code>expenses</code>, <code>discount</code>, dan <code>grossProfit</code> sudah dikirim API tapi tidak pernah muncul di level total. Padahal itulah yang menjawab “kenapa omzet naik tapi laba tidak”.</span></li>
+  </ul>
+</section>
+<section class="blok" id="a">
+  <div class="blok-hd"><span class="no">A</span><h2>Jawaban dulu</h2><span class="tag">rekomendasi saya</span></div>
+  <p>Satu angka yang paling penting dibuat besar, sisanya menopang. Yang perlu ditindaklanjuti naik ke paling atas sebagai chip, bukan tersembunyi di seksi terakhir. Halaman ini menjawab “bisnis saya sehat atau tidak?” dalam satu layar pertama, baru menyediakan detail di bawahnya.</p>
+<div class="bingkai">
+  <div class="shell">
+    <aside class="side">
+      <div class="side-logo"><span class="mark"><svg class="ic-18" aria-hidden="true"><use href="#i-store"/></svg></span> KanPOS</div>
+      <div>
+        <div class="nav-lbl">Laporan</div>
+        <nav class="nav">
+        <a href="#" class="on"><svg class="ic" aria-hidden="true"><use href="#i-layout-grid"/></svg>Ringkasan</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-git-compare"/></svg>Bandingkan Cabang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg>Tren Jangka Panjang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-heart"/></svg>Status Data</a>
+        </nav>
+      </div>
+      <div>
+        <div class="nav-lbl">Akun</div>
+        <nav class="nav">
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-store"/></svg>Toko & Cabang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-settings"/></svg>Pengaturan</a>
+        </nav>
+      </div>
+      <div class="side-bawah">
+        <div class="kuota">
+          <div class="kuota-nm">Paket Bisnis</div>
+          <div class="bar"><i class="panas" style="width:94%"></i></div>
+          <div class="kuota-sm">941 MB / 1.000 MB · 3 dari 5 toko</div>
+          <div class="kuota-sm">Aktif s/d 4 Sep 2026</div>
+        </div>
+        <div class="aku">
+          <div class="avatar">B</div>
+          <div class="aku-tx">
+            <div class="aku-nm">Bani Devv</div>
+            <div class="aku-em">bani@kankitu.com</div>
+          </div>
+          <button class="ikon-btn" title="Keluar"><svg class="ic" aria-hidden="true"><use href="#i-log-out"/></svg></button>
+        </div>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="kepala">
+        <div>
+          <h1>Ringkasan</h1>
+          <div class="sub">3 toko · 22 Jul – 21 Agu 2026 · data per 21 Agu, 17.04</div>
+        </div>
+        <div class="ktr">
+          <div class="seg"><span>7h</span><span class="on">30h</span><span>90h</span><span>Tahun</span></div>
+          <button class="pil"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> 22 Jul – 21 Agu</button>
+          <button class="pil pil-ikon" title="Muat ulang"><svg class="ic" aria-hidden="true"><use href="#i-refresh-cw"/></svg></button>
+          <button class="pil"><svg class="ic" aria-hidden="true"><use href="#i-download"/></svg> Ekspor</button>
+        </div>
+      </div>
+      <div class="perhatian">
+        <button class="chip chip-kuning"><svg class="ic-14" aria-hidden="true"><use href="#i-triangle-alert"/></svg> Cabang Depok belum sinkron 3 hari <span class="ekor"><svg class="ic-13" aria-hidden="true"><use href="#i-chevron-right"/></svg></span></button>
+        <button class="chip chip-merah"><svg class="ic-14" aria-hidden="true"><use href="#i-hard-drive"/></svg> Penyimpanan 94% penuh <span class="ekor"><svg class="ic-13" aria-hidden="true"><use href="#i-chevron-right"/></svg></span></button>
+        <button class="chip chip-kuning"><svg class="ic-14" aria-hidden="true"><use href="#i-clock"/></svg> Langganan sisa 14 hari <span class="ekor"><svg class="ic-13" aria-hidden="true"><use href="#i-chevron-right"/></svg></span></button>
+      </div>
+
+      <section class="seksi">
+        <div class="kartu">
+          <div class="hero">
+            <div class="hero-kiri">
+              <div class="lbl">Laba bersih 30 hari</div>
+              <div class="angka">Rp 55,5 jt</div>
+              <div class="penuh">Rp 55.500.000</div>
+              <div class="baris-delta">
+                <span class="lencana lencana-naik"><svg class="ic-13" aria-hidden="true"><use href="#i-arrow-up-right"/></svg> +8,1%</span>
+                <span class="petunjuk">dari Rp 51,3 jt periode lalu</span>
+              </div>
+            </div>
+            <div>
+              <div class="seksi-kepala" style="margin-bottom:10px">
+                <h2 style="font-size:13px;font-weight:600;color:#818898">Ke mana perginya omzet Rp 284,6 jt</h2>
+              </div>
+            <div class="komposisi"><span class="k-modal" style="width:66.0%">66.0%</span><span class="k-biaya" style="width:14.5%">14.5%</span><span class="k-laba" style="width:19.5%">19.5%</span></div>
+            <div class="legenda"><div><b style="background:#C0CAEC"></b>Modal (HPP)<span class="nilai">Rp 187,9 jt</span></div><div><b style="background:#F9A616"></b>Biaya operasional<span class="nilai">Rp 41,2 jt</span></div><div><b style="background:#5ABC61"></b>Laba bersih<span class="nilai">Rp 55,5 jt</span></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="seksi">
+        <div class="kpis kpis-4">
+          <div class="kartu kartu-rapat kpi ">
+            <div class="lbl">Omzet</div>
+            <div class="val">Rp 284,6 jt</div>
+            <div class="kaki"><span class="lencana lencana-naik"><svg class="ic-13" aria-hidden="true"><use href="#i-arrow-up-right"/></svg> +12,4%</span><span>dari Rp 253,2 jt</span></div>
+          </div>
+          <div class="kartu kartu-rapat kpi ">
+            <div class="lbl">Transaksi</div>
+            <div class="val">4.812</div>
+            <div class="kaki"><span class="lencana lencana-naik"><svg class="ic-13" aria-hidden="true"><use href="#i-arrow-up-right"/></svg> +9,2%</span><span>160 / hari</span></div>
+          </div>
+          <div class="kartu kartu-rapat kpi ">
+            <div class="lbl">Rata-rata nota</div>
+            <div class="val">Rp 59,1 rb</div>
+            <div class="kaki"><span class="lencana lencana-turun"><svg class="ic-13" aria-hidden="true"><use href="#i-arrow-down-right"/></svg> −1,1%</span><span>dari Rp 59,8 rb</span></div>
+          </div>
+          <div class="kartu kartu-rapat kpi ">
+            <div class="lbl">Diskon diberikan</div>
+            <div class="val">Rp 6,3 jt</div>
+            <div class="kaki"><span>2,2% dari omzet</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="seksi">
+        <div class="seksi-kepala">
+          <h2>Peringkat toko</h2>
+          <a class="tautan" href="#">Bandingkan detail <svg class="ic-14" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+        </div>
+        <div class="kartu" style="padding:var(--s4) var(--s5)">
+          <div class="peringkat">
+            <div class="pr-baris kepala-tabel">
+              <div></div><div>Toko</div><div>Kontribusi omzet</div>
+              <div class="ka">Omzet</div>
+              <div class="ka">Laba bersih</div>
+              <div class="ka">vs periode lalu</div>
+            </div>
+            <div class="pr-baris">
+              <div class="pr-no">1</div>
+              <div class="pr-toko">
+                <span class="pr-av">KP</span>
+                <span class="sempit">
+                  <span class="pr-nm">KanPOS Pusat Serpong</span>
+                  <span class="pr-st"><i class="titik titik-hijau"></i>Tersinkron 4 menit lalu</span>
+                </span>
+              </div>
+              <div class="pr-kontrib">
+                <span class="pr-bar"><i class="" style="width:52.1%"></i></span>
+                <span class="pr-pct">52,1%</span>
+              </div>
+              <div><div class="pr-angka">Rp 148,2 jt</div><div class="pr-sub">2.410 nota</div></div>
+              <div><div class="pr-angka">Rp 31,4 jt</div><div class="pr-sub">margin 21,2%</div></div>
+              <div class="pr-delta"><span class="lencana lencana-naik"><svg class="ic-13" aria-hidden="true"><use href="#i-arrow-up-right"/></svg> +15,2%</span></div>
+            </div>
+            <div class="pr-baris">
+              <div class="pr-no">2</div>
+              <div class="pr-toko">
+                <span class="pr-av">KB</span>
+                <span class="sempit">
+                  <span class="pr-nm">KanPOS Cabang Bintaro</span>
+                  <span class="pr-st"><i class="titik titik-hijau"></i>Tersinkron 12 menit lalu</span>
+                </span>
+              </div>
+              <div class="pr-kontrib">
+                <span class="pr-bar"><i class="" style="width:32.6%"></i></span>
+                <span class="pr-pct">32,6%</span>
+              </div>
+              <div><div class="pr-angka">Rp 92,8 jt</div><div class="pr-sub">1.604 nota</div></div>
+              <div><div class="pr-angka">Rp 18,1 jt</div><div class="pr-sub">margin 19,5%</div></div>
+              <div class="pr-delta"><span class="lencana lencana-naik"><svg class="ic-13" aria-hidden="true"><use href="#i-arrow-up-right"/></svg> +6,8%</span></div>
+            </div>
+            <div class="pr-baris">
+              <div class="pr-no">3</div>
+              <div class="pr-toko">
+                <span class="pr-av basi">KD</span>
+                <span class="sempit">
+                  <span class="pr-nm">KanPOS Cabang Depok</span>
+                  <span class="pr-st"><i class="titik titik-kuning"></i>Terakhir 3 hari lalu</span>
+                </span>
+              </div>
+              <div class="pr-kontrib">
+                <span class="pr-bar"><i class="pudar" style="width:15.3%"></i></span>
+                <span class="pr-pct">15,3%</span>
+              </div>
+              <div><div class="pr-angka">Rp 43,6 jt</div><div class="pr-sub">798 nota</div></div>
+              <div><div class="pr-angka">Rp 6,0 jt</div><div class="pr-sub">margin 13,8%</div></div>
+              <div class="pr-delta"><span class="lencana lencana-turun"><svg class="ic-13" aria-hidden="true"><use href="#i-arrow-down-right"/></svg> −4,3%</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="seksi">
+        <div class="seksi-kepala">
+          <h2>Tren omzet 12 bulan</h2>
+          <div class="seg"><span class="on">Omzet</span><span>Laba</span><span>Transaksi</span></div>
+        </div>
+        <div class="kartu">
+<svg class="grafik" viewBox="0 0 1000 232" preserveAspectRatio="none"
+     role="img" aria-label="Omzet 12 bulan dibanding tahun lalu">
+  <line x1="0" y1="0" x2="1000" y2="0" stroke="#ECEFF3" stroke-width="1"/><line x1="0" y1="52" x2="1000" y2="52" stroke="#ECEFF3" stroke-width="1"/><line x1="0" y1="105" x2="1000" y2="105" stroke="#ECEFF3" stroke-width="1"/><line x1="0" y1="158" x2="1000" y2="158" stroke="#ECEFF3" stroke-width="1"/><line x1="0" y1="210" x2="1000" y2="210" stroke="#ECEFF3" stroke-width="1"/>
+  <polyline fill="none" stroke="#C0CAEC" stroke-width="2" stroke-dasharray="5 5" points="0.0,90.6 90.9,87.4 181.8,81.6 272.7,82.9 363.6,73.2 454.5,75.8 545.5,66.1 636.4,70.0 727.3,61.6 818.2,56.5 909.1,52.0 1000.0,48.8"/>
+  <polyline fill="none" stroke="#3554C1" stroke-width="2.5" stroke-linejoin="round" points="0.0,76.5 90.9,67.4 181.8,71.9 272.7,55.2 363.6,46.8 454.5,50.7 545.5,37.2 636.4,44.9 727.3,32.6 818.2,29.4 909.1,24.9 1000.0,20.7"/>
+  <text x="0.0" y="225" font-size="11" fill="#818898" text-anchor="start">Sep</text><text x="90.9" y="225" font-size="11" fill="#818898" text-anchor="middle">Okt</text><text x="181.8" y="225" font-size="11" fill="#818898" text-anchor="middle">Nov</text><text x="272.7" y="225" font-size="11" fill="#818898" text-anchor="middle">Des</text><text x="363.6" y="225" font-size="11" fill="#818898" text-anchor="middle">Jan</text><text x="454.5" y="225" font-size="11" fill="#818898" text-anchor="middle">Feb</text><text x="545.5" y="225" font-size="11" fill="#818898" text-anchor="middle">Mar</text><text x="636.4" y="225" font-size="11" fill="#818898" text-anchor="middle">Apr</text><text x="727.3" y="225" font-size="11" fill="#818898" text-anchor="middle">Mei</text><text x="818.2" y="225" font-size="11" fill="#818898" text-anchor="middle">Jun</text><text x="909.1" y="225" font-size="11" fill="#818898" text-anchor="middle">Jul</text><text x="1000.0" y="225" font-size="11" fill="#818898" text-anchor="end">Agu</text>
+</svg>
+            <div class="grafik-legenda">
+              <span><b style="background:#3554C1"></b>12 bulan terakhir</span>
+              <span><b style="background:#C0CAEC"></b>periode sama tahun lalu</span>
+              <span class="naik dorong">+18,1% year-on-year</span>
+            </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+<div class="ket"><svg class="ic-14" aria-hidden="true"><use href="#i-pencil"/></svg><div><b>Yang baru:</b> batang komposisi omzet. Data <code>expenses</code> dan <code>grossProfit</code> sudah ada di API sejak awal tapi tidak pernah ditampilkan di level total — pemilik toko cuma melihat omzet dan laba, tanpa tahu ke mana perginya selisihnya. Batang ini menjawab itu tanpa menambah satu pun endpoint baru. Kartu per-toko yang lama juga dilebur jadi baris peringkat, sehingga tabel “Bandingkan cabang” yang isinya tumpang tindih bisa jadi halaman tersendiri.</div></div>
+</section>
+<section class="blok" id="b">
+  <div class="blok-hd"><span class="no">B</span><h2>Papan padat (bento)</h2><span class="tag">untuk yang suka lihat semuanya</span></div>
+  <p>Semua muat dalam satu layar tanpa menggulir. Ubin berbeda ukuran menandai kepentingan, tapi tidak ada satu pun yang mendominasi. Cocok kalau kamu tipe yang membuka dashboard sekali sehari dan ingin memindai semuanya sekaligus.</p>
+<div class="bingkai">
+  <div class="shell">
+    <aside class="side">
+      <div class="side-logo"><span class="mark"><svg class="ic-18" aria-hidden="true"><use href="#i-store"/></svg></span> KanPOS</div>
+      <div>
+        <div class="nav-lbl">Laporan</div>
+        <nav class="nav">
+        <a href="#" class="on"><svg class="ic" aria-hidden="true"><use href="#i-layout-grid"/></svg>Ringkasan</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-git-compare"/></svg>Bandingkan Cabang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg>Tren Jangka Panjang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-heart"/></svg>Status Data</a>
+        </nav>
+      </div>
+      <div>
+        <div class="nav-lbl">Akun</div>
+        <nav class="nav">
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-store"/></svg>Toko & Cabang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-settings"/></svg>Pengaturan</a>
+        </nav>
+      </div>
+      <div class="side-bawah">
+        <div class="kuota">
+          <div class="kuota-nm">Paket Bisnis</div>
+          <div class="bar"><i class="panas" style="width:94%"></i></div>
+          <div class="kuota-sm">941 MB / 1.000 MB · 3 dari 5 toko</div>
+          <div class="kuota-sm">Aktif s/d 4 Sep 2026</div>
+        </div>
+        <div class="aku">
+          <div class="avatar">B</div>
+          <div class="aku-tx">
+            <div class="aku-nm">Bani Devv</div>
+            <div class="aku-em">bani@kankitu.com</div>
+          </div>
+          <button class="ikon-btn" title="Keluar"><svg class="ic" aria-hidden="true"><use href="#i-log-out"/></svg></button>
+        </div>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="kepala">
+        <div>
+          <h1>Ringkasan</h1>
+          <div class="sub">3 toko · 22 Jul – 21 Agu 2026</div>
+        </div>
+        <div class="ktr">
+          <div class="seg"><span>7h</span><span class="on">30h</span><span>90h</span><span>Tahun</span></div>
+          <button class="pil"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> 22 Jul – 21 Agu</button>
+          <button class="pil pil-ikon" title="Muat ulang"><svg class="ic" aria-hidden="true"><use href="#i-refresh-cw"/></svg></button>
+          <button class="pil"><svg class="ic" aria-hidden="true"><use href="#i-download"/></svg> Ekspor</button>
+        </div>
+      </div>
+      <div class="bento">
+          <div class="tile b-6">
+            <div class="tile-lbl"><svg class="ic-13" aria-hidden="true"><use href="#i-wallet"/></svg> Laba bersih 30 hari</div>
+            <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+              <div class="besar" style="font-size:32px">Rp 55,5 jt</div>
+              <span class="lencana lencana-naik"><svg class="ic-13" aria-hidden="true"><use href="#i-arrow-up-right"/></svg> +8,1%</span>
+              <span class="kecil" style="margin:0">margin 19,5%</span>
+            </div>
+            <div style="margin-top:14px">
+            <div class="komposisi"><span class="k-modal" style="width:66.0%">66.0%</span><span class="k-biaya" style="width:14.5%">14.5%</span><span class="k-laba" style="width:19.5%">19.5%</span></div>
+            <div class="legenda"><div><b style="background:#C0CAEC"></b>Modal (HPP)<span class="nilai">Rp 187,9 jt</span></div><div><b style="background:#F9A616"></b>Biaya operasional<span class="nilai">Rp 41,2 jt</span></div><div><b style="background:#5ABC61"></b>Laba bersih<span class="nilai">Rp 55,5 jt</span></div></div>
+            </div>
+          </div>
+          <div class="tile b-3">
+            <div class="tile-lbl"><svg class="ic-13" aria-hidden="true"><use href="#i-activity"/></svg> Tren 12 bulan</div>
+            <svg class="grafik" viewBox="0 0 520 142" preserveAspectRatio="none"
+     role="img" aria-label="Omzet 12 bulan dibanding tahun lalu">
+  <line x1="0" y1="0" x2="520" y2="0" stroke="#ECEFF3" stroke-width="1"/><line x1="0" y1="30" x2="520" y2="30" stroke="#ECEFF3" stroke-width="1"/><line x1="0" y1="60" x2="520" y2="60" stroke="#ECEFF3" stroke-width="1"/><line x1="0" y1="90" x2="520" y2="90" stroke="#ECEFF3" stroke-width="1"/><line x1="0" y1="120" x2="520" y2="120" stroke="#ECEFF3" stroke-width="1"/>
+  <polyline fill="none" stroke="#C0CAEC" stroke-width="2" stroke-dasharray="5 5" points="0.0,52.2 47.3,50.4 94.5,47.2 141.8,47.9 189.1,42.7 236.4,44.1 283.6,38.8 330.9,40.9 378.2,36.3 425.5,33.5 472.7,31.1 520.0,29.3"/>
+  <polyline fill="none" stroke="#3554C1" stroke-width="2.5" stroke-linejoin="round" points="0.0,44.4 47.3,39.5 94.5,42.0 141.8,32.8 189.1,28.3 236.4,30.4 283.6,23.0 330.9,27.2 378.2,20.5 425.5,18.8 472.7,16.3 520.0,14.0"/>
+  <text x="0.0" y="135" font-size="11" fill="#818898" text-anchor="start">Sep</text><text x="47.3" y="135" font-size="11" fill="#818898" text-anchor="middle">Okt</text><text x="94.5" y="135" font-size="11" fill="#818898" text-anchor="middle">Nov</text><text x="141.8" y="135" font-size="11" fill="#818898" text-anchor="middle">Des</text><text x="189.1" y="135" font-size="11" fill="#818898" text-anchor="middle">Jan</text><text x="236.4" y="135" font-size="11" fill="#818898" text-anchor="middle">Feb</text><text x="283.6" y="135" font-size="11" fill="#818898" text-anchor="middle">Mar</text><text x="330.9" y="135" font-size="11" fill="#818898" text-anchor="middle">Apr</text><text x="378.2" y="135" font-size="11" fill="#818898" text-anchor="middle">Mei</text><text x="425.5" y="135" font-size="11" fill="#818898" text-anchor="middle">Jun</text><text x="472.7" y="135" font-size="11" fill="#818898" text-anchor="middle">Jul</text><text x="520.0" y="135" font-size="11" fill="#818898" text-anchor="end">Agu</text>
+</svg>
+            <div class="kecil" style="margin-top:6px">+18,1% dibanding tahun lalu</div>
+          </div>
+          <div class="tile b-3">
+            <div class="tile-lbl"><svg class="ic-13" aria-hidden="true"><use href="#i-circle-alert"/></svg> Perlu perhatian</div>
+            <div class="mini-list">
+              <div class="mini-row"><i class="titik titik-kuning"></i><span class="nm">Depok belum sinkron</span><span class="vl">3 hari</span></div>
+              <div class="mini-row"><i class="titik" style="background:#DF1C41"></i><span class="nm">Penyimpanan</span><span class="vl">94%</span></div>
+              <div class="mini-row"><i class="titik titik-kuning"></i><span class="nm">Langganan berakhir</span><span class="vl">14 hari</span></div>
+            </div>
+          </div>
+          <div class="tile b-3">
+            <div class="tile-lbl"><svg class="ic-13" aria-hidden="true"><use href="#i-banknote"/></svg> Omzet</div>
+            <div class="besar">Rp 284,6 jt</div>
+            <div class="kecil">+12,4% · dari Rp 253,2 jt</div>
+          </div>
+          <div class="tile b-3">
+            <div class="tile-lbl"><svg class="ic-13" aria-hidden="true"><use href="#i-receipt"/></svg> Transaksi</div>
+            <div class="besar">4.812</div>
+            <div class="kecil">+9,2% · 160 per hari</div>
+          </div>
+          <div class="tile b-3">
+            <div class="tile-lbl"><svg class="ic-13" aria-hidden="true"><use href="#i-tag"/></svg> Rata-rata nota</div>
+            <div class="besar">Rp 59,1 rb</div>
+            <div class="kecil">−1,1% · dari Rp 59,8 rb</div>
+          </div>
+          <div class="tile b-3">
+            <div class="tile-lbl"><svg class="ic-13" aria-hidden="true"><use href="#i-percent"/></svg> Diskon</div>
+            <div class="besar">Rp 6,3 jt</div>
+            <div class="kecil">2,2% dari omzet</div>
+          </div>
+        <div class="tile b-12">
+          <div class="tile-lbl"><svg class="ic-13" aria-hidden="true"><use href="#i-git-compare"/></svg> Perbandingan cabang</div>
+          <div class="peringkat">
+            <div class="pr-baris kepala-tabel">
+              <div></div><div>Toko</div><div>Kontribusi omzet</div>
+              <div class="ka">Omzet</div>
+              <div class="ka">Laba bersih</div>
+              <div class="ka">vs periode lalu</div>
+            </div>
+            <div class="pr-baris">
+              <div class="pr-no">1</div>
+              <div class="pr-toko">
+                <span class="pr-av">KP</span>
+                <span class="sempit">
+                  <span class="pr-nm">KanPOS Pusat Serpong</span>
+                  <span class="pr-st"><i class="titik titik-hijau"></i>Tersinkron 4 menit lalu</span>
+                </span>
+              </div>
+              <div class="pr-kontrib">
+                <span class="pr-bar"><i class="" style="width:52.1%"></i></span>
+                <span class="pr-pct">52,1%</span>
+              </div>
+              <div><div class="pr-angka">Rp 148,2 jt</div><div class="pr-sub">2.410 nota</div></div>
+              <div><div class="pr-angka">Rp 31,4 jt</div><div class="pr-sub">margin 21,2%</div></div>
+              <div class="pr-delta"><span class="lencana lencana-naik"><svg class="ic-13" aria-hidden="true"><use href="#i-arrow-up-right"/></svg> +15,2%</span></div>
+            </div>
+            <div class="pr-baris">
+              <div class="pr-no">2</div>
+              <div class="pr-toko">
+                <span class="pr-av">KB</span>
+                <span class="sempit">
+                  <span class="pr-nm">KanPOS Cabang Bintaro</span>
+                  <span class="pr-st"><i class="titik titik-hijau"></i>Tersinkron 12 menit lalu</span>
+                </span>
+              </div>
+              <div class="pr-kontrib">
+                <span class="pr-bar"><i class="" style="width:32.6%"></i></span>
+                <span class="pr-pct">32,6%</span>
+              </div>
+              <div><div class="pr-angka">Rp 92,8 jt</div><div class="pr-sub">1.604 nota</div></div>
+              <div><div class="pr-angka">Rp 18,1 jt</div><div class="pr-sub">margin 19,5%</div></div>
+              <div class="pr-delta"><span class="lencana lencana-naik"><svg class="ic-13" aria-hidden="true"><use href="#i-arrow-up-right"/></svg> +6,8%</span></div>
+            </div>
+            <div class="pr-baris">
+              <div class="pr-no">3</div>
+              <div class="pr-toko">
+                <span class="pr-av basi">KD</span>
+                <span class="sempit">
+                  <span class="pr-nm">KanPOS Cabang Depok</span>
+                  <span class="pr-st"><i class="titik titik-kuning"></i>Terakhir 3 hari lalu</span>
+                </span>
+              </div>
+              <div class="pr-kontrib">
+                <span class="pr-bar"><i class="pudar" style="width:15.3%"></i></span>
+                <span class="pr-pct">15,3%</span>
+              </div>
+              <div><div class="pr-angka">Rp 43,6 jt</div><div class="pr-sub">798 nota</div></div>
+              <div><div class="pr-angka">Rp 6,0 jt</div><div class="pr-sub">margin 13,8%</div></div>
+              <div class="pr-delta"><span class="lencana lencana-turun"><svg class="ic-13" aria-hidden="true"><use href="#i-arrow-down-right"/></svg> −4,3%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<div class="ket"><svg class="ic-14" aria-hidden="true"><use href="#i-pencil"/></svg><div><b>Konsekuensinya:</b> tidak ada hierarki yang kuat — mata harus memilih sendiri mau mulai dari mana. Makin banyak toko, makin cepat papan ini penuh: dengan 8 cabang, tabel di bawah sudah memaksa gulir dan keunggulan “satu layar”-nya hilang.</div></div>
+</section>
+<section class="blok" id="c">
+  <div class="blok-hd"><span class="no">C</span><h2>Pilih toko dulu</h2><span class="tag">untuk yang punya banyak cabang</span></div>
+  <p>Daftar toko jadi navigasi tetap di kiri, bukan kartu yang ikut menggulir. “Semua toko” adalah pilihan default; klik satu cabang dan seluruh panel kanan berganti jadi detail cabang itu. Membandingkan dua cabang jadi urusan klik bolak-balik, bukan menggulir.</p>
+<div class="bingkai">
+  <div class="shell">
+    <aside class="side">
+      <div class="side-logo"><span class="mark"><svg class="ic-18" aria-hidden="true"><use href="#i-store"/></svg></span> KanPOS</div>
+      <div>
+        <div class="nav-lbl">Laporan</div>
+        <nav class="nav">
+        <a href="#" class="on"><svg class="ic" aria-hidden="true"><use href="#i-layout-grid"/></svg>Ringkasan</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-git-compare"/></svg>Bandingkan Cabang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg>Tren Jangka Panjang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-heart"/></svg>Status Data</a>
+        </nav>
+      </div>
+      <div>
+        <div class="nav-lbl">Akun</div>
+        <nav class="nav">
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-store"/></svg>Toko & Cabang</a>
+        <a href="#"><svg class="ic" aria-hidden="true"><use href="#i-settings"/></svg>Pengaturan</a>
+        </nav>
+      </div>
+      <div class="side-bawah">
+        <div class="kuota">
+          <div class="kuota-nm">Paket Bisnis</div>
+          <div class="bar"><i class="panas" style="width:94%"></i></div>
+          <div class="kuota-sm">941 MB / 1.000 MB · 3 dari 5 toko</div>
+          <div class="kuota-sm">Aktif s/d 4 Sep 2026</div>
+        </div>
+        <div class="aku">
+          <div class="avatar">B</div>
+          <div class="aku-tx">
+            <div class="aku-nm">Bani Devv</div>
+            <div class="aku-em">bani@kankitu.com</div>
+          </div>
+          <button class="ikon-btn" title="Keluar"><svg class="ic" aria-hidden="true"><use href="#i-log-out"/></svg></button>
+        </div>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="kepala">
+        <div>
+          <h1>Ringkasan</h1>
+          <div class="sub">3 toko · 22 Jul – 21 Agu 2026</div>
+        </div>
+        <div class="ktr">
+          <div class="seg"><span>7h</span><span class="on">30h</span><span>90h</span><span>Tahun</span></div>
+          <button class="pil"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> 22 Jul – 21 Agu</button>
+          <button class="pil pil-ikon" title="Muat ulang"><svg class="ic" aria-hidden="true"><use href="#i-refresh-cw"/></svg></button>
+          <button class="pil"><svg class="ic" aria-hidden="true"><use href="#i-download"/></svg> Ekspor</button>
+        </div>
+      </div>
+      <div class="md">
+        <div class="md-rail">
+          <div class="md-cari"><svg class="ic-14" aria-hidden="true"><use href="#i-search"/></svg> Cari toko…</div>
+            <div class="md-item on">
+              <div class="tx">
+                <div class="nm">Semua toko</div>
+                <div class="vl"><svg class="ic-13" aria-hidden="true"><use href="#i-layout-grid"/></svg>Rp 284,6 jt · <span class="naik">+12,4%</span></div>
+              </div>
+              <svg class="md-spark" viewBox="0 0 52 22" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="#3554C1" stroke-width="1.8" points="0.0,7.6 4.0,7.0 8.0,7.3 12.0,6.2 16.0,5.7 20.0,6.0 24.0,5.1 28.0,5.4 32.0,4.6 36.0,4.7 40.0,4.0 44.0,4.1 48.0,3.3 52.0,3.0"/></svg>
+            </div>
+            <div class="md-item">
+              <div class="tx">
+                <div class="nm">KanPOS Pusat Serpong</div>
+                <div class="vl"><i class="titik titik-hijau"></i>Rp 148,2 jt · <span class="naik">+15,2%</span></div>
+              </div>
+              <svg class="md-spark" viewBox="0 0 52 22" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="#3554C1" stroke-width="1.8" points="0.0,9.1 4.0,8.3 8.0,8.8 12.0,7.4 16.0,6.4 20.0,7.1 24.0,5.7 28.0,6.2 32.0,4.9 36.0,5.2 40.0,4.2 44.0,4.5 48.0,3.5 52.0,3.0"/></svg>
+            </div>
+            <div class="md-item">
+              <div class="tx">
+                <div class="nm">KanPOS Cabang Bintaro</div>
+                <div class="vl"><i class="titik titik-hijau"></i>Rp 92,8 jt · <span class="naik">+6,8%</span></div>
+              </div>
+              <svg class="md-spark" viewBox="0 0 52 22" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="#3554C1" stroke-width="1.8" points="0.0,7.5 4.0,6.8 8.0,7.2 12.0,6.1 16.0,6.5 20.0,5.4 24.0,5.8 28.0,4.7 32.0,5.1 36.0,4.0 40.0,4.4 44.0,3.7 48.0,4.0 52.0,3.0"/></svg>
+            </div>
+            <div class="md-item">
+              <div class="tx">
+                <div class="nm">KanPOS Cabang Depok</div>
+                <div class="vl"><i class="titik titik-kuning"></i>Rp 43,6 jt · <span class="turun">−4,3%</span></div>
+              </div>
+              <svg class="md-spark" viewBox="0 0 52 22" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="#C0CAEC" stroke-width="1.8" points="0.0,3.6 4.0,4.1 8.0,3.0 12.0,4.7 16.0,3.6 20.0,5.2 24.0,4.1 28.0,5.8 32.0,4.7 36.0,6.3 40.0,5.2 44.0,6.9 48.0,5.8 52.0,7.4"/></svg>
+            </div>
+        </div>
+
+        <div>
+      <div class="perhatian">
+        <button class="chip chip-kuning"><svg class="ic-14" aria-hidden="true"><use href="#i-triangle-alert"/></svg> Cabang Depok belum sinkron 3 hari <span class="ekor"><svg class="ic-13" aria-hidden="true"><use href="#i-chevron-right"/></svg></span></button>
+        <button class="chip chip-merah"><svg class="ic-14" aria-hidden="true"><use href="#i-hard-drive"/></svg> Penyimpanan 94% penuh <span class="ekor"><svg class="ic-13" aria-hidden="true"><use href="#i-chevron-right"/></svg></span></button>
+        <button class="chip chip-kuning"><svg class="ic-14" aria-hidden="true"><use href="#i-clock"/></svg> Langganan sisa 14 hari <span class="ekor"><svg class="ic-13" aria-hidden="true"><use href="#i-chevron-right"/></svg></span></button>
+      </div>
+
+          <div class="kartu" style="margin-bottom:var(--s5)">
+            <div class="md-kepala">
+              <div>
+                <h2>Semua toko</h2>
+                <div class="petunjuk" style="margin-top:3px">gabungan 3 cabang · 30 hari</div>
+              </div>
+              <span class="lencana lencana-naik"><svg class="ic-13" aria-hidden="true"><use href="#i-arrow-up-right"/></svg> +12,4%</span>
+            </div>
+            <div class="hero">
+              <div class="hero-kiri">
+                <div class="lbl">Laba bersih</div>
+                <div class="angka" style="font-size:34px">Rp 55,5 jt</div>
+                <div class="penuh">margin 19,5% · omzet Rp 284,6 jt</div>
+              </div>
+              <div>
+            <div class="komposisi"><span class="k-modal" style="width:66.0%">66.0%</span><span class="k-biaya" style="width:14.5%">14.5%</span><span class="k-laba" style="width:19.5%">19.5%</span></div>
+            <div class="legenda"><div><b style="background:#C0CAEC"></b>Modal (HPP)<span class="nilai">Rp 187,9 jt</span></div><div><b style="background:#F9A616"></b>Biaya operasional<span class="nilai">Rp 41,2 jt</span></div><div><b style="background:#5ABC61"></b>Laba bersih<span class="nilai">Rp 55,5 jt</span></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="kpis kpis-4" style="margin-bottom:var(--s5)">
+          <div class="kartu kartu-rapat kpi kpi-rapat">
+            <div class="lbl">Omzet</div>
+            <div class="val">Rp 284,6 jt</div>
+            <div class="kaki"><span>+12,4%</span></div>
+          </div>
+          <div class="kartu kartu-rapat kpi kpi-rapat">
+            <div class="lbl">Transaksi</div>
+            <div class="val">4.812</div>
+            <div class="kaki"><span>160 / hari</span></div>
+          </div>
+          <div class="kartu kartu-rapat kpi kpi-rapat">
+            <div class="lbl">Rata-rata nota</div>
+            <div class="val">Rp 59,1 rb</div>
+            <div class="kaki"><span>−1,1%</span></div>
+          </div>
+          <div class="kartu kartu-rapat kpi kpi-rapat">
+            <div class="lbl">Diskon</div>
+            <div class="val">Rp 6,3 jt</div>
+            <div class="kaki"><span>2,2% omzet</span></div>
+          </div>
+          </div>
+
+          <div class="kartu">
+            <div class="seksi-kepala">
+              <h2>Tren omzet 12 bulan</h2>
+              <div class="seg"><span class="on">Omzet</span><span>Laba</span></div>
+            </div>
+<svg class="grafik" viewBox="0 0 820 192" preserveAspectRatio="none"
+     role="img" aria-label="Omzet 12 bulan dibanding tahun lalu">
+  <line x1="0" y1="0" x2="820" y2="0" stroke="#ECEFF3" stroke-width="1"/><line x1="0" y1="42" x2="820" y2="42" stroke="#ECEFF3" stroke-width="1"/><line x1="0" y1="85" x2="820" y2="85" stroke="#ECEFF3" stroke-width="1"/><line x1="0" y1="128" x2="820" y2="128" stroke="#ECEFF3" stroke-width="1"/><line x1="0" y1="170" x2="820" y2="170" stroke="#ECEFF3" stroke-width="1"/>
+  <polyline fill="none" stroke="#C0CAEC" stroke-width="2" stroke-dasharray="5 5" points="0.0,73.5 74.5,71.0 149.1,66.3 223.6,67.4 298.2,59.6 372.7,61.7 447.3,54.0 521.8,57.1 596.4,50.4 670.9,46.3 745.5,42.7 820.0,40.1"/>
+  <polyline fill="none" stroke="#3554C1" stroke-width="2.5" stroke-linejoin="round" points="0.0,62.2 74.5,55.0 149.1,58.6 223.6,45.3 298.2,38.6 372.7,41.7 447.3,30.9 521.8,37.0 596.4,27.3 670.9,24.7 745.5,21.1 820.0,17.7"/>
+  <text x="0.0" y="185" font-size="11" fill="#818898" text-anchor="start">Sep</text><text x="74.5" y="185" font-size="11" fill="#818898" text-anchor="middle">Okt</text><text x="149.1" y="185" font-size="11" fill="#818898" text-anchor="middle">Nov</text><text x="223.6" y="185" font-size="11" fill="#818898" text-anchor="middle">Des</text><text x="298.2" y="185" font-size="11" fill="#818898" text-anchor="middle">Jan</text><text x="372.7" y="185" font-size="11" fill="#818898" text-anchor="middle">Feb</text><text x="447.3" y="185" font-size="11" fill="#818898" text-anchor="middle">Mar</text><text x="521.8" y="185" font-size="11" fill="#818898" text-anchor="middle">Apr</text><text x="596.4" y="185" font-size="11" fill="#818898" text-anchor="middle">Mei</text><text x="670.9" y="185" font-size="11" fill="#818898" text-anchor="middle">Jun</text><text x="745.5" y="185" font-size="11" fill="#818898" text-anchor="middle">Jul</text><text x="820.0" y="185" font-size="11" fill="#818898" text-anchor="end">Agu</text>
+</svg>
+            <div class="grafik-legenda">
+              <span><b style="background:#3554C1"></b>12 bulan terakhir</span>
+              <span><b style="background:#C0CAEC"></b>periode sama tahun lalu</span>
+              <span class="naik dorong">+18,1% year-on-year</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<div class="ket"><svg class="ic-14" aria-hidden="true"><use href="#i-pencil"/></svg><div><b>Kapan ini menang:</b> mulai dari sekitar 5 cabang ke atas. Dengan 3 toko seperti sekarang, rel kirinya terasa kosong dan memakan lebar yang sebenarnya bisa dipakai grafik. Arah ini juga yang paling mahal: butuh state pilihan toko, dan endpoint <code>/api/analytics/*</code> perlu menerima parameter <code>storeId</code> (saat ini baru <code>/trend</code> yang punya).</div></div>
+</section>
+<section class="blok" id="rekomendasi">
+  <div class="blok-hd"><span class="no">·</span><h2>Perbandingan &amp; rekomendasi</h2></div>
+  <table class="banding">
+    <thead>
+      <tr><th style="width:24%">&nbsp;</th><th style="width:26%">A · Jawaban dulu</th>
+      <th style="width:25%">B · Papan padat</th><th style="width:25%">C · Pilih toko dulu</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><b>Pertanyaan yang dijawab duluan</b></td><td>“Bisnis saya sehat atau tidak?”</td><td>“Apa saja angkanya?”</td><td>“Cabang mana ini?”</td></tr>
+      <tr><td><b>Hierarki visual</b></td><td><span class="ya">Kuat</span></td><td><span class="tdk">Rata</span></td><td><span class="tdk">Sedang</span></td></tr>
+      <tr><td><b>Perlu menggulir</b></td><td>Ya, 2–3 layar</td><td><span class="ya">Tidak</span></td><td>Sedikit</td></tr>
+      <tr><td><b>Tahan saat cabang bertambah</b></td><td>Baik sampai ±10</td><td><span class="tdk">Sesak di atas 6</span></td><td><span class="ya">Paling baik</span></td></tr>
+      <tr><td><b>Perubahan API</b></td><td><span class="ya">Tidak ada</span></td><td><span class="ya">Tidak ada</span></td><td><span class="tdk">Perlu storeId di semua endpoint</span></td></tr>
+      <tr><td><b>Perkiraan usaha</b></td><td>Sedang</td><td>Sedang</td><td>Besar</td></tr>
+    </tbody>
+  </table>
+
+  <div class="ket" style="margin-top:var(--s4)">
+    <svg class="ic-14" aria-hidden="true"><use href="#i-zap"/></svg>
+    <div>
+      <b>Saya sarankan A.</b> Dengan 3 toko, masalah terbesar dashboard sekarang bukan kepadatan
+      atau navigasi — tapi tidak adanya hierarki. A memperbaiki itu tanpa menyentuh backend sama
+      sekali, dan bagian “Peringkat toko”-nya sudah menyiapkan jalan ke C nanti: kalau cabangmu
+      tumbuh lewat 5–6, baris peringkat itu tinggal dipindahkan jadi rel kiri.
+      B menarik dilihat, tapi menukar hierarki dengan kepadatan — persis masalah yang sedang
+      ingin kita perbaiki.
+    </div>
+  </div>
+</section>
+</div>
+</body>
+</html>

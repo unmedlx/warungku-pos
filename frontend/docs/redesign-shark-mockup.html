@@ -1,0 +1,845 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>KanPOS — Mockup Redesign Shark UI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   DESIGN TOKENS — Shark UI (https://shark.vini.one)
+   Sumber: github.com/sharkui-inc/shark-ui → styles/globals.css, styles/themes.css,
+           registry/react/components/{button,card,badge,input,tabs,item,switch,
+           alert,bottom-navigation,segment-group,avatar,separator,sheet,dialog}.tsx
+
+   Shark = shadcn-style di atas Ark UI + Tailwind v4 + tailwind-variants.
+   Bahasa visualnya: netral, border tipis 1px, radius kecil (base 0.5rem),
+   shadow sangat halus (shadow-xs/5), font Hanken Grotesk, bobot medium.
+   Status (success/info/warning/destructive) dipakai sebagai TINT 10% + border 20%,
+   bukan blok warna solid.
+
+   Penyimpangan yang disengaja untuk KanPOS:
+     1. --primary = biru brand #3554C1 (Shark default primary = neutral-800;
+        preset .theme-blue pakai blue-600). Cara pasangnya sama persis dengan
+        preset Shark: hanya override --primary/--primary-foreground/--ring.
+     2. Ukuran kontrol yang disentuh jari memakai size "xl" (h-10) / "lg" (h-9)
+        milik Shark, bukan md (h-8) seperti default desktop.
+   Semua nilai warna di bawah = hasil hitung color-mix() Shark ke hex,
+   supaya mockup ini tidak butuh Tailwind.
+   ========================================================================== */
+:root{
+  --font-sans:'Hanken Grotesk',system-ui,-apple-system,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  --radius:0.5rem;                 /* base Shark */
+  --radius-sm:calc(var(--radius)*.5);   /* 4px  */
+  --radius-md:calc(var(--radius)*.75);  /* 6px  */
+  --radius-lg:var(--radius);            /* 8px  */
+  --radius-xl:calc(var(--radius)*1.5);  /* 12px */
+  --radius-2xl:calc(var(--radius)*2);   /* 16px */
+
+  /* neutral (Tailwind neutral-*) */
+  --background:#fafafa;  --foreground:#262626;
+  --card:#fafafa;        --card-foreground:#262626;
+  --popover:#fafafa;     --popover-foreground:#262626;
+  --secondary:#ebebeb;   --secondary-foreground:#262626;
+  --muted:#ebebeb;       --muted-foreground:#5e5e5e;
+  --accent:#ebebeb;      --accent-foreground:#262626;
+  --border:#dddddd;      --input:#dbdbdb;
+
+  /* brand (pola .theme-* Shark) */
+  --primary:#3554C1;     --primary-foreground:#eff4ff;  --ring:#7a90dd;
+
+  /* status: base 500 + foreground 700 */
+  --destructive:#ef4444; --destructive-foreground:#b91c1c;
+  --info:#3b82f6;        --info-foreground:#1d4ed8;
+  --success:#10b981;     --success-foreground:#047857;
+  --warning:#f59e0b;     --warning-foreground:#b45309;
+
+  --chart-1:#3554C1; --chart-2:#10b981; --chart-3:#f59e0b; --chart-4:#a3a3a3;
+
+  --shadow-xs:0 1px 2px 0 rgb(0 0 0 / .05);
+  --shadow-sm:0 1px 3px 0 rgb(0 0 0 / .05),0 1px 2px -1px rgb(0 0 0 / .05);
+  --shadow-lg:0 10px 15px -3px rgb(0 0 0 / .05),0 4px 6px -4px rgb(0 0 0 / .05);
+  --shadow-primary:0 1px 3px 0 rgb(53 84 193 / .24);
+}
+.dark{
+  --background:#0a0a0a;  --foreground:#f5f5f5;
+  --card:#0f0f0f;        --card-foreground:#f5f5f5;
+  --popover:#141414;     --popover-foreground:#f5f5f5;
+  --secondary:#1d1d1d;   --secondary-foreground:#f5f5f5;
+  --muted:#1d1d1d;       --muted-foreground:#9d9d9d;
+  --accent:#1d1d1d;      --accent-foreground:#f5f5f5;
+  --border:#272727;      --input:#292929;
+  --primary:#5b78d6;     --primary-foreground:#0a0f24; --ring:#4d68c9;
+  --destructive:#e04a44; --destructive-foreground:#f87171;
+  --info:#3b82f6;        --info-foreground:#60a5fa;
+  --success:#10b981;     --success-foreground:#34d399;
+  --warning:#f59e0b;     --warning-foreground:#fbbf24;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:var(--font-sans);background:#e9e9e9;color:#262626;-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.45}
+.dark body,body.dark{background:#000;color:#f5f5f5}
+
+/* ---- Halaman pembungkus mockup (bukan bagian design) ---- */
+.docbar{position:sticky;top:0;z-index:99;display:flex;gap:12px;align-items:center;padding:12px 24px;background:#111;color:#eee;font-size:13px}
+.docbar b{font-weight:600}
+.docbar .sp{flex:1}
+.docbar button{font:inherit;padding:6px 12px;border-radius:6px;border:1px solid #444;background:#222;color:#eee;cursor:pointer}
+.docbar a{color:#9db4ff}
+.intro{max-width:1200px;margin:24px auto 8px;padding:0 24px}
+.intro h1{font-size:22px;margin:0 0 6px;font-weight:600}
+.intro p{margin:4px 0;color:#555;font-size:13.5px;max-width:860px}
+.dark .intro p{color:#aaa}
+.intro ul{margin:8px 0 0;padding-left:18px;color:#555;font-size:13.5px}
+.dark .intro ul{color:#aaa}
+.frames{display:flex;gap:28px;padding:24px;overflow-x:auto;align-items:flex-start}
+.frame{flex:0 0 auto;width:390px}
+.frame>h2{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#777;margin:0 0 8px 4px}
+.frame>p.note{font-size:12px;color:#666;margin:8px 4px 0;line-height:1.5}
+.dark .frame>p.note{color:#999}
+.phone{width:390px;height:844px;border-radius:38px;background:var(--background);color:var(--foreground);border:8px solid #1a1a1a;box-shadow:0 20px 40px rgb(0 0 0/.25);overflow:hidden;position:relative;display:flex;flex-direction:column}
+.phone.tall{height:auto;min-height:844px}
+.status{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:13px;font-weight:600;flex:none}
+.scroll{flex:1;overflow:hidden;padding:0 16px 84px}
+.phone.tall .scroll{overflow:visible}
+.wide{width:820px}
+.wide .phone{width:820px;height:auto;border-radius:16px}
+
+/* =================== KOMPONEN (mirror class Shark) =================== */
+/* Button — base: h-8 rounded-lg text-sm font-medium border, focus ring 3px */
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;font:inherit;font-weight:500;font-size:14px;height:32px;padding:0 12px;border-radius:var(--radius-lg);border:1px solid transparent;cursor:pointer;transition:all .15s;color:var(--foreground);background:transparent}
+.btn:active{transform:scale(.98)}
+.btn svg{width:16px;height:16px;flex:none}
+.btn-default{background:var(--primary);color:var(--primary-foreground);box-shadow:var(--shadow-primary)}
+.btn-outline{border-color:var(--input);box-shadow:var(--shadow-xs)}
+.dark .btn-outline{background:rgb(41 41 41/.32)}
+.btn-secondary{background:var(--secondary);color:var(--secondary-foreground)}
+.btn-ghost{}
+.btn-destructive{background:var(--destructive);color:#fff;box-shadow:0 1px 3px rgb(239 68 68/.24)}
+.btn-link{color:var(--primary);text-decoration:underline;text-underline-offset:4px;padding:0;height:auto}
+.btn-xs{height:24px;padding:0 8px;font-size:12px;border-radius:var(--radius-sm)}.btn-xs svg{width:10px;height:10px}
+.btn-sm{height:28px;padding:0 10px;gap:6px}.btn-sm svg{width:14px;height:14px}
+.btn-lg{height:36px;padding:0 14px}
+.btn-xl{height:40px;padding:0 16px;font-size:16px}
+.btn-icon{width:32px;padding:0}.btn-icon.btn-sm{width:28px}.btn-icon.btn-lg{width:36px}.btn-icon.btn-xl{width:40px}.btn-icon.btn-xl svg{width:20px;height:20px}
+.btn-pill{border-radius:9999px}
+.btn-block{width:100%}
+
+/* Card — rounded-xl border shadow-xs/5, gap-4, --space 6 (24px) → mobile 16px */
+.card{--space:16px;display:flex;flex-direction:column;gap:12px;padding:var(--space) 0;background:var(--card);color:var(--card-foreground);border:1px solid var(--border);border-radius:var(--radius-xl);box-shadow:var(--shadow-xs)}
+.card>*{padding-left:var(--space);padding-right:var(--space)}
+.card-title{font-weight:600;font-size:16px;line-height:24px}
+.card-desc{color:var(--muted-foreground);font-size:14px}
+.card-header{display:grid;gap:4px;grid-template-columns:1fr auto;align-items:start}
+.card-header .card-desc{grid-column:1}
+.card-action{grid-column:2;grid-row:1/span 2;align-self:start}
+.card-footer{display:flex;align-items:center;gap:8px;background:color-mix(in srgb,var(--muted) 48%,transparent);border-top:1px solid var(--border);padding-top:12px;padding-bottom:12px;margin-bottom:calc(var(--space)*-1);border-radius:0 0 var(--radius-xl) var(--radius-xl)}
+.card.tight{--space:12px;gap:8px}
+.card.media-top{padding-top:0}
+.card.media-top .media{padding:0;overflow:hidden;border-radius:var(--radius-xl) var(--radius-xl) 0 0}
+
+/* Badge — h-5.5 px-1.5 text-xs font-medium rounded-md; status = tint 10% + border 20% */
+.badge{display:inline-flex;align-items:center;justify-content:center;gap:4px;height:22px;min-width:22px;padding:0 6px;border-radius:var(--radius-md);border:1px solid transparent;font-size:12px;font-weight:500;white-space:nowrap;line-height:1}
+.badge svg{width:12px;height:12px}
+.badge-default{background:var(--foreground);color:var(--background)}
+.badge-secondary{background:var(--secondary);color:var(--secondary-foreground)}
+.badge-outline{border-color:var(--border);color:var(--foreground)}
+.badge-success{background:color-mix(in srgb,var(--success) 10%,transparent);color:var(--success-foreground);border-color:color-mix(in srgb,var(--success) 20%,transparent)}
+.badge-info{background:color-mix(in srgb,var(--info) 10%,transparent);color:var(--info-foreground);border-color:color-mix(in srgb,var(--info) 20%,transparent)}
+.badge-warning{background:color-mix(in srgb,var(--warning) 10%,transparent);color:var(--warning-foreground);border-color:color-mix(in srgb,var(--warning) 20%,transparent)}
+.badge-destructive{background:color-mix(in srgb,var(--destructive) 10%,transparent);color:var(--destructive-foreground);border-color:color-mix(in srgb,var(--destructive-foreground) 20%,transparent)}
+.badge-sm{height:20px;padding:0 4px}.badge-lg{height:26px;padding:0 8px;font-size:14px}.badge-pill{border-radius:9999px}
+
+/* Input — h-8/9, rounded-lg border-input shadow-xs, placeholder muted/64 */
+.input{display:flex;align-items:center;width:100%;height:36px;padding:0 12px;font:inherit;font-size:16px;color:var(--foreground);background:transparent;border:1px solid var(--input);border-radius:var(--radius-lg);box-shadow:var(--shadow-xs);outline:none}
+.dark .input{background:rgb(41 41 41/.3)}
+.input:focus{border-color:var(--primary);box-shadow:0 0 0 3px color-mix(in srgb,var(--ring) 32%,transparent)}
+.input::placeholder{color:color-mix(in srgb,var(--muted-foreground) 64%,transparent)}
+.input-wrap{position:relative;flex:1}
+.input-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--muted-foreground)}
+.input-wrap .input{padding-left:34px}
+.select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235e5e5e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px}
+.label{font-size:14px;font-weight:500;display:block;margin-bottom:6px}
+.hint{font-size:12px;color:var(--muted-foreground);margin-top:4px}
+
+/* Tabs default — list rounded-lg, indikator bg-accent; trigger h-9 rounded-lg font-medium */
+.tabs{display:flex;gap:2px;position:relative;color:var(--muted-foreground);width:fit-content;border-radius:var(--radius-lg)}
+.tabs.full{width:100%}.tabs.full .tab{flex:1}
+.tab{display:flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 10px;border-radius:var(--radius-lg);border:1px solid transparent;font-size:14px;font-weight:500;white-space:nowrap;cursor:pointer}
+.tab svg{width:18px;height:18px}
+.tab.on{background:var(--accent);color:var(--foreground)}
+/* Tabs underline */
+.tabs-ul{display:flex;gap:2px;border-bottom:1px solid var(--input);margin:0 -16px;padding:0 16px;overflow-x:auto;scrollbar-width:none}
+.tabs-ul::-webkit-scrollbar{display:none}
+.tabs-ul .tab{border-radius:var(--radius-lg) var(--radius-lg) 0 0;position:relative;color:var(--muted-foreground)}
+.tabs-ul .tab.on{color:var(--foreground);background:transparent}
+.tabs-ul .tab.on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--primary)}
+/* Segment group — chip aktif bg-input, radius inherit */
+.seg{display:inline-flex;gap:8px;isolation:isolate}
+.seg.full{display:flex}.seg.full .seg-i{flex:1}
+.seg-i{display:inline-flex;align-items:center;justify-content:center;height:32px;padding:0 12px;border-radius:var(--radius-lg);border:1px solid transparent;font-size:13px;font-weight:500;color:var(--muted-foreground);cursor:pointer;white-space:nowrap}
+.seg-i.on{background:var(--input);color:var(--foreground)}
+.seg.scroll-x{display:flex;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px}
+.seg.scroll-x::-webkit-scrollbar{display:none}
+
+/* Item — rounded-xl border p-3 gap-3, media size-10 rounded-xl */
+.item{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--border);border-radius:var(--radius-xl);font-size:14px;background:var(--card)}
+.item.flat{border:0;padding:10px 0;border-radius:0}
+.item.flat+.item.flat{border-top:1px solid var(--border)}
+.item-media{width:40px;height:40px;border-radius:var(--radius-xl);display:flex;align-items:center;justify-content:center;flex:none;overflow:hidden;background:var(--muted);color:var(--muted-foreground)}
+.item-media img{width:100%;height:100%;object-fit:cover}
+.item-media svg{width:18px;height:18px}
+.item-media.tint{background:color-mix(in srgb,var(--primary) 10%,transparent);color:var(--primary)}
+.item-media.tint-success{background:color-mix(in srgb,var(--success) 10%,transparent);color:var(--success-foreground)}
+.item-media.tint-warning{background:color-mix(in srgb,var(--warning) 10%,transparent);color:var(--warning-foreground)}
+.item-media.tint-info{background:color-mix(in srgb,var(--info) 10%,transparent);color:var(--info-foreground)}
+.item-media.tint-destructive{background:color-mix(in srgb,var(--destructive) 10%,transparent);color:var(--destructive-foreground)}
+.item-content{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.item-title{font-weight:500;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item-desc{color:var(--muted-foreground);font-size:13px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item-actions{display:flex;align-items:center;gap:6px;flex:none}
+.item-group{display:flex;flex-direction:column;gap:8px}
+.chev{width:16px;height:16px;color:var(--muted-foreground);flex:none}
+
+/* Switch — track h-[thumb+2] w-[thumb*2-2], thumb 20px mobile */
+.switch{--t:20px;display:inline-flex;align-items:center;width:calc(var(--t)*2 - 2px);height:calc(var(--t) + 2px);padding:1px;border-radius:9999px;background:var(--input);border:1px solid transparent;flex:none;transition:.15s}
+.switch i{display:block;width:var(--t);height:var(--t);border-radius:9999px;background:var(--background);transition:transform .15s}
+.switch.on{background:var(--primary)}.switch.on i{transform:translateX(calc(var(--t) - 4px))}
+.dark .switch i{background:var(--foreground)}.dark .switch.on i{background:var(--primary-foreground)}
+
+/* Alert — rounded-xl border px-3.5 py-3; status = bg 4% + border 32% */
+.alert{display:grid;grid-template-columns:16px 1fr auto;gap:2px 8px;align-items:start;padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius-xl);background:color-mix(in srgb,var(--input) 4%,transparent);font-size:14px}
+.alert svg{width:16px;height:20px;color:var(--muted-foreground)}
+.alert-title{font-weight:500;grid-column:2}
+.alert-desc{grid-column:2;color:var(--muted-foreground);font-size:13px}
+.alert-action{grid-column:3;grid-row:1/span 2;align-self:center}
+.alert-warning{background:color-mix(in srgb,var(--warning) 4%,transparent);border-color:color-mix(in srgb,var(--warning) 32%,transparent)}.alert-warning svg{color:var(--warning)}
+.alert-info{background:color-mix(in srgb,var(--info) 4%,transparent);border-color:color-mix(in srgb,var(--info) 32%,transparent)}.alert-info svg{color:var(--info)}
+.alert-success{background:color-mix(in srgb,var(--success) 4%,transparent);border-color:color-mix(in srgb,var(--success) 32%,transparent)}.alert-success svg{color:var(--success)}
+.alert-destructive{background:color-mix(in srgb,var(--destructive) 4%,transparent);border-color:color-mix(in srgb,var(--destructive) 32%,transparent)}.alert-destructive svg{color:var(--destructive)}
+
+/* Avatar — size-8 rounded-full, ring border, fallback bg-muted */
+.avatar{width:32px;height:32px;border-radius:9999px;background:var(--muted);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;box-shadow:inset 0 0 0 1px var(--border);flex:none;overflow:hidden}
+.avatar.lg{width:40px;height:40px;font-size:14px}.avatar.xl{width:56px;height:56px;font-size:18px}
+.avatar.brand{background:var(--primary);color:var(--primary-foreground);box-shadow:none}
+
+/* Separator, Data list, Progress */
+.sep{height:1px;background:var(--input);margin:4px 0}
+.dl{display:flex;flex-direction:column}
+.dl-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:8px 0;font-size:14px}
+.dl-row+.dl-row{border-top:1px solid var(--border)}
+.dl-row .k{color:var(--muted-foreground)}
+.dl-row .v{font-weight:500;font-variant-numeric:tabular-nums}
+.dl-row.total{border-top:1px solid var(--foreground);font-weight:600}
+.dl-row.total .k{color:var(--foreground)}
+.progress{height:6px;border-radius:9999px;background:var(--muted);overflow:hidden}
+.progress i{display:block;height:100%;background:var(--primary);border-radius:9999px}
+
+/* Bottom navigation — fixed, border-t, bg/60 backdrop-blur, item flat, selected=primary */
+.bnav{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:space-around;min-height:56px;padding-bottom:18px;border-top:1px solid var(--border);background:color-mix(in srgb,var(--background) 60%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.bnav-i{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px;color:var(--muted-foreground);font-size:12px;font-weight:500}
+.bnav-i svg{width:20px;height:20px}
+.bnav-i.on{color:var(--primary)}
+.bnav-i.cta{color:var(--primary)}
+.bnav-i.cta .ring{width:40px;height:40px;border-radius:var(--radius-xl);background:var(--primary);color:var(--primary-foreground);display:flex;align-items:center;justify-content:center;margin-top:-18px;box-shadow:var(--shadow-primary)}
+
+/* Header halaman — Shark tidak punya "pill header"; pakai header polos h-14 */
+.hdr{display:flex;align-items:center;gap:10px;height:56px;margin:0 -16px 12px;padding:0 16px;position:sticky;top:0;background:color-mix(in srgb,var(--background) 88%,transparent);backdrop-filter:blur(8px);z-index:5}
+.hdr h1{font-size:18px;font-weight:600;margin:0;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+.hdr .sub{font-size:12px;color:var(--muted-foreground);font-weight:400;display:block}
+.hdr .acts{display:flex;gap:6px;flex:none}
+.hdr .badge-dot{position:absolute;top:-4px;right:-4px}
+
+/* Stat */
+.stat{display:flex;flex-direction:column;gap:4px}
+.stat .l{font-size:12px;color:var(--muted-foreground);font-weight:500}
+.stat .v{font-size:22px;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;line-height:1.1}
+.stat .s{font-size:12px;color:var(--muted-foreground);display:flex;align-items:center;gap:4px}
+.stat .s.up{color:var(--success-foreground)}.stat .s.down{color:var(--destructive-foreground)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.sec{display:flex;align-items:center;justify-content:space-between;margin:20px 0 8px}
+.sec h3{font-size:14px;font-weight:600;margin:0}
+.sec a{font-size:13px;color:var(--primary);font-weight:500;text-decoration:none;display:flex;align-items:center;gap:2px}
+.muted{color:var(--muted-foreground)}
+.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.row{display:flex;align-items:center;gap:8px}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}
+.stack{display:flex;flex-direction:column;gap:8px}
+.chart{display:flex;align-items:flex-end;gap:6px;height:88px;padding-top:6px}
+.chart b{flex:1;background:var(--muted);border-radius:4px 4px 2px 2px;position:relative}
+.chart b.on{background:var(--primary)}
+.chart-x{display:flex;gap:6px;margin-top:6px}.chart-x span{flex:1;text-align:center;font-size:11px;color:var(--muted-foreground)}
+
+/* Product grid (Kasir) */
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pcard{border:1px solid var(--border);border-radius:var(--radius-xl);background:var(--card);overflow:hidden;box-shadow:var(--shadow-xs)}
+.pcard .img{height:96px;background:var(--muted);display:flex;align-items:center;justify-content:center;color:var(--muted-foreground);position:relative}
+.pcard .img svg{width:22px;height:22px}
+.pcard .img .badge{position:absolute;top:6px;right:6px}
+.pcard .body{padding:10px}
+.pcard .n{font-weight:500;font-size:13px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pcard .p{font-weight:600;font-size:14px;margin-top:2px;font-variant-numeric:tabular-nums}
+.pcard .s{font-size:12px;color:var(--muted-foreground);margin-top:2px}
+.pcard.dis{opacity:.6}
+.qty{display:inline-flex;align-items:center;border:1px solid var(--input);border-radius:var(--radius-lg);height:32px;overflow:hidden;box-shadow:var(--shadow-xs)}
+.qty button{width:32px;height:100%;border:0;background:transparent;color:var(--foreground);font:inherit;font-size:16px;cursor:pointer}
+.qty span{min-width:30px;text-align:center;font-weight:500;font-size:14px;border-left:1px solid var(--input);border-right:1px solid var(--input);line-height:30px;font-variant-numeric:tabular-nums}
+
+/* Cart bar sticky bottom & Sheet */
+.cartbar{position:absolute;left:12px;right:12px;bottom:80px;background:var(--popover);border:1px solid var(--border);border-radius:var(--radius-xl);padding:10px 10px 10px 14px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow-lg)}
+.cartbar .t{flex:1;min-width:0}
+.cartbar .t b{display:block;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+.cartbar .t span{font-size:12px;color:var(--muted-foreground)}
+.overlay{position:absolute;inset:0;background:rgb(0 0 0/.32);backdrop-filter:blur(2px)}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--popover);color:var(--popover-foreground);border-top:1px solid var(--border);border-radius:var(--radius-2xl) var(--radius-2xl) 0 0;box-shadow:var(--shadow-lg);padding:8px 16px 28px;max-height:88%;display:flex;flex-direction:column}
+.sheet .grab{width:40px;height:4px;border-radius:2px;background:var(--input);margin:4px auto 12px}
+.sheet h2{font-size:16px;font-weight:600;margin:0 0 2px}
+.sheet .desc{font-size:13px;color:var(--muted-foreground);margin:0 0 12px}
+.dialog{position:absolute;left:16px;right:16px;top:20%;background:var(--popover);border:1px solid var(--border);border-radius:var(--radius-2xl);box-shadow:var(--shadow-lg);padding:20px}
+.dialog h2{font-size:16px;font-weight:600;margin:0 0 4px}
+.dialog p{margin:0 0 16px;font-size:13.5px;color:var(--muted-foreground)}
+.toggle-grp{display:flex;gap:6px;flex-wrap:wrap}
+.toggle-grp .tg{height:36px;padding:0 12px;border:1px solid var(--input);border-radius:var(--radius-lg);display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;background:transparent;box-shadow:var(--shadow-xs)}
+.toggle-grp .tg.on{background:var(--accent);border-color:var(--foreground)}
+.toggle-grp .tg svg{width:14px;height:14px}
+.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.numpad .btn{height:44px;font-size:18px}
+
+/* Token sheet */
+.sw{display:flex;gap:8px;flex-wrap:wrap}
+.sw div{width:84px}
+.sw i{display:block;height:36px;border-radius:var(--radius-lg);border:1px solid var(--border)}
+.sw small{display:block;font-size:11px;color:var(--muted-foreground);margin-top:3px;font-family:var(--font-mono)}
+.compare{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;font-size:13px;border:1px solid var(--border);border-radius:var(--radius-xl);overflow:hidden}
+.compare div{padding:8px 10px;border-bottom:1px solid var(--border)}
+.compare div:nth-child(3n+1){color:var(--muted-foreground);background:color-mix(in srgb,var(--muted) 48%,transparent)}
+.compare .h{font-weight:600;color:var(--foreground)!important;background:var(--muted)!important}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <defs>
+  <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></symbol>
+  <symbol id="i-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-scan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M8 7v10"/><path d="M12 7v10"/><path d="M17 7v10"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17h6v-6"/><path d="m22 17-8.5-8.5-5 5L2 7"/></symbol>
+  <symbol id="i-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-receipt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></symbol>
+  <symbol id="i-wallet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-in" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17V3"/><path d="m6 11 6 6 6-6"/><path d="M19 21H5"/></symbol>
+  <symbol id="i-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 9-6-6-6 6"/><path d="M12 3v14"/><path d="M5 21h14"/></symbol>
+  <symbol id="i-hand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 15h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 17"/><path d="m7 21 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9"/><path d="m2 16 6 6"/><circle cx="16" cy="9" r="2.9"/><circle cx="6" cy="5" r="3"/></symbol>
+  <symbol id="i-store" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></symbol>
+  <symbol id="i-cog" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-printer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/><rect x="6" y="14" width="12" height="8" rx="1"/></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></symbol>
+  <symbol id="i-db" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+  <symbol id="i-cash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></symbol>
+  <symbol id="i-qr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></symbol>
+  <symbol id="i-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></symbol>
+  <symbol id="i-inf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12c-2-2.67-4-4-6-4a4 4 0 1 0 0 8c2 0 4-1.33 6-4Zm0 0c2 2.67 4 4 6 4a4 4 0 0 0 0-8c-2 0-4 1.33-6 4Z"/></symbol>
+ </defs>
+</svg>
+
+<div class="docbar">
+  <b>KanPOS · Mockup redesign Shark UI</b>
+  <span>frontend/docs/redesign-shark-mockup.html · 8 Sep 2026</span>
+  <span class="sp"></span>
+  <a href="https://shark.vini.one/" target="_blank" rel="noopener">shark.vini.one</a>
+  <button id="themeBtn" type="button">☾ Mode gelap</button>
+</div>
+
+<section class="intro">
+  <h1>Redesign frontend KanPOS memakai Shark UI</h1>
+  <p>Semua frame di bawah memakai token dan anatomi komponen asli Shark UI (Ark UI + Tailwind v4). Skrol ke kanan untuk melihat semua layar. Frame terakhir adalah lembar token &amp; komponen plus tabel perbandingan dengan design sekarang.</p>
+  <ul>
+    <li><b>Yang berubah drastis:</b> tidak ada lagi pil 24–26px dan blob ikon biru muda. Card jadi <code>rounded-xl</code> (12px) border 1px shadow tipis; tombol 8px; badge status pakai tint 10% + border 20%.</li>
+    <li><b>Font:</b> Sora → Hanken Grotesk (font default Shark). Bobot heading turun dari extrabold ke semibold.</li>
+    <li><b>Header halaman:</b> pil putih + ikon bulat diganti header polos 56px dengan judul kiri dan tombol ikon <code>outline</code> kanan (Shark tidak punya pill header).</li>
+    <li><b>Navigasi bawah:</b> Bottom Navigation Shark (flat, border-top, blur). FAB Kasir dipertahankan tapi jadi kotak <code>rounded-xl</code> sesuai bahasa Shark.</li>
+    <li><b>Tab kelompok</b> (Barang/Catatan): Tabs varian <code>underline</code>. Filter kategori/status: Segment Group.</li>
+    <li><b>Warna primary tetap #3554C1</b>. Status pakai token Shark: success emerald, warning amber, destructive red, info blue.</li>
+  </ul>
+</section>
+
+<div class="frames">
+
+<!-- ============================ 1. BERANDA ============================ -->
+<div class="frame">
+  <h2>1 · Beranda</h2>
+  <div class="phone">
+    <div class="status"><span>09:41</span><span>●●● ▮</span></div>
+    <div class="scroll">
+      <div class="hdr">
+        <span class="avatar lg brand">TB</span>
+        <h1>Toko Berkah<span class="sub">Selamat pagi, Bu Ani</span></h1>
+        <div class="acts">
+          <button class="btn btn-outline btn-icon btn-lg" style="position:relative" aria-label="Notifikasi"><svg><use href="#i-bell"/></svg><span class="badge badge-warning badge-sm badge-pill badge-dot" style="height:18px;min-width:18px;padding:0 4px">2</span></button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-desc" style="grid-row:1">Penjualan hari ini</div>
+          <div class="card-action"><span class="badge badge-success badge-pill"><svg><use href="#i-up"/></svg>+12%</span></div>
+          <div class="stat" style="grid-column:1"><div class="v" style="font-size:28px">Rp 1.245.000</div><div class="s">18 transaksi · vs kemarin Rp 1.110.000</div></div>
+        </div>
+        <div>
+          <div class="chart">
+            <b style="height:40%"></b><b style="height:55%"></b><b style="height:35%"></b><b style="height:70%"></b><b style="height:60%"></b><b style="height:85%"></b><b class="on" style="height:78%"></b>
+          </div>
+          <div class="chart-x"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span></div>
+        </div>
+      </div>
+
+      <div class="grid3 mt8">
+        <div class="card tight"><div class="stat"><div class="l">Profit</div><div class="v" style="font-size:16px">Rp 412rb</div></div></div>
+        <div class="card tight"><div class="stat"><div class="l">Rata-rata</div><div class="v" style="font-size:16px">Rp 69rb</div></div></div>
+        <div class="card tight"><div class="stat"><div class="l">Pengeluaran</div><div class="v" style="font-size:16px;color:var(--destructive-foreground)">Rp 85rb</div></div></div>
+      </div>
+
+      <div class="alert alert-warning mt12">
+        <svg><use href="#i-warn"/></svg>
+        <div class="alert-title">4 produk stok menipis</div>
+        <div class="alert-desc">Indomie Goreng, Aqua 600ml, +2 lainnya</div>
+        <div class="alert-action"><button class="btn btn-ghost btn-sm">Lihat</button></div>
+      </div>
+
+      <div class="sec"><h3>Akses cepat</h3></div>
+      <div class="grid4">
+        <div class="item" style="flex-direction:column;gap:6px;padding:10px 4px;text-align:center"><span class="item-media tint"><svg><use href="#i-in"/></svg></span><span style="font-size:11.5px;font-weight:500">Stok Masuk</span></div>
+        <div class="item" style="flex-direction:column;gap:6px;padding:10px 4px;text-align:center"><span class="item-media tint"><svg><use href="#i-out"/></svg></span><span style="font-size:11.5px;font-weight:500">Stok Keluar</span></div>
+        <div class="item" style="flex-direction:column;gap:6px;padding:10px 4px;text-align:center"><span class="item-media tint"><svg><use href="#i-hand"/></svg></span><span style="font-size:11.5px;font-weight:500">Pengeluaran</span></div>
+        <div class="item" style="flex-direction:column;gap:6px;padding:10px 4px;text-align:center"><span class="item-media"><svg><use href="#i-grid"/></svg></span><span style="font-size:11.5px;font-weight:500">Lainnya</span></div>
+      </div>
+
+      <div class="sec"><h3>Transaksi terakhir</h3><a href="#">Lihat semua <svg class="chev"><use href="#i-chev"/></svg></a></div>
+      <div class="card tight" style="gap:0;padding:4px 0">
+        <div class="item flat"><span class="item-media"><svg><use href="#i-receipt"/></svg></span><div class="item-content"><div class="item-title">#TRX-0418 · Budi</div><div class="item-desc">3 produk · QRIS · 09:32</div></div><b class="mono" style="font-weight:600">Rp 47.000</b></div>
+        <div class="item flat"><span class="item-media"><svg><use href="#i-receipt"/></svg></span><div class="item-content"><div class="item-title">#TRX-0417</div><div class="item-desc">1 produk · Tunai · 09:20</div></div><b class="mono" style="font-weight:600">Rp 12.000</b></div>
+        <div class="item flat"><span class="item-media tint-warning"><svg><use href="#i-receipt"/></svg></span><div class="item-content"><div class="item-title">#TRX-0416 · Meja 4</div><div class="item-desc"><span class="badge badge-warning badge-sm">Open bill</span></div></div><b class="mono" style="font-weight:600">Rp 86.500</b></div>
+      </div>
+    </div>
+    <nav class="bnav">
+      <a class="bnav-i on"><svg><use href="#i-home"/></svg>Beranda</a>
+      <a class="bnav-i"><svg><use href="#i-box"/></svg>Barang</a>
+      <a class="bnav-i cta"><span class="ring"><svg><use href="#i-cart"/></svg></span>Kasir</a>
+      <a class="bnav-i"><svg><use href="#i-list"/></svg>Catatan</a>
+      <a class="bnav-i"><svg><use href="#i-grid"/></svg>Saya</a>
+    </nav>
+  </div>
+  <p class="note">Angka utama satu Card besar dengan grafik 7 hari di dalamnya (bukan 4 kartu sejajar). Peringatan stok pakai komponen Alert Shark varian warning dengan action inline.</p>
+</div>
+
+<!-- ============================ 2. KASIR ============================ -->
+<div class="frame">
+  <h2>2 · Kasir</h2>
+  <div class="phone">
+    <div class="status"><span>09:41</span><span>●●● ▮</span></div>
+    <div class="scroll">
+      <div class="hdr">
+        <h1>Kasir</h1>
+        <div class="acts">
+          <button class="btn btn-outline btn-icon btn-lg" style="position:relative" aria-label="Open bill"><svg><use href="#i-list"/></svg><span class="badge badge-warning badge-sm badge-pill badge-dot" style="height:18px;min-width:18px;padding:0 4px">3</span></button>
+          <button class="btn btn-outline btn-icon btn-lg" aria-label="Pelanggan"><svg><use href="#i-users"/></svg></button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-wrap"><svg><use href="#i-search"/></svg><input class="input" placeholder="Cari produk / scan SKU"></div>
+        <button class="btn btn-outline btn-icon btn-lg" aria-label="Scan barcode"><svg><use href="#i-scan"/></svg></button>
+      </div>
+      <div class="seg scroll-x mt8">
+        <span class="seg-i on">Semua</span><span class="seg-i">🍜 Makanan</span><span class="seg-i">🥤 Minuman</span><span class="seg-i">🧴 Kebutuhan</span><span class="seg-i">🚬 Rokok</span>
+      </div>
+      <div class="pgrid mt12">
+        <div class="pcard"><div class="img"><svg><use href="#i-box"/></svg><span class="badge badge-success badge-sm">24</span></div><div class="body"><div class="n">Indomie Goreng</div><div class="p">Rp 3.500</div><div class="s">Stok 24 pcs</div></div></div>
+        <div class="pcard"><div class="img" style="background:#dbe4f7"><span class="badge badge-warning badge-sm">3</span></div><div class="body"><div class="n">Aqua 600ml</div><div class="p">Rp 4.000</div><div class="s">Stok 3 btl</div></div></div>
+        <div class="pcard"><div class="img"><svg><use href="#i-box"/></svg></div><div class="body"><div class="n">Kopi Kapal Api Sachet</div><div class="p">Rp 2.000</div><div class="s"><span class="row" style="gap:3px"><svg class="chev" style="width:12px;height:12px"><use href="#i-inf"/></svg>Selalu ada</span></div></div></div>
+        <div class="pcard"><div class="img" style="background:#f2e5d3"></div><div class="body"><div class="n">Roti Tawar Sari Roti</div><div class="p">Rp 14.000</div><div class="s">Stok 8 pcs</div></div></div>
+        <div class="pcard dis"><div class="img"><svg><use href="#i-box"/></svg><span class="badge badge-destructive badge-sm">Habis</span></div><div class="body"><div class="n">Teh Botol Sosro</div><div class="p">Rp 5.000</div><div class="s">Stok 0 btl</div></div></div>
+        <div class="pcard"><div class="img"><svg><use href="#i-box"/></svg></div><div class="body"><div class="n">Sabun Lifebuoy</div><div class="p">Rp 4.500</div><div class="s">Stok 15 pcs</div></div></div>
+        <div class="pcard"><div class="img"><svg><use href="#i-box"/></svg></div><div class="body"><div class="n">Gula 1kg</div><div class="p">Rp 17.000</div><div class="s">Stok 11 kg</div></div></div>
+        <div class="pcard"><div class="img"><svg><use href="#i-box"/></svg></div><div class="body"><div class="n">Minyak Goreng 1L</div><div class="p">Rp 19.000</div><div class="s">Stok 6 btl</div></div></div>
+      </div>
+    </div>
+    <div class="cartbar">
+      <div class="t"><b>Rp 45.000</b><span>3 item · Indomie ×2, Aqua ×1, Kopi ×...</span></div>
+      <button class="btn btn-default btn-xl">Bayar <svg><use href="#i-chev"/></svg></button>
+    </div>
+    <nav class="bnav">
+      <a class="bnav-i"><svg><use href="#i-home"/></svg>Beranda</a>
+      <a class="bnav-i"><svg><use href="#i-box"/></svg>Barang</a>
+      <a class="bnav-i cta on"><span class="ring"><svg><use href="#i-cart"/></svg></span>Kasir</a>
+      <a class="bnav-i"><svg><use href="#i-list"/></svg>Catatan</a>
+      <a class="bnav-i"><svg><use href="#i-grid"/></svg>Saya</a>
+    </nav>
+  </div>
+  <p class="note">Kategori pakai Segment Group (chip aktif bg-input, bukan pil biru solid). Kartu produk bergambar dengan badge stok di pojok. Keranjang jadi floating bar di atas bottom nav, tombol Bayar size xl.</p>
+</div>
+
+<!-- ============================ 3. KASIR — SHEET KERANJANG ============================ -->
+<div class="frame">
+  <h2>3 · Kasir · Keranjang &amp; bayar (Sheet)</h2>
+  <div class="phone">
+    <div class="status"><span>09:41</span><span>●●● ▮</span></div>
+    <div class="scroll" style="opacity:.5">
+      <div class="hdr"><h1>Kasir</h1></div>
+      <div class="pgrid"><div class="pcard"><div class="img"></div><div class="body"><div class="n">Indomie Goreng</div><div class="p">Rp 3.500</div></div></div><div class="pcard"><div class="img"></div><div class="body"><div class="n">Aqua 600ml</div><div class="p">Rp 4.000</div></div></div></div>
+    </div>
+    <div class="overlay"></div>
+    <div class="sheet">
+      <div class="grab"></div>
+      <div class="row" style="justify-content:space-between"><div><h2>Keranjang</h2><p class="desc" style="margin:0">3 item · Budi (kasbon Rp 120.000)</p></div><button class="btn btn-ghost btn-icon btn-sm"><svg><use href="#i-x"/></svg></button></div>
+      <div class="item-group mt12">
+        <div class="item"><span class="item-media"><svg><use href="#i-box"/></svg></span><div class="item-content"><div class="item-title">Indomie Goreng</div><div class="item-desc mono">Rp 3.500 × 2</div></div><div class="item-actions"><div class="qty"><button>−</button><span>2</span><button>+</button></div></div></div>
+        <div class="item"><span class="item-media" style="background:#dbe4f7"></span><div class="item-content"><div class="item-title">Aqua 600ml</div><div class="item-desc mono">Rp 4.000 × 1</div></div><div class="item-actions"><div class="qty"><button>−</button><span>1</span><button>+</button></div></div></div>
+        <div class="item"><span class="item-media"><svg><use href="#i-box"/></svg></span><div class="item-content"><div class="item-title">Roti Tawar Sari Roti</div><div class="item-desc mono">Rp 14.000 × 1</div></div><div class="item-actions"><div class="qty"><button>−</button><span>1</span><button>+</button></div></div></div>
+      </div>
+      <div class="dl mt12">
+        <div class="dl-row"><span class="k">Subtotal</span><span class="v">Rp 25.000</span></div>
+        <div class="dl-row"><span class="k">Diskon</span><span class="v" style="color:var(--primary)">+ Tambah</span></div>
+        <div class="dl-row total"><span class="k">Total</span><span class="v" style="font-size:18px">Rp 25.000</span></div>
+      </div>
+      <label class="label mt12">Metode bayar</label>
+      <div class="toggle-grp">
+        <span class="tg on"><svg><use href="#i-cash"/></svg>Tunai</span><span class="tg"><svg><use href="#i-qr"/></svg>QRIS</span><span class="tg"><svg><use href="#i-card"/></svg>Transfer</span><span class="tg"><svg><use href="#i-hand"/></svg>Kasbon</span>
+      </div>
+      <label class="label mt12">Uang diterima</label>
+      <input class="input mono" value="Rp 30.000" style="font-size:20px;height:44px;font-weight:600">
+      <div class="row mt8" style="gap:6px"><span class="badge badge-outline badge-lg">Pas</span><span class="badge badge-outline badge-lg">30rb</span><span class="badge badge-outline badge-lg">50rb</span><span class="badge badge-outline badge-lg">100rb</span><span class="muted" style="margin-left:auto;font-size:13px">Kembali <b class="mono" style="color:var(--foreground)">Rp 5.000</b></span></div>
+      <div class="row mt16"><button class="btn btn-outline btn-xl" style="flex:1">Simpan bill</button><button class="btn btn-default btn-xl" style="flex:2"><svg><use href="#i-check"/></svg>Bayar Rp 25.000</button></div>
+    </div>
+  </div>
+  <p class="note">Sheet Shark (radius 16px, grabber, bg-popover). Baris item = komponen Item + Number Input stepper. Rincian = Data List dengan baris total bergaris tebal. Metode bayar = Toggle Group.</p>
+</div>
+
+<!-- ============================ 4. BARANG ============================ -->
+<div class="frame">
+  <h2>4 · Barang · Daftar produk</h2>
+  <div class="phone">
+    <div class="status"><span>09:41</span><span>●●● ▮</span></div>
+    <div class="scroll">
+      <div class="hdr">
+        <h1>Barang</h1>
+        <div class="acts"><button class="btn btn-outline btn-icon btn-lg"><svg><use href="#i-more"/></svg></button><button class="btn btn-default btn-lg"><svg><use href="#i-plus"/></svg>Produk</button></div>
+      </div>
+      <div class="tabs-ul"><span class="tab on">Daftar</span><span class="tab">Stok Masuk</span><span class="tab">Stok Keluar</span><span class="tab">Laporan Stok</span></div>
+      <div class="grid3 mt12">
+        <div class="card tight"><div class="stat"><div class="l">Total SKU</div><div class="v" style="font-size:18px">128</div></div></div>
+        <div class="card tight" style="border-color:color-mix(in srgb,var(--warning) 32%,transparent);background:color-mix(in srgb,var(--warning) 4%,transparent)"><div class="stat"><div class="l">Menipis</div><div class="v" style="font-size:18px;color:var(--warning-foreground)">4</div></div></div>
+        <div class="card tight"><div class="stat"><div class="l">Habis</div><div class="v" style="font-size:18px;color:var(--destructive-foreground)">2</div></div></div>
+      </div>
+      <div class="row mt12">
+        <div class="input-wrap"><svg><use href="#i-search"/></svg><input class="input" placeholder="Cari nama / SKU"></div>
+        <select class="input select" style="width:130px;flex:none"><option>Semua kategori</option></select>
+      </div>
+      <p class="muted" style="font-size:12px;margin:10px 0 6px">4 produk · filter: Menipis</p>
+      <div class="item-group">
+        <div class="item"><span class="item-media"><svg><use href="#i-box"/></svg></span><div class="item-content"><div class="item-title">Indomie Goreng</div><div class="item-desc">IDM-001 · Makanan</div><div class="row" style="gap:6px;margin-top:2px"><b class="mono" style="font-size:13px">Rp 3.500</b><span class="muted" style="font-size:12px">HPP 2.900</span><span class="badge badge-warning badge-sm">4 pcs</span></div></div><button class="btn btn-ghost btn-icon btn-sm"><svg><use href="#i-more"/></svg></button></div>
+        <div class="item"><span class="item-media" style="background:#dbe4f7"></span><div class="item-content"><div class="item-title">Aqua 600ml</div><div class="item-desc">AQ-600 · Minuman</div><div class="row" style="gap:6px;margin-top:2px"><b class="mono" style="font-size:13px">Rp 4.000</b><span class="badge badge-secondary badge-sm">3 harga</span><span class="badge badge-warning badge-sm">3 btl</span></div></div><button class="btn btn-ghost btn-icon btn-sm"><svg><use href="#i-more"/></svg></button></div>
+        <div class="item"><span class="item-media"><svg><use href="#i-box"/></svg></span><div class="item-content"><div class="item-title">Minyak Goreng Bimoli 1L</div><div class="item-desc">MG-1L · Kebutuhan</div><div class="row" style="gap:6px;margin-top:2px"><b class="mono" style="font-size:13px">Rp 19.000</b><span class="muted" style="font-size:12px">HPP 16.500</span><span class="badge badge-warning badge-sm">2 btl</span></div></div><button class="btn btn-ghost btn-icon btn-sm"><svg><use href="#i-more"/></svg></button></div>
+        <div class="item"><span class="item-media"><svg><use href="#i-box"/></svg></span><div class="item-content"><div class="item-title">Teh Botol Sosro</div><div class="item-desc">TB-450 · Minuman</div><div class="row" style="gap:6px;margin-top:2px"><b class="mono" style="font-size:13px">Rp 5.000</b><span class="badge badge-destructive badge-sm">Habis</span></div></div><button class="btn btn-ghost btn-icon btn-sm"><svg><use href="#i-more"/></svg></button></div>
+      </div>
+    </div>
+    <nav class="bnav">
+      <a class="bnav-i"><svg><use href="#i-home"/></svg>Beranda</a>
+      <a class="bnav-i on"><svg><use href="#i-box"/></svg>Barang</a>
+      <a class="bnav-i cta"><span class="ring"><svg><use href="#i-cart"/></svg></span>Kasir</a>
+      <a class="bnav-i"><svg><use href="#i-list"/></svg>Catatan</a>
+      <a class="bnav-i"><svg><use href="#i-grid"/></svg>Saya</a>
+    </nav>
+  </div>
+  <p class="note">Tab kelompok = Tabs varian underline (garis primary 2px). Stat "Menipis" yang aktif memakai gaya Alert warning (bg 4%, border 32%), bukan blok kuning penuh. Aksi edit/hapus digabung ke satu tombol ⋮ (Menu).</p>
+</div>
+
+<!-- ============================ 5. CATATAN — RIWAYAT ============================ -->
+<div class="frame">
+  <h2>5 · Catatan · Riwayat</h2>
+  <div class="phone">
+    <div class="status"><span>09:41</span><span>●●● ▮</span></div>
+    <div class="scroll">
+      <div class="hdr"><h1>Catatan</h1><div class="acts"><button class="btn btn-outline btn-icon btn-lg"><svg><use href="#i-download"/></svg></button></div></div>
+      <div class="tabs-ul"><span class="tab on">Riwayat</span><span class="tab">Kasbon</span><span class="tab">Pengeluaran</span><span class="tab">Laporan</span></div>
+      <div class="row mt12">
+        <button class="btn btn-outline btn-lg" style="flex:1;justify-content:flex-start"><svg><use href="#i-cal"/></svg>1 Sep 2026</button>
+        <span class="muted">–</span>
+        <button class="btn btn-outline btn-lg" style="flex:1;justify-content:flex-start"><svg><use href="#i-cal"/></svg>8 Sep 2026</button>
+      </div>
+      <div class="seg full mt8"><span class="seg-i on">Semua</span><span class="seg-i">Open bill</span><span class="seg-i">Selesai</span></div>
+      <div class="grid2 mt12">
+        <div class="card tight"><div class="stat"><div class="l">Transaksi</div><div class="v" style="font-size:18px">142</div></div></div>
+        <div class="card tight"><div class="stat"><div class="l">Total penjualan</div><div class="v" style="font-size:18px">Rp 8,4jt</div></div></div>
+      </div>
+      <div class="sec" style="margin-top:16px"><h3>Open bill</h3><span class="badge badge-warning">3</span></div>
+      <div class="item-group">
+        <div class="item" style="border-color:color-mix(in srgb,var(--warning) 32%,transparent)"><span class="item-media tint-warning"><svg><use href="#i-receipt"/></svg></span><div class="item-content"><div class="item-title">Meja 4 · #TRX-0416</div><div class="item-desc">4 produk · 08:55 · Kasir Rina</div></div><div class="item-actions"><b class="mono" style="font-weight:600">86.500</b><button class="btn btn-secondary btn-sm">Lanjut</button></div></div>
+      </div>
+      <p class="muted" style="font-size:12px;font-weight:500;margin:16px 0 6px">Senin, 8 September 2026 · 18 transaksi</p>
+      <div class="card tight" style="gap:0;padding:4px 0">
+        <div class="item flat"><span class="item-media"><svg><use href="#i-receipt"/></svg></span><div class="item-content"><div class="item-title">#TRX-0418 · Budi</div><div class="item-desc">3 produk · QRIS · 09:32</div></div><b class="mono" style="font-weight:600">47.000</b><svg class="chev"><use href="#i-chev"/></svg></div>
+        <div class="item flat"><span class="item-media"><svg><use href="#i-receipt"/></svg></span><div class="item-content"><div class="item-title">#TRX-0417</div><div class="item-desc">1 produk · Tunai · 09:20</div></div><b class="mono" style="font-weight:600">12.000</b><svg class="chev"><use href="#i-chev"/></svg></div>
+        <div class="item flat"><span class="item-media"><svg><use href="#i-receipt"/></svg></span><div class="item-content"><div class="item-title">#TRX-0415 · Siti</div><div class="item-desc">6 produk · Kasbon · 08:41 <span class="badge badge-info badge-sm">Kasbon</span></div></div><b class="mono" style="font-weight:600">120.000</b><svg class="chev"><use href="#i-chev"/></svg></div>
+      </div>
+      <p class="muted" style="font-size:12px;font-weight:500;margin:16px 0 6px">Minggu, 7 September 2026 · 24 transaksi</p>
+      <div class="card tight" style="gap:0;padding:4px 0">
+        <div class="item flat"><span class="item-media"><svg><use href="#i-receipt"/></svg></span><div class="item-content"><div class="item-title">#TRX-0400</div><div class="item-desc">2 produk · Tunai · 20:10</div></div><b class="mono" style="font-weight:600">9.000</b><svg class="chev"><use href="#i-chev"/></svg></div>
+      </div>
+    </div>
+    <nav class="bnav">
+      <a class="bnav-i"><svg><use href="#i-home"/></svg>Beranda</a>
+      <a class="bnav-i"><svg><use href="#i-box"/></svg>Barang</a>
+      <a class="bnav-i cta"><span class="ring"><svg><use href="#i-cart"/></svg></span>Kasir</a>
+      <a class="bnav-i on"><svg><use href="#i-list"/></svg>Catatan</a>
+      <a class="bnav-i"><svg><use href="#i-grid"/></svg>Saya</a>
+    </nav>
+  </div>
+  <p class="note">Rentang tanggal = dua Button outline (Date Picker Shark). Status = Segment Group penuh. Daftar per hari dikelompokkan dalam satu Card dengan Item flat bergaris pemisah.</p>
+</div>
+
+<!-- ============================ 6. LAPORAN ============================ -->
+<div class="frame">
+  <h2>6 · Catatan · Laporan</h2>
+  <div class="phone">
+    <div class="status"><span>09:41</span><span>●●● ▮</span></div>
+    <div class="scroll">
+      <div class="hdr"><h1>Catatan</h1><div class="acts"><button class="btn btn-outline btn-lg"><svg><use href="#i-download"/></svg>Export</button></div></div>
+      <div class="tabs-ul"><span class="tab">Riwayat</span><span class="tab">Kasbon</span><span class="tab">Pengeluaran</span><span class="tab on">Laporan</span></div>
+      <div class="tabs full mt12" style="background:var(--muted);padding:2px;border-radius:var(--radius-lg)"><span class="tab on" style="background:var(--background);box-shadow:var(--shadow-xs);height:32px">Harian</span><span class="tab" style="height:32px">7 hari</span><span class="tab" style="height:32px">30 hari</span></div>
+      <div class="card mt12">
+        <div class="card-header"><div class="card-title" style="font-size:14px">Laba rugi · 7 hari</div><div class="card-desc">2–8 Sep 2026</div><div class="card-action"><span class="badge badge-success badge-pill"><svg><use href="#i-up"/></svg>+8%</span></div></div>
+        <div class="dl">
+          <div class="dl-row"><span class="k">Penjualan kotor</span><span class="v">Rp 8.420.000</span></div>
+          <div class="dl-row"><span class="k">Diskon</span><span class="v" style="color:var(--destructive-foreground)">− Rp 120.000</span></div>
+          <div class="dl-row"><span class="k">Penjualan bersih</span><span class="v">Rp 8.300.000</span></div>
+          <div class="dl-row"><span class="k">HPP</span><span class="v" style="color:var(--destructive-foreground)">− Rp 5.810.000</span></div>
+          <div class="dl-row total"><span class="k">Laba kotor</span><span class="v">Rp 2.490.000</span></div>
+          <div class="dl-row"><span class="k">Pengeluaran</span><span class="v" style="color:var(--destructive-foreground)">− Rp 640.000</span></div>
+          <div class="dl-row total"><span class="k">Laba bersih</span><span class="v" style="color:var(--success-foreground);font-size:18px">Rp 1.850.000</span></div>
+        </div>
+      </div>
+      <div class="grid3 mt8">
+        <div class="card tight"><div class="stat"><div class="l">Transaksi</div><div class="v" style="font-size:18px">142</div></div></div>
+        <div class="card tight"><div class="stat"><div class="l">Rata-rata</div><div class="v" style="font-size:18px">58rb</div></div></div>
+        <div class="card tight"><div class="stat"><div class="l">Margin</div><div class="v" style="font-size:18px">22%</div></div></div>
+      </div>
+      <div class="card mt8">
+        <div class="card-header"><div class="card-title" style="font-size:14px">Metode pembayaran</div></div>
+        <div class="stack">
+          <div><div class="row" style="justify-content:space-between;font-size:13px"><span>Tunai <span class="muted">· 96 trx</span></span><b class="mono">Rp 5.1jt</b></div><div class="progress mt8" style="margin-top:6px"><i style="width:61%"></i></div></div>
+          <div><div class="row" style="justify-content:space-between;font-size:13px"><span>QRIS <span class="muted">· 38 trx</span></span><b class="mono">Rp 2.4jt</b></div><div class="progress" style="margin-top:6px"><i style="width:29%;background:var(--chart-2)"></i></div></div>
+          <div><div class="row" style="justify-content:space-between;font-size:13px"><span>Kasbon <span class="muted">· 8 trx</span></span><b class="mono">Rp 0.8jt</b></div><div class="progress" style="margin-top:6px"><i style="width:10%;background:var(--chart-3)"></i></div></div>
+        </div>
+        <div class="card-footer"><button class="btn btn-outline btn-block"><svg><use href="#i-printer"/></svg>Cetak laporan penutupan</button></div>
+      </div>
+    </div>
+    <nav class="bnav">
+      <a class="bnav-i"><svg><use href="#i-home"/></svg>Beranda</a>
+      <a class="bnav-i"><svg><use href="#i-box"/></svg>Barang</a>
+      <a class="bnav-i cta"><span class="ring"><svg><use href="#i-cart"/></svg></span>Kasir</a>
+      <a class="bnav-i on"><svg><use href="#i-list"/></svg>Catatan</a>
+      <a class="bnav-i"><svg><use href="#i-grid"/></svg>Saya</a>
+    </nav>
+  </div>
+  <p class="note">Rentang waktu = Tabs default Shark (indikator bg-accent di dalam list). Laba rugi = Data List; baris total memakai border-top warna foreground. Card Footer Shark (bg-muted/48 + border-top) untuk aksi cetak.</p>
+</div>
+
+<!-- ============================ 7. SAYA / PENGATURAN ============================ -->
+<div class="frame">
+  <h2>7 · Saya · Pengaturan</h2>
+  <div class="phone">
+    <div class="status"><span>09:41</span><span>●●● ▮</span></div>
+    <div class="scroll">
+      <div class="hdr"><h1>Saya</h1><div class="acts"><button class="btn btn-outline btn-icon btn-lg"><svg><use href="#i-help"/></svg></button></div></div>
+      <div class="card tight">
+        <div class="row" style="gap:12px"><span class="avatar xl brand">TB</span><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:16px">Toko Berkah</div><div class="muted" style="font-size:13px">Jl. Melati No. 12, Bandung</div><div class="row mt8" style="gap:4px"><span class="badge badge-outline badge-sm">1.204 transaksi</span><span class="badge badge-outline badge-sm">128 produk</span><span class="badge badge-outline badge-sm">3 karyawan</span></div></div><button class="btn btn-ghost btn-icon btn-sm"><svg><use href="#i-edit"/></svg></button></div>
+      </div>
+      <div class="alert alert-success mt8">
+        <svg><use href="#i-cloud"/></svg>
+        <div class="alert-title">Cloud backup aktif</div>
+        <div class="alert-desc">Terakhir sinkron 5 menit lalu · Paket Pro</div>
+        <div class="alert-action"><svg class="chev"><use href="#i-chev"/></svg></div>
+      </div>
+      <div class="input-wrap mt12"><svg><use href="#i-search"/></svg><input class="input" placeholder="Cari pengaturan…"></div>
+      <div class="sec"><h3>Kelola</h3></div>
+      <div class="grid2">
+        <div class="item"><span class="item-media tint"><svg><use href="#i-store"/></svg></span><div class="item-content"><div class="item-title">Toko</div><div class="item-desc">Profil, struk, meja</div></div></div>
+        <div class="item"><span class="item-media tint-info"><svg><use href="#i-users"/></svg></span><div class="item-content"><div class="item-title">Karyawan</div><div class="item-desc">Akun &amp; izin</div></div></div>
+        <div class="item"><span class="item-media tint-success"><svg><use href="#i-db"/></svg></span><div class="item-content"><div class="item-title">Data</div><div class="item-desc">Backup, kategori</div></div></div>
+        <div class="item"><span class="item-media tint-warning"><svg><use href="#i-hand"/></svg></span><div class="item-content"><div class="item-title">Mitra</div><div class="item-desc">Pelanggan, supplier</div></div></div>
+        <div class="item"><span class="item-media"><svg><use href="#i-palette"/></svg></span><div class="item-content"><div class="item-title">Tampilan</div><div class="item-desc">Tema, bahasa</div></div></div>
+        <div class="item"><span class="item-media"><svg><use href="#i-cog"/></svg></span><div class="item-content"><div class="item-title">Aplikasi</div><div class="item-desc">Update, versi</div></div></div>
+      </div>
+      <div class="sec"><h3>Cepat</h3></div>
+      <div class="card tight" style="gap:0;padding:4px 0">
+        <div class="item flat"><span class="item-media tint-info"><svg><use href="#i-shield"/></svg></span><div class="item-content"><div class="item-title">Mode multi-user</div><div class="item-desc">Login karyawan &amp; izin</div></div><span class="switch on"><i></i></span></div>
+        <div class="item flat"><span class="item-media tint-success"><svg><use href="#i-hand"/></svg></span><div class="item-content"><div class="item-title">Izinkan kasbon</div><div class="item-desc">Pelanggan bisa bayar nanti</div></div><span class="switch"><i></i></span></div>
+        <div class="item flat"><span class="item-media"><svg><use href="#i-printer"/></svg></span><div class="item-content"><div class="item-title">Printer Bluetooth</div><div class="item-desc">RPP02N · tersambung</div></div><svg class="chev"><use href="#i-chev"/></svg></div>
+      </div>
+      <div class="card tight mt12">
+        <div class="row" style="gap:12px"><span class="item-media"><svg><use href="#i-help"/></svg></span><div style="flex:1"><div style="font-weight:500">Butuh bantuan?</div><div class="muted" style="font-size:13px">Laporkan kendala langsung ke tim KanPOS.</div></div><button class="btn btn-secondary btn-sm">Lapor</button></div>
+      </div>
+      <p class="muted" style="text-align:center;font-size:12px;margin:16px 0 0">KanPOS v3.2.0 · masuk sebagai <b>ani</b> · <a href="#" style="color:var(--destructive-foreground)">Keluar</a></p>
+    </div>
+    <nav class="bnav">
+      <a class="bnav-i"><svg><use href="#i-home"/></svg>Beranda</a>
+      <a class="bnav-i"><svg><use href="#i-box"/></svg>Barang</a>
+      <a class="bnav-i cta"><span class="ring"><svg><use href="#i-cart"/></svg></span>Kasir</a>
+      <a class="bnav-i"><svg><use href="#i-list"/></svg>Catatan</a>
+      <a class="bnav-i on"><svg><use href="#i-grid"/></svg>Saya</a>
+    </nav>
+  </div>
+  <p class="note">Kartu identitas toko = Card + Avatar + Badge outline. Status cloud = Alert success (bukan strip berwarna). Kategori = grid Item 2 kolom; saklar cepat = Item flat + Switch Shark.</p>
+</div>
+
+<!-- ============================ 8. DIALOG & FORM ============================ -->
+<div class="frame">
+  <h2>8 · Form &amp; Dialog (Tambah produk / Hapus)</h2>
+  <div class="phone">
+    <div class="status"><span>09:41</span><span>●●● ▮</span></div>
+    <div class="scroll">
+      <div class="hdr"><button class="btn btn-ghost btn-icon btn-lg"><svg><use href="#i-back"/></svg></button><h1>Tambah produk</h1><div class="acts"><button class="btn btn-ghost btn-icon btn-lg"><svg><use href="#i-mic"/></svg></button></div></div>
+      <div class="row" style="gap:12px;margin-bottom:16px"><div class="item-media" style="width:64px;height:64px;border:1px dashed var(--input);background:transparent"><svg><use href="#i-plus"/></svg></div><div class="stack" style="gap:6px"><button class="btn btn-outline btn-sm">Ambil foto</button><button class="btn btn-ghost btn-sm">Pilih dari galeri</button></div></div>
+      <div class="stack" style="gap:14px">
+        <div><label class="label">Nama produk <span style="color:var(--destructive)">*</span></label><input class="input" value="Indomie Goreng"></div>
+        <div class="grid2"><div><label class="label">SKU</label><input class="input mono" value="IDM-001"></div><div><label class="label">Barcode</label><div class="row"><input class="input mono" placeholder="—"><button class="btn btn-outline btn-icon btn-lg"><svg><use href="#i-scan"/></svg></button></div></div></div>
+        <div><label class="label">Kategori</label><select class="input select"><option>🍜 Makanan</option></select></div>
+        <div class="grid2"><div><label class="label">Harga jual</label><input class="input mono" value="3.500" style="border-color:var(--primary);box-shadow:0 0 0 3px color-mix(in srgb,var(--ring) 32%,transparent)"><p class="hint">Margin 17% dari HPP</p></div><div><label class="label">HPP</label><input class="input mono" value="2.900"></div></div>
+        <div class="item"><div class="item-content"><div class="item-title">Kelola stok</div><div class="item-desc">Matikan untuk jasa / selalu tersedia</div></div><span class="switch on"><i></i></span></div>
+        <div class="grid2"><div><label class="label">Stok awal</label><input class="input mono" value="24"></div><div><label class="label">Satuan</label><select class="input select"><option>pcs</option></select></div></div>
+        <div><label class="label">Harga grosir <span class="muted" style="font-weight:400">(opsional)</span></label><button class="btn btn-outline btn-block" style="justify-content:flex-start;border-style:dashed"><svg><use href="#i-plus"/></svg>Tambah tingkat harga</button></div>
+      </div>
+      <div class="row mt16"><button class="btn btn-outline btn-xl" style="flex:1">Batal</button><button class="btn btn-default btn-xl" style="flex:2">Simpan produk</button></div>
+    </div>
+    <div class="overlay"></div>
+    <div class="dialog">
+      <h2>Hapus "Teh Botol Sosro"?</h2>
+      <p>Produk dan riwayat stoknya akan dihapus. Transaksi lama tetap tersimpan.</p>
+      <div class="row" style="justify-content:flex-end"><button class="btn btn-outline">Batal</button><button class="btn btn-destructive">Hapus</button></div>
+    </div>
+  </div>
+  <p class="note">Form sebagai halaman penuh (bukan Dialog scroll 90vh). Field Shark: label 14px medium, input h-9, hint di bawah, invalid = border destructive. Alert Dialog radius 16px, tombol destruktif solid merah.</p>
+</div>
+
+<!-- ============================ 9. TOKEN & KOMPONEN ============================ -->
+<div class="frame wide">
+  <h2>9 · Lembar token &amp; komponen Shark UI</h2>
+  <div class="phone tall" style="padding:24px 24px 32px;display:block">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+      <div>
+        <div class="card-title" style="font-size:14px">Warna (light)</div>
+        <div class="sw mt8">
+          <div><i style="background:var(--primary)"></i><small>primary #3554C1</small></div>
+          <div><i style="background:var(--background)"></i><small>bg neutral-50</small></div>
+          <div><i style="background:var(--foreground)"></i><small>fg neutral-800</small></div>
+          <div><i style="background:var(--muted)"></i><small>muted 6%</small></div>
+          <div><i style="background:var(--border)"></i><small>border 12%</small></div>
+          <div><i style="background:var(--success)"></i><small>success</small></div>
+          <div><i style="background:var(--warning)"></i><small>warning</small></div>
+          <div><i style="background:var(--destructive)"></i><small>destructive</small></div>
+          <div><i style="background:var(--info)"></i><small>info</small></div>
+        </div>
+        <div class="card-title mt16" style="font-size:14px">Radius (base 0.5rem)</div>
+        <div class="row mt8" style="gap:10px">
+          <span class="badge badge-outline" style="border-radius:var(--radius-sm)">sm 4</span><span class="badge badge-outline" style="border-radius:var(--radius-md)">md 6</span><span class="badge badge-outline" style="border-radius:var(--radius-lg)">lg 8 · button/input</span><span class="badge badge-outline" style="border-radius:var(--radius-xl)">xl 12 · card/item</span><span class="badge badge-outline" style="border-radius:var(--radius-2xl)">2xl 16 · dialog/sheet</span>
+        </div>
+        <div class="card-title mt16" style="font-size:14px">Tipografi · Hanken Grotesk</div>
+        <p style="margin:6px 0 0;font-size:22px;font-weight:600;letter-spacing:-.01em">Rp 1.245.000 <span class="muted" style="font-size:12px;font-weight:400">stat 22/600</span></p>
+        <p style="margin:2px 0 0;font-size:18px;font-weight:600">Judul halaman <span class="muted" style="font-size:12px;font-weight:400">18/600</span></p>
+        <p style="margin:2px 0 0;font-size:16px;font-weight:600">Card title <span class="muted" style="font-size:12px;font-weight:400">16/600</span></p>
+        <p style="margin:2px 0 0;font-size:14px;font-weight:500">Item title / label / button <span class="muted" style="font-size:12px;font-weight:400">14/500</span></p>
+        <p style="margin:2px 0 0;font-size:14px">Body 14/400 · <span class="muted">muted-foreground</span></p>
+        <p style="margin:2px 0 0;font-size:12px;font-weight:500">Badge / nav label 12/500</p>
+
+        <div class="card-title mt16" style="font-size:14px">Button</div>
+        <div class="row mt8" style="flex-wrap:wrap"><button class="btn btn-default">Default</button><button class="btn btn-outline">Outline</button><button class="btn btn-secondary">Secondary</button><button class="btn btn-ghost">Ghost</button><button class="btn btn-destructive">Destructive</button><button class="btn btn-link">Link</button></div>
+        <div class="row mt8" style="flex-wrap:wrap;align-items:flex-end"><button class="btn btn-default btn-xs">xs 24</button><button class="btn btn-default btn-sm">sm 28</button><button class="btn btn-default">md 32</button><button class="btn btn-default btn-lg">lg 36</button><button class="btn btn-default btn-xl">xl 40</button><button class="btn btn-default btn-xl btn-pill"><svg><use href="#i-check"/></svg>pill</button><button class="btn btn-outline btn-icon btn-lg"><svg><use href="#i-plus"/></svg></button></div>
+
+        <div class="card-title mt16" style="font-size:14px">Badge</div>
+        <div class="row mt8" style="flex-wrap:wrap"><span class="badge badge-default">Default</span><span class="badge badge-secondary">Secondary</span><span class="badge badge-outline">Outline</span><span class="badge badge-success">Success</span><span class="badge badge-info">Info</span><span class="badge badge-warning">Warning</span><span class="badge badge-destructive">Destructive</span><span class="badge badge-success badge-pill"><svg><use href="#i-up"/></svg>pill</span><span class="badge badge-outline badge-sm">sm</span><span class="badge badge-outline badge-lg">lg</span></div>
+
+        <div class="card-title mt16" style="font-size:14px">Input · Select · Switch</div>
+        <div class="stack mt8"><div class="input-wrap"><svg><use href="#i-search"/></svg><input class="input" placeholder="Placeholder (muted 64%)"></div><input class="input" value="Focus ring 3px ring/32" style="border-color:var(--primary);box-shadow:0 0 0 3px color-mix(in srgb,var(--ring) 32%,transparent)"><input class="input" value="Invalid" style="border-color:var(--destructive);color:var(--destructive);box-shadow:0 0 0 3px color-mix(in srgb,var(--destructive) 24%,transparent)"><div class="row"><select class="input select" style="flex:1"><option>Native select</option></select><span class="switch on"><i></i></span><span class="switch"><i></i></span></div></div>
+      </div>
+      <div>
+        <div class="card-title" style="font-size:14px">Tabs · Segment Group</div>
+        <div class="stack mt8">
+          <div class="tabs" style="background:var(--muted);padding:2px"><span class="tab on" style="background:var(--background);box-shadow:var(--shadow-xs);height:32px">Harian</span><span class="tab" style="height:32px">7 hari</span><span class="tab" style="height:32px">30 hari</span></div>
+          <div class="tabs-ul" style="margin:0;padding:0"><span class="tab on">Underline aktif</span><span class="tab">Tab</span><span class="tab">Tab</span></div>
+          <div class="seg"><span class="seg-i on">Semua</span><span class="seg-i">Makanan</span><span class="seg-i">Minuman</span></div>
+        </div>
+        <div class="card-title mt16" style="font-size:14px">Alert</div>
+        <div class="stack mt8">
+          <div class="alert"><svg><use href="#i-info"/></svg><div class="alert-title">Default</div><div class="alert-desc">bg input/4, border default</div></div>
+          <div class="alert alert-info"><svg><use href="#i-info"/></svg><div class="alert-title">Info</div><div class="alert-desc">bg info/4 · border info/32</div></div>
+          <div class="alert alert-success"><svg><use href="#i-check"/></svg><div class="alert-title">Success</div><div class="alert-desc">Backup berhasil</div></div>
+          <div class="alert alert-warning"><svg><use href="#i-warn"/></svg><div class="alert-title">Warning</div><div class="alert-desc">Stok menipis</div><div class="alert-action"><button class="btn btn-ghost btn-sm">Aksi</button></div></div>
+          <div class="alert alert-destructive"><svg><use href="#i-warn"/></svg><div class="alert-title">Destructive</div><div class="alert-desc">Sesi berakhir</div></div>
+        </div>
+        <div class="card-title mt16" style="font-size:14px">Card · Item · Data List</div>
+        <div class="card mt8">
+          <div class="card-header"><div class="card-title">Card title</div><div class="card-desc">Card description</div><div class="card-action"><button class="btn btn-ghost btn-icon btn-sm"><svg><use href="#i-more"/></svg></button></div></div>
+          <div class="item-group"><div class="item"><span class="item-media tint"><svg><use href="#i-box"/></svg></span><div class="item-content"><div class="item-title">Item title</div><div class="item-desc">Item description</div></div><svg class="chev"><use href="#i-chev"/></svg></div></div>
+          <div class="dl"><div class="dl-row"><span class="k">Label</span><span class="v">Rp 10.000</span></div><div class="dl-row total"><span class="k">Total</span><span class="v">Rp 10.000</span></div></div>
+          <div class="card-footer"><button class="btn btn-outline btn-sm">Footer action</button></div>
+        </div>
+        <div class="card-title mt16" style="font-size:14px">Perbandingan dengan design sekarang</div>
+        <div class="compare mt8">
+          <div class="h">Elemen</div><div class="h">Sekarang (Figma/Sora)</div><div class="h">Shark UI</div>
+          <div>Font</div><div>Sora, heading extrabold</div><div>Hanken Grotesk, semibold</div>
+          <div>Card</div><div>rx 20–24, tanpa border, bg putih di atas #EDF1F9</div><div>rx 12, border 1px, shadow-xs, bg = page (neutral-50)</div>
+          <div>Button</div><div>pil 52px</div><div>rx 8, h 40 (xl) / 36 (lg), shadow primary/24</div>
+          <div>Input</div><div>pil 52px, border #EFF2F6</div><div>rx 8, h 36, border input, ring 3px saat fokus</div>
+          <div>Header</div><div>pil putih 48px + ikon bulat biru</div><div>polos 56px, judul 18/600, tombol outline</div>
+          <div>Tab kelompok</div><div>chip pil biru solid</div><div>Tabs underline (garis primary)</div>
+          <div>Filter kategori</div><div>chip pil outline</div><div>Segment Group (aktif bg-input)</div>
+          <div>Badge status</div><div>solid (#5ABC61 dsb.)</div><div>tint 10% + border 20% + teks 700</div>
+          <div>Ikon blob</div><div>lingkaran #EFF5FF 44px</div><div>kotak rx 12 40px, tint 10%</div>
+          <div>Bottom nav</div><div>kartu rx 32 + FAB bulat glow</div><div>flat border-top blur; FAB kotak rx 12</div>
+          <div>Dark mode</div><div>ada</div><div>token .dark Shark (bg neutral-950)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+  const btn=document.getElementById('themeBtn');
+  btn.addEventListener('click',()=>{
+    const d=document.documentElement.classList.toggle('dark');
+    document.body.classList.toggle('dark',d);
+    btn.textContent=d?'☀ Mode terang':'☾ Mode gelap';
+  });
+</script>
+</body>
+</html>

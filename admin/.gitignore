@@ -1,0 +1,1 @@
+# Sepenuhnya tercakup .gitignore root (node_modules, dist, .env*, *.tsbuildinfo, coverage)

@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>KanPOS — Mockup v5 (SaaSable UI Kit)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS — SaaSable UI Kit (uikit/full-version, tema "default")
+   Sumber: src/views/landings/default/theme/{palette,typography}.ts
+           + theme/overrides/{Button,Chip,Container}.ts
+   Satu-satunya yang diubah: primary.main dipetakan ke biru brand
+   KanPOS (#3554C1), lalu ramp-nya dibangun ulang gaya Material-3.
+   ============================================================ */
+:root{
+  --font-head:'Archivo',system-ui,sans-serif;
+  --font-body:'Figtree',system-ui,sans-serif;
+
+  --primary-lighter:#DCE3FF;
+  --primary-light:#AEBDF7;
+  --primary:#3554C1;
+  --primary-dark:#2A44A0;
+  --primary-darker:#0E1A52;
+
+  --secondary-lighter:#D3E4F8;
+  --secondary:#4F6070;
+  --secondary-dark:#384858;
+
+  --grey-50:#F9F9FC;  --grey-100:#F1F4F9; --grey-200:#EBEEF3;
+  --grey-300:#E6E8EE; --grey-400:#E2E2E5; --grey-500:#D7DADF;
+  --grey-600:#C2C7CE; --grey-700:#72787E; --grey-800:#42474E;
+  --grey-900:#1A1C1E;
+
+  --text:#1A1C1E;
+  --text-2:#42474E;
+  --divider:#C2C7CE;
+  --bg:#FFF;
+
+  --ok:#2E7D4F; --ok-bg:#E7F4EC;
+  --warn:#8A5B00; --warn-bg:#FDF3E2;
+  --wa:#25D366;
+
+  --container:1266px;
+  --container-lg:1128px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:88px}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:var(--font-body);font-size:16px;line-height:1.5;letter-spacing:.5px;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:76px;
+}
+img{max-width:100%}
+a{color:inherit}
+
+/* ---- tipografi SaaSable ---- */
+h1,h2,h3,h4{font-family:var(--font-head);font-weight:400;margin:0;letter-spacing:0}
+h1{font-size:57px;line-height:1.123;letter-spacing:-.25px}
+h2{font-size:45px;line-height:1.156}
+h3{font-size:28px;line-height:1.286}
+h4{font-size:24px;line-height:1.333}
+.h5{font-family:var(--font-body);font-weight:500;font-size:22px;line-height:1.273;margin:0}
+.h6{font-family:var(--font-body);font-weight:400;font-size:22px;line-height:1.364;margin:0}
+.body1{font-size:16px;line-height:1.5;letter-spacing:.5px}
+.body2{font-size:14px;line-height:1.429;letter-spacing:.25px}
+.sub1{font-weight:500;font-size:16px;line-height:1.5;letter-spacing:.15px}
+.sub2{font-weight:500;font-size:14px;line-height:1.429;letter-spacing:.1px}
+.caption{font-size:12px;line-height:1.5;letter-spacing:.4px}
+.muted{color:var(--text-2)}
+
+/* ---- layout ---- */
+.container{max-width:var(--container);margin:0 auto;padding:0 24px}
+.container-lg{max-width:var(--container-lg);margin:0 auto;padding:0 24px}
+section{padding:80px 0}
+.sec-head{max-width:640px;margin:0 auto 48px;text-align:center}
+.sec-head h2{margin-bottom:12px}
+.grid{display:grid;gap:24px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+
+/* ---- komponen: Button (radius 100, sesuai overrides/Button.ts) ---- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  font-family:var(--font-body);font-size:14px;font-weight:600;line-height:1.429;letter-spacing:.1px;
+  border-radius:100px;border:1px solid transparent;cursor:pointer;text-decoration:none;
+  padding:14px 24px;transition:.18s ease;
+}
+.btn-lg{padding:20px 28px;font-size:15px}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-outline{background:#fff;color:var(--text);border-color:var(--divider);padding:13px 24px}
+.btn-outline:hover{background:var(--grey-100)}
+.btn-outline.btn-lg{padding:19px 28px}
+.btn-wa{background:#fff;color:#12703C;border-color:#9BE0B8;padding:13px 24px}
+.btn-wa:hover{background:#EAF9F0}
+.btn-light{background:#fff;color:var(--primary-darker)}
+.btn-ghost-light{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
+.btn-ghost-light:hover{background:rgba(255,255,255,.12)}
+
+/* ---- komponen: Chip (radius 74, label 12/24) ---- */
+.chip{
+  display:inline-flex;align-items:center;gap:8px;border-radius:74px;
+  padding:12px 24px;font-size:14px;font-weight:500;letter-spacing:.1px;
+  background:var(--grey-100);color:var(--text-2);border:1px solid transparent;
+}
+.chip-sm{padding:8px 16px;font-size:13px}
+.chip-primary{background:var(--primary-lighter);color:var(--primary-darker)}
+.chip-ok{background:var(--ok-bg);color:var(--ok)}
+.chip-warn{background:var(--warn-bg);color:var(--warn)}
+.chip-outline{background:#fff;border-color:var(--grey-600)}
+
+/* ---- komponen: Card ---- */
+.card{background:#fff;border:1px solid var(--grey-400);border-radius:16px;padding:32px}
+.card-soft{background:var(--grey-50);border:1px solid var(--grey-300);border-radius:16px;padding:32px}
+.icon-box{
+  width:48px;height:48px;border-radius:12px;display:grid;place-items:center;
+  background:var(--primary-lighter);color:var(--primary);margin-bottom:20px;
+}
+.icon-box svg{width:24px;height:24px}
+.tone-b{background:var(--primary-lighter);color:var(--primary-dark)}
+.tone-g{background:#E2F3E9;color:#1F6B43}
+.tone-y{background:#FBEFD9;color:#8A5B00}
+.tone-p{background:#EEE3FB;color:#6B36A8}
+.tone-t{background:#DDF2F0;color:#0C6E64}
+
+.list{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:10px}
+.list li{display:flex;gap:10px;font-size:14px;line-height:1.5;color:var(--text-2)}
+.list svg{width:18px;height:18px;flex:none;margin-top:1px;color:var(--primary)}
+
+.divider{height:1px;background:var(--grey-400);border:0;margin:0}
+
+/* ============================================================ NAVBAR */
+.nav{
+  position:sticky;top:0;z-index:70;background:rgba(255,255,255,.9);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--grey-400);
+}
+.nav-in{height:80px;display:flex;align-items:center;gap:32px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--font-head);font-size:20px;font-weight:500;letter-spacing:-.2px}
+.brand-mark{width:36px;height:36px;border-radius:10px;background:var(--primary);display:grid;place-items:center;color:#fff}
+.brand-mark svg{width:20px;height:20px}
+.nav-menu{display:flex;gap:28px;margin-left:8px}
+.nav-menu a{text-decoration:none;font-size:14px;font-weight:500;letter-spacing:.1px;color:var(--text-2)}
+.nav-menu a:hover{color:var(--primary)}
+.nav-cta{margin-left:auto;display:flex;gap:12px;align-items:center}
+
+/* ============================================================ HERO (Hero17) */
+.hero{
+  position:relative;overflow:hidden;padding:88px 0 96px;
+  background:
+    radial-gradient(1000px 460px at 76% 10%, var(--primary-lighter) 0%, rgba(220,227,255,0) 62%),
+    linear-gradient(180deg,var(--grey-50) 0%,#fff 78%);
+}
+.hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:56px;align-items:center}
+.hero h1{margin:20px 0 20px}
+.hero h1 em{font-style:normal;color:var(--primary)}
+.hero-sub{font-size:22px;line-height:1.364;color:var(--text-2);letter-spacing:0;max-width:34rem}
+.hero-actions{display:flex;gap:12px;margin:32px 0 20px;flex-wrap:wrap}
+.hero-note{font-size:14px;color:var(--text-2);letter-spacing:.25px}
+.hero-note a{color:var(--primary);font-weight:600}
+.hero-proof{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+
+/* mock HP */
+.phone-wrap{display:flex;justify-content:center}
+.phone{
+  width:300px;border-radius:38px;background:#0F1115;padding:10px;
+  box-shadow:0 40px 80px rgba(16,26,82,.22),0 4px 12px rgba(16,26,82,.10);
+}
+.phone-screen{background:#fff;border-radius:30px;overflow:hidden}
+.ps-top{background:var(--primary);color:#fff;padding:18px 18px 22px}
+.ps-top .t1{font-size:12px;opacity:.8;letter-spacing:.4px}
+.ps-top .t2{font-family:var(--font-head);font-size:26px;margin-top:2px}
+.ps-body{padding:16px}
+.row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--grey-300)}
+.row:last-child{border-bottom:0}
+.row .em{width:34px;height:34px;border-radius:9px;background:var(--grey-100);display:grid;place-items:center;font-size:17px}
+.row .nm{flex:1;min-width:0}
+.row .nm b{display:block;font-size:13.5px;font-weight:600}
+.row .nm span{font-size:11.5px;color:var(--text-2)}
+.row .vl{font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums}
+.ps-total{margin-top:12px;background:var(--grey-100);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
+.ps-total b{font-family:var(--font-head);font-size:19px;font-weight:500}
+.ps-btn{margin-top:12px;background:var(--primary);color:#fff;border-radius:100px;text-align:center;padding:13px;font-size:14px;font-weight:600}
+
+/* ============================================================ FEATURE20 strip */
+.strip{background:var(--grey-50);border-top:1px solid var(--grey-400);border-bottom:1px solid var(--grey-400);padding:56px 0}
+.strip .it{display:flex;gap:14px}
+.strip .ic{width:44px;height:44px;border-radius:12px;background:#fff;border:1px solid var(--grey-400);display:grid;place-items:center;color:var(--primary);flex:none}
+.strip .ic svg{width:22px;height:22px}
+
+/* ============================================================ BENEFIT (masalah) */
+.benefit .card{display:flex;flex-direction:column;gap:16px;padding:28px}
+.pain{display:flex;gap:12px;align-items:flex-start}
+.pain .x{width:26px;height:26px;border-radius:50%;background:#FBE9EC;color:#B3243F;display:grid;place-items:center;flex:none}
+.pain .x svg{width:15px;height:15px}
+.answer{display:flex;gap:12px;align-items:flex-start;background:var(--ok-bg);border-radius:12px;padding:14px 16px}
+.answer svg{width:18px;height:18px;color:var(--ok);flex:none;margin-top:2px}
+
+/* ============================================================ STEPS */
+.step{position:relative;padding-top:8px}
+.step-no{
+  width:40px;height:40px;border-radius:50%;background:var(--primary);color:#fff;
+  display:grid;place-items:center;font-family:var(--font-head);font-size:18px;margin-bottom:20px;
+}
+.mini{border:1px solid var(--grey-400);border-radius:14px;overflow:hidden;background:#fff;margin-top:20px}
+.mini-h{background:var(--grey-100);padding:9px 14px;font-size:11.5px;font-weight:600;color:var(--text-2);letter-spacing:.3px;border-bottom:1px solid var(--grey-300)}
+.mini-b{padding:8px 14px 14px}
+
+/* ============================================================ INTEGRATION (usaha) */
+.usaha{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.usaha .chip{background:#fff;border:1px solid var(--grey-400)}
+.usaha .chip:hover{border-color:var(--primary);color:var(--primary)}
+
+/* ============================================================ PRICING9 */
+.pricing-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:start}
+.price-free{
+  border-radius:20px;padding:40px;color:#fff;
+  background:linear-gradient(150deg,var(--primary) 0%,var(--primary-darker) 100%);
+}
+.price-free .amt{font-family:var(--font-head);font-size:64px;line-height:1;margin:14px 0 6px}
+.price-free .list li{color:rgba(255,255,255,.86)}
+.price-free .list svg{color:#fff}
+.plan{border:1px solid var(--grey-400);border-radius:20px;overflow:hidden}
+.plan-grp{padding:26px 28px}
+.plan-grp+.plan-grp{border-top:1px solid var(--grey-400)}
+.plan-row{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:14px 0;border-bottom:1px dashed var(--grey-500)}
+.plan-row:last-child{border-bottom:0;padding-bottom:0}
+.plan-row .pr{font-family:var(--font-head);font-size:20px;white-space:nowrap}
+.plan-row .pr small{font-family:var(--font-body);font-size:12px;color:var(--text-2);font-weight:500}
+
+/* ============================================================ OTHER (jujur) */
+.jujur{background:var(--grey-50)}
+.jujur .item{display:flex;gap:16px;padding:24px 0;border-bottom:1px solid var(--grey-400)}
+.jujur .item:last-child{border-bottom:0}
+.jujur .ic{width:40px;height:40px;border-radius:12px;background:var(--warn-bg);color:var(--warn);display:grid;place-items:center;flex:none}
+
+/* ============================================================ TESTIMONIAL slot */
+.slot{border:2px dashed var(--grey-600);border-radius:20px;padding:48px;text-align:center;background:var(--grey-50)}
+
+/* ============================================================ FAQ6 */
+.faq-wrap{max-width:840px;margin:0 auto}
+.acc{border:1px solid var(--grey-400);border-radius:16px;margin-bottom:12px;overflow:hidden;background:#fff}
+.acc[open]{border-color:var(--primary-light)}
+.acc summary{
+  list-style:none;cursor:pointer;display:flex;gap:16px;align-items:center;
+  padding:20px 24px;font-weight:600;font-size:16px;letter-spacing:.15px;
+}
+.acc summary::-webkit-details-marker{display:none}
+.acc summary .pl{width:28px;height:28px;border-radius:50%;background:var(--primary-lighter);color:var(--primary);display:grid;place-items:center;flex:none;transition:.2s}
+.acc[open] summary .pl{background:var(--primary);color:#fff;transform:rotate(45deg)}
+.acc .ans{padding:0 24px 22px 68px;color:var(--text-2);font-size:15px;line-height:1.6}
+
+/* ============================================================ CTA5 */
+.cta{
+  border-radius:24px;padding:72px 40px;text-align:center;color:#fff;
+  background:linear-gradient(140deg,var(--primary-darker) 0%,var(--primary) 100%);
+}
+.cta h2{margin-bottom:14px}
+.cta .actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:32px}
+
+/* ============================================================ FOOTER */
+footer{background:#0E1015;color:#C7CBD4;padding:72px 0 32px;margin-top:8px}
+footer h5{font-family:var(--font-body);font-size:14px;font-weight:600;color:#fff;margin:0 0 16px;letter-spacing:.1px}
+footer a{color:#C7CBD4;text-decoration:none;font-size:14px;line-height:2.1}
+footer a:hover{color:#fff}
+.foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:40px}
+.foot-bottom{border-top:1px solid #24262E;margin-top:48px;padding-top:24px;display:flex;justify-content:space-between;gap:16px;font-size:13px;color:#7C818C}
+
+/* ============================================================ BOTTOM BAR mobile */
+.bar{display:none}
+
+/* ============================================================ RESPONSIVE */
+@media (max-width:1024px){
+  h1{font-size:45px;line-height:1.156}
+  h2{font-size:36px;line-height:1.222}
+  h3{font-size:24px}
+  .hero-grid{grid-template-columns:1fr;gap:40px}
+  .hero-sub{font-size:16px;letter-spacing:.5px}
+  .pricing-grid{grid-template-columns:1fr}
+  .g4{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(2,1fr)}
+  .foot-grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:640px){
+  body{font-size:14px}
+  h1{font-size:32px;line-height:1.222}
+  h2{font-size:24px;line-height:1.333}
+  h3{font-size:20px}
+  h4{font-size:16px}
+  section{padding:56px 0}
+  .container,.container-lg{padding:0 20px}
+  .nav-menu,.nav-cta{display:none}
+  .nav-in{height:64px}
+  .hero{padding:48px 0 56px}
+  .btn,.btn-lg{padding:14px 22px;width:100%}
+  .hero-actions{flex-direction:column}
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .card,.card-soft,.price-free{padding:24px}
+  .cta{padding:48px 24px;border-radius:20px}
+  .foot-grid{grid-template-columns:1fr}
+  .acc .ans{padding-left:24px}
+  .bar{
+    display:flex;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:80;
+    background:#fff;border-top:1px solid var(--grey-400);padding:12px 16px;
+    box-shadow:0 -4px 20px rgba(16,26,82,.07);
+  }
+  .bar .btn{flex:1}
+  .bar .wa{width:52px;flex:none;background:var(--wa);color:#fff;border:0}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<header class="nav">
+  <div class="container nav-in">
+    <a class="brand" href="#beranda">
+      <span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M7 8V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3M7 13h4M7 17h4M15 13h2M15 17h2"/></svg></span>
+      Kan<span style="color:var(--primary)">POS</span>
+    </a>
+    <nav class="nav-menu">
+      <a href="#fitur">Fitur</a>
+      <a href="#cara">Cara pakai</a>
+      <a href="#harga">Harga</a>
+      <a href="#tanya">Tanya jawab</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-outline" href="https://www.kasirgratisan.com">Coba di browser</a>
+      <a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=gus.kanpos.kodi">Download Gratis</a>
+    </div>
+  </div>
+</header>
+
+<!-- ================= HERO (Hero17) ================= -->
+<section class="hero" id="beranda">
+  <div class="container hero-grid">
+    <div>
+      <span class="chip chip-ok chip-sm">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        Gratis selamanya
+      </span>
+      <h1>Aplikasi kasir gratis untuk <em>warung, toko &amp; resto kecil</em></h1>
+      <p class="hero-sub">Catat jualan, hitung untung, atur stok. Semua dari HP kamu. Nggak perlu daftar, nggak perlu internet.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary btn-lg" href="https://play.google.com/store/apps/details?id=gus.kanpos.kodi">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          Download Gratis
+        </a>
+        <a class="btn btn-wa btn-lg" href="https://s.id/wafreekasir">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2m5.8 14.17c-.25.69-1.42 1.3-1.97 1.35-.53.05-1.03.24-3.45-.72-2.9-1.15-4.75-4.12-4.9-4.31-.14-.19-1.16-1.54-1.16-2.94 0-1.4.73-2.09 1-2.37.25-.28.55-.35.73-.35s.37 0 .53.01c.17.01.4-.07.62.48.25.6.83 2 .9 2.15.07.14.12.31.02.5-.09.19-.14.31-.28.48-.14.16-.29.36-.42.48-.14.14-.28.29-.12.57.16.28.72 1.18 1.54 1.91 1.06.95 1.95 1.24 2.23 1.38.28.14.44.12.6-.07.17-.19.7-.81.88-1.09.19-.28.37-.23.62-.14.25.09 1.6.75 1.87.89.28.14.46.21.53.32.07.12.07.65-.18 1.34"/></svg>
+          Tanya dulu via WhatsApp
+        </a>
+      </div>
+      <p class="hero-note">Nggak mau install dulu? <a href="https://www.kasirgratisan.com">Coba langsung dari browser</a>.</p>
+      <div class="hero-proof">
+        <span class="chip chip-outline chip-sm">Rp 0 selamanya</span>
+        <span class="chip chip-outline chip-sm">Tanpa daftar akun</span>
+        <span class="chip chip-outline chip-sm">Jalan tanpa sinyal</span>
+      </div>
+    </div>
+
+    <div class="phone-wrap">
+      <div class="phone"><div class="phone-screen">
+        <div class="ps-top">
+          <div class="t1">Keranjang · Warung Bu Sri</div>
+          <div class="t2">Rp 78.500</div>
+        </div>
+        <div class="ps-body">
+          <div class="row"><span class="em">🍚</span><span class="nm"><b>Beras 5kg</b><span>1 × Rp 68.000</span></span><span class="vl">68.000</span></div>
+          <div class="row"><span class="em">🍜</span><span class="nm"><b>Mie instan</b><span>3 × Rp 3.500</span></span><span class="vl">10.500</span></div>
+          <div class="row"><span class="em">☕</span><span class="nm"><b>Kopi sachet</b><span>2 × Rp 2.000</span></span><span class="vl">4.000</span></div>
+          <div class="ps-total"><span class="sub2 muted">Kembalian</span><b>Rp 21.500</b></div>
+          <div class="ps-btn">Bayar &amp; cetak struk</div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FEATURE20 — strip ================= -->
+<section class="strip">
+  <div class="container grid g4">
+    <div class="it"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/></svg></span><span><b class="sub1">Rp 0 selamanya</b><br><span class="body2 muted">Bukan masa coba 14 hari</span></span></div>
+    <div class="it"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m2 2 20 20M8.5 16.4a5 5 0 0 1 7 0M5 12.9a10 10 0 0 1 4-2.4M2 8.8a15 15 0 0 1 4.2-2.6M22 8.8a15 15 0 0 0-8-3.7M19 12.9c-.6-.5-1.2-1-1.9-1.3"/><circle cx="12" cy="20" r="1"/></svg></span><span><b class="sub1">Sinyal hilang, tetap jalan</b><br><span class="body2 muted">Kasir nggak ikut mati</span></span></div>
+    <div class="it"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><span><b class="sub1">Nggak perlu daftar akun</b><br><span class="body2 muted">Akun Google cuma buat cloud</span></span></div>
+    <div class="it"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg></span><span><b class="sub1">HP, tablet, laptop</b><br><span class="body2 muted">Ringan, HP lama pun kuat</span></span></div>
+  </div>
+</section>
+
+<!-- ================= BENEFIT5 — masalah ================= -->
+<section class="benefit">
+  <div class="container">
+    <div class="sec-head">
+      <h2>Kalau kamu masih ngalamin ini, wajar</h2>
+      <p class="h6 muted">Hampir semua pemilik warung mulainya dari sini.</p>
+    </div>
+    <div class="grid g3">
+      <div class="card">
+        <div class="pain"><span class="x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span><span class="h5">Nyatet di buku, tulisannya suka hilang.</span></div>
+        <div class="answer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span class="body2">Tiap transaksi kecatat sendiri. Rekapnya jadi otomatis.</span></div>
+      </div>
+      <div class="card">
+        <div class="pain"><span class="x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span><span class="h5">Jualan ramai, tapi nggak tahu untungnya berapa.</span></div>
+        <div class="answer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span class="body2">Modal barang otomatis dipotong. Untung bersih kelihatan tiap hari.</span></div>
+      </div>
+      <div class="card">
+        <div class="pain"><span class="x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span><span class="h5">Aplikasi lain mahal, sinyal jelek malah error.</span></div>
+        <div class="answer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span class="body2">Ini gratis, dan jalannya dari HP kamu sendiri.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FEATURE18 — manfaat ================= -->
+<section id="fitur" style="background:var(--grey-50);border-top:1px solid var(--grey-400);border-bottom:1px solid var(--grey-400)">
+  <div class="container">
+    <div class="sec-head">
+      <h2>Yang kamu dapat</h2>
+      <p class="h6 muted">Semua urusan kasirnya gratis. Yang butuh internet atau paket berbayar kami tandai, biar jelas dari awal.</p>
+    </div>
+    <div class="grid g3">
+
+      <div class="card">
+        <div class="icon-box tone-b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.6 12.4a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 7H6"/></svg></div>
+        <h4>Kasir yang cepat</h4>
+        <p class="body2 muted" style="margin:8px 0 0">Tinggal ketuk barangnya, kembalian dihitung sendiri.</p>
+        <ul class="list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Scan barcode pakai kamera HP</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Diskon per barang atau sekaligus</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Pesanan belum bayar bisa disimpan</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Tiket dapur buat kafe &amp; resto</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="icon-box tone-g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 15l4-5 3 3 5-7"/></svg></div>
+        <h4>Untung, bukan cuma omzet</h4>
+        <p class="body2 muted" style="margin:8px 0 0">Modal barang dipotong otomatis, jadi angkanya jujur.</p>
+        <ul class="list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Laporan harian, 7 hari, 30 hari</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Barang paling laris kelihatan</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Pengeluaran warung ikut dicatat</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Rekap bisa diekspor ke Excel</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="icon-box tone-y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+        <h4>Stok nggak kacau lagi</h4>
+        <p class="body2 muted" style="margin:8px 0 0">Stok berkurang sendiri tiap ada yang beli.</p>
+        <ul class="list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Diingatkan kalau stok mau habis</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Barang masuk dari supplier tercatat</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Stok opname buat cocokkan hitungan fisik</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Isi daftar barang sekaligus dari Excel</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="icon-box tone-p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8" rx="1"/></svg></div>
+        <h4>Struk, utang &amp; karyawan</h4>
+        <p class="body2 muted" style="margin:8px 0 0">Cetak struk, catat kasbon, dan karyawan boleh pegang kasir dengan aman.</p>
+        <ul class="list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Printer bluetooth, atau kirim lewat WA</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Utang pelanggan tercatat &amp; bisa dicicil</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Karyawan masuk pakai PIN sendiri</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Laporan bisa disembunyikan dari mereka</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="icon-box tone-t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9 4.5 4h15L21 9M3 9h18v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1zM3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/></svg></div>
+        <h4>Toko online sendiri <span class="chip chip-warn chip-sm" style="vertical-align:middle;padding:4px 12px;font-size:11px">Butuh internet</span></h4>
+        <p class="body2 muted" style="margin:8px 0 0">Barang di kasir bisa dipajang jadi etalase online, lengkap dengan QR untuk dicetak.</p>
+        <ul class="list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Alamat toko sendiri yang bisa dibagikan</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>QR code siap tempel di meja kasir</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Kamu yang atur mau tampil atau tidak</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="icon-box tone-b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div>
+        <h4>Banyak kasir, satu data <span class="chip chip-primary chip-sm" style="vertical-align:middle;padding:4px 12px;font-size:11px">Paket berbayar</span></h4>
+        <p class="body2 muted" style="margin:8px 0 0">Dua HP kasir atau lebih jalan bareng dengan katalog yang sama. Ringkasannya kamu buka dari mana saja.</p>
+        <ul class="list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Karyawan pegang HP sendiri, transaksinya masuk semua</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Produk &amp; harga diubah sekali, semua HP ikut</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Ringkasan semua toko dalam satu layar</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Bandingkan cabang &amp; lihat tren 12 bulan</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= FEATURE21 — langkah ================= -->
+<section id="cara">
+  <div class="container">
+    <div class="sec-head">
+      <h2>Sehari pakai KanPOS</h2>
+      <p class="h6 muted">Dari pembeli datang sampai warung tutup.</p>
+    </div>
+    <div class="grid g4">
+      <div class="step">
+        <div class="step-no">1</div>
+        <h4>Pembeli datang</h4>
+        <p class="body2 muted" style="margin:8px 0 0">Ketuk barangnya, atau scan barcode-nya.</p>
+        <div class="mini"><div class="mini-h">PILIH BARANG</div><div class="mini-b">
+          <div class="row"><span class="em">🍚</span><span class="nm"><b>Beras 5kg</b><span>1 × Rp 68.000</span></span><span class="vl">68.000</span></div>
+          <div class="row"><span class="em">🍜</span><span class="nm"><b>Mie instan</b><span>3 × Rp 3.500</span></span><span class="vl">10.500</span></div>
+          <div class="ps-total"><span class="caption muted">Total belanja</span><b style="font-size:16px">Rp 78.500</b></div>
+        </div></div>
+      </div>
+      <div class="step">
+        <div class="step-no">2</div>
+        <h4>Terima uang</h4>
+        <p class="body2 muted" style="margin:8px 0 0">Kembaliannya dihitung aplikasi, nggak perlu kalkulator.</p>
+        <div class="mini"><div class="mini-h">BAYAR</div><div class="mini-b">
+          <div class="row"><span class="nm"><b>Total</b></span><span class="vl">Rp 78.500</span></div>
+          <div class="row"><span class="nm"><b>Uang diterima</b></span><span class="vl">Rp 100.000</span></div>
+          <div class="ps-total"><span class="caption muted">Kembalian</span><b style="font-size:16px">Rp 21.500</b></div>
+        </div></div>
+      </div>
+      <div class="step">
+        <div class="step-no">3</div>
+        <h4>Kasih struk</h4>
+        <p class="body2 muted" style="margin:8px 0 0">Cetak ke printer bluetooth, atau kirim gambarnya lewat WhatsApp.</p>
+        <div class="mini"><div class="mini-h">STRUK</div><div class="mini-b">
+          <div style="font-family:ui-monospace,monospace;font-size:11.5px;color:var(--text-2);line-height:1.9;padding:6px 0">
+            <div style="text-align:center;color:var(--text);font-weight:600">WARUNG BU SRI</div>
+            <div style="text-align:center">13 Agt 2026 · 19:24</div>
+            <div style="border-top:1px dashed var(--grey-600);margin:6px 0"></div>
+            <div style="display:flex;justify-content:space-between"><span>Beras 5kg ×1</span><span>68.000</span></div>
+            <div style="display:flex;justify-content:space-between"><span>Mie instan ×3</span><span>10.500</span></div>
+            <div style="border-top:1px dashed var(--grey-600);margin:6px 0"></div>
+            <div style="display:flex;justify-content:space-between;color:var(--text);font-weight:700"><span>TOTAL</span><span>78.500</span></div>
+          </div>
+        </div></div>
+      </div>
+      <div class="step">
+        <div class="step-no">4</div>
+        <h4>Warung tutup</h4>
+        <p class="body2 muted" style="margin:8px 0 0">Lihat hari ini untung berapa, tanpa hitung manual.</p>
+        <div class="mini"><div class="mini-h">TUTUP TOKO · 13 AGUSTUS</div><div class="mini-b">
+          <div class="row"><span class="nm"><b>Omzet</b></span><span class="vl">Rp 1.284.000</span></div>
+          <div class="row"><span class="nm"><b>Modal barang</b></span><span class="vl">Rp 1.043.100</span></div>
+          <div class="row"><span class="nm"><b>Pengeluaran</b></span><span class="vl">Rp 67.000</span></div>
+          <div class="ps-total" style="background:var(--ok-bg)"><span class="caption" style="color:var(--ok)">Untung bersih</span><b style="font-size:17px;color:var(--ok)">Rp 173.900</b></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= INTEGRATION2 — jenis usaha ================= -->
+<section style="background:var(--grey-50);border-top:1px solid var(--grey-400);border-bottom:1px solid var(--grey-400)">
+  <div class="container-lg">
+    <div class="sec-head">
+      <h2>Cocok buat usaha kamu</h2>
+      <p class="h6 muted">Pilih jenis usahanya, barang contoh langsung terisi. Tinggal ganti harga.</p>
+    </div>
+    <div class="usaha">
+      <span class="chip">🏪 Warung kelontong</span><span class="chip">🍚 Toko sembako</span>
+      <span class="chip">☕ Kafe &amp; resto kecil</span><span class="chip">🍵 Coffee shop</span>
+      <span class="chip">🧺 Laundry</span><span class="chip">💈 Salon &amp; barbershop</span>
+      <span class="chip">💊 Apotek</span><span class="chip">👕 Toko pakaian</span>
+      <span class="chip">🔨 Toko bangunan</span><span class="chip">📱 Toko elektronik</span>
+      <span class="chip">📦 Jualan online</span><span class="chip">✨ Usaha lain</span>
+    </div>
+    <div class="card" style="margin-top:40px;background:#fff">
+      <p class="body2 muted" style="margin:0">
+        Contoh: pilih <b style="color:var(--text)">Warung Kelontong</b>, langsung dapat kategori Sembako, Minuman, Rokok,
+        Kebutuhan Rumah, satuan pcs/kg/bungkus/renceng/sachet, plus 8 barang contoh lengkap dengan harga dan modalnya.
+        Buat <b style="color:var(--text)">laundry dan salon</b>, kolom stok otomatis dimatikan biar nggak bikin bingung.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRICING9 — harga ================= -->
+<section id="harga">
+  <div class="container">
+    <div class="sec-head">
+      <h2>Aplikasi kasirnya nol. Titik.</h2>
+      <p class="h6 muted">Nggak ada hitungan mundur, nggak ada fitur kasir yang tiba-tiba dikunci.</p>
+    </div>
+    <div class="pricing-grid">
+
+      <div class="price-free">
+        <span class="chip chip-sm" style="background:rgba(255,255,255,.16);color:#fff">Aplikasi kasir lengkap</span>
+        <div class="amt">Rp 0</div>
+        <p class="body2" style="opacity:.82;margin:0">Selamanya. Tanpa kartu kredit, tanpa daftar akun.</p>
+        <ul class="list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Transaksi sepuasnya, barang sebanyak apa pun</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Laporan untung rugi &amp; stok</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Cetak struk &amp; scan barcode</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Catat utang pelanggan &amp; pengeluaran</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Akun karyawan dengan PIN di HP itu sendiri</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Backup data ke file sendiri</li>
+        </ul>
+        <a class="btn btn-light btn-lg" style="margin-top:28px;width:100%" href="https://play.google.com/store/apps/details?id=gus.kanpos.kodi">Download Gratis</a>
+      </div>
+
+      <div>
+        <div class="plan">
+          <div class="plan-grp">
+            <h4>Backup Otomatis</h4>
+            <p class="body2 muted" style="margin:8px 0 4px">Data warung dicadangkan ke internet. Kalau HP hilang, tinggal ambil lagi. Untuk satu pemilik saja — belum termasuk akses karyawan.</p>
+            <div class="plan-row"><span><b class="sub1">1 GB</b><br><span class="body2 muted">cukup untuk warung sehari-hari</span></span><span class="pr">Rp 29.000<br><small>/bulan</small></span></div>
+            <div class="plan-row"><span><b class="sub1">10 GB</b><br><span class="body2 muted">buat yang backup-nya sering &amp; lama</span></span><span class="pr">Rp 99.000<br><small>/bulan</small></span></div>
+          </div>
+          <div class="plan-grp">
+            <h4>Banyak Kasir &amp; Pantau Dari Jauh</h4>
+            <p class="body2 muted" style="margin:8px 0 4px">Beberapa HP kasir berbagi satu data, plus ringkasan semua toko yang bisa kamu buka dari mana saja.</p>
+            <div class="plan-row"><span><b class="sub1">1 toko</b><br><span class="body2 muted">1 GB, kamu + 2 karyawan</span></span><span class="pr">Rp 49.000<br><small>/bulan</small></span></div>
+            <div class="plan-row"><span><b class="sub1">Sampai 5 toko</b><br><span class="body2 muted">5 GB, kamu + 14 karyawan</span></span><span class="pr">Rp 149.000<br><small>/bulan</small></span></div>
+          </div>
+        </div>
+        <p class="body2 muted" style="margin:20px 4px 0">
+          Dua-duanya opsional dan dibayar per bulan. Nggak beli pun aplikasi kasirnya tetap lengkap — cuma backup-nya
+          kamu simpan sendiri, dan kasirnya jalan di satu HP. Untuk pakai paket ini kamu perlu masuk dengan akun Google.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= OTHER1 — jujur ================= -->
+<section class="jujur" style="border-top:1px solid var(--grey-400);border-bottom:1px solid var(--grey-400)">
+  <div class="container-lg">
+    <div class="sec-head"><h2>Yang perlu kamu tahu dulu</h2></div>
+    <div class="card" style="padding:8px 32px">
+      <div class="item"><span class="ic"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01"/></svg></span><span><b class="sub1">Data tersimpan di HP kamu</b><br><span class="body2 muted">Enaknya: nggak butuh internet. Risikonya: kalau HP hilang dan belum di-backup, datanya ikut hilang. Backup cuma dua ketukan — biasakan tiap minggu.</span></span></div>
+      <div class="item"><span class="ic"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01"/></svg></span><span><b class="sub1">Banyak kasir cuma jalan di paket berbayar</b><br><span class="body2 muted">Versi gratisnya satu HP, satu data — dan itu memang cukup buat kebanyakan warung. Begitu kamu mau dua kasir atau lebih berbagi data yang sama, itu masuk paket berbayar dan perlu internet.</span></span></div>
+      <div class="item"><span class="ic"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01"/></svg></span><span><b class="sub1">Cetak struk paling lancar di Android</b><br><span class="body2 muted">Pakai aplikasi Android-nya untuk printer bluetooth. Di iPhone, struknya disimpan jadi gambar lalu dikirim lewat WhatsApp.</span></span></div>
+      <div class="item"><span class="ic"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01"/></svg></span><span><b class="sub1">Fitur cloud butuh akun Google</b><br><span class="body2 muted">Kasirnya bisa dipakai tanpa daftar sama sekali. Tapi begitu kamu mau backup otomatis, pulihkan data dari cloud, pakai banyak kasir, atau buka toko online, kamu perlu masuk dengan akun Google.</span></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TESTIMONIAL10 — slot ================= -->
+<section>
+  <div class="container-lg">
+    <div class="slot">
+      <span class="chip chip-warn chip-sm">SLOT — BELUM DIISI</span>
+      <h3 style="margin:20px 0 12px">Testimoni pemilik warung</h3>
+      <p class="body1 muted" style="max-width:52ch;margin:0 auto">
+        Di sinilah testimoni ditaruh, lengkap dengan foto dan nama tokonya. Bagian ini paling menaikkan kepercayaan,
+        jadi jangan diisi karangan. Minta 3 pengguna yang sudah pakai, rekam suaranya lewat WhatsApp, tulis apa adanya.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ6 ================= -->
+<section id="tanya" style="background:var(--grey-50);border-top:1px solid var(--grey-400)">
+  <div class="container">
+    <div class="sec-head"><h2>Yang sering ditanya</h2></div>
+    <div class="faq-wrap">
+      <details class="acc" open><summary><span class="pl"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>Beneran gratis?</summary><div class="ans">Iya. Aplikasinya jalan di HP kamu, jadi kami nggak keluar biaya server tiap toko. Yang berbayar cuma paket cloud-nya: backup otomatis dan pantau dari jauh. Kalau nggak butuh, kamu nggak akan pernah ditagih.</div></details>
+      <details class="acc"><summary><span class="pl"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>Kalau HP saya rusak atau hilang?</summary><div class="ans">Kalau sudah pernah backup, tinggal restore dan datanya balik. Kalau belum pernah backup dan nggak langganan, datanya hilang — kami nggak menyimpan salinannya. Makanya biasakan backup tiap minggu, cuma dua ketukan.</div></details>
+      <details class="acc"><summary><span class="pl"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>HP saya jadul, kuat nggak?</summary><div class="ans">Kuat. Aplikasinya ringan dan cuma sekali download. Setelah itu hampir nggak makan kuota karena datanya sudah ada di HP.</div></details>
+      <details class="acc"><summary><span class="pl"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>Saya belum pernah pakai aplikasi kasir.</summary><div class="ans">Nggak apa-apa. Awalnya cuma tiga layar: pilih bahasa, pilih jenis usaha, isi nama toko. Barang contoh sudah disiapkan jadi kamu bisa langsung coba jualan tanpa ngetik apa-apa. Bingung? Chat kami di WhatsApp.</div></details>
+      <details class="acc"><summary><span class="pl"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>Printer struk saya merek murah, bisa?</summary><div class="ans">Bisa, asal printer thermal bluetooth. Hampir semua printer struk di pasaran cocok. Paling lancar lewat aplikasi Android-nya.</div></details>
+      <details class="acc"><summary><span class="pl"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>Bedanya Backup Otomatis dan paket Banyak Kasir apa?</summary><div class="ans">Backup Otomatis itu jaga-jaga: data warung disimpan di internet supaya bisa diambil lagi kalau HP-mu kenapa-kenapa, dan isinya cuma buat kamu sendiri. Paket Banyak Kasir itu kerja bareng: beberapa HP kasir pakai satu data yang sama, karyawan punya akses sendiri, dan kamu bisa buka ringkasan semua toko dari mana saja. Kalau warungmu kamu pegang sendiri, Backup Otomatis sudah cukup.</div></details>
+      <details class="acc"><summary><span class="pl"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>Karyawan saya bisa pakai HP-nya sendiri?</summary><div class="ans">Bisa, dengan paket Banyak Kasir. Kamu undang mereka, lalu HP mereka menerima daftar barang dan harga dari HP kamu, dan transaksi yang mereka catat masuk ke laporanmu. Tanpa paket itu, karyawan tetap bisa pegang kasir di HP yang sama dengan akun PIN masing-masing, gratis.</div></details>
+      <details class="acc"><summary><span class="pl"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>Toko online itu maksudnya gimana?</summary><div class="ans">Barang yang sudah ada di kasir bisa kamu pajang jadi etalase online dengan alamat sendiri, plus QR code untuk dicetak dan ditempel di meja. Kamu yang menentukan toko itu tampil atau tidak. Fitur ini butuh internet dan akun Google.</div></details>
+      <details class="acc"><summary><span class="pl"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>Data jualan saya kamu intip nggak?</summary><div class="ans">Nggak. Transaksi, produk, dan angka untung tersimpan di HP kamu, dan cuma naik ke cloud kalau kamu sendiri yang mengaktifkan backup atau paket cloud. Yang kami kumpulkan cuma statistik pemakaian aplikasi secara umum (dan itu bisa kamu matikan), plus satu pertanyaan jenis usaha yang boleh kamu lewati.</div></details>
+      <details class="acc"><summary><span class="pl"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>Karyawan bisa lihat untung saya nggak?</summary><div class="ans">Nggak, kalau kamu nggak izinkan. Karyawan punya akun sendiri pakai PIN, dan kamu yang atur mereka boleh buka halaman apa saja.</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA5 ================= -->
+<section style="background:var(--grey-50);padding-top:0">
+  <div class="container">
+    <div class="cta">
+      <h2>Transaksi pertama kamu bisa dicatat malam ini</h2>
+      <p class="h6" style="opacity:.85">Nggak ada demo, nggak ada sales yang nelpon.</p>
+      <div class="actions">
+        <a class="btn btn-light btn-lg" href="https://play.google.com/store/apps/details?id=gus.kanpos.kodi">Download Gratis</a>
+        <a class="btn btn-ghost-light btn-lg" href="https://s.id/wafreekasir">Chat WhatsApp</a>
+      </div>
+      <p class="body2" style="opacity:.7;margin-top:24px">Gratis · Tanpa daftar · Bisa langsung dicoba dari browser</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <a class="brand" href="#beranda" style="color:#fff">
+          <span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M7 8V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3M7 13h4M7 17h4M15 13h2M15 17h2"/></svg></span>
+          Kan<span style="color:#8FA6F5">POS</span>
+        </a>
+        <p class="body2" style="margin-top:16px;max-width:38ch;color:#8E939E">
+          Aplikasi kasir gratis buat warung, toko, dan resto kecil di Indonesia. Nama domain kami masih beda-beda
+          karena sejarah. Semuanya milik kami — tujuan tiap tautan ditulis biar kamu nggak ragu waktu diklik.
+        </p>
+      </div>
+      <div><h5>Produk</h5>
+        <a href="https://www.kasirgratisan.com">Aplikasi web</a><br>
+        <a href="https://play.google.com/store/apps/details?id=gus.kanpos.kodi">Android</a><br>
+        <a href="https://dashboard.kankitu.com">Dashboard pemilik</a><br>
+        <a href="https://market.freekasir.com">Toko online</a>
+      </div>
+      <div><h5>Bantuan</h5>
+        <a href="https://s.id/wafreekasir">WhatsApp</a><br>
+        <a href="https://t.me/freekasir">Telegram</a><br>
+        <a href="https://kasirgratisan.fider.io">Lapor kendala</a>
+      </div>
+      <div><h5>Lainnya</h5>
+        <a href="https://freekasir.com/terms">Syarat layanan</a><br>
+        <a href="https://freekasir.com/privacy">Kebijakan privasi</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 KanPOS</span>
+      <span>Dibuat di Indonesia</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ================= BOTTOM BAR (mobile) ================= -->
+<div class="bar">
+  <a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=gus.kanpos.kodi">Download Gratis</a>
+  <a class="btn wa" href="https://s.id/wafreekasir" aria-label="Chat WhatsApp">
+    <svg viewBox="0 0 24 24" width="23" height="23" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2m5.8 14.17c-.25.69-1.42 1.3-1.97 1.35-.53.05-1.03.24-3.45-.72-2.9-1.15-4.75-4.12-4.9-4.31-.14-.19-1.16-1.54-1.16-2.94 0-1.4.73-2.09 1-2.37.25-.28.55-.35.73-.35s.37 0 .53.01c.17.01.4-.07.62.48.25.6.83 2 .9 2.15.07.14.12.31.02.5-.09.19-.14.31-.28.48-.14.16-.29.36-.42.48-.14.14-.28.29-.12.57.16.28.72 1.18 1.54 1.91 1.06.95 1.95 1.24 2.23 1.38.28.14.44.12.6-.07.17-.19.7-.81.88-1.09.19-.28.37-.23.62-.14.25.09 1.6.75 1.87.89.28.14.46.21.53.32.07.12.07.65-.18 1.34"/></svg>
+  </a>
+</div>
+
+</body>
+</html>

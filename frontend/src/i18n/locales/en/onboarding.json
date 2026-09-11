@@ -1,0 +1,139 @@
+{
+  "welcome": {
+    "tagline": "Sales, stock, and profit reports for your store — all in one app.",
+    "cta": "Create New Store",
+    "restoreCta": "I already have a backup",
+    "joinCta": "I'm staff — join a store"
+  },
+  "language": {
+    "title": "Choose Language"
+  },
+  "business": {
+    "title": "What do you sell?",
+    "subtitle": "We'll set up categories, units, and sample products that fit your business.",
+    "prepared": "Prepared for {{type}}"
+  },
+  "store": {
+    "title": "Your store name?",
+    "subtitle": "This is the name printed on customer receipts.",
+    "storeName": "Store Name",
+    "storeNamePlaceholder": "e.g. Berkah Jaya Store",
+    "optionalToggle": "Add address & phone",
+    "address": "Address",
+    "addressPlaceholder": "e.g. 10 Merdeka St, Jakarta",
+    "phone": "Phone Number",
+    "phonePlaceholder": "e.g. 08123456789",
+    "sampleTitle": "Starting products",
+    "sampleOn": "Sample products",
+    "sampleOnDesc": "{{count}} ready to use",
+    "sampleOff": "Start empty",
+    "sampleOffDesc": "add your own",
+    "safeTitle": "Your data stays on your phone",
+    "safeDesc": "No internet, no server, no monthly fees.",
+    "cta": "Open Store"
+  },
+  "success": {
+    "title": "{{name}} is ready!",
+    "subtitle": "Your store is ready to start selling.",
+    "categories": "{{count}} categories created",
+    "products": "{{count}} sample products added",
+    "payments": "Cash, Bank Transfer, QRIS enabled"
+  },
+  "restore": {
+    "title": "Restore data",
+    "desc": "Bring back your store from an old backup — no setup needed.",
+    "backupButton": "Choose backup file (.json)",
+    "restoring": "Restoring data...",
+    "or": "or",
+    "cloudTitle": "Restore from Cloud",
+    "cloudLogin": "Sign in with Google to see your cloud backups.",
+    "googleContinue": "Continue with Google",
+    "account": "Google Account",
+    "switchAccount": "Switch",
+    "noBackups": "No cloud backups for this account.",
+    "restoringInProgress": "Restoring data… don't close the app."
+  },
+  "tnc": {
+    "prefix": "By continuing, you agree to our",
+    "terms": "Terms & Conditions",
+    "and": "and",
+    "privacy": "Privacy Policy"
+  },
+  "navigation": {
+    "back": "Back",
+    "next": "Next",
+    "saving": "Setting up store..."
+  },
+  "toast": {
+    "googleLoginFailed": "Google login failed",
+    "restoreSuccess": "Data restored successfully!",
+    "restoreError": "Failed to read / restore backup file",
+    "cloudRestoreSuccess": "Data restored from cloud!",
+    "cloudRestoreError": "Failed to restore from cloud",
+    "cloudLoadError": "Failed to load cloud backups",
+    "setupError": "Failed to set up store. Please try again."
+  },
+  "join": {
+    "title": "Join a Store",
+    "desc": "For staff already invited by a store owner. You do not need to create your own store.",
+    "loginFirst": "Sign in with the Google account the owner invited.",
+    "codeLabel": "Invite code",
+    "codeHint": "The 8-character code from the store owner. Only valid for the invited Google account.",
+    "submit": "Join store",
+    "success": "Joined {{name}}",
+    "failed": "Failed to join the store",
+    "pulled": "{{count}} product & category records pulled from the store.",
+    "pullFailed": "Couldn't pull the catalog yet. It will retry automatically when online."
+  },
+  "pin": {
+    "title": "Create your PIN",
+    "subtitle": "Used every time you open the register on this phone. The store owner cannot see your PIN.",
+    "confirmTitle": "Repeat your PIN",
+    "confirmSubtitle": "Type it once more so there are no typos.",
+    "label": "New PIN",
+    "confirmLabel": "Repeat PIN",
+    "hint": "4–6 digits.",
+    "submit": "Save PIN",
+    "back": "Change PIN",
+    "saved": "PIN saved",
+    "accessTitle": "Your access in this store",
+    "accessStaff": "Register and your own transaction history. Profit reports and settings are owner-only.",
+    "accessOwner": "You own this store — every menu is open, including reports and settings.",
+    "errorFormat": "PIN must be 4–6 digits.",
+    "errorMismatch": "The PINs do not match. Try again.",
+    "errorSave": "Could not save the PIN.",
+    "errorNoDevice": "The device is not ready. Close and reopen the app."
+  },
+  "auth": {
+    "googleCta": "Sign in / Sign up with Google",
+    "joinCta": "I'm staff, I have an invite code",
+    "restoreCta": "Restore backup",
+    "skipCta": "Continue without an account",
+    "checking": "Checking account",
+    "checkingDesc": "Looking for your stores… If you have used KanPOS on another phone, they will show up here.",
+    "continueOffline": "Continue offline",
+    "bootstrapFailed": "Could not reach the server. You can still create a store now.",
+    "pickerTitle": "Your stores",
+    "pickerSubtitle": "Pick the store to open on this phone.",
+    "storeCount": "{{count}} stores available",
+    "noAddress": "No address yet",
+    "roleOwner": "Owner",
+    "roleStaff": "Cashier",
+    "oneStoreTitle": "One phone = one active store",
+    "oneStoreDesc": "Other stores are not downloaded to this phone. You can switch stores in Settings → Cloud Store.",
+    "openStore": "Open {{name}}",
+    "pickOne": "Pick a store first",
+    "createNewStore": "Create a new store",
+    "storeQuotaReached": "Your plan allows only {{count}} stores. Upgrade to add another one.",
+    "hydrTitle": "Setting up {{name}}",
+    "hydrSubtitle": "Do not close the app. This usually takes 10–30 seconds.",
+    "hydrSettings": "Store settings",
+    "hydrMembers": "Staff & permissions",
+    "hydrData": "Products, stock & transactions",
+    "hydrHistoryNote": "Older history stays in the cloud and can be opened from Reports at any time.",
+    "hydrateFailed": "Could not pull the store data. Please try again.",
+    "inviteFound": "You have an invite from {{name}}",
+    "inviteFoundDesc": "Enter the code below to join that store.",
+    "codeMustMatch": "The code must be sent to this email"
+  }
+}

@@ -1,0 +1,1289 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kan POS — Redesign v5 (persona-driven)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#3554C1; --primary-fg:#fff; --fg:#0D0D12; --fg-alt:#1A1B25;
+  --accent:#EFF5FF; --accent-strong:#C0CAEC;
+  --muted-fg:#818898; --muted:#ECEFF3;
+  --bg:#EDF1F9; --surface-alt:#F8FAFE; --subtle:#F6F8FA; --card:#fff;
+  --border:#DFE1E7; --border-soft:#ECEFF3; --border-input:#EFF2F6; --border-tab:#C1C7D0;
+  --success:#5ABC61; --success-tint:#EFF8EF;
+  --danger:#DF1C41; --danger-tint:#FFF0F3;
+  --warning:#F9A616; --warning-tint:#FFF6E0;
+  --purple:#CB5CFE; --teal:#3DDBBF;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Sora,system-ui,sans-serif;background:#F2F4F9;color:var(--fg);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1400px;margin:0 auto;padding:40px 24px 80px}
+
+/* ---------- doc chrome ---------- */
+.doc-head{max-width:760px;margin-bottom:48px}
+.doc-head h1{font-size:34px;font-weight:700;letter-spacing:-.02em;line-height:1.15}
+.doc-head p{margin-top:14px;color:var(--muted-fg);font-size:15px;line-height:1.65}
+.kicker{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--primary);background:var(--accent);padding:6px 12px;border-radius:8px;margin-bottom:16px}
+section{margin-top:64px}
+.sec-head{max-width:720px;margin-bottom:24px}
+.sec-head h2{font-size:22px;font-weight:600;letter-spacing:-.01em}
+.sec-head p{margin-top:8px;color:var(--muted-fg);font-size:14px;line-height:1.6}
+.note{background:var(--card);border:1px solid var(--border-soft);border-radius:16px;padding:16px 18px;font-size:13px;line-height:1.65;color:var(--muted-fg);max-width:760px;margin-top:20px}
+.note b{color:var(--fg);font-weight:600}
+.row{display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start}
+
+/* ---------- phone frame ---------- */
+.phone{width:375px;flex:0 0 375px}
+.phone-label{font-size:12px;font-weight:600;color:var(--muted-fg);margin-bottom:10px;display:flex;gap:8px;align-items:center}
+.phone-label .n{width:20px;height:20px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:10px;font-weight:700;flex:0 0 20px}
+.screen{width:375px;height:760px;background:var(--bg);border-radius:32px;border:1px solid var(--border);overflow:hidden;position:relative;box-shadow:0 12px 32px rgba(13,13,18,.08)}
+.screen.scroll{overflow-y:auto;scrollbar-width:none}
+.screen.scroll::-webkit-scrollbar{display:none}
+.status{height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:12px;font-weight:600;color:var(--fg)}
+.pad{padding:0 16px}
+
+/* ---------- primitives ---------- */
+.card{background:var(--card);border-radius:24px;padding:16px}
+.card-20{background:var(--card);border-radius:20px;padding:16px}
+.blob{width:46px;height:46px;border-radius:50%;background:var(--accent);color:var(--primary);display:grid;place-items:center;flex:0 0 46px}
+.blob.sm{width:36px;height:36px;flex-basis:36px}
+.blob.lg{width:52px;height:52px;flex-basis:52px}
+.blob.green{background:var(--success-tint);color:var(--success)}
+.blob.red{background:var(--danger-tint);color:var(--danger)}
+.blob.amber{background:var(--warning-tint);color:#B77400}
+.btn{height:52px;border-radius:26px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px;font-weight:600;width:100%;border:0;font-family:inherit;cursor:pointer}
+.btn.green{background:var(--success)}
+.btn.ghost{background:#fff;color:var(--fg);border:1px solid var(--border)}
+.input{height:52px;border-radius:26px;background:#fff;border:1px solid var(--border-input);display:flex;align-items:center;gap:10px;padding:0 18px;font-size:14px;color:var(--muted-fg)}
+.tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 0}
+.tabs::-webkit-scrollbar{display:none}
+.tab{height:38px;padding:0 16px;border-radius:19px;border:1px solid var(--border-tab);color:var(--muted-fg);font-size:13px;font-weight:500;display:flex;align-items:center;white-space:nowrap;background:transparent}
+.tab.on{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:600}
+.chip{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 10px;border-radius:8px;font-size:11px;font-weight:600}
+.chip.green{background:var(--success);color:#fff}
+.chip.amber{background:var(--warning-tint);color:#B77400}
+.chip.red{background:var(--danger-tint);color:var(--danger)}
+.chip.blue{background:var(--accent);color:var(--primary)}
+.chip.grey{background:var(--muted);color:var(--muted-fg)}
+.hr{height:1px;background:var(--border-soft);margin:12px 0}
+.money{font-variant-numeric:tabular-nums;font-weight:700;letter-spacing:-.02em}
+.muted{color:var(--muted-fg)}
+.tiny{font-size:11px}
+.sm{font-size:12px}
+.md{font-size:13px}
+.stack{display:flex;flex-direction:column}
+.between{display:flex;align-items:center;justify-content:space-between}
+.mid{display:flex;align-items:center}
+.g8{gap:8px}.g10{gap:10px}.g12{gap:12px}.g16{gap:16px}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt20{margin-top:20px}.mt24{margin-top:24px}
+.sec-title{font-size:15px;font-weight:600;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.sec-title a{font-size:12px;color:var(--primary);font-weight:500;text-decoration:none}
+
+/* ---------- header pill ---------- */
+.hdr{height:48px;border-radius:24px;background:#fff;display:flex;align-items:center;padding:4px;gap:10px}
+.hdr .av{width:40px;height:40px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;font-weight:600;font-size:14px;flex:0 0 40px}
+.hdr .act{width:40px;height:40px;border-radius:50%;background:var(--accent);color:var(--primary);display:grid;place-items:center;flex:0 0 40px;margin-left:auto}
+
+/* ---------- bottom nav ---------- */
+.nav{position:absolute;left:0;right:0;bottom:0;height:86px;background:#fff;border-top:1px solid var(--border-soft);display:flex;align-items:flex-start;padding-top:10px;z-index:5}
+.nav .it{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--muted-fg);font-size:10px;font-weight:500}
+.nav .it.on{color:var(--primary);font-weight:600}
+.nav .fab{flex:1;display:flex;flex-direction:column;align-items:center;position:relative}
+.nav .fab .b{width:62px;height:62px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;margin-top:-30px;box-shadow:0 8px 20px rgba(53,84,193,.4);border:4px solid #fff}
+.nav .fab span{font-size:10px;font-weight:700;color:var(--primary);margin-top:2px}
+
+/* ---------- misc app bits ---------- */
+.alert{display:flex;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:10px 12px;border-left:4px solid var(--warning)}
+.alert.red{border-left-color:var(--danger)}
+.trow{height:68px;background:#fff;border-radius:20px;display:flex;align-items:center;gap:12px;padding:0 12px}
+.pgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.pcard{background:#fff;border-radius:20px;padding:10px;display:flex;flex-direction:column;gap:6px;position:relative;min-height:112px}
+.pcard .ph{width:100%;height:44px;border-radius:12px;background:var(--accent);display:grid;place-items:center;font-size:20px}
+.stepper{display:flex;align-items:center;gap:0;background:var(--muted);border-radius:22px;height:40px;padding:2px}
+.stepper b{width:36px;height:36px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:16px;font-weight:600;color:var(--primary)}
+.stepper i{width:38px;text-align:center;font-style:normal;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:24px 24px 0 0;padding:10px 16px 20px;z-index:10;box-shadow:0 -8px 40px rgba(13,13,18,.16)}
+.grab{width:40px;height:4px;border-radius:2px;background:rgba(184,194,204,.5);margin:0 auto 14px}
+.scrim{position:absolute;inset:0;background:rgba(13,13,18,.35);z-index:9}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.keys b{height:52px;border-radius:16px;background:var(--subtle);display:grid;place-items:center;font-size:20px;font-weight:600}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.quick b{height:44px;border-radius:22px;background:var(--accent);color:var(--primary);display:grid;place-items:center;font-size:12px;font-weight:600}
+.quick b.pas{background:var(--primary);color:#fff}
+.tables{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.tbl{aspect-ratio:1;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:#fff;border:1px solid var(--border-soft)}
+.tbl .no{font-size:20px;font-weight:700}
+.tbl.busy{background:var(--primary);color:#fff;border-color:var(--primary)}
+.tbl.bill{background:var(--warning-tint);border-color:var(--warning);color:#8A5600}
+.cart{background:var(--surface-alt);border-radius:20px;padding:12px}
+.cline{display:flex;align-items:center;gap:10px;padding:6px 0}
+.cline .th{width:36px;height:36px;border-radius:10px;background:#fff;display:grid;place-items:center;font-size:16px;flex:0 0 36px}
+.seg{display:flex;background:#fff;border:1px solid var(--border-soft);border-radius:8px;padding:3px;gap:3px}
+.seg b{flex:1;height:22px;border-radius:6px;display:grid;place-items:center;font-size:10px;font-weight:600;color:var(--muted-fg)}
+.seg b.on{background:var(--primary);color:#fff}
+.lrow{background:#fff;border-radius:20px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.setgrp{background:#fff;border-radius:20px;overflow:hidden}
+.setrow{display:flex;align-items:center;gap:12px;padding:14px 14px}
+.setrow+.setrow{border-top:1px solid var(--border-soft)}
+.big-money{font-size:32px;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.bars{display:flex;align-items:flex-end;gap:6px;height:64px}
+.bars i{flex:1;background:var(--accent);border-radius:5px;display:block}
+.bars i.on{background:var(--primary)}
+.bars i.mid{background:var(--accent-strong)}
+.swipe{position:relative;overflow:hidden;border-radius:20px}
+.swipe .acts{position:absolute;right:0;top:0;bottom:0;display:flex}
+.swipe .acts b{width:64px;display:grid;place-items:center;color:#fff;font-size:11px;font-weight:600}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--muted-fg);margin-top:10px}
+.legend span{display:flex;align-items:center;gap:5px}
+.dot{width:10px;height:10px;border-radius:3px;display:block}
+svg{display:block}
+.flow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}
+.flow .st{background:#fff;border:1px solid var(--border-soft);border-radius:14px;padding:10px 14px;font-size:12px;font-weight:500}
+.flow .ar{color:var(--muted-fg);font-size:14px}
+.comp{background:#fff;border-radius:20px;padding:16px;width:280px}
+.comp h4{font-size:13px;font-weight:600;margin-bottom:4px}
+.comp p{font-size:11px;color:var(--muted-fg);line-height:1.5;margin-bottom:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="doc-head">
+  <span class="kicker">Mockup · Redesign v5</span>
+  <h1>Kan POS — redesign total berbasis persona</h1>
+  <p>Persona: pemilik warung klontong, grosir, dan restoran kecil, usia 20–45, tinggal di kota besar. Melek HP tapi bukan melek software akuntansi. Dipakai sambil berdiri, satu tangan, di bawah cahaya terang. Semua layar di bawah memakai design token yang sudah ada (biru <code>#3554C1</code>, Sora, radius 16/24/pill) — yang berubah adalah <b>tata letak, arsitektur navigasi, dan alur</b>.</p>
+</div>
+
+<!-- =============== 1. NAVIGASI =============== -->
+<section>
+  <div class="sec-head">
+    <h2>1 · Arsitektur navigasi: dari 17 halaman flat → 4 tab + 1 FAB</h2>
+    <p>Nav sekarang menyetarakan Kasir dengan Supplier. Padahal Kasir dipakai ratusan kali sehari, Supplier seminggu sekali. Usulan: kelompokkan per <i>pekerjaan</i>, bukan per entitas database.</p>
+  </div>
+  <div class="flow">
+    <span class="st">Beranda<br><span class="muted tiny">Dashboard</span></span>
+    <span class="ar">·</span>
+    <span class="st">Barang<br><span class="muted tiny">Produk + Stok Masuk + Stok Keluar + Opname</span></span>
+    <span class="ar">·</span>
+    <span class="st" style="background:var(--primary);color:#fff;border-color:var(--primary)">KASIR (FAB)<br><span class="tiny" style="opacity:.75">layar penuh, keluar dari nav</span></span>
+    <span class="ar">·</span>
+    <span class="st">Catatan<br><span class="muted tiny">Kasbon + Pengeluaran + Riwayat + Laporan</span></span>
+    <span class="ar">·</span>
+    <span class="st">Saya<br><span class="muted tiny">14 sub-settings → 5 grup</span></span>
+  </div>
+  <div class="note"><b>Supplier &amp; Pelanggan tidak jadi tab.</b> Mereka muncul kontekstual — pilih supplier saat Stok Masuk, pilih pelanggan saat Kasbon. Entitas yang hanya dipakai di dalam satu alur tidak layak dapat slot navigasi.</div>
+</section>
+
+<!-- =============== 2. ONBOARDING + BERANDA =============== -->
+<section>
+  <div class="sec-head">
+    <h2>2 · Onboarding menentukan wajah aplikasi</h2>
+    <p>Klontong, grosir, dan restoran bukan variasi kecil — alur kasirnya beda fundamental. Satu pertanyaan di awal mem-preset nav, layar kasir, dan istilah yang dipakai. Bisa diubah kapan saja di <i>Saya → Toko</i>.</p>
+  </div>
+  <div class="row">
+
+    <!-- ONBOARDING -->
+    <div class="phone">
+      <div class="phone-label"><span class="n">1</span> Onboarding — pilih jenis usaha</div>
+      <div class="screen">
+        <div class="status"><span>19.41</span><span>▾ ▮▮▮ 84%</span></div>
+        <div class="pad">
+          <div class="mt16" style="font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.25">Usaha kamu<br>jenisnya apa?</div>
+          <p class="md muted mt8" style="line-height:1.6">Kami atur tampilan kasirnya biar pas. Bisa diubah nanti.</p>
+
+          <div class="stack g12 mt24">
+            <div class="card-20" style="border:2px solid var(--primary);display:flex;gap:12px;align-items:center">
+              <div class="blob lg">🏪</div>
+              <div style="flex:1">
+                <div style="font-weight:600;font-size:15px">Warung / Klontong</div>
+                <div class="tiny muted mt8" style="margin-top:3px;line-height:1.5">Scan barcode, transaksi cepat, bantu hitung kembalian</div>
+              </div>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#3554C1"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+
+            <div class="card-20" style="border:1px solid var(--border-soft);display:flex;gap:12px;align-items:center">
+              <div class="blob lg" style="background:var(--warning-tint)">📦</div>
+              <div style="flex:1">
+                <div style="font-weight:600;font-size:15px">Grosir</div>
+                <div class="tiny muted" style="margin-top:3px;line-height:1.5">Harga bertingkat, qty besar, bayar tempo</div>
+              </div>
+              <svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="none" stroke="#DFE1E7" stroke-width="1.5"/></svg>
+            </div>
+
+            <div class="card-20" style="border:1px solid var(--border-soft);display:flex;gap:12px;align-items:center">
+              <div class="blob lg" style="background:#FBEEFF;color:var(--purple)">🍜</div>
+              <div style="flex:1">
+                <div style="font-weight:600;font-size:15px">Restoran / Warmindo</div>
+                <div class="tiny muted" style="margin-top:3px;line-height:1.5">Per meja, bill terbuka, tiket dapur</div>
+              </div>
+              <svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="none" stroke="#DFE1E7" stroke-width="1.5"/></svg>
+            </div>
+          </div>
+
+          <div class="card mt24" style="background:var(--surface-alt);border-radius:16px;padding:14px">
+            <div class="md" style="font-weight:600">Yang berubah</div>
+            <div class="tiny muted mt8" style="line-height:1.65">Layar kasir · istilah (“nota” vs “bill”) · menu yang ditampilkan · laporan default</div>
+          </div>
+
+          <div class="btn mt24">Lanjut</div>
+          <div class="md muted mt12" style="text-align:center">Belum yakin? Lewati dulu</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BERANDA -->
+    <div class="phone">
+      <div class="phone-label"><span class="n">2</span> Beranda — “gimana warung hari ini?”</div>
+      <div class="screen scroll">
+        <div class="status"><span>19.41</span><span>▾ ▮▮▮ 84%</span></div>
+        <div class="pad" style="padding-bottom:100px">
+          <div class="hdr">
+            <div class="av">BW</div>
+            <div>
+              <div class="tiny muted">Selamat malam</div>
+              <div class="md" style="font-weight:600">Bu Wati</div>
+            </div>
+            <div class="act">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3554C1" stroke-width="2" stroke-linecap="round"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+            </div>
+          </div>
+
+          <!-- angka besar -->
+          <div class="card mt16">
+            <div class="between">
+              <span class="sm muted">Penjualan hari ini</span>
+              <span class="chip blue">Hari ini ▾</span>
+            </div>
+            <div class="mid g8" style="margin-top:6px">
+              <div class="big-money">Rp 2.480.000</div>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#818898" stroke-width="2" stroke-linecap="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+            <div class="mid g8" style="margin-top:6px">
+              <span class="chip green">▲ 18% vs kemarin</span>
+              <span class="tiny muted">64 transaksi</span>
+            </div>
+
+            <div style="background:var(--surface-alt);border-radius:12px;padding:12px;margin-top:14px;display:flex">
+              <div style="flex:1">
+                <div class="tiny muted">Untung</div>
+                <div class="money mt8" style="font-size:16px;color:var(--success)">Rp 612.000</div>
+              </div>
+              <div style="width:1px;background:var(--border-soft)"></div>
+              <div style="flex:1;padding-left:14px">
+                <div class="tiny muted">Uang keluar</div>
+                <div class="money mt8" style="font-size:16px;color:var(--danger)">Rp 185.000</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- alert strip -->
+          <div class="stack g8 mt16">
+            <div class="alert">
+              <div class="blob sm amber">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
+              </div>
+              <div style="flex:1">
+                <div class="md" style="font-weight:600">3 barang hampir habis</div>
+                <div class="tiny muted" style="margin-top:2px">Indomie Goreng, Gula 1kg, Teh Pucuk</div>
+              </div>
+              <span class="muted">›</span>
+            </div>
+            <div class="alert red">
+              <div class="blob sm red">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              </div>
+              <div style="flex:1">
+                <div class="md" style="font-weight:600">Kasbon Bu Sari jatuh tempo</div>
+                <div class="tiny muted" style="margin-top:2px">Rp 340.000 · hari ini</div>
+              </div>
+              <span class="muted">›</span>
+            </div>
+          </div>
+
+          <!-- grafik -->
+          <div class="card mt16">
+            <div class="between">
+              <span class="md" style="font-weight:600">7 hari terakhir</span>
+              <span class="tiny muted">Rata-rata Rp 2,1jt</span>
+            </div>
+            <div class="bars mt12">
+              <i style="height:52%"></i><i style="height:38%"></i><i class="mid" style="height:70%"></i>
+              <i style="height:45%"></i><i class="mid" style="height:64%"></i><i style="height:58%"></i>
+              <i class="on" style="height:92%"></i>
+            </div>
+            <div class="between tiny muted" style="margin-top:8px">
+              <span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span style="color:var(--primary);font-weight:600">Min</span>
+            </div>
+          </div>
+
+          <!-- transaksi -->
+          <div class="mt20">
+            <div class="sec-title">Transaksi terakhir <a href="#">Lihat semua</a></div>
+            <div class="stack g8">
+              <div class="trow">
+                <div class="blob"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 01-8 0"/></svg></div>
+                <div style="flex:1">
+                  <div class="md" style="font-weight:600">#1042 · 5 barang</div>
+                  <div class="tiny muted" style="margin-top:2px">Tunai · 19.32</div>
+                </div>
+                <div class="money" style="font-size:14px;color:var(--success)">+Rp 87.000</div>
+              </div>
+              <div class="trow">
+                <div class="blob"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/></svg></div>
+                <div style="flex:1">
+                  <div class="md" style="font-weight:600">#1041 · 2 barang</div>
+                  <div class="tiny muted" style="margin-top:2px">QRIS · 19.18</div>
+                </div>
+                <div class="money" style="font-size:14px;color:var(--success)">+Rp 24.000</div>
+              </div>
+              <div class="trow">
+                <div class="blob amber"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 12V8H6a2 2 0 010-4h12v4"/><path d="M4 6v12a2 2 0 002 2h14v-4"/><path d="M18 12a2 2 0 000 4h4v-4z"/></svg></div>
+                <div style="flex:1">
+                  <div class="md" style="font-weight:600">#1040 · Pak Budi</div>
+                  <div class="tiny muted" style="margin-top:2px">Kasbon · 18.55</div>
+                </div>
+                <div class="money" style="font-size:14px;color:var(--warning)">Rp 150.000</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- nav -->
+        <div class="nav">
+          <div class="it on">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-7 9 7v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+            Beranda
+          </div>
+          <div class="it">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 12l9 5 9-5M3 16l9 5 9-5"/></svg>
+            Barang
+          </div>
+          <div class="fab">
+            <div class="b"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 9h10M7 13h6"/></svg></div>
+            <span>KASIR</span>
+          </div>
+          <div class="it">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a2 2 0 012-2h9l5 5v13a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M15 2v5h5M9 13h6M9 17h4"/></svg>
+            Catatan
+          </div>
+          <div class="it">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>
+            Saya
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="flex:1;min-width:280px">
+      <div class="note" style="margin-top:34px">
+        <b>Kenapa angka besar?</b><br>Layar dipakai di bawah lampu neon atau matahari, sambil berdiri, kadang tanpa kacamata. Nominal uang minimal 28–32px, tabular-nums supaya kolom angka lurus.
+      </div>
+      <div class="note">
+        <b>Bahasa warung, bukan akuntan.</b><br>“Untung hari ini” bukan “Laba kotor”. “Uang keluar” bukan “Beban operasional”. “Kasbon” bukan “Piutang usaha”. Persona ini tidak pernah kuliah akuntansi — dan tidak perlu.
+      </div>
+      <div class="note">
+        <b>Tombol mata di sebelah nominal.</b><br>Sembunyikan omzet dengan satu tap saat ada pembeli di depan meja kasir. Kecil, tapi ini yang bikin pemilik merasa aman buka app di depan orang.
+      </div>
+      <div class="note">
+        <b>AlertStrip menggantikan notifikasi.</b><br>Stok menipis dan kasbon jatuh tempo adalah dua hal yang bikin warung rugi diam-diam. Taruh di Beranda, tappable, bukan dikubur di halaman Laporan.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============== 3. KASIR 3 MODE =============== -->
+<section>
+  <div class="sec-head">
+    <h2>3 · Kasir — tiga wajah untuk tiga bisnis</h2>
+    <p>Layar ini 80% dari waktu pakai. Kalau salah, semua fitur lain tidak ada gunanya. Target: transaksi normal selesai dalam ≤3 tap.</p>
+  </div>
+  <div class="row">
+
+    <!-- KLONTONG -->
+    <div class="phone">
+      <div class="phone-label"><span class="n">3</span> Kasir · Klontong — scan &amp; grid</div>
+      <div class="screen">
+        <div class="status"><span>19.42</span><span>▾ ▮▮▮ 84%</span></div>
+        <div class="pad">
+          <div class="mid g10" style="margin-bottom:12px">
+            <div style="width:40px;height:40px;border-radius:50%;background:#fff;display:grid;place-items:center">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0D0D12" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </div>
+            <div style="font-weight:600;font-size:16px;flex:1">Kasir</div>
+            <span class="chip grey">Tersimpan di HP</span>
+          </div>
+
+          <!-- keranjang ringkas -->
+          <div class="cart">
+            <div class="between">
+              <span class="sm" style="font-weight:600">Keranjang · 3 barang</span>
+              <span class="tiny" style="color:var(--danger);font-weight:600">Kosongkan</span>
+            </div>
+            <div class="hr"></div>
+            <div class="cline">
+              <div class="th">🍜</div>
+              <div style="flex:1">
+                <div class="md" style="font-weight:600">Indomie Goreng</div>
+                <div class="tiny muted" style="margin-top:2px">Rp 3.500 × 4</div>
+              </div>
+              <div class="money sm">14.000</div>
+            </div>
+            <div class="cline">
+              <div class="th">🥤</div>
+              <div style="flex:1">
+                <div class="md" style="font-weight:600">Teh Pucuk 350ml</div>
+                <div class="tiny muted" style="margin-top:2px">Rp 4.000 × 2</div>
+              </div>
+              <div class="money sm">8.000</div>
+            </div>
+            <div class="cline">
+              <div class="th">🍚</div>
+              <div style="flex:1">
+                <div class="md" style="font-weight:600">Beras 5kg</div>
+                <div class="tiny muted" style="margin-top:2px">Rp 68.000 × 1</div>
+              </div>
+              <div class="money sm">68.000</div>
+            </div>
+          </div>
+
+          <!-- search + scan -->
+          <div class="mid g8 mt12">
+            <div class="input" style="flex:1">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#818898" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+              Cari barang…
+            </div>
+            <div style="width:52px;height:52px;border-radius:26px;background:var(--primary);display:grid;place-items:center;flex:0 0 52px">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"/><path d="M7 8v8M10.5 8v8M14 8v8M17 8v8"/></svg>
+            </div>
+          </div>
+
+          <div class="tabs mt12">
+            <span class="tab on">Favorit</span>
+            <span class="tab">Minuman</span>
+            <span class="tab">Makanan</span>
+            <span class="tab">Rokok</span>
+            <span class="tab">Sembako</span>
+          </div>
+
+          <div class="pgrid mt12">
+            <div class="pcard"><div class="ph">🍜</div><div class="tiny" style="font-weight:600;line-height:1.35">Indomie Goreng</div><span class="chip green" style="align-self:flex-start">3.500</span></div>
+            <div class="pcard"><div class="ph">🥤</div><div class="tiny" style="font-weight:600;line-height:1.35">Teh Pucuk</div><span class="chip green" style="align-self:flex-start">4.000</span></div>
+            <div class="pcard"><div class="ph">☕</div><div class="tiny" style="font-weight:600;line-height:1.35">Kopi Sachet</div><span class="chip amber" style="align-self:flex-start">Sisa 4</span></div>
+            <div class="pcard"><div class="ph">🚬</div><div class="tiny" style="font-weight:600;line-height:1.35">Rokok 12</div><span class="chip green" style="align-self:flex-start">24.000</span></div>
+            <div class="pcard"><div class="ph">🥚</div><div class="tiny" style="font-weight:600;line-height:1.35">Telur /kg</div><span class="chip green" style="align-self:flex-start">28.000</span></div>
+            <div class="pcard"><div class="ph">🍚</div><div class="tiny" style="font-weight:600;line-height:1.35">Beras 5kg</div><span class="chip green" style="align-self:flex-start">68.000</span></div>
+          </div>
+        </div>
+
+        <!-- CTA bar -->
+        <div style="position:absolute;left:16px;right:16px;bottom:20px">
+          <div style="height:60px;border-radius:30px;background:var(--success);display:flex;align-items:center;padding:5px;box-shadow:0 8px 24px rgba(90,188,97,.4)">
+            <div style="width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;flex:0 0 50px;position:relative">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M6 6L5 2H2"/></svg>
+              <span style="position:absolute;top:-2px;right:-2px;background:#fff;color:var(--success);font-size:10px;font-weight:700;width:18px;height:18px;border-radius:50%;display:grid;place-items:center">3</span>
+            </div>
+            <div style="flex:1;padding-left:12px;color:#fff">
+              <div class="tiny" style="opacity:.85">Total</div>
+              <div class="money" style="font-size:19px">Rp 90.000</div>
+            </div>
+            <div style="background:#fff;color:var(--success);height:44px;padding:0 20px;border-radius:22px;display:grid;place-items:center;font-weight:700;font-size:14px;margin-right:5px">Bayar</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHEET BAYAR -->
+    <div class="phone">
+      <div class="phone-label"><span class="n">4</span> Bayar — nominal cepat, bukan hitung manual</div>
+      <div class="screen">
+        <div class="status"><span>19.42</span><span>▾ ▮▮▮ 84%</span></div>
+        <div class="pad" style="filter:blur(1px);opacity:.6">
+          <div class="mid g10" style="margin-bottom:12px">
+            <div style="width:40px;height:40px;border-radius:50%;background:#fff"></div>
+            <div style="font-weight:600;font-size:16px;flex:1">Kasir</div>
+          </div>
+          <div class="cart"><div class="cline"><div class="th">🍜</div><div style="flex:1"><div class="md" style="font-weight:600">Indomie Goreng</div></div><div class="money sm">14.000</div></div></div>
+        </div>
+        <div class="scrim"></div>
+
+        <div class="sheet">
+          <div class="grab"></div>
+
+          <div style="background:var(--surface-alt);border-radius:16px;padding:14px;text-align:center">
+            <div class="tiny muted">Total belanja</div>
+            <div class="big-money" style="margin-top:4px">Rp 90.000</div>
+          </div>
+
+          <div class="sm" style="font-weight:600;margin:16px 0 8px">Cara bayar</div>
+          <div class="seg" style="height:34px;padding:4px">
+            <b class="on">Tunai</b><b>QRIS</b><b>Transfer</b><b>Kasbon</b>
+          </div>
+
+          <div class="sm" style="font-weight:600;margin:16px 0 8px">Uang diterima</div>
+          <div class="quick">
+            <b class="pas">Pas</b><b>50rb</b><b>100rb</b><b>150rb</b>
+          </div>
+
+          <div class="mid" style="margin-top:12px;height:56px;border-radius:16px;border:1px solid var(--border-input);background:#fff;padding:0 16px">
+            <span class="muted" style="font-size:15px">Rp</span>
+            <span class="money" style="font-size:24px;margin-left:8px;flex:1">100.000</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#818898" stroke-width="2" stroke-linecap="round"><path d="M21 4H8L2 12l6 8h13a1 1 0 001-1V5a1 1 0 00-1-1z"/><path d="M17 9l-5 6M12 9l5 6"/></svg>
+          </div>
+
+          <div class="between" style="background:var(--success-tint);border-radius:16px;padding:14px 16px;margin-top:12px">
+            <span class="md" style="font-weight:600;color:#2E7D34">Kembalian</span>
+            <span class="money" style="font-size:22px;color:var(--success)">Rp 10.000</span>
+          </div>
+
+          <div class="keys mt12">
+            <b>1</b><b>2</b><b>3</b><b>4</b><b>5</b><b>6</b><b>7</b><b>8</b><b>9</b>
+            <b>000</b><b>0</b><b style="background:var(--danger-tint);color:var(--danger)">⌫</b>
+          </div>
+
+          <div class="btn green mt16">Selesai &amp; Cetak Struk</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="flex:1;min-width:280px">
+      <div class="note" style="margin-top:34px">
+        <b>Kembalian adalah ketakutan No.1 kasir klontong.</b><br>Tombol nominal cepat (Pas / 50rb / 100rb / 150rb) menghilangkan hitung-hitungan di kepala saat antrean panjang. Kembalian tampil besar, hijau, sebelum tombol selesai ditekan.
+      </div>
+      <div class="note">
+        <b>NumPad custom, bukan keyboard OS.</b><br>Keyboard sistem memakan setengah layar, tombolnya kecil, dan menutup nominal kembalian. Keypad sendiri: tap-target 52px, hanya angka, selalu terlihat bersama hasilnya.
+      </div>
+      <div class="note">
+        <b>Keranjang di atas, katalog di bawah.</b><br>Jempol berada di zona bawah — di situlah tempat memilih barang dan tombol Bayar. Keranjang cuma perlu dilihat, jarang disentuh, jadi taruh di atas.
+      </div>
+      <div class="note">
+        <b>CTA bar hijau = uang masuk.</b><br>Konsisten di seluruh app: hijau untuk uang masuk / untung, merah untuk uang keluar / rugi, kuning untuk perlu perhatian. Persona ini membaca warna lebih cepat daripada teks.
+      </div>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top:36px">
+
+    <!-- GROSIR -->
+    <div class="phone">
+      <div class="phone-label"><span class="n">5</span> Kasir · Grosir — list, qty besar, harga bertingkat</div>
+      <div class="screen">
+        <div class="status"><span>10.14</span><span>▾ ▮▮▮ 92%</span></div>
+        <div class="pad">
+          <div class="mid g10" style="margin-bottom:12px">
+            <div style="width:40px;height:40px;border-radius:50%;background:#fff;display:grid;place-items:center">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0D0D12" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </div>
+            <div style="font-weight:600;font-size:16px;flex:1">Nota Baru</div>
+            <span class="chip blue">Mode Grosir</span>
+          </div>
+
+          <!-- pelanggan -->
+          <div class="mid g10" style="background:#fff;border-radius:22px;padding:6px 8px 6px 6px">
+            <div class="blob sm" style="background:var(--accent)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.3 3.1-5 7-5s7 1.7 7 5"/></svg>
+            </div>
+            <div style="flex:1">
+              <div class="md" style="font-weight:600">Toko Berkah — Pak Anto</div>
+              <div class="tiny muted" style="margin-top:2px">Sisa kasbon Rp 1.250.000 · limit 3jt</div>
+            </div>
+            <span class="chip grey">Ganti</span>
+          </div>
+
+          <div class="input mt12">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#818898" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+            Ketik nama / kode barang…
+          </div>
+
+          <div class="stack g8 mt12">
+            <!-- item 1 -->
+            <div class="lrow">
+              <div class="mid g10">
+                <div class="th" style="width:40px;height:40px;border-radius:12px;background:var(--accent);display:grid;place-items:center;font-size:18px;flex:0 0 40px">🍜</div>
+                <div style="flex:1">
+                  <div class="md" style="font-weight:600">Indomie Goreng · Dus</div>
+                  <div class="tiny muted" style="margin-top:2px">Stok 84 dus · isi 40 pcs</div>
+                </div>
+                <div class="money" style="font-size:15px">Rp 1.560.000</div>
+              </div>
+              <div class="mid g10">
+                <div class="seg" style="flex:1">
+                  <b>Eceran</b><b class="on">Grosir</b><b>Partai</b>
+                </div>
+                <div class="stepper">
+                  <b>−</b><i>12</i><b>+</b>
+                </div>
+              </div>
+              <div class="between tiny muted">
+                <span>Rp 130.000 / dus</span>
+                <span style="color:var(--success);font-weight:600">Hemat Rp 84.000</span>
+              </div>
+            </div>
+
+            <!-- item 2 -->
+            <div class="lrow">
+              <div class="mid g10">
+                <div class="th" style="width:40px;height:40px;border-radius:12px;background:var(--accent);display:grid;place-items:center;font-size:18px;flex:0 0 40px">🍚</div>
+                <div style="flex:1">
+                  <div class="md" style="font-weight:600">Beras Pandan · Sak 25kg</div>
+                  <div class="tiny muted" style="margin-top:2px">Stok 31 sak</div>
+                </div>
+                <div class="money" style="font-size:15px">Rp 1.700.000</div>
+              </div>
+              <div class="mid g10">
+                <div class="seg" style="flex:1">
+                  <b>Eceran</b><b>Grosir</b><b class="on">Partai</b>
+                </div>
+                <div class="stepper">
+                  <b>−</b><i>5</i><b>+</b>
+                </div>
+              </div>
+              <div class="between tiny muted">
+                <span>Rp 340.000 / sak</span>
+                <span style="color:var(--success);font-weight:600">Hemat Rp 75.000</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mt12" style="border-radius:20px;padding:14px">
+            <div class="between sm"><span class="muted">Subtotal</span><span class="money">Rp 3.260.000</span></div>
+            <div class="between sm" style="margin-top:8px"><span class="muted">Diskon nota</span><span class="money" style="color:var(--success)">− Rp 60.000</span></div>
+            <div class="hr"></div>
+            <div class="between"><span class="md" style="font-weight:600">Total</span><span class="money" style="font-size:20px">Rp 3.200.000</span></div>
+          </div>
+        </div>
+
+        <div style="position:absolute;left:16px;right:16px;bottom:20px;display:flex;gap:8px">
+          <div class="btn ghost" style="flex:1;font-size:13px">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0D0D12" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            Bayar Tempo
+          </div>
+          <div class="btn green" style="flex:1;font-size:13px">Bayar Lunas</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESTORAN: MEJA -->
+    <div class="phone">
+      <div class="phone-label"><span class="n">6</span> Kasir · Restoran — pilih meja dulu</div>
+      <div class="screen">
+        <div class="status"><span>12.05</span><span>▾ ▮▮▮ 71%</span></div>
+        <div class="pad">
+          <div class="mid g10" style="margin-bottom:12px">
+            <div style="width:40px;height:40px;border-radius:50%;background:#fff;display:grid;place-items:center">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0D0D12" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </div>
+            <div style="font-weight:600;font-size:16px;flex:1">Pilih Meja</div>
+            <span class="chip blue">6 terisi</span>
+          </div>
+
+          <div class="tabs" style="margin-bottom:12px">
+            <span class="tab on">Semua</span>
+            <span class="tab">Indoor</span>
+            <span class="tab">Outdoor</span>
+            <span class="tab">Bungkus</span>
+          </div>
+
+          <div class="tables">
+            <div class="tbl"><span class="no">01</span><span class="tiny muted">Kosong</span></div>
+            <div class="tbl busy"><span class="no">02</span><span class="tiny" style="opacity:.85">Rp 78.000</span><span class="tiny" style="opacity:.7">24 mnt</span></div>
+            <div class="tbl busy"><span class="no">03</span><span class="tiny" style="opacity:.85">Rp 145.000</span><span class="tiny" style="opacity:.7">8 mnt</span></div>
+            <div class="tbl"><span class="no">04</span><span class="tiny muted">Kosong</span></div>
+            <div class="tbl bill"><span class="no">05</span><span class="tiny" style="font-weight:600">Minta bill</span><span class="tiny">Rp 62.000</span></div>
+            <div class="tbl busy"><span class="no">06</span><span class="tiny" style="opacity:.85">Rp 210.000</span><span class="tiny" style="opacity:.7">41 mnt</span></div>
+            <div class="tbl"><span class="no">07</span><span class="tiny muted">Kosong</span></div>
+            <div class="tbl busy"><span class="no">08</span><span class="tiny" style="opacity:.85">Rp 55.000</span><span class="tiny" style="opacity:.7">12 mnt</span></div>
+            <div class="tbl"><span class="no">09</span><span class="tiny muted">Kosong</span></div>
+          </div>
+
+          <div class="legend">
+            <span><i class="dot" style="background:#fff;border:1px solid var(--border)"></i> Kosong</span>
+            <span><i class="dot" style="background:var(--primary)"></i> Ada order</span>
+            <span><i class="dot" style="background:var(--warning)"></i> Minta bill</span>
+          </div>
+
+          <div class="mt20">
+            <div class="sec-title">Perlu tindakan</div>
+            <div class="stack g8">
+              <div class="trow">
+                <div class="blob amber"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 8h16M6 8v11a2 2 0 002 2h8a2 2 0 002-2V8M9 8V5a3 3 0 016 0v3"/></svg></div>
+                <div style="flex:1">
+                  <div class="md" style="font-weight:600">Meja 05 minta bill</div>
+                  <div class="tiny muted" style="margin-top:2px">4 item · Rp 62.000</div>
+                </div>
+                <span class="chip green">Bayar</span>
+              </div>
+              <div class="trow">
+                <div class="blob red"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+                <div style="flex:1">
+                  <div class="md" style="font-weight:600">Meja 06 sudah 41 menit</div>
+                  <div class="tiny muted" style="margin-top:2px">Tiket dapur belum ditandai selesai</div>
+                </div>
+                <span class="chip grey">Cek</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="position:absolute;left:16px;right:16px;bottom:20px">
+          <div class="btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            Order Bungkus / Take Away
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESTORAN: ORDER -->
+    <div class="phone">
+      <div class="phone-label"><span class="n">7</span> Kasir · Restoran — bill terbuka meja 03</div>
+      <div class="screen">
+        <div class="status"><span>12.06</span><span>▾ ▮▮▮ 71%</span></div>
+        <div class="pad">
+          <div class="mid g10" style="margin-bottom:12px">
+            <div style="width:40px;height:40px;border-radius:50%;background:#fff;display:grid;place-items:center">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0D0D12" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </div>
+            <div style="flex:1">
+              <div style="font-weight:600;font-size:16px">Meja 03</div>
+              <div class="tiny muted" style="margin-top:1px">Buka 8 menit · 2 orang</div>
+            </div>
+            <span class="chip amber">Bill terbuka</span>
+          </div>
+
+          <div class="cart">
+            <div class="between">
+              <span class="sm" style="font-weight:600">Sudah dipesan</span>
+              <span class="chip green" style="height:20px">Terkirim ke dapur</span>
+            </div>
+            <div class="hr"></div>
+            <div class="cline">
+              <div class="th">🍛</div>
+              <div style="flex:1">
+                <div class="md" style="font-weight:600">Nasi Goreng Spesial</div>
+                <div class="tiny muted" style="margin-top:2px">Pedas sedang, tanpa acar</div>
+              </div>
+              <span class="tiny muted">×2</span>
+              <div class="money sm" style="width:56px;text-align:right">56.000</div>
+            </div>
+            <div class="cline">
+              <div class="th">🥤</div>
+              <div style="flex:1">
+                <div class="md" style="font-weight:600">Es Teh Manis</div>
+              </div>
+              <span class="tiny muted">×2</span>
+              <div class="money sm" style="width:56px;text-align:right">10.000</div>
+            </div>
+          </div>
+
+          <div class="cart mt8" style="background:var(--warning-tint)">
+            <div class="between">
+              <span class="sm" style="font-weight:600;color:#8A5600">Tambahan baru</span>
+              <span class="tiny" style="color:#8A5600">belum dikirim</span>
+            </div>
+            <div class="hr" style="background:rgba(249,166,22,.25)"></div>
+            <div class="cline">
+              <div class="th">🍢</div>
+              <div style="flex:1">
+                <div class="md" style="font-weight:600">Sate Ayam</div>
+              </div>
+              <div class="stepper" style="height:32px">
+                <b style="width:28px;height:28px;font-size:14px">−</b><i style="width:26px;font-size:13px">1</i><b style="width:28px;height:28px;font-size:14px">+</b>
+              </div>
+              <div class="money sm" style="width:56px;text-align:right">25.000</div>
+            </div>
+          </div>
+
+          <div class="tabs mt12">
+            <span class="tab on">Favorit</span>
+            <span class="tab">Nasi</span>
+            <span class="tab">Mie</span>
+            <span class="tab">Minuman</span>
+          </div>
+
+          <div class="pgrid mt12">
+            <div class="pcard" style="min-height:96px"><div class="ph">🍛</div><div class="tiny" style="font-weight:600;line-height:1.35">Nasgor Spesial</div><span class="chip green" style="align-self:flex-start">28.000</span></div>
+            <div class="pcard" style="min-height:96px"><div class="ph">🍜</div><div class="tiny" style="font-weight:600;line-height:1.35">Mie Ayam</div><span class="chip green" style="align-self:flex-start">22.000</span></div>
+            <div class="pcard" style="min-height:96px"><div class="ph">🍢</div><div class="tiny" style="font-weight:600;line-height:1.35">Sate Ayam</div><span class="chip green" style="align-self:flex-start">25.000</span></div>
+          </div>
+        </div>
+
+        <div style="position:absolute;left:16px;right:16px;bottom:20px">
+          <div class="between" style="background:#fff;border-radius:20px;padding:12px 16px;margin-bottom:8px">
+            <span class="md muted">Total sementara</span>
+            <span class="money" style="font-size:19px">Rp 91.000</span>
+          </div>
+          <div style="display:flex;gap:8px">
+            <div class="btn ghost" style="flex:1;font-size:13px">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0D0D12" stroke-width="2" stroke-linecap="round"><rect x="6" y="3" width="12" height="6" rx="1"/><rect x="4" y="9" width="16" height="7" rx="2"/><rect x="6" y="15" width="12" height="6" rx="1"/></svg>
+              Kirim ke Dapur
+            </div>
+            <div class="btn green" style="flex:1;font-size:13px">Bayar</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="flex:1;min-width:260px">
+      <div class="note" style="margin-top:34px">
+        <b>Grosir itu list-first, bukan grid.</b><br>Grid produk berguna kalau barangnya sedikit dan dikenali dari foto. Grosir punya ratusan SKU dan pembelinya menyebut nama. Search dominan, tiap baris punya stepper besar + toggle tier harga yang terlihat, tidak disembunyikan di menu.
+      </div>
+      <div class="note">
+        <b>“Bayar Tempo” sejajar dengan “Bayar Lunas”.</b><br>Di grosir, jual tempo itu normal, bukan pengecualian. Menyembunyikannya sebagai opsi kecil membuat pemilik mencatat di buku terpisah — dan datanya hilang dari app.
+      </div>
+      <div class="note">
+        <b>Limit kasbon tampil saat memilih pelanggan.</b><br>“Sisa kasbon Rp 1,25jt · limit 3jt” muncul sebelum transaksi dimulai, bukan setelah. Ini mencegah kerugian, bukan sekadar melaporkannya.
+      </div>
+      <div class="note">
+        <b>Restoran: warna meja &gt; teks status.</b><br>Putih kosong, biru ada order, kuning minta bill. Pemilik memindai satu layar dalam sedetik. Timer menit di meja mengubah “sudah lama nih” dari perasaan jadi angka.
+      </div>
+      <div class="note">
+        <b>Item baru dipisah dengan blok kuning.</b><br>Kesalahan paling mahal di restoran adalah order yang tidak sampai ke dapur. Kuning = belum dikirim, hijau = sudah. Tidak perlu diingat-ingat.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============== 4. BARANG + CATATAN + SAYA =============== -->
+<section>
+  <div class="sec-head">
+    <h2>4 · Barang, Catatan, Saya — konsolidasi halaman</h2>
+    <p>Delapan halaman terpisah dilebur jadi tiga tab bertab. Yang hilang bukan fiturnya, tapi keharusan mengingat di mana letaknya.</p>
+  </div>
+  <div class="row">
+
+    <!-- BARANG -->
+    <div class="phone">
+      <div class="phone-label"><span class="n">8</span> Barang — 4 halaman jadi 1</div>
+      <div class="screen scroll">
+        <div class="status"><span>19.50</span><span>▾ ▮▮▮ 82%</span></div>
+        <div class="pad" style="padding-bottom:100px">
+          <div class="hdr">
+            <div class="av" style="background:var(--accent);color:var(--primary)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 12l9 5 9-5"/></svg>
+            </div>
+            <div style="font-weight:600;font-size:15px;flex:1">Barang</div>
+            <div class="act"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3554C1" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
+          </div>
+
+          <div class="tabs mt16">
+            <span class="tab on">Daftar</span>
+            <span class="tab">Stok Masuk</span>
+            <span class="tab">Stok Keluar</span>
+            <span class="tab">Opname</span>
+          </div>
+
+          <div class="input mt12">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#818898" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+            Cari barang…
+          </div>
+
+          <!-- ringkasan -->
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px">
+            <div class="card-20" style="padding:12px">
+              <div class="tiny muted">Total SKU</div>
+              <div class="money mt8" style="font-size:18px">248</div>
+            </div>
+            <div class="card-20" style="padding:12px">
+              <div class="tiny muted">Menipis</div>
+              <div class="money mt8" style="font-size:18px;color:var(--warning)">3</div>
+            </div>
+            <div class="card-20" style="padding:12px">
+              <div class="tiny muted">Habis</div>
+              <div class="money mt8" style="font-size:18px;color:var(--danger)">1</div>
+            </div>
+          </div>
+
+          <div class="sec-title mt20">Perlu restok <a href="#">Buat PO</a></div>
+          <div class="stack g8">
+            <!-- swipe demo -->
+            <div class="swipe">
+              <div class="acts">
+                <b style="background:var(--primary)">Restok</b>
+                <b style="background:var(--muted-fg)">Edit</b>
+              </div>
+              <div class="trow" style="transform:translateX(-128px);width:calc(100% + 128px)">
+                <div class="blob amber">☕</div>
+                <div style="flex:1">
+                  <div class="md" style="font-weight:600">Kopi Sachet</div>
+                  <div class="tiny muted" style="margin-top:2px">Sisa 4 · min. 12</div>
+                </div>
+                <span class="chip amber">Menipis</span>
+              </div>
+            </div>
+            <div class="trow">
+              <div class="blob red">🧂</div>
+              <div style="flex:1">
+                <div class="md" style="font-weight:600">Gula Pasir 1kg</div>
+                <div class="tiny muted" style="margin-top:2px">Sisa 0 · min. 10</div>
+              </div>
+              <span class="chip red">Habis</span>
+            </div>
+            <div class="trow">
+              <div class="blob amber">🥤</div>
+              <div style="flex:1">
+                <div class="md" style="font-weight:600">Teh Pucuk 350ml</div>
+                <div class="tiny muted" style="margin-top:2px">Sisa 6 · min. 24</div>
+              </div>
+              <span class="chip amber">Menipis</span>
+            </div>
+          </div>
+
+          <div class="sec-title mt20">Semua barang</div>
+          <div class="stack g8">
+            <div class="trow">
+              <div class="blob">🍜</div>
+              <div style="flex:1">
+                <div class="md" style="font-weight:600">Indomie Goreng</div>
+                <div class="tiny muted" style="margin-top:2px">Modal 2.900 · Jual 3.500</div>
+              </div>
+              <div style="text-align:right">
+                <div class="money sm">84</div>
+                <div class="tiny muted" style="margin-top:2px">pcs</div>
+              </div>
+            </div>
+            <div class="trow">
+              <div class="blob">🍚</div>
+              <div style="flex:1">
+                <div class="md" style="font-weight:600">Beras 5kg</div>
+                <div class="tiny muted" style="margin-top:2px">Modal 61.000 · Jual 68.000</div>
+              </div>
+              <div style="text-align:right">
+                <div class="money sm">31</div>
+                <div class="tiny muted" style="margin-top:2px">sak</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="nav">
+          <div class="it"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-7 9 7v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Beranda</div>
+          <div class="it on"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 12l9 5 9-5M3 16l9 5 9-5"/></svg>Barang</div>
+          <div class="fab"><div class="b"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 9h10M7 13h6"/></svg></div><span>KASIR</span></div>
+          <div class="it"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a2 2 0 012-2h9l5 5v13a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M15 2v5h5M9 13h6M9 17h4"/></svg>Catatan</div>
+          <div class="it"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>Saya</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CATATAN -->
+    <div class="phone">
+      <div class="phone-label"><span class="n">9</span> Catatan — kasbon, pengeluaran, riwayat, laporan</div>
+      <div class="screen scroll">
+        <div class="status"><span>19.52</span><span>▾ ▮▮▮ 82%</span></div>
+        <div class="pad" style="padding-bottom:100px">
+          <div class="hdr">
+            <div class="av" style="background:var(--accent);color:var(--primary)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a2 2 0 012-2h9l5 5v13a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M15 2v5h5"/></svg>
+            </div>
+            <div style="font-weight:600;font-size:15px;flex:1">Catatan</div>
+            <div class="act"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3554C1" stroke-width="2" stroke-linecap="round"><path d="M12 3v13M7 11l5 5 5-5M5 21h14"/></svg></div>
+          </div>
+
+          <div class="tabs mt16">
+            <span class="tab on">Kasbon</span>
+            <span class="tab">Pengeluaran</span>
+            <span class="tab">Riwayat</span>
+            <span class="tab">Laporan</span>
+          </div>
+
+          <div class="card mt12">
+            <div class="between">
+              <span class="sm muted">Total kasbon belum lunas</span>
+              <span class="chip red">2 telat</span>
+            </div>
+            <div class="big-money" style="margin-top:6px;color:var(--warning)">Rp 4.180.000</div>
+            <div class="tiny muted mt8">Dari 11 pelanggan · rata-rata 9 hari</div>
+
+            <div style="display:flex;gap:8px;margin-top:14px">
+              <div style="flex:1;background:var(--danger-tint);border-radius:12px;padding:10px">
+                <div class="tiny" style="color:var(--danger);font-weight:600">Telat</div>
+                <div class="money" style="font-size:15px;margin-top:4px;color:var(--danger)">Rp 890rb</div>
+              </div>
+              <div style="flex:1;background:var(--warning-tint);border-radius:12px;padding:10px">
+                <div class="tiny" style="color:#B77400;font-weight:600">Minggu ini</div>
+                <div class="money" style="font-size:15px;margin-top:4px;color:#B77400">Rp 1,2jt</div>
+              </div>
+              <div style="flex:1;background:var(--success-tint);border-radius:12px;padding:10px">
+                <div class="tiny" style="color:#2E7D34;font-weight:600">Aman</div>
+                <div class="money" style="font-size:15px;margin-top:4px;color:var(--success)">Rp 2,1jt</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sec-title mt20">Perlu ditagih</div>
+          <div class="stack g8">
+            <div class="lrow" style="border-left:4px solid var(--danger)">
+              <div class="mid g10">
+                <div class="blob red">BS</div>
+                <div style="flex:1">
+                  <div class="md" style="font-weight:600">Bu Sari</div>
+                  <div class="tiny" style="color:var(--danger);margin-top:2px">Telat 4 hari</div>
+                </div>
+                <div class="money" style="font-size:16px">Rp 340.000</div>
+              </div>
+              <div style="display:flex;gap:8px">
+                <div style="flex:1;height:38px;border-radius:19px;background:var(--success-tint);color:#2E7D34;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;font-weight:600">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.96L2 22l5.25-1.38a9.9 9.9 0 004.79 1.22h.01c5.46 0 9.9-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2z"/></svg>
+                  Tagih via WA
+                </div>
+                <div style="flex:1;height:38px;border-radius:19px;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:600">Terima Bayar</div>
+              </div>
+            </div>
+            <div class="lrow" style="border-left:4px solid var(--danger)">
+              <div class="mid g10">
+                <div class="blob red">PJ</div>
+                <div style="flex:1">
+                  <div class="md" style="font-weight:600">Pak Joko</div>
+                  <div class="tiny" style="color:var(--danger);margin-top:2px">Telat 1 hari</div>
+                </div>
+                <div class="money" style="font-size:16px">Rp 550.000</div>
+              </div>
+              <div style="display:flex;gap:8px">
+                <div style="flex:1;height:38px;border-radius:19px;background:var(--success-tint);color:#2E7D34;display:grid;place-items:center;font-size:12px;font-weight:600">Tagih via WA</div>
+                <div style="flex:1;height:38px;border-radius:19px;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:600">Terima Bayar</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sec-title mt20">Jatuh tempo minggu ini</div>
+          <div class="stack g8">
+            <div class="trow" style="border-left:4px solid var(--warning)">
+              <div class="blob amber">TB</div>
+              <div style="flex:1">
+                <div class="md" style="font-weight:600">Toko Berkah</div>
+                <div class="tiny muted" style="margin-top:2px">Jumat, 22 Agu</div>
+              </div>
+              <div class="money" style="font-size:14px">Rp 1.250.000</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="nav">
+          <div class="it"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-7 9 7v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Beranda</div>
+          <div class="it"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 12l9 5 9-5M3 16l9 5 9-5"/></svg>Barang</div>
+          <div class="fab"><div class="b"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 9h10M7 13h6"/></svg></div><span>KASIR</span></div>
+          <div class="it on"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a2 2 0 012-2h9l5 5v13a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M15 2v5h5M9 13h6M9 17h4"/></svg>Catatan</div>
+          <div class="it"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>Saya</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SAYA -->
+    <div class="phone">
+      <div class="phone-label"><span class="n">10</span> Saya — 14 sub-settings jadi 5 grup</div>
+      <div class="screen scroll">
+        <div class="status"><span>19.55</span><span>▾ ▮▮▮ 82%</span></div>
+        <div class="pad" style="padding-bottom:100px">
+          <div class="card mt16" style="border-radius:32px;text-align:center;padding:24px 16px">
+            <div style="width:72px;height:72px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:24px;font-weight:600;margin:0 auto">BW</div>
+            <div style="font-weight:600;font-size:17px;margin-top:12px">Warung Bu Wati</div>
+            <div class="sm muted" style="margin-top:4px">Klontong · Jakarta Timur</div>
+            <div style="display:flex;margin-top:16px;background:var(--surface-alt);border-radius:16px;padding:12px">
+              <div style="flex:1"><div class="money" style="font-size:16px">248</div><div class="tiny muted mt8">Barang</div></div>
+              <div style="width:1px;background:var(--border-soft)"></div>
+              <div style="flex:1"><div class="money" style="font-size:16px">1.042</div><div class="tiny muted mt8">Transaksi</div></div>
+              <div style="width:1px;background:var(--border-soft)"></div>
+              <div style="flex:1"><div class="money" style="font-size:16px">2</div><div class="tiny muted mt8">Kasir</div></div>
+            </div>
+          </div>
+
+          <!-- sync -->
+          <div class="mid g10 mt16" style="background:var(--success-tint);border-radius:16px;padding:12px 14px">
+            <div class="blob sm green">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 12a8 8 0 01-13.7 5.7M4 12a8 8 0 0113.7-5.7"/><path d="M4 17v-5h5M20 7v5h-5"/></svg>
+            </div>
+            <div style="flex:1">
+              <div class="md" style="font-weight:600;color:#2E7D34">Semua tersimpan di cloud</div>
+              <div class="tiny muted" style="margin-top:2px">Terakhir 2 menit lalu</div>
+            </div>
+          </div>
+
+          <div class="sec-title mt20">Toko</div>
+          <div class="setgrp">
+            <div class="setrow"><div class="blob sm">🏪</div><span class="md" style="flex:1;font-weight:500">Profil &amp; jenis usaha</span><span class="muted">›</span></div>
+            <div class="setrow"><div class="blob sm">🏷️</div><span class="md" style="flex:1;font-weight:500">Kategori &amp; satuan</span><span class="muted">›</span></div>
+            <div class="setrow"><div class="blob sm">💳</div><span class="md" style="flex:1;font-weight:500">Metode pembayaran</span><span class="muted">›</span></div>
+          </div>
+
+          <div class="sec-title mt16">Struk &amp; Printer</div>
+          <div class="setgrp">
+            <div class="setrow"><div class="blob sm">🧾</div><span class="md" style="flex:1;font-weight:500">Tampilan struk</span><span class="chip grey">58mm</span><span class="muted">›</span></div>
+            <div class="setrow"><div class="blob sm">🖨️</div><span class="md" style="flex:1;font-weight:500">Printer bluetooth</span><span class="chip green">Terhubung</span><span class="muted">›</span></div>
+          </div>
+
+          <div class="sec-title mt16">Data &amp; Cadangan</div>
+          <div class="setgrp">
+            <div class="setrow"><div class="blob sm green">☁️</div><span class="md" style="flex:1;font-weight:500">Backup otomatis</span><span class="chip green">Aktif</span><span class="muted">›</span></div>
+            <div class="setrow"><div class="blob sm">📁</div><span class="md" style="flex:1;font-weight:500">Ekspor &amp; pulihkan</span><span class="muted">›</span></div>
+          </div>
+
+          <div class="sec-title mt16">Tim</div>
+          <div class="setgrp">
+            <div class="setrow"><div class="blob sm">👥</div><span class="md" style="flex:1;font-weight:500">Kasir &amp; hak akses</span><span class="chip grey">2 orang</span><span class="muted">›</span></div>
+          </div>
+
+          <div class="sec-title mt16">Bantuan</div>
+          <div class="setgrp">
+            <div class="setrow"><div class="blob sm">💬</div><span class="md" style="flex:1;font-weight:500">Chat admin via WhatsApp</span><span class="muted">›</span></div>
+            <div class="setrow"><div class="blob sm">⚙️</div><span class="md" style="flex:1;font-weight:500">Lanjutan</span><span class="muted">›</span></div>
+          </div>
+        </div>
+
+        <div class="nav">
+          <div class="it"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-7 9 7v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Beranda</div>
+          <div class="it"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 12l9 5 9-5M3 16l9 5 9-5"/></svg>Barang</div>
+          <div class="fab"><div class="b"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 9h10M7 13h6"/></svg></div><span>KASIR</span></div>
+          <div class="it"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a2 2 0 012-2h9l5 5v13a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M15 2v5h5M9 13h6M9 17h4"/></svg>Catatan</div>
+          <div class="it on"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>Saya</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="flex:1;min-width:260px">
+      <div class="note" style="margin-top:34px">
+        <b>“Tagih via WA” adalah fitur, bukan pelengkap.</b><br>Warung menagih lewat WhatsApp, bukan lewat email atau surat. Tombol yang menyusun pesan otomatis (“Halo Bu Sari, kasbon Rp 340.000 jatuh tempo 4 hari lalu…”) menghilangkan rasa canggung menagih — hambatan sosial yang nyata.
+      </div>
+      <div class="note">
+        <b>Kasbon dikelompokkan per urgensi, bukan per abjad.</b><br>Telat → minggu ini → aman. Yang butuh tindakan naik ke atas dengan sendirinya.
+      </div>
+      <div class="note">
+        <b>Status sync harus menenangkan.</b><br>Hijau “semua tersimpan di cloud”, abu-abu “tersimpan di HP”. Tidak pernah merah kecuali data benar-benar berisiko hilang. Sinyal jelek di pasar itu normal — jangan bikin panik.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============== 5. KOMPONEN =============== -->
+<section>
+  <div class="sec-head">
+    <h2>5 · Komponen baru untuk <code>jokoui</code></h2>
+    <p>Yang bikin app terasa “buat warung”, bukan template dashboard yang dipasangi Rupiah.</p>
+  </div>
+  <div class="row">
+
+    <div class="comp">
+      <h4>MoneyDisplay</h4>
+      <p>Format Rupiah konsisten, tabular-nums, 3 ukuran, opsi sembunyikan.</p>
+      <div class="stack g8">
+        <div class="big-money">Rp 2.480.000</div>
+        <div class="money" style="font-size:19px">Rp 90.000</div>
+        <div class="mid g8"><div class="money" style="font-size:19px;letter-spacing:.1em">Rp ••••••</div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#818898" stroke-width="2" stroke-linecap="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/><path d="M3 3l18 18"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="comp">
+      <h4>QtyStepper</h4>
+      <p>Tap-target 40px. Tap angkanya = ketik manual lewat NumPad.</p>
+      <div class="stack g8" style="align-items:flex-start">
+        <div class="stepper"><b>−</b><i>12</i><b>+</b></div>
+        <div class="stepper" style="height:32px"><b style="width:28px;height:28px;font-size:14px">−</b><i style="width:26px;font-size:13px">1</i><b style="width:28px;height:28px;font-size:14px">+</b></div>
+      </div>
+    </div>
+
+    <div class="comp">
+      <h4>PriceTierSeg</h4>
+      <p>Toggle harga eceran / grosir / partai. Wajib terlihat, bukan disembunyikan.</p>
+      <div class="seg"><b>Eceran</b><b class="on">Grosir</b><b>Partai</b></div>
+      <div class="tiny muted" style="margin-top:8px">Rp 130.000 / dus · <span style="color:var(--success);font-weight:600">hemat Rp 7.000</span></div>
+    </div>
+
+    <div class="comp">
+      <h4>AlertStrip</h4>
+      <p>Kejadian yang bikin rugi diam-diam. Tappable, langsung ke aksi.</p>
+      <div class="stack g8">
+        <div class="alert"><div class="blob sm amber">!</div><div style="flex:1"><div class="md" style="font-weight:600">3 barang hampir habis</div></div><span class="muted">›</span></div>
+        <div class="alert red"><div class="blob sm red">!</div><div style="flex:1"><div class="md" style="font-weight:600">Kasbon jatuh tempo</div></div><span class="muted">›</span></div>
+      </div>
+    </div>
+
+    <div class="comp">
+      <h4>SyncPill</h4>
+      <p>Tenang, informatif. Tidak pernah merah kecuali data berisiko hilang.</p>
+      <div class="stack g8" style="align-items:flex-start">
+        <span class="chip grey">Tersimpan di HP</span>
+        <span class="chip blue">Mengunggah… 12/40</span>
+        <span class="chip green">Tersimpan di cloud</span>
+      </div>
+    </div>
+
+    <div class="comp">
+      <h4>QuickCashRow</h4>
+      <p>Nominal cepat + kembalian besar. Hilangkan hitung manual saat antre.</p>
+      <div class="quick"><b class="pas">Pas</b><b>50rb</b><b>100rb</b><b>150rb</b></div>
+      <div class="between" style="background:var(--success-tint);border-radius:14px;padding:10px 12px;margin-top:10px">
+        <span class="tiny" style="font-weight:600;color:#2E7D34">Kembalian</span>
+        <span class="money" style="font-size:17px;color:var(--success)">Rp 10.000</span>
+      </div>
+    </div>
+
+    <div class="comp">
+      <h4>TableGrid</h4>
+      <p>Status meja lewat warna + timer menit. Sekali pandang, satu detik.</p>
+      <div class="tables" style="grid-template-columns:1fr 1fr 1fr">
+        <div class="tbl" style="border-radius:16px"><span class="no" style="font-size:16px">01</span><span class="tiny muted">Kosong</span></div>
+        <div class="tbl busy" style="border-radius:16px"><span class="no" style="font-size:16px">02</span><span class="tiny" style="opacity:.75">24 mnt</span></div>
+        <div class="tbl bill" style="border-radius:16px"><span class="no" style="font-size:16px">05</span><span class="tiny">Bill</span></div>
+      </div>
+    </div>
+
+    <div class="comp">
+      <h4>SwipeRow</h4>
+      <p>Aksi cepat tanpa buka detail: restok, edit, void.</p>
+      <div class="swipe">
+        <div class="acts"><b style="background:var(--primary)">Restok</b><b style="background:var(--muted-fg)">Edit</b></div>
+        <div class="trow" style="transform:translateX(-128px);width:calc(100% + 128px)">
+          <div class="blob amber">☕</div>
+          <div style="flex:1"><div class="md" style="font-weight:600">Kopi Sachet</div><div class="tiny muted" style="margin-top:2px">Sisa 4</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="comp">
+      <h4>WhatsAppAction</h4>
+      <p>Tagih kasbon / kirim struk lewat WA dengan pesan tersusun otomatis.</p>
+      <div style="height:44px;border-radius:22px;background:var(--success-tint);color:#2E7D34;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;font-weight:600">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.96L2 22l5.25-1.38a9.9 9.9 0 004.79 1.22h.01c5.46 0 9.9-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2z"/></svg>
+        Tagih via WhatsApp
+      </div>
+      <div class="tiny muted" style="margin-top:8px;line-height:1.5">“Halo Bu Sari, kasbon Rp 340.000 jatuh tempo 4 hari lalu. Terima kasih 🙏”</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- =============== 6. URUTAN =============== -->
+<section>
+  <div class="sec-head">
+    <h2>6 · Urutan implementasi yang disarankan</h2>
+    <p>Tiga layar pertama menentukan sisanya. Sisanya mengikuti pola yang sudah terbentuk.</p>
+  </div>
+  <div class="note" style="max-width:900px">
+    <b>Tahap 1 — fondasi.</b> Tambah komponen <code>MoneyDisplay</code>, <code>NumPadSheet</code>, <code>QtyStepper</code>, <code>AlertStrip</code>, <code>SyncPill</code> ke <code>jokoui</code>. Naikkan skala tipografi nominal. Tambah <code>businessType</code> ke state toko.
+  </div>
+  <div class="note" style="max-width:900px">
+    <b>Tahap 2 — Kasir.</b> Pecah <code>Cashier.tsx</code> jadi shell + tiga varian (<code>CashierRetail</code>, <code>CashierWholesale</code>, <code>CashierResto</code>) yang berbagi state keranjang &amp; sheet pembayaran. Ini pekerjaan terbesar dan paling berdampak.
+  </div>
+  <div class="note" style="max-width:900px">
+    <b>Tahap 3 — navigasi.</b> Bottom nav 4+FAB, lebur Produk/StockIn/StockOut/Opname → <code>Barang</code>, dan Debts/Expenses/History/Reports → <code>Catatan</code>. Rute lama tetap ada sebagai redirect supaya deep-link &amp; kebiasaan user tidak putus.
+  </div>
+  <div class="note" style="max-width:900px">
+    <b>Tahap 4 — Beranda &amp; Saya.</b> Dashboard jadi “gimana warung hari ini”, Settings dikelompokkan jadi 5 grup + Lanjutan.
+  </div>
+  <div class="note" style="max-width:900px">
+    <b>Tahap 5 — dark mode &amp; polish.</b> Warung buka sampai malam. Token dark sudah ada di <code>index.css</code>, tinggal diverifikasi per layar baru.
+  </div>
+</section>
+
+<div style="margin-top:64px;padding-top:24px;border-top:1px solid var(--border);font-size:12px;color:var(--muted-fg)">
+  Mockup statis — bukan komponen React. Token warna, radius, dan tinggi mengikuti <code>frontend/DESIGN-SPEC.md</code>.
+</div>
+
+</div>
+</body>
+</html>

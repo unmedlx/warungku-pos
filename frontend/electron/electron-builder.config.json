@@ -1,0 +1,29 @@
+{
+  "appId": "gus.kanpos.kodi",
+  "productName": "KanPOS",
+  "directories": {
+    "buildResources": "resources"
+  },
+  "files": [
+    "assets/**/*",
+    "build/**/*",
+    "capacitor.config.*",
+    "app/**/*"
+  ],
+  "asar": false,
+  "publish": null,
+  "win": {
+    "target": "nsis",
+    "icon": "assets/appIcon.ico",
+    "artifactName": "${productName}-${version}-Setup.${ext}"
+  },
+  "nsis": {
+    "allowElevation": true,
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "installerIcon": "assets/appIcon.ico",
+    "uninstallerIcon": "assets/appIcon.ico",
+    "installerHeader": "assets/appIcon.ico",
+    "installerSidebar": "assets/appIcon.ico"
+  }
+}

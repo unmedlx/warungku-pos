@@ -1,0 +1,139 @@
+{
+  "welcome": {
+    "tagline": "Jualan, stok, dan laporan untung-rugi kedai anda — dalam satu aplikasi.",
+    "cta": "Buat Kedai Baharu",
+    "restoreCta": "Saya sudah ada backup",
+    "joinCta": "Saya pekerja — sertai kedai"
+  },
+  "language": {
+    "title": "Pilih Bahasa"
+  },
+  "business": {
+    "title": "Jual apa?",
+    "subtitle": "Kami sediakan kategori, unit, dan produk contoh yang sesuai untuk perniagaan anda.",
+    "prepared": "Disediakan untuk {{type}}"
+  },
+  "store": {
+    "title": "Nama kedai anda?",
+    "subtitle": "Nama ini akan tercetak pada resit pelanggan.",
+    "storeName": "Nama Kedai",
+    "storeNamePlaceholder": "Contoh: Kedai Berkah Jaya",
+    "optionalToggle": "Tambah alamat & telefon",
+    "address": "Alamat",
+    "addressPlaceholder": "Contoh: Jln Merdeka No. 10, Kuala Lumpur",
+    "phone": "Nombor Telefon",
+    "phonePlaceholder": "Contoh: 0123456789",
+    "sampleTitle": "Produk permulaan",
+    "sampleOn": "Produk contoh",
+    "sampleOnDesc": "{{count}} sedia guna",
+    "sampleOff": "Mula kosong",
+    "sampleOffDesc": "isi sendiri",
+    "safeTitle": "Data tersimpan dalam telefon anda",
+    "safeDesc": "Tanpa internet, tanpa pelayan, tanpa bayaran bulanan.",
+    "cta": "Buka Kedai"
+  },
+  "success": {
+    "title": "{{name}} sedia!",
+    "subtitle": "Kedai anda sudah boleh mula berniaga.",
+    "categories": "{{count}} kategori dibuat",
+    "products": "{{count}} produk contoh dimasukkan",
+    "payments": "Tunai, Pindahan Bank, QRIS aktif"
+  },
+  "restore": {
+    "title": "Pulihkan data",
+    "desc": "Ambil data kedai dari backup lama — tanpa perlu setup semula.",
+    "backupButton": "Pilih fail backup (.json)",
+    "restoring": "Memulihkan data...",
+    "or": "atau",
+    "cloudTitle": "Pulihkan dari Cloud",
+    "cloudLogin": "Log masuk Google untuk melihat backup di cloud.",
+    "googleContinue": "Teruskan dengan Google",
+    "account": "Akaun Google",
+    "switchAccount": "Tukar",
+    "noBackups": "Tiada backup di cloud untuk akaun ini.",
+    "restoringInProgress": "Memulihkan data… jangan tutup aplikasi."
+  },
+  "tnc": {
+    "prefix": "Dengan meneruskan, anda bersetuju dengan",
+    "terms": "Terma & Syarat",
+    "and": "dan",
+    "privacy": "Dasar Privasi"
+  },
+  "navigation": {
+    "back": "Kembali",
+    "next": "Teruskan",
+    "saving": "Menyediakan kedai..."
+  },
+  "toast": {
+    "googleLoginFailed": "Log masuk Google gagal",
+    "restoreSuccess": "Data berjaya dipulihkan!",
+    "restoreError": "Gagal membaca / memulihkan fail backup",
+    "cloudRestoreSuccess": "Data berjaya dipulihkan dari cloud!",
+    "cloudRestoreError": "Gagal memulihkan dari cloud",
+    "cloudLoadError": "Gagal memuatkan senarai backup cloud",
+    "setupError": "Gagal menyediakan kedai. Cuba lagi."
+  },
+  "join": {
+    "title": "Sertai Kedai",
+    "desc": "Untuk pekerja yang sudah dijemput pemilik kedai. Anda tidak perlu membuat kedai sendiri.",
+    "loginFirst": "Log masuk dengan akaun Google yang dijemput pemilik kedai.",
+    "codeLabel": "Kod jemputan",
+    "codeHint": "Kod 8 aksara daripada pemilik kedai. Hanya sah untuk akaun Google yang dijemput.",
+    "submit": "Sertai kedai",
+    "success": "Berjaya sertai {{name}}",
+    "failed": "Gagal menyertai kedai",
+    "pulled": "{{count}} rekod produk & kategori ditarik daripada kedai.",
+    "pullFailed": "Katalog belum dapat ditarik. Akan dicuba semula secara automatik apabila dalam talian."
+  },
+  "pin": {
+    "title": "Cipta PIN anda",
+    "subtitle": "Digunakan setiap kali buka kaunter di telefon ini. Pemilik kedai tidak boleh melihat PIN anda.",
+    "confirmTitle": "Ulang PIN",
+    "confirmSubtitle": "Taip sekali lagi supaya tiada salah taip.",
+    "label": "PIN baharu",
+    "confirmLabel": "Ulang PIN",
+    "hint": "4–6 angka.",
+    "submit": "Simpan PIN",
+    "back": "Tukar PIN",
+    "saved": "PIN disimpan",
+    "accessTitle": "Hak akses anda di kedai ini",
+    "accessStaff": "Kaunter & sejarah transaksi sendiri. Laporan untung-rugi dan tetapan hanya untuk pemilik.",
+    "accessOwner": "Anda pemilik kedai ini — semua menu terbuka, termasuk laporan dan tetapan.",
+    "errorFormat": "PIN mesti 4–6 angka.",
+    "errorMismatch": "PIN tidak sama. Cuba lagi.",
+    "errorSave": "Gagal menyimpan PIN.",
+    "errorNoDevice": "Peranti belum sedia. Tutup dan buka semula aplikasi."
+  },
+  "auth": {
+    "googleCta": "Log masuk / Daftar dengan Google",
+    "joinCta": "Saya pekerja, ada kod jemputan",
+    "restoreCta": "Pulihkan sandaran",
+    "skipCta": "Teruskan tanpa akaun",
+    "checking": "Menyemak akaun",
+    "checkingDesc": "Menyemak kedai anda… Jika anda pernah guna KanPOS di telefon lain, kedainya akan muncul di sini.",
+    "continueOffline": "Teruskan luar talian",
+    "bootstrapFailed": "Tidak dapat menghubungi pelayan. Anda masih boleh membuat kedai sekarang.",
+    "pickerTitle": "Kedai anda",
+    "pickerSubtitle": "Pilih kedai yang hendak dibuka di telefon ini.",
+    "storeCount": "{{count}} kedai tersedia",
+    "noAddress": "Alamat belum diisi",
+    "roleOwner": "Pemilik",
+    "roleStaff": "Juruwang",
+    "oneStoreTitle": "Satu telefon = satu kedai aktif",
+    "oneStoreDesc": "Data kedai lain tidak dimuat turun ke telefon ini. Anda boleh tukar kedai melalui Tetapan → Kedai Awan.",
+    "openStore": "Buka {{name}}",
+    "pickOne": "Pilih kedai dahulu",
+    "createNewStore": "Buat kedai baharu",
+    "storeQuotaReached": "Pakej anda hanya membenarkan {{count}} kedai. Naik taraf untuk menambah kedai.",
+    "hydrTitle": "Menyediakan {{name}}",
+    "hydrSubtitle": "Jangan tutup aplikasi. Biasanya mengambil 10–30 saat.",
+    "hydrSettings": "Tetapan kedai",
+    "hydrMembers": "Pekerja & hak akses",
+    "hydrData": "Produk, stok & transaksi",
+    "hydrHistoryNote": "Sejarah lama kekal di awan dan boleh dibuka dari menu Laporan bila-bila masa.",
+    "hydrateFailed": "Gagal menarik data kedai. Cuba lagi.",
+    "inviteFound": "Ada jemputan daripada {{name}}",
+    "inviteFoundDesc": "Masukkan kod di bawah untuk sertai kedai itu.",
+    "codeMustMatch": "Kod mesti dihantar ke e-mel ini"
+  }
+}

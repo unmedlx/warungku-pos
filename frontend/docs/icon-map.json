@@ -1,0 +1,482 @@
+{
+  "AlertCircle": [
+    "warning/warning-circle",
+    "exact"
+  ],
+  "AlertTriangle": [
+    "warning/warning-triangle",
+    "exact"
+  ],
+  "ArrowDown": [
+    "arrow/arrow-down",
+    "exact"
+  ],
+  "ArrowDownToLine": [
+    "download/download",
+    "exact"
+  ],
+  "ArrowLeft": [
+    "arrow/arrow-left",
+    "exact"
+  ],
+  "ArrowRight": [
+    "arrow/arrow-right",
+    "exact"
+  ],
+  "ArrowUp": [
+    "arrow/arrow-up",
+    "exact"
+  ],
+  "ArrowUpFromLine": [
+    "arrow/arrow-up",
+    "exact"
+  ],
+  "Banknote": [
+    "banking/money-bill-lined",
+    "exact"
+  ],
+  "BarChart3": [
+    "analytics/chart-column",
+    "exact"
+  ],
+  "Bell": [
+    "notification/bell-notifications",
+    "exact"
+  ],
+  "Calendar": [
+    "calendar/calendar-schedule",
+    "exact"
+  ],
+  "CalendarIcon": [
+    "calendar/calendar-schedule",
+    "exact"
+  ],
+  "Camera": [
+    "scan/barcode-search",
+    "approx"
+  ],
+  "CameraOff": [
+    "forbid/forbidden-remove-circle",
+    "approx"
+  ],
+  "Check": [
+    "check/checkmark",
+    "exact"
+  ],
+  "CheckCircle2": [
+    "check/check-circle",
+    "exact"
+  ],
+  "ChevronDown": [
+    "arrow/small-arrow-down",
+    "exact"
+  ],
+  "ChevronLeft": [
+    "arrow/small-arrow-left",
+    "exact"
+  ],
+  "ChevronRight": [
+    "arrow/small-arrow-right",
+    "exact"
+  ],
+  "ChevronUp": [
+    "arrow/small-arrow-up",
+    "exact"
+  ],
+  "ChevronsUpDown": [
+    "arrow/arrow-arrows-up-down",
+    "exact"
+  ],
+  "Circle": [
+    "cursor/cursor-select-circle",
+    "approx"
+  ],
+  "ClipboardCheck": [
+    "report/doc-page-paper-signed",
+    "exact"
+  ],
+  "ClipboardList": [
+    "report/task-list-document-text",
+    "exact"
+  ],
+  "Clock": [
+    "time/alarm-clock-time-timer",
+    "exact"
+  ],
+  "Cloud": [
+    "cloud/cloud-storage",
+    "exact"
+  ],
+  "CloudAlert": [
+    "cloud/cloud-storage-alert",
+    "exact"
+  ],
+  "CloudUpload": [
+    "cloud/cloud-storage-upload",
+    "exact"
+  ],
+  "Copy": [
+    "report/doc-page-paper-copy-duplicate",
+    "exact"
+  ],
+  "CreditCard": [
+    "payment/finance-card",
+    "exact"
+  ],
+  "DollarSign": [
+    "currency/dollar",
+    "exact"
+  ],
+  "Dot": [
+    "minus/minus-circle",
+    "approx"
+  ],
+  "Download": [
+    "download/download",
+    "exact"
+  ],
+  "DownloadCloud": [
+    "cloud/cloud-storage-download",
+    "exact"
+  ],
+  "Edit2": [
+    "edit/edit-pen",
+    "exact"
+  ],
+  "ExternalLink": [
+    "link/link",
+    "exact"
+  ],
+  "Eye": [
+    "eye/eye-show-visible-open",
+    "exact"
+  ],
+  "EyeOff": [
+    "eye/eye-closed-remove",
+    "exact"
+  ],
+  "FileQuestion": [
+    "report/files-doc-lined",
+    "approx"
+  ],
+  "FileSpreadsheet": [
+    "report/files-doc-chart-excel-sheet",
+    "exact"
+  ],
+  "FileText": [
+    "report/files-doc-text",
+    "exact"
+  ],
+  "FilterX": [
+    "filter",
+    "approx"
+  ],
+  "Flashlight": [
+    "bulb/light-bulb",
+    "approx"
+  ],
+  "Globe": [
+    "location/earth-globe",
+    "exact"
+  ],
+  "GripVertical": [
+    "menu/menu_v",
+    "approx"
+  ],
+  "HandCoins": [
+    "banking/coins",
+    "exact"
+  ],
+  "HardDrive": [
+    "network/servers-databases-storage",
+    "approx"
+  ],
+  "Hash": [
+    "report/files-doc-hashtag",
+    "approx"
+  ],
+  "History": [
+    "time/clock-time-arrow",
+    "exact"
+  ],
+  "Home": [
+    "home/Home",
+    "exact"
+  ],
+  "Infinity": [
+    "report/doc-page-paper-infinity",
+    "approx"
+  ],
+  "Info": [
+    "info/info-circle",
+    "exact"
+  ],
+  "KeyRound": [
+    "security/key-simple",
+    "exact"
+  ],
+  "LayoutGrid": [
+    "menu/grid-layout",
+    "exact"
+  ],
+  "LineChart": [
+    "analytics/business-chart-line",
+    "exact"
+  ],
+  "Link2": [
+    "link/link-horizontal",
+    "exact"
+  ],
+  "ListChecks": [
+    "check/done-check-checkmark-square",
+    "exact"
+  ],
+  "Loader2": [
+    "arrow/refresh-rotate-arrows",
+    "approx"
+  ],
+  "Lock": [
+    "security/lock-close",
+    "exact"
+  ],
+  "LogIn": [
+    "log/login-arrow",
+    "exact"
+  ],
+  "LogOut": [
+    "log/exit-log-out",
+    "exact"
+  ],
+  "Mail": [
+    "envelope/email-mail-envelope",
+    "exact"
+  ],
+  "MapPin": [
+    "location/location-pin",
+    "exact"
+  ],
+  "Megaphone": [
+    "share/share-transmit",
+    "approx"
+  ],
+  "Mic": [
+    "voice/mic",
+    "exact"
+  ],
+  "MicOff": [
+    "voice/microphone-mute-slash-remove",
+    "exact"
+  ],
+  "Minus": [
+    "minus/minus-circle",
+    "exact"
+  ],
+  "Monitor": [
+    "device/monitor",
+    "exact"
+  ],
+  "MonitorSmartphone": [
+    "device/computer-monitor-mobile-phone",
+    "exact"
+  ],
+  "Moon": [
+    "theme/weather-moon",
+    "exact"
+  ],
+  "MoreHorizontal": [
+    "setting/settings-dot-horizontal",
+    "exact"
+  ],
+  "MoreVertical": [
+    "setting/settings-dot-vertical",
+    "exact"
+  ],
+  "Navigation": [
+    "arrow/maps-navigation-round",
+    "exact"
+  ],
+  "Package": [
+    "bookmark/container-archive",
+    "approx"
+  ],
+  "PackageSearch": [
+    "file/folder-magnifier-search",
+    "approx"
+  ],
+  "Palette": [
+    "edit/graphic-tablet-draw",
+    "approx"
+  ],
+  "PanelLeft": [
+    "menu/horizontal-lines",
+    "approx"
+  ],
+  "Pencil": [
+    "edit/edit-pen",
+    "exact"
+  ],
+  "Phone": [
+    "phone/phone-call-plain",
+    "exact"
+  ],
+  "Plus": [
+    "plus/add-plus",
+    "exact"
+  ],
+  "Printer": [
+    "payment/payments-finance-receipt",
+    "approx"
+  ],
+  "QrCode": [
+    "scan/shopping-ecommerce-qr",
+    "exact"
+  ],
+  "Receipt": [
+    "payment/receipt",
+    "exact"
+  ],
+  "RefreshCw": [
+    "arrow/refresh-rotate-arrows",
+    "exact"
+  ],
+  "Replay": [
+    "arrow/restart-replay-arrow",
+    "exact"
+  ],
+  "Ruler": [
+    "target/target",
+    "approx"
+  ],
+  "Save": [
+    "bookmark/save-bookmark",
+    "exact"
+  ],
+  "ScanBarcode": [
+    "scan/barcode",
+    "exact"
+  ],
+  "ScanLine": [
+    "scan/barcode-circle",
+    "approx"
+  ],
+  "Search": [
+    "search/magnifier-search",
+    "exact"
+  ],
+  "Send": [
+    "arrow/send-right-arrow",
+    "exact"
+  ],
+  "Settings": [
+    "setting/settings-cog",
+    "exact"
+  ],
+  "Share2": [
+    "share/share",
+    "exact"
+  ],
+  "Shield": [
+    "security/shield-protected-keyhole",
+    "approx"
+  ],
+  "ShieldAlert": [
+    "security/shield-protected-disabled-cross-remove",
+    "approx"
+  ],
+  "ShieldCheck": [
+    "security/shield-protected-checkmark",
+    "exact"
+  ],
+  "ShoppingBag": [
+    "percent/shopping-ecommerce-percent-discount",
+    "approx"
+  ],
+  "ShoppingCart": [
+    "payment/credit-card-pos",
+    "approx"
+  ],
+  "Smartphone": [
+    "device/mobile-phone",
+    "exact"
+  ],
+  "Sparkles": [
+    "reaction/star-fill",
+    "approx"
+  ],
+  "Store": [
+    "home/home-house",
+    "approx"
+  ],
+  "Sun": [
+    "theme/weather-sun",
+    "exact"
+  ],
+  "Tag": [
+    "tag/bookmarks-label-tag",
+    "exact"
+  ],
+  "Trash2": [
+    "delete/bin-delete-remove",
+    "exact"
+  ],
+  "TrendingDown": [
+    "analytics/chart-column-line-decrease",
+    "exact"
+  ],
+  "TrendingUp": [
+    "analytics/chart-column-line-increase",
+    "exact"
+  ],
+  "Truck": [
+    "arrow/arrow-location-map-direction",
+    "approx"
+  ],
+  "Upload": [
+    "download/download-save-upload-arrow",
+    "exact"
+  ],
+  "User": [
+    "user/user-single",
+    "exact"
+  ],
+  "UserCheck": [
+    "user/single-user-check",
+    "exact"
+  ],
+  "UserCircle2": [
+    "user/user-circle",
+    "exact"
+  ],
+  "UserRound": [
+    "user/user-profile",
+    "exact"
+  ],
+  "UserX": [
+    "user/single-user-remove-cross",
+    "exact"
+  ],
+  "Users": [
+    "user/users-2",
+    "exact"
+  ],
+  "Utensils": [
+    "menu/grid-layout-section-partition-square-menu",
+    "approx"
+  ],
+  "Wallet": [
+    "banking/wallet",
+    "exact"
+  ],
+  "Warehouse": [
+    "bookmark/container-archive",
+    "approx"
+  ],
+  "X": [
+    "cross/cross-remove-close",
+    "exact"
+  ],
+  "XCircle": [
+    "cross/cross-circle-remove-close",
+    "exact"
+  ]
+}

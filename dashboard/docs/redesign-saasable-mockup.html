@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dashboard Pemilik KanPOS — Mockup SaaSable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   DESIGN TOKENS — SaaSable UI Kit, tema ADMIN
+   Sumber: admin/full-version/src/themes/{palette,typography,shadow}.ts,
+           overrides/*, components/MainCard.tsx, config.ts (drawer 254px).
+
+   Sengaja memakai tema yang SAMA dengan panel admin KanPOS (bukan tema
+   landing), karena dashboard pemilik juga produk berbasis tabel & angka.
+   Jadi admin dan dashboard sekarang satu bahasa visual.
+
+   Dua penyimpangan yang disengaja, konsisten dengan landing & admin:
+     1. primary.main SaaSable (#606BDF) → biru brand KanPOS (#3554C1).
+     2. Font tetap Sora, bukan Archivo.
+   ========================================================================== */
+:root{
+  --font:'Sora',system-ui,-apple-system,sans-serif;
+
+  --primary-lighter:#DCE3FF; --primary-light:#AEBDF7;
+  --primary:#3554C1; --primary-dark:#2A44A0; --primary-darker:#0E1A52;
+
+  --error-lighter:#FFEDEA; --error:#DE3730; --error-dark:#BA1A1A;
+  --warning-lighter:#FFEEE1; --warning:#AE6600; --warning-dark:#8B5000;
+  --success-lighter:#DFF3DC; --success:#22892F; --success-dark:#006E1C;
+
+  --grey-50:#FBF8FF;  --grey-100:#F5F2FA; --grey-200:#EFEDF4;
+  --grey-300:#EAE7EF; --grey-400:#E4E1E6; --grey-500:#DBD9E0;
+  --grey-600:#C7C5D0; --grey-700:#777680; --grey-800:#46464F;
+  --grey-900:#1B1B1F;
+
+  --text:#1B1B1F; --text-2:#46464F; --text-3:#777680; --divider:#EFEDF4;
+
+  --shadow-button:0 .711px 1.422px rgba(27,27,31,.05);
+  --shadow-section:0 1px 2px rgba(27,27,31,.07);
+  --shadow-tooltip:0 12px 16px -4px rgba(27,27,31,.08), 0 4px 6px -2px rgba(27,27,31,.03);
+  --shadow-focus:0 0 0 3px rgba(53,84,193,.2);
+
+  --drawer:254px; --header:74px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font);color:var(--text);background:#fff;font-size:14px;line-height:18px;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit}
+
+.h1{font-weight:500;font-size:40px;line-height:44px;margin:0}
+.h3{font-weight:500;font-size:28px;line-height:32px;margin:0}
+.h4{font-weight:500;font-size:24px;line-height:28px;margin:0}
+.h5{font-weight:500;font-size:20px;line-height:24px;margin:0}
+.h6{font-weight:500;font-size:18px;line-height:22px;margin:0}
+.sub1{font-weight:500;font-size:16px;line-height:20px}
+.sub2{font-weight:500;font-size:14px;line-height:18px}
+.b2{font-weight:400;font-size:14px;line-height:18px}
+.cap{font-weight:400;font-size:12px;line-height:16px}
+.cap1{font-weight:500;font-size:12px;line-height:16px}
+.muted{color:var(--text-2)} .dim{color:var(--text-3)}
+.num{font-variant-numeric:tabular-nums}
+
+.card{background:#fff;border:1px solid var(--divider);border-radius:4px;box-shadow:var(--shadow-section)}
+.card-head{padding:20px;border-bottom:1px solid var(--divider);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.card-body{padding:20px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:42px;padding:0 12px;border-radius:4px;border:1px solid transparent;font-size:14px;line-height:18px;font-weight:500;cursor:pointer;background:none;box-shadow:var(--shadow-button);transition:.15s;white-space:nowrap}
+.btn-sm{height:36px;font-size:12px;line-height:16px;padding:0 10px}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-outline{background:#fff;border-color:var(--grey-400);color:var(--text)}
+.btn-outline:hover{background:var(--grey-100)}
+.btn-danger{background:#fff;border-color:var(--error-lighter);color:var(--error)}
+.btn-text{box-shadow:none;background:transparent;color:var(--primary);padding:0 6px}
+.btn-icon{width:36px;height:36px;padding:0;border-radius:4px;box-shadow:none;background:#fff;border:1px solid var(--grey-400);color:var(--text-2)}
+.btn-icon:hover{background:var(--grey-100)}
+.btn svg{width:16px;height:16px;flex:none}
+
+.tag{display:inline-flex;align-items:center;gap:5px;border-radius:4px;padding:4px 8px;font-size:12px;line-height:16px;font-weight:500;background:var(--grey-200);color:var(--text-2);white-space:nowrap}
+.tag-primary{background:var(--primary-lighter);color:var(--primary-darker)}
+.tag-ok{background:var(--success-lighter);color:var(--success-dark)}
+.tag-warn{background:var(--warning-lighter);color:var(--warning-dark)}
+.tag-err{background:var(--error-lighter);color:var(--error-dark)}
+
+.inp{height:36px;border:1px solid var(--divider);border-radius:8px;background:#fff;padding:0 10px;font-family:inherit;font-size:14px;color:var(--text);box-shadow:var(--shadow-button);outline:none;width:100%}
+.inp::placeholder{color:var(--text-3)}
+.inp:hover{border-color:var(--primary)}
+.inp:focus{border-color:var(--primary);box-shadow:var(--shadow-focus)}
+.field{display:flex;flex-direction:column;gap:6px}
+.field > label{font-size:12px;line-height:16px;font-weight:500;color:var(--text-2)}
+
+/* segmented control (preset rentang & metrik grafik) — radius 4, bukan pill */
+.seg{display:inline-flex;background:var(--grey-100);border:1px solid var(--divider);border-radius:4px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;border-radius:2px;padding:7px 12px;font-size:12px;line-height:16px;font-weight:500;color:var(--text-2);cursor:pointer}
+.seg button.on{background:#fff;color:var(--text);box-shadow:var(--shadow-button)}
+
+table{width:100%;border-collapse:collapse}
+thead{background:var(--grey-100)}
+th{font-size:12px;line-height:16px;font-weight:500;color:var(--text-2);padding:12px 20px;text-align:left;white-space:nowrap;border-bottom:1px solid var(--divider)}
+th.s{cursor:pointer}
+th.s.on{color:var(--primary)}
+td{font-size:13px;line-height:18px;padding:14px 20px;border-bottom:1px solid var(--divider)}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--grey-50)}
+.r{text-align:right}
+.tbl-wrap{overflow-x:auto}
+
+.ava{display:grid;place-items:center;flex:none;background:var(--primary-lighter);color:var(--primary-dark);border-radius:4px;font-weight:600;width:32px;height:32px;font-size:12px}
+.ava-w{background:var(--warning-lighter);color:var(--warning-dark)}
+
+.bar{display:block;height:6px;border-radius:3px;background:var(--grey-300);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:3px;background:var(--primary)}
+.bar.w i{background:var(--warning)} .bar.e i{background:var(--error)}
+
+/* layout */
+.shell{display:grid;grid-template-columns:var(--drawer) 1fr;min-height:100vh}
+.drawer{position:sticky;top:0;height:100vh;background:#fff;border-right:1px solid var(--divider);display:flex;flex-direction:column}
+.drawer-logo{height:var(--header);display:flex;align-items:center;gap:10px;padding:0 20px;border-bottom:1px solid var(--divider)}
+.drawer-nav{flex:1;overflow-y:auto;padding:16px 12px}
+.nav-cap{font-size:12px;line-height:16px;font-weight:500;color:var(--text-3);padding:12px 8px 6px}
+.nav-item{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 8px;border-radius:4px;border:0;background:none;cursor:pointer;font-size:14px;line-height:18px;color:var(--text-2)}
+.nav-item:hover{background:rgba(90,92,120,.05)}
+.nav-item.on{background:var(--primary-lighter);color:var(--primary-darker);font-weight:500}
+.nav-item svg{width:18px;height:18px;flex:none}
+.drawer-foot{border-top:1px solid var(--divider);padding:12px;display:flex;flex-direction:column;gap:12px}
+.kuota-box{border:1px solid var(--divider);border-radius:4px;background:var(--grey-50);padding:12px}
+
+.topbar{position:sticky;top:0;z-index:30;height:var(--header);background:#fff;border-bottom:1px solid var(--divider);display:flex;align-items:center;gap:12px;padding:0 24px}
+main{padding:24px;background:var(--grey-50);min-height:calc(100vh - var(--header))}
+.page-head{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px}
+.crumb{display:flex;align-items:center;gap:6px;color:var(--text-3);margin-bottom:6px}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.stack{display:flex;flex-direction:column;gap:24px}
+.row{display:flex;align-items:center;gap:10px}
+.wrap{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.sec-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px}
+
+/* chip perlu perhatian */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.chip{display:inline-flex;align-items:center;gap:7px;border-radius:4px;padding:9px 12px;font-size:13px;font-weight:500;border:1px solid transparent}
+.chip svg{width:15px;height:15px}
+.chip-w{background:var(--warning-lighter);color:var(--warning-dark);border-color:#F0DCC4}
+.chip-e{background:var(--error-lighter);color:var(--error-dark);border-color:#F5D2CD}
+
+/* hero laba */
+.hero{display:grid;gap:28px;grid-template-columns:minmax(240px,320px) minmax(0,1fr);align-items:center}
+.hero .angka{font-weight:500;font-size:44px;line-height:48px;margin:8px 0 4px}
+.delta{display:inline-flex;align-items:center;gap:4px;border-radius:4px;padding:4px 8px;font-size:12px;line-height:16px;font-weight:500}
+.delta.up{background:var(--success-lighter);color:var(--success-dark)}
+.delta.down{background:var(--error-lighter);color:var(--error-dark)}
+.delta.flat{background:var(--grey-200);color:var(--text-2)}
+.komposisi{display:flex;height:36px;border-radius:4px;overflow:hidden;background:var(--grey-200);margin-top:10px}
+.komposisi span{display:grid;place-items:center;font-size:11.5px;font-weight:500;overflow:hidden;white-space:nowrap}
+.legend{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:12px}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:7px;vertical-align:middle}
+
+/* KPI */
+.kpi .card-body{display:flex;flex-direction:column;gap:6px}
+
+/* daftar dropdown palsu */
+.menu{position:absolute;right:0;top:calc(100% + 6px);z-index:20;width:230px;background:#fff;border:1px solid var(--divider);border-radius:4px;box-shadow:var(--shadow-tooltip);padding:6px}
+.menu button{display:block;width:100%;text-align:left;border:0;background:none;padding:9px 10px;border-radius:2px;font-size:13px;cursor:pointer}
+.menu button:hover{background:var(--grey-100)}
+
+/* status data */
+.status-row{display:flex;align-items:flex-start;gap:12px;padding:16px 20px;border-bottom:1px solid var(--divider)}
+.status-row:last-child{border-bottom:0}
+.status-ic{width:32px;height:32px;border-radius:4px;display:grid;place-items:center;flex:none}
+
+.login{min-height:100vh;display:grid;place-items:center;background:var(--grey-50);padding:24px}
+[hidden]{display:none!important}
+
+.switcher{position:fixed;right:16px;bottom:16px;z-index:100;background:var(--grey-900);color:#fff;border-radius:8px;padding:8px;display:flex;gap:6px;box-shadow:var(--shadow-tooltip);flex-wrap:wrap;max-width:calc(100vw - 32px)}
+.switcher button{background:rgba(255,255,255,.12);color:#fff;border:0;border-radius:4px;padding:7px 10px;font-size:12px;cursor:pointer}
+.switcher button.on{background:#fff;color:var(--grey-900);font-weight:600}
+
+@media (max-width:1200px){ .hero{grid-template-columns:1fr} .g4{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr}
+  .drawer{display:none}
+  .g4,.g2{grid-template-columns:1fr}
+  main{padding:16px}
+  .topbar{padding:0 16px}
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+<div class="shell">
+
+  <!-- ─────────── DRAWER ─────────── -->
+  <aside class="drawer">
+    <div class="drawer-logo">
+      <svg viewBox="0 0 512 512" width="32" height="32" aria-hidden="true">
+        <rect width="512" height="512" rx="112" fill="#3554C1"/>
+        <g transform="translate(80 92) scale(25.14)" fill="none" stroke="#fff" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6.5 11h1"/><path d="M10 5V3"/>
+          <path d="M12 1.75A1.25 1.25 0 0 1 10.75 3h-1.5a1.25 1.25 0 0 1 0-2.5h1.5A1.25 1.25 0 0 1 12 1.75Z"/>
+          <path d="M5.5 5V1.5h-3V5"/><rect x=".5" y="8.5" width="13" height="5" rx="1"/>
+          <path d="M12.5 8.5V6a1 1 0 0 0-1-1h-9a1 1 0 0 0-1 1v2.5"/>
+        </g>
+      </svg>
+      <span class="sub1">KanPOS</span>
+    </div>
+
+    <nav class="drawer-nav">
+      <div class="nav-cap">Laporan</div>
+      <button class="nav-item on" data-go="ringkasan">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        Ringkasan
+      </button>
+      <button class="nav-item" data-go="bandingkan">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v18M16 3v18M3 8h5M16 8h5M3 16h5M16 16h5"/></svg>
+        Bandingkan Cabang
+      </button>
+      <button class="nav-item" data-go="tren">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 15l4-5 3 3 5-7"/></svg>
+        Tren Jangka Panjang
+      </button>
+      <button class="nav-item" data-go="status">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1L12 22l8.8-8.3a5 5 0 0 0 0-7.1Z"/></svg>
+        Status Data
+      </button>
+
+      <div class="nav-cap">Akun</div>
+      <button class="nav-item" data-go="toko">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9 4.5 4h15L21 9M3 9h18v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1zM3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/></svg>
+        Toko &amp; Cabang
+      </button>
+      <button class="nav-item" data-go="pengaturan">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7.9 19.4l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 4 13.9a2 2 0 1 1 0-4 1.6 1.6 0 0 0 1.2-2.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.6 1.6 0 0 0 10 3.6V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1.3Z"/></svg>
+        Pengaturan
+      </button>
+    </nav>
+
+    <div class="drawer-foot">
+      <div class="kuota-box">
+        <div class="sub2">Sync 5 Toko</div>
+        <div class="bar" style="margin:10px 0 8px"><i style="width:62%"></i></div>
+        <div class="cap dim">3.174 MB / 5.120 MB · 5 dari 5 toko</div>
+        <div class="cap dim" style="margin-top:4px">Aktif s/d 8 Okt 2026</div>
+      </div>
+      <div class="row">
+        <span class="ava">SR</span>
+        <span style="min-width:0;flex:1">
+          <span class="sub2" style="display:block">Siti Rahayu</span>
+          <span class="cap dim">siti.rahayu@gmail.com</span>
+        </span>
+        <button class="btn-icon" title="Keluar" style="border:0;background:transparent">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ─────────── KONTEN ─────────── -->
+  <div>
+    <div class="topbar">
+      <span class="sub1" style="display:none" id="mob-brand">KanPOS</span>
+      <span style="margin-left:auto" class="wrap">
+        <span class="tag tag-ok">Data per 8 Sep 2026, 09:41</span>
+        <span class="ava">SR</span>
+      </span>
+    </div>
+
+    <main>
+
+      <!-- ══════════ RINGKASAN ══════════ -->
+      <section data-page="ringkasan">
+        <div class="page-head">
+          <div>
+            <div class="crumb cap">Laporan <span>›</span> Ringkasan</div>
+            <h1 class="h4">Ringkasan</h1>
+            <p class="b2 muted" style="margin:6px 0 0">Halo, Siti · 5 toko · 30 hari terakhir</p>
+          </div>
+          <div class="tools">
+            <div class="seg">
+              <button>Hari ini</button><button>7 hari</button>
+              <button class="on">30 hari</button><button>Bulan ini</button>
+            </div>
+            <button class="btn btn-sm btn-outline">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+              10 Ags – 8 Sep 2026
+            </button>
+            <div style="position:relative">
+              <button class="btn btn-sm btn-outline" id="ekspor">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                Ekspor
+              </button>
+              <div class="menu" id="menu-ekspor" hidden>
+                <button>Rekap harian (CSV)</button>
+                <button>Daftar transaksi (CSV)</button>
+              </div>
+            </div>
+            <button class="btn btn-sm btn-primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+              Segarkan
+            </button>
+          </div>
+        </div>
+
+        <div class="chips">
+          <a class="chip chip-w" href="#">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01"/></svg>
+            Sri Rejeki Laundry belum sinkron
+            <span class="dim">›</span>
+          </a>
+          <a class="chip chip-w" href="#">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="6" width="20" height="5" rx="1.5"/><rect x="2" y="13" width="20" height="5" rx="1.5"/><path d="M6 8.5h.01M6 15.5h.01"/></svg>
+            Penyimpanan 84% penuh
+            <span class="dim">›</span>
+          </a>
+          <a class="chip chip-e" href="#">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            Langganan sisa 6 hari
+            <span class="dim">›</span>
+          </a>
+        </div>
+
+        <div class="stack">
+          <!-- hero laba -->
+          <div class="card"><div class="card-body">
+            <div class="hero">
+              <div>
+                <div class="cap muted">Laba bersih 30 hari</div>
+                <div class="angka num">Rp 24,8 jt</div>
+                <div class="cap dim">margin 19,4%</div>
+                <div class="wrap" style="margin-top:14px">
+                  <span class="delta up">▲ 12,3%</span>
+                  <span class="cap dim">dari Rp 22,1 jt periode lalu</span>
+                </div>
+              </div>
+              <div>
+                <div class="sub2 muted">Ke mana perginya omzet Rp 128 jt</div>
+                <div class="komposisi">
+                  <span style="width:63%;background:var(--primary-lighter);color:var(--primary-darker)">63%</span>
+                  <span style="width:18%;background:var(--warning);color:#fff">18%</span>
+                  <span style="width:19%;background:var(--success);color:#fff">19%</span>
+                </div>
+                <div class="legend cap muted">
+                  <span><i style="background:var(--primary-lighter)"></i>Modal (HPP) <b class="num" style="color:var(--text)">Rp 80,6 jt</b></span>
+                  <span><i style="background:var(--warning)"></i>Biaya operasional <b class="num" style="color:var(--text)">Rp 23,0 jt</b></span>
+                  <span><i style="background:var(--success)"></i>Laba bersih <b class="num" style="color:var(--text)">Rp 24,8 jt</b></span>
+                </div>
+              </div>
+            </div>
+          </div></div>
+
+          <!-- KPI -->
+          <div class="grid g4">
+            <div class="card kpi"><div class="card-body">
+              <span class="cap muted">Omzet</span>
+              <span class="h4 num">Rp 128 jt</span>
+              <span class="wrap"><span class="delta up">▲ 9,1%</span><span class="cap dim">dari Rp 117 jt</span></span>
+            </div></div>
+            <div class="card kpi"><div class="card-body">
+              <span class="cap muted">Transaksi</span>
+              <span class="h4 num">7.842</span>
+              <span class="wrap"><span class="delta up">▲ 6,4%</span><span class="cap dim">261 / hari</span></span>
+            </div></div>
+            <div class="card kpi"><div class="card-body">
+              <span class="cap muted">Rata-rata nota</span>
+              <span class="h4 num">Rp 16.320</span>
+              <span class="wrap"><span class="delta down">▼ 2,1%</span><span class="cap dim">dari Rp 16.670</span></span>
+            </div></div>
+            <div class="card kpi"><div class="card-body">
+              <span class="cap muted">Diskon diberikan</span>
+              <span class="h4 num">Rp 4,2 jt</span>
+              <span class="wrap"><span class="delta flat">—</span><span class="cap dim">3,3% dari omzet</span></span>
+            </div></div>
+          </div>
+
+          <!-- peringkat toko -->
+          <div class="card">
+            <div class="card-head">
+              <div><h2 class="h6">Peringkat toko</h2><p class="cap dim" style="margin:4px 0 0">urut dari omzet terbesar</p></div>
+              <button class="btn btn-text" data-go="bandingkan">Bandingkan detail →</button>
+            </div>
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr>
+                  <th style="width:40px">#</th><th>Toko</th><th style="width:200px">Kontribusi omzet</th>
+                  <th class="r">Omzet</th><th class="r">Laba bersih</th><th class="r">vs periode lalu</th>
+                </tr></thead>
+                <tbody>
+                  <tr>
+                    <td class="dim num">1</td>
+                    <td><div class="row"><span class="ava">SR</span><span><b class="sub2" style="display:block">Sri Rejeki Pusat</b><span class="cap" style="color:var(--success-dark)">● Tersinkron 2 jam lalu</span></span></div></td>
+                    <td><div class="row"><span class="bar" style="flex:1"><i style="width:41%"></i></span><span class="cap dim num" style="width:34px;text-align:right">41%</span></div></td>
+                    <td class="r"><b class="num">Rp 52,4 jt</b><br><span class="cap dim num">3.412 nota</span></td>
+                    <td class="r"><b class="num">Rp 10,6 jt</b><br><span class="cap dim">margin 20,2%</span></td>
+                    <td class="r"><span class="delta up">▲ 14,2%</span></td>
+                  </tr>
+                  <tr>
+                    <td class="dim num">2</td>
+                    <td><div class="row"><span class="ava">SG</span><span><b class="sub2" style="display:block">Sri Rejeki Grosir</b><span class="cap" style="color:var(--success-dark)">● Tersinkron 3 jam lalu</span></span></div></td>
+                    <td><div class="row"><span class="bar" style="flex:1"><i style="width:28%"></i></span><span class="cap dim num" style="width:34px;text-align:right">28%</span></div></td>
+                    <td class="r"><b class="num">Rp 35,8 jt</b><br><span class="cap dim num">1.940 nota</span></td>
+                    <td class="r"><b class="num">Rp 6,9 jt</b><br><span class="cap dim">margin 19,3%</span></td>
+                    <td class="r"><span class="delta up">▲ 8,0%</span></td>
+                  </tr>
+                  <tr>
+                    <td class="dim num">3</td>
+                    <td><div class="row"><span class="ava">SC</span><span><b class="sub2" style="display:block">Sri Rejeki Cabang Pasar</b><span class="cap" style="color:var(--success-dark)">● Tersinkron 2 jam lalu</span></span></div></td>
+                    <td><div class="row"><span class="bar" style="flex:1"><i style="width:17%"></i></span><span class="cap dim num" style="width:34px;text-align:right">17%</span></div></td>
+                    <td class="r"><b class="num">Rp 21,7 jt</b><br><span class="cap dim num">1.208 nota</span></td>
+                    <td class="r"><b class="num">Rp 4,3 jt</b><br><span class="cap dim">margin 19,8%</span></td>
+                    <td class="r"><span class="delta down">▼ 3,4%</span></td>
+                  </tr>
+                  <tr>
+                    <td class="dim num">4</td>
+                    <td><div class="row"><span class="ava">SK</span><span><b class="sub2" style="display:block">Sri Rejeki Kopi</b><span class="cap" style="color:var(--success-dark)">● Tersinkron 5 jam lalu</span></span></div></td>
+                    <td><div class="row"><span class="bar" style="flex:1"><i style="width:10%"></i></span><span class="cap dim num" style="width:34px;text-align:right">10%</span></div></td>
+                    <td class="r"><b class="num">Rp 12,8 jt</b><br><span class="cap dim num">886 nota</span></td>
+                    <td class="r"><b class="num">Rp 2,4 jt</b><br><span class="cap dim">margin 18,8%</span></td>
+                    <td class="r"><span class="delta up">▲ 22,6%</span></td>
+                  </tr>
+                  <tr>
+                    <td class="dim num">5</td>
+                    <td><div class="row"><span class="ava ava-w">SL</span><span><b class="sub2" style="display:block">Sri Rejeki Laundry</b><span class="cap" style="color:var(--warning-dark)">⚠ Tersinkron 4 hari lalu</span></span></div></td>
+                    <td><div class="row"><span class="bar" style="flex:1"><i style="width:4%;background:var(--primary-light)"></i></span><span class="cap dim num" style="width:34px;text-align:right">4%</span></div></td>
+                    <td class="r"><b class="num">Rp 5,3 jt</b><br><span class="cap dim num">312 nota</span></td>
+                    <td class="r"><b class="num">Rp 0,6 jt</b><br><span class="cap dim">margin 11,4%</span></td>
+                    <td class="r"><span class="delta down">▼ 18,9%</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- tren -->
+          <div class="card">
+            <div class="card-head">
+              <div><h2 class="h6">Tren omzet 12 bulan</h2><p class="cap dim" style="margin:4px 0 0">garis putus-putus = periode sama tahun lalu</p></div>
+              <button class="btn btn-text" data-go="tren">Tren lengkap →</button>
+            </div>
+            <div class="card-body" id="chart-slot-1"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════ BANDINGKAN ══════════ -->
+      <section data-page="bandingkan" hidden>
+        <div class="page-head">
+          <div>
+            <div class="crumb cap">Laporan <span>›</span> Bandingkan Cabang</div>
+            <h1 class="h4">Bandingkan Cabang</h1>
+            <p class="b2 muted" style="margin:6px 0 0">5 toko pada 10 Ags – 8 Sep 2026</p>
+          </div>
+          <div class="tools">
+            <div class="seg"><button>Hari ini</button><button>7 hari</button><button class="on">30 hari</button><button>Bulan ini</button></div>
+            <button class="btn btn-sm btn-outline">Ekspor</button>
+            <button class="btn btn-sm btn-primary">Segarkan</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div><h2 class="h6">Semua cabang</h2><p class="cap dim" style="margin:4px 0 0">klik judul kolom untuk mengurutkan</p></div>
+            <span class="tag">Diurutkan: Omzet</span>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr>
+                <th>Toko</th>
+                <th class="r s on">Omzet</th>
+                <th class="r s">Kontribusi</th>
+                <th class="r s">Transaksi</th>
+                <th class="r s">Rata-rata nota</th>
+                <th class="r s">Laba bersih</th>
+                <th class="r s">Margin</th>
+                <th class="r">vs periode lalu</th>
+              </tr></thead>
+              <tbody class="num">
+                <tr><td><span class="row"><span class="tag tag-primary" style="padding:2px 7px">1</span><b class="sub2">Sri Rejeki Pusat</b></span></td>
+                  <td class="r">Rp 52,4 jt</td>
+                  <td class="r"><span class="bar" style="display:inline-block;width:46px;vertical-align:middle;margin-right:8px"><i style="width:100%"></i></span>41%</td>
+                  <td class="r">3.412</td><td class="r">Rp 15.360</td><td class="r">Rp 10,6 jt</td><td class="r">20,2%</td>
+                  <td class="r"><span class="delta up">▲ 14,2%</span></td></tr>
+                <tr><td><span class="row"><span class="tag" style="padding:2px 7px">2</span><b class="sub2">Sri Rejeki Grosir</b></span></td>
+                  <td class="r">Rp 35,8 jt</td>
+                  <td class="r"><span class="bar" style="display:inline-block;width:46px;vertical-align:middle;margin-right:8px"><i style="width:68%"></i></span>28%</td>
+                  <td class="r">1.940</td><td class="r">Rp 18.450</td><td class="r">Rp 6,9 jt</td><td class="r">19,3%</td>
+                  <td class="r"><span class="delta up">▲ 8,0%</span></td></tr>
+                <tr><td><span class="row"><span class="tag" style="padding:2px 7px">3</span><b class="sub2">Sri Rejeki Cabang Pasar</b></span></td>
+                  <td class="r">Rp 21,7 jt</td>
+                  <td class="r"><span class="bar" style="display:inline-block;width:46px;vertical-align:middle;margin-right:8px"><i style="width:41%"></i></span>17%</td>
+                  <td class="r">1.208</td><td class="r">Rp 17.960</td><td class="r">Rp 4,3 jt</td><td class="r">19,8%</td>
+                  <td class="r"><span class="delta down">▼ 3,4%</span></td></tr>
+                <tr><td><span class="row"><span class="tag" style="padding:2px 7px">4</span><b class="sub2">Sri Rejeki Kopi</b></span></td>
+                  <td class="r">Rp 12,8 jt</td>
+                  <td class="r"><span class="bar" style="display:inline-block;width:46px;vertical-align:middle;margin-right:8px"><i style="width:24%"></i></span>10%</td>
+                  <td class="r">886</td><td class="r">Rp 14.450</td><td class="r">Rp 2,4 jt</td><td class="r">18,8%</td>
+                  <td class="r"><span class="delta up">▲ 22,6%</span></td></tr>
+                <tr><td><span class="row"><span class="tag" style="padding:2px 7px">5</span><b class="sub2">Sri Rejeki Laundry</b></span></td>
+                  <td class="r">Rp 5,3 jt</td>
+                  <td class="r"><span class="bar" style="display:inline-block;width:46px;vertical-align:middle;margin-right:8px"><i style="width:10%"></i></span>4%</td>
+                  <td class="r">312</td><td class="r">Rp 16.990</td><td class="r">Rp 0,6 jt</td><td class="r">11,4%</td>
+                  <td class="r"><span class="delta down">▼ 18,9%</span></td></tr>
+              </tbody>
+              <tfoot><tr style="background:var(--grey-100);font-weight:600">
+                <td>Total 5 toko</td><td class="r num">Rp 128,0 jt</td><td class="r num">100%</td>
+                <td class="r num">7.842</td><td class="r num">Rp 16.320</td><td class="r num">Rp 24,8 jt</td><td class="r num">19,4%</td><td></td>
+              </tr></tfoot>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════ TREN ══════════ -->
+      <section data-page="tren" hidden>
+        <div class="page-head">
+          <div>
+            <div class="crumb cap">Laporan <span>›</span> Tren Jangka Panjang</div>
+            <h1 class="h4">Tren Jangka Panjang</h1>
+            <p class="b2 muted" style="margin:6px 0 0">12 bulan terakhir, dibanding periode sama tahun lalu</p>
+          </div>
+          <div class="tools">
+            <button class="btn btn-sm btn-outline">Ekspor</button>
+            <button class="btn btn-sm btn-primary">Segarkan</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div><h2 class="h6">Omzet bulanan</h2><p class="cap dim" style="margin:4px 0 0">Sep 2026 <b style="color:var(--success-dark)">+18,4%</b> dibanding Sep 2025</p></div>
+            <div class="seg">
+              <button class="on">Omzet</button><button>Laba</button><button>Transaksi</button>
+            </div>
+          </div>
+          <div class="card-body" id="chart-slot-2"></div>
+        </div>
+      </section>
+
+      <!-- ══════════ STATUS DATA ══════════ -->
+      <section data-page="status" hidden>
+        <div class="page-head">
+          <div>
+            <div class="crumb cap">Laporan <span>›</span> Status Data</div>
+            <h1 class="h4">Status Data</h1>
+            <p class="b2 muted" style="margin:6px 0 0">1 dari 5 toko perlu perhatian</p>
+          </div>
+          <button class="btn btn-sm btn-outline">Muat ulang</button>
+        </div>
+
+        <div class="grid" style="grid-template-columns:1.4fr 1fr;align-items:start">
+          <div class="card">
+            <div class="card-head"><h2 class="h6">Kesehatan sinkronisasi</h2></div>
+            <div class="status-row">
+              <span class="status-ic" style="background:var(--warning-lighter);color:var(--warning-dark)">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v5M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
+              </span>
+              <span style="flex:1"><b class="sub2" style="display:block">Sri Rejeki Laundry belum sinkron 4 hari</b><span class="cap dim">Terakhir 4 Sep 2026, 18:22</span></span>
+            </div>
+            <div class="status-row">
+              <span class="status-ic" style="background:var(--success-lighter);color:var(--success-dark)">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </span>
+              <span style="flex:1"><b class="sub2" style="display:block">4 toko tersinkron normal</b><span class="cap dim">Sri Rejeki Pusat 2 jam lalu · Cabang Pasar 2 jam lalu · Grosir 3 jam lalu · Kopi 5 jam lalu</span></span>
+            </div>
+            <div class="status-row">
+              <span class="status-ic" style="background:var(--success-lighter);color:var(--success-dark)">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="6" width="20" height="5" rx="1.5"/><rect x="2" y="13" width="20" height="5" rx="1.5"/></svg>
+              </span>
+              <span style="flex:1"><b class="sub2" style="display:block">214 berkas cadangan tersimpan</b><span class="cap dim">Cadangan terbaru 8 Sep 2026, 06:12</span></span>
+            </div>
+            <div class="status-row">
+              <span class="status-ic" style="background:var(--error-lighter);color:var(--error-dark)">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              </span>
+              <span style="flex:1"><b class="sub2" style="display:block">Langganan berakhir dalam 6 hari</b><span class="cap dim">Sync 5 Toko · Rp 149.000/bln · berakhir 14 Sep 2026</span></span>
+              <button class="btn btn-sm btn-primary">Perpanjang</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h2 class="h6">Penyimpanan</h2></div>
+            <div class="card-body">
+              <div class="row" style="align-items:baseline;gap:6px">
+                <span class="h4 num">3.174 MB</span><span class="cap dim">/ 5.120 MB</span>
+              </div>
+              <div class="bar w" style="height:8px;margin:12px 0 10px"><i style="width:62%"></i></div>
+              <div class="cap dim">62% terpakai · 214 berkas cadangan</div>
+              <div class="cap dim" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--divider)">
+                Dengan laju pemakaian sekarang, kuota cukup untuk sekitar <b style="color:var(--text)">7 bulan</b> lagi.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════ TOKO ══════════ -->
+      <section data-page="toko" hidden>
+        <div class="page-head">
+          <div>
+            <div class="crumb cap">Akun <span>›</span> Toko &amp; Cabang</div>
+            <h1 class="h4">Toko &amp; Cabang</h1>
+            <p class="b2 muted" style="margin:6px 0 0">5 dari 5 toko terpakai di paket Sync 5 Toko</p>
+          </div>
+          <button class="btn btn-sm btn-primary">+ Toko baru</button>
+        </div>
+
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-head"><h2 class="h6">Toko baru</h2></div>
+          <div class="card-body" style="display:grid;grid-template-columns:2fr 1fr 2fr auto;gap:16px;align-items:end">
+            <div class="field"><label>Nama toko</label><input class="inp" placeholder="Mis. KanPOS Cabang Cinere" /></div>
+            <div class="field"><label>Telepon</label><input class="inp" placeholder="0812…" /></div>
+            <div class="field"><label>Alamat</label><input class="inp" placeholder="Jalan…" /></div>
+            <button class="btn btn-primary" disabled>Tambah</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div><h2 class="h6">Daftar toko</h2><p class="cap dim" style="margin:4px 0 0">diurutkan dari yang terbaru</p></div></div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th style="width:38%">Toko</th><th style="width:24%">Telepon</th><th style="width:15%">Status</th><th class="r" style="width:23%">Aksi</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><div class="row"><span class="ava">SR</span><span><b class="sub2" style="display:block">Sri Rejeki Pusat</b><span class="cap dim">Jl. Melati No. 12, Depok</span></span></div></td>
+                  <td class="dim num">0812-3456-7890</td>
+                  <td><span class="tag tag-ok">Aktif</span></td>
+                  <td class="r"><span class="wrap" style="justify-content:flex-end">
+                    <button class="btn btn-sm btn-outline">Nonaktifkan</button>
+                    <button class="btn-icon" title="Ubah">✎</button>
+                    <button class="btn-icon" title="Hapus" style="color:var(--error)">🗑</button>
+                  </span></td>
+                </tr>
+                <tr>
+                  <td><div class="row"><span class="ava">SC</span><span><b class="sub2" style="display:block">Sri Rejeki Cabang Pasar</b><span class="cap dim">Pasar Kemiri Blok C</span></span></div></td>
+                  <td class="dim num">0813-2211-9087</td>
+                  <td><span class="tag tag-ok">Aktif</span></td>
+                  <td class="r"><span class="wrap" style="justify-content:flex-end">
+                    <button class="btn btn-sm btn-outline">Nonaktifkan</button>
+                    <button class="btn-icon" title="Ubah">✎</button>
+                    <button class="btn-icon" title="Hapus" style="color:var(--error)">🗑</button>
+                  </span></td>
+                </tr>
+                <tr>
+                  <td><div class="row"><span class="ava ava-w">SL</span><span><b class="sub2" style="display:block">Sri Rejeki Laundry</b><span class="cap dim">Jl. Anggrek No. 4</span></span></div></td>
+                  <td class="dim num">—</td>
+                  <td><span class="tag tag-warn">Belum sinkron</span></td>
+                  <td class="r"><span class="wrap" style="justify-content:flex-end">
+                    <button class="btn btn-sm btn-outline">Nonaktifkan</button>
+                    <button class="btn-icon" title="Ubah">✎</button>
+                    <button class="btn-icon" title="Hapus" style="color:var(--error)">🗑</button>
+                  </span></td>
+                </tr>
+                <tr style="opacity:.6">
+                  <td><div class="row"><span class="ava">SG</span><span><b class="sub2" style="display:block">Sri Rejeki Gudang</b><span class="cap dim">—</span></span></div></td>
+                  <td class="dim num">—</td>
+                  <td><span class="tag">Nonaktif</span></td>
+                  <td class="r"><span class="wrap" style="justify-content:flex-end">
+                    <button class="btn btn-sm btn-outline">Aktifkan</button>
+                    <button class="btn-icon" title="Ubah">✎</button>
+                    <button class="btn-icon" title="Hapus" style="color:var(--error)">🗑</button>
+                  </span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════ PENGATURAN ══════════ -->
+      <section data-page="pengaturan" hidden>
+        <div class="page-head">
+          <div>
+            <div class="crumb cap">Akun <span>›</span> Pengaturan</div>
+            <h1 class="h4">Pengaturan</h1>
+            <p class="b2 muted" style="margin:6px 0 0">Akun, penyimpanan, dan langganan</p>
+          </div>
+          <button class="btn btn-sm btn-outline">Muat ulang</button>
+        </div>
+
+        <div class="stack" style="max-width:760px">
+          <div class="card">
+            <div class="card-head"><h2 class="h6">Akun</h2></div>
+            <div class="status-row">
+              <span style="flex:1"><b class="sub2" style="display:block">Siti Rahayu</b><span class="cap dim">siti.rahayu@gmail.com</span></span>
+              <button class="btn btn-sm btn-danger">Keluar</button>
+            </div>
+            <div class="status-row">
+              <span style="flex:1"><b class="sub2" style="display:block">Bergabung</b><span class="cap dim">Sejak kamu pertama mengaktifkan Cloud</span></span>
+              <span class="b2 num">14 Feb 2025</span>
+            </div>
+            <div class="status-row">
+              <span style="flex:1"><b class="sub2" style="display:block">Batas toko</b><span class="cap dim">Ditentukan paket yang aktif</span></span>
+              <span class="b2 num">5 toko</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <div><h2 class="h6">Penyimpanan cloud</h2><p class="cap dim" style="margin:4px 0 0">62% terpakai</p></div>
+            </div>
+            <div class="card-body">
+              <div class="row" style="align-items:baseline;gap:6px">
+                <span class="h4 num">3.174 MB</span><span class="cap dim">/ 5.120 MB</span>
+              </div>
+              <div class="bar w" style="height:8px;margin:12px 0 10px"><i style="width:62%"></i></div>
+              <div class="cap dim">214 berkas cadangan · terbaru 8 Sep 2026, 06:12</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h2 class="h6">Langganan</h2></div>
+            <div class="status-row">
+              <span style="flex:1">
+                <b class="sub2" style="display:block">Paket sinkronisasi</b>
+                <span class="cap dim">Sync 5 Toko · Rp 149.000/bln · berakhir 14 Sep 2026</span>
+              </span>
+              <span class="wrap"><span class="tag tag-err">Sisa 6 hari</span><button class="btn btn-sm btn-primary">Perpanjang</button></span>
+            </div>
+            <div class="status-row">
+              <span style="flex:1">
+                <b class="sub2" style="display:block">Paket penyimpanan</b>
+                <span class="cap dim">Termasuk dalam paket sinkronisasi</span>
+              </span>
+              <span class="tag">5 GB</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+</div>
+
+<!-- ══════════ LOGIN ══════════ -->
+<div class="login" id="login" hidden>
+  <div class="card" style="width:100%;max-width:400px">
+    <div class="card-body" style="padding:32px;text-align:center">
+      <svg viewBox="0 0 512 512" width="48" height="48" style="margin-bottom:20px" aria-hidden="true">
+        <rect width="512" height="512" rx="112" fill="#3554C1"/>
+        <g transform="translate(80 92) scale(25.14)" fill="none" stroke="#fff" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6.5 11h1"/><path d="M10 5V3"/>
+          <path d="M12 1.75A1.25 1.25 0 0 1 10.75 3h-1.5a1.25 1.25 0 0 1 0-2.5h1.5A1.25 1.25 0 0 1 12 1.75Z"/>
+          <path d="M5.5 5V1.5h-3V5"/><rect x=".5" y="8.5" width="13" height="5" rx="1"/>
+          <path d="M12.5 8.5V6a1 1 0 0 0-1-1h-9a1 1 0 0 0-1 1v2.5"/>
+        </g>
+      </svg>
+      <h1 class="h5">Dashboard Pemilik</h1>
+      <p class="b2 muted" style="max-width:300px;margin:10px auto 0">Masuk dengan akun Google yang sama dengan yang kamu pakai di aplikasi kasir.</p>
+      <button class="btn btn-outline" style="width:100%;height:48px;margin-top:28px">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path fill="#4285F4" d="M21.6 12.2c0-.7-.1-1.3-.2-2H12v3.8h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.3"/><path fill="#34A853" d="M12 22c2.7 0 5-.9 6.6-2.5l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.1H3.1v2.6A10 10 0 0 0 12 22"/><path fill="#FBBC05" d="M6.4 13.9a6 6 0 0 1 0-3.8V7.5H3.1a10 10 0 0 0 0 9z"/><path fill="#EA4335" d="M12 5.9c1.5 0 2.8.5 3.8 1.5l2.8-2.8C16.9 2.9 14.7 2 12 2a10 10 0 0 0-8.9 5.5l3.3 2.6C7.2 7.7 9.4 5.9 12 5.9"/></svg>
+        Masuk dengan Google
+      </button>
+      <p class="cap dim" style="margin-top:28px">Dashboard hanya membaca data yang sudah kamu sinkronkan.</p>
+    </div>
+  </div>
+</div>
+
+<div class="switcher">
+  <button class="on" data-go="ringkasan">Ringkasan</button>
+  <button data-go="bandingkan">Bandingkan</button>
+  <button data-go="tren">Tren</button>
+  <button data-go="status">Status Data</button>
+  <button data-go="toko">Toko</button>
+  <button data-go="pengaturan">Pengaturan</button>
+  <button data-go="login">Login</button>
+</div>
+
+<script>
+// grafik tren dipakai di dua tempat, jadi dibuat sekali lalu disalin
+const CHART = `
+<svg viewBox="0 0 1000 250" style="width:100%;height:250px" role="img" aria-label="Tren omzet 12 bulan dibanding tahun lalu">
+  <g stroke="#EFEDF4" stroke-width="1">
+    <line x1="0" y1="20" x2="1000" y2="20"/><line x1="0" y1="66" x2="1000" y2="66"/>
+    <line x1="0" y1="112" x2="1000" y2="112"/><line x1="0" y1="158" x2="1000" y2="158"/>
+    <line x1="0" y1="204" x2="1000" y2="204"/>
+  </g>
+  <polygon fill="#DCE3FF" opacity=".55"
+    points="40,168 127,158 214,140 302,146 389,120 476,108 564,116 651,88 738,74 825,58 913,46 960,32 960,204 40,204"/>
+  <polyline fill="none" stroke="#AEBDF7" stroke-width="2" stroke-dasharray="5 5"
+    points="40,190 127,184 214,176 302,180 389,164 476,158 564,162 651,146 738,138 825,130 913,124 960,116"/>
+  <polyline fill="none" stroke="#3554C1" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"
+    points="40,168 127,158 214,140 302,146 389,120 476,108 564,116 651,88 738,74 825,58 913,46 960,32"/>
+  <circle cx="960" cy="32" r="5" fill="#3554C1" stroke="#fff" stroke-width="2.5"/>
+  <g fill="#777680" font-size="11" font-family="Sora, sans-serif" text-anchor="middle">
+    <text x="40" y="236">Okt</text><text x="127" y="236">Nov</text><text x="214" y="236">Des</text>
+    <text x="302" y="236">Jan</text><text x="389" y="236">Feb</text><text x="476" y="236">Mar</text>
+    <text x="564" y="236">Apr</text><text x="651" y="236">Mei</text><text x="738" y="236">Jun</text>
+    <text x="825" y="236">Jul</text><text x="913" y="236">Ags</text><text x="960" y="236">Sep</text>
+  </g>
+</svg>
+<div style="display:flex;gap:20px;margin-top:14px;font-size:12px;color:#46464F">
+  <span><i style="display:inline-block;width:14px;height:2.5px;background:#3554C1;vertical-align:middle;margin-right:7px"></i>Tahun ini</span>
+  <span><i style="display:inline-block;width:14px;height:0;border-top:2px dashed #AEBDF7;vertical-align:middle;margin-right:7px"></i>Tahun lalu</span>
+</div>`;
+document.getElementById('chart-slot-1').innerHTML = CHART;
+document.getElementById('chart-slot-2').innerHTML = CHART;
+
+const app = document.getElementById('app');
+const login = document.getElementById('login');
+const menu = document.getElementById('menu-ekspor');
+
+function go(id){
+  if(id === 'login'){ app.hidden = true; login.hidden = false; }
+  else {
+    app.hidden = false; login.hidden = true;
+    document.querySelectorAll('[data-page]').forEach(s => s.hidden = s.dataset.page !== id);
+    document.querySelectorAll('.nav-item[data-go]').forEach(b => b.classList.toggle('on', b.dataset.go === id));
+    window.scrollTo(0,0);
+  }
+  document.querySelectorAll('.switcher button').forEach(b => b.classList.toggle('on', b.dataset.go === id));
+}
+document.addEventListener('click', e => {
+  if(e.target.closest('#ekspor')){ menu.hidden = !menu.hidden; return; }
+  menu.hidden = true;
+  const t = e.target.closest('[data-go]');
+  if(t) go(t.dataset.go);
+  const seg = e.target.closest('.seg button');
+  if(seg){ seg.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on')); seg.classList.add('on'); }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,284 @@
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* === KanPOS — design token Shark UI (https://shark.vini.one) ===
+       Port dari `sharkui-inc/shark-ui/styles/globals.css`. Shark menulis
+       tokennya sebagai color-mix() di atas palet neutral Tailwind; di sini
+       hasil hitungnya ditulis sebagai HSL triplet supaya tetap cocok dengan
+       `hsl(var(--x))` di tailwind.config (Tailwind v3).
+
+       Dua penyimpangan yang disengaja:
+         1. `--primary` = biru brand KanPOS #3554C1, dipasang dengan pola
+            preset `.theme-*` Shark (override primary/primary-foreground/ring).
+         2. `--success/warning/destructive-foreground` = putih, bukan shade 700
+            seperti Shark, karena seluruh app memakainya sebagai teks di atas
+            fill solid. Shade 700 Shark tersedia sebagai `--*-text` dan
+            dipakai Badge/Alert (tint 10% + teks 700). */
+
+    --background: 0 0% 98%;              /* neutral-50  #fafafa */
+    --foreground: 0 0% 15%;              /* neutral-800 #262626 */
+
+    --card: 0 0% 98%;                    /* = background; kartu dibedakan border */
+    --card-foreground: 0 0% 15%;
+
+    --popover: 0 0% 98%;
+    --popover-foreground: 0 0% 15%;
+
+    --primary: 227 57% 48%;              /* #3554C1 brand */
+    --primary-foreground: 220 100% 97%;  /* #eff4ff */
+
+    --secondary: 0 0% 92%;               /* neutral-950 6% di atas bg → #ebebeb */
+    --secondary-foreground: 0 0% 15%;
+
+    --muted: 0 0% 92%;
+    --muted-foreground: 0 0% 37%;        /* #5e5e5e */
+
+    --accent: 0 0% 92%;                  /* hover/indikator tab — netral, bukan biru */
+    --accent-foreground: 0 0% 15%;
+
+    --destructive: 0 84% 60%;            /* red-500 #ef4444 */
+    --destructive-foreground: 0 0% 100%;
+    --destructive-text: 0 74% 42%;       /* red-700 #b91c1c */
+
+    --success: 160 84% 39%;              /* emerald-500 #10b981 */
+    --success-foreground: 0 0% 100%;
+    --success-text: 163 94% 24%;         /* emerald-700 #047857 */
+
+    --warning: 38 92% 50%;               /* amber-500 #f59e0b */
+    --warning-foreground: 0 0% 100%;
+    --warning-text: 26 90% 37%;          /* amber-700 #b45309 */
+
+    --info: 217 91% 60%;                 /* blue-500 #3b82f6 */
+    --info-foreground: 0 0% 100%;
+    --info-text: 224 76% 48%;            /* blue-700 #1d4ed8 */
+
+    --border: 0 0% 87%;                  /* neutral-950 12% → #dddddd */
+    --input: 0 0% 86%;                   /* neutral-950 13% → #dbdbdb */
+    --ring: 227 57% 48%;
+
+    /* Token warisan — dipetakan ke padanan Shark supaya kelas lama tetap koheren. */
+    --success-tint: 155 53% 93%;         /* success 10% di atas bg */
+    --destructive-tint: 0 84% 95%;
+    --warning-tint: 36 89% 93%;
+    --info-tint: 217 91% 95%;
+    --surface-alt: 0 0% 95%;             /* muted/48 — card footer */
+    --accent-strong: 227 55% 87%;
+    --border-tab: 0 0% 86%;
+    --border-soft: 0 0% 87%;
+
+    --chart-1: 227 57% 48%;
+    --chart-2: 160 84% 39%;
+    --chart-3: 38 92% 50%;
+    --chart-4: 0 0% 64%;
+    --chart-5: 217 91% 60%;
+
+    --radius: 0.5rem;                    /* base Shark; skala di tailwind.config */
+
+    --sidebar-background: 0 0% 97%;
+    --sidebar-foreground: 0 0% 30%;
+    --sidebar-primary: 227 57% 48%;
+    --sidebar-primary-foreground: 220 100% 97%;
+    --sidebar-accent: 0 0% 92%;
+    --sidebar-accent-foreground: 0 0% 15%;
+    --sidebar-border: 0 0% 88%;
+    --sidebar-ring: 227 57% 48%;
+  }
+
+  .dark {
+    --background: 0 0% 4%;               /* neutral-950 #0a0a0a */
+    --foreground: 0 0% 96%;              /* neutral-100 #f5f5f5 */
+
+    --card: 0 0% 6%;                     /* bg 98% + neutral-50 2% */
+    --card-foreground: 0 0% 96%;
+
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 96%;
+
+    --primary: 227 57% 48%;
+    --primary-foreground: 220 100% 97%;
+
+    --secondary: 0 0% 11%;               /* white 8% di atas bg */
+    --secondary-foreground: 0 0% 96%;
+
+    --muted: 0 0% 11%;
+    --muted-foreground: 0 0% 62%;        /* #9d9d9d */
+
+    --accent: 0 0% 11%;
+    --accent-foreground: 0 0% 96%;
+
+    --destructive: 2 72% 57%;            /* red-600 90% + neutral-50 */
+    --destructive-foreground: 0 0% 100%;
+    --destructive-text: 0 91% 71%;       /* red-400 */
+
+    --success: 160 84% 39%;
+    --success-foreground: 0 0% 100%;
+    --success-text: 158 64% 52%;         /* emerald-400 */
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --warning-text: 43 96% 56%;          /* amber-400 */
+
+    --info: 217 91% 60%;
+    --info-foreground: 0 0% 100%;
+    --info-text: 213 94% 68%;            /* blue-400 */
+
+    --border: 0 0% 15%;                  /* neutral-50 12% di atas bg */
+    --input: 0 0% 16%;
+    --ring: 227 57% 48%;
+
+    --success-tint: 158 47% 11%;
+    --destructive-tint: 0 40% 12%;
+    --warning-tint: 39 58% 10%;
+    --info-tint: 217 50% 12%;
+    --surface-alt: 0 0% 8%;
+    --accent-strong: 227 40% 30%;
+    --border-tab: 0 0% 16%;
+    --border-soft: 0 0% 15%;
+
+    --chart-4: 0 0% 45%;
+
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 70%;
+    --sidebar-primary: 227 57% 48%;
+    --sidebar-primary-foreground: 220 100% 97%;
+    --sidebar-accent: 0 0% 11%;
+    --sidebar-accent-foreground: 0 0% 96%;
+    --sidebar-border: 0 0% 14%;
+    --sidebar-ring: 227 57% 48%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    margin: 0;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: none;
+  }
+
+  html,
+  body {
+    overflow-y: auto;
+    height: 100%;
+  }
+
+  /* PWA safe area + fluid root sizing for screen adaptation */
+  html {
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    font-size: clamp(0.9375rem, calc(0.25rem + 3vw), 1.125rem);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  html.is-native {
+    padding-top: max(env(safe-area-inset-top), 12px);
+  }
+
+  html.is-native [data-sonner-toaster][data-y-position="top"] {
+    top: max(env(safe-area-inset-top), 36px) !important;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+  }
+
+  .text-gradient-subtle {
+    @apply bg-clip-text text-transparent bg-gradient-to-br from-foreground to-muted-foreground;
+  }
+
+  /* Shark: ring fokus 3px ring/32 + border primary */
+  .focus-ring {
+    @apply outline-none focus-visible:border-primary focus-visible:ring-[3px] focus-visible:ring-ring/30;
+  }
+}
+
+@layer components {
+  /* Card Shark: rounded-xl border shadow-xs/5 */
+  .surface {
+    @apply bg-card text-card-foreground border border-border rounded-xl shadow-xs;
+  }
+
+  .surface-elevated {
+    @apply bg-card text-card-foreground border border-border rounded-xl shadow-lg;
+  }
+
+  .glass {
+    @apply backdrop-blur-xl bg-foreground/5 border border-border/60;
+  }
+
+  .gradient-brand {
+    @apply bg-gradient-to-br from-primary via-primary to-primary/85;
+  }
+
+  .gradient-brand-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70;
+  }
+
+  /* Item media Shark: size-10 rounded-xl; tint = primary 10% */
+  .icon-blob {
+    @apply flex items-center justify-center rounded-xl bg-primary/10 text-primary;
+  }
+
+  .page-container {
+    @apply px-4 pt-2 pb-28 md:px-8 md:pb-32;
+  }
+
+  .section-title {
+    @apply text-sm font-semibold text-foreground;
+  }
+
+  .section-label {
+    @apply text-xs font-medium text-muted-foreground;
+  }
+
+  .scroll-row {
+    @apply flex gap-3 overflow-x-auto scrollbar-hide -mx-4 px-4 pb-1;
+  }
+
+  .scroll-row-snap {
+    @apply flex gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory -mx-4 px-4 pb-1;
+  }
+
+  .card-pad {
+    @apply p-3;
+  }
+
+  .card-pad-lg {
+    @apply p-4;
+  }
+
+  .icon-square {
+    @apply flex items-center justify-center rounded-xl shrink-0;
+  }
+
+  .list-item-row {
+    @apply flex items-center gap-3 w-full transition-colors;
+  }
+}

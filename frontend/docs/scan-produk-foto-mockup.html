@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup — Scan Produk dari Foto (AI) · Kan POS</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#3554C1; --primary-fg:#fff; --fg:#0D0D12; --accent:#EFF5FF;
+    --muted-fg:#818898; --muted:#ECEFF3; --bg:#EDF1F9; --bg-alt:#F8FAFE;
+    --card:#fff; --border:#DFE1E7; --border-soft:#ECEFF3; --border-input:#EFF2F6;
+    --success:#5ABC61; --success-bg:#EFF8EF; --danger:#DF1C41; --danger-bg:#FFF0F3;
+    --warning:#F9A616; --warning-bg:#FFF6E0; --purple:#6B39F4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Sora,system-ui,sans-serif;background:#f2f4f8;color:var(--fg);padding:32px 20px 80px}
+  .wrap{max-width:1660px;margin:0 auto}
+  h1{font-size:24px;font-weight:700}
+  .lede{color:var(--muted-fg);font-size:14px;margin-top:6px;max-width:900px;line-height:1.6}
+  .notes{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px 20px;margin:24px 0 10px}
+  .notes h3{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted-fg);margin-bottom:10px}
+  .notes ul{margin-left:18px;font-size:13px;line-height:1.9}
+  .notes b{color:var(--primary)}
+  .notes code{background:var(--muted);padding:1px 6px;border-radius:6px;font-size:12px}
+  .secttl{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--muted-fg);margin:38px 0 16px}
+  .frames{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start}
+  .frame{width:375px;flex:0 0 375px}
+  .frame > .cap{font-size:12px;font-weight:600;color:var(--muted-fg);margin-bottom:8px;text-transform:uppercase;letter-spacing:.1em}
+  .frame > .cap b{color:var(--primary)}
+  .frame > .sub{font-size:11.5px;color:var(--muted-fg);margin:-4px 0 8px;line-height:1.5}
+  .phone{width:375px;height:770px;overflow-y:auto;background:var(--bg);border-radius:28px;
+    border:1px solid var(--border);box-shadow:0 12px 32px rgba(13,13,18,.10);padding:16px;scrollbar-width:thin}
+  .phone::-webkit-scrollbar{width:4px} .phone::-webkit-scrollbar-thumb{background:#c9d0dd;border-radius:2px}
+  .phone.dark{background:#0D0D12}
+
+  /* ---------- shared chrome ---------- */
+  .hdr{height:48px;background:#fff;border-radius:24px;display:flex;align-items:center;gap:10px;padding:0 6px;margin-bottom:12px}
+  .hdr .back{width:40px;height:40px;border-radius:50%;background:var(--accent);color:var(--primary);display:grid;place-items:center;font-size:16px;flex:0 0 40px}
+  .hdr .t{font-size:15px;font-weight:600;flex:1}
+  .hdr .act{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);display:grid;place-items:center;margin-right:6px;font-size:14px;color:var(--muted-fg)}
+  .search{height:46px;background:#fff;border:1px solid var(--border-input);border-radius:23px;display:flex;align-items:center;
+    gap:10px;padding:0 16px;color:var(--muted-fg);font-size:13px;margin-bottom:12px}
+  .sechead{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--muted-fg);margin:14px 2px 8px}
+
+  .btn{height:46px;border-radius:23px;display:flex;align-items:center;justify-content:center;gap:8px;
+    font-size:13.5px;font-weight:600;background:var(--primary);color:#fff}
+  .btn.ghost{background:#fff;color:var(--fg);border:1px solid var(--border)}
+  .btn.sm{height:38px;border-radius:19px;font-size:12.5px}
+  .btn.disabled{background:#C0CAEC;color:#fff}
+  .btnrow{display:flex;gap:8px;margin-top:12px}
+  .btnrow > *{flex:1}
+
+  /* ---------- frame 1: entry ---------- */
+  .actions{display:flex;gap:8px;margin-bottom:12px}
+  .abtn{flex:1;background:#fff;border:1px solid var(--border);border-radius:16px;padding:10px 8px;text-align:center}
+  .abtn .ic{font-size:18px}
+  .abtn .lb{font-size:10.5px;font-weight:600;margin-top:5px;line-height:1.3}
+  .abtn.hi{background:var(--primary);border-color:var(--primary);color:#fff;position:relative}
+  .abtn.hi .lb{color:#fff}
+  .newpill{position:absolute;top:-7px;right:-4px;background:var(--warning);color:#fff;font-size:8px;font-weight:700;
+    letter-spacing:.08em;border-radius:6px;padding:2px 5px}
+  .promo{background:linear-gradient(135deg,#3554C1,#6B39F4);border-radius:24px;padding:16px;color:#fff;margin-bottom:14px}
+  .promo .tt{font-size:14.5px;font-weight:700;display:flex;align-items:center;gap:7px}
+  .promo .ds{font-size:11.5px;line-height:1.55;margin-top:6px;opacity:.9}
+  .promo .cta{background:#fff;color:var(--primary);height:38px;border-radius:19px;display:flex;align-items:center;
+    justify-content:center;gap:7px;font-size:12.5px;font-weight:700;margin-top:12px}
+  .promo .quota{font-size:10px;opacity:.85;margin-top:8px;text-align:center}
+  .plist{background:#fff;border-radius:24px;padding:6px 14px}
+  .prow{display:flex;gap:11px;align-items:center;padding:11px 0;border-bottom:1px solid var(--border-soft)}
+  .prow:last-child{border-bottom:none}
+  .prow .th{width:42px;height:42px;border-radius:12px;background:var(--muted);display:grid;place-items:center;font-size:18px;flex:0 0 42px}
+  .prow .nm{font-size:13px;font-weight:600}
+  .prow .mt{font-size:10.5px;color:var(--muted-fg);margin-top:2px}
+  .prow .pr{font-size:12.5px;font-weight:700;margin-left:auto;text-align:right}
+
+  /* ---------- frame 2: capture ---------- */
+  .cam{background:#0D0D12;border-radius:24px;height:400px;position:relative;overflow:hidden;display:grid;place-items:center}
+  .cam .guide{position:absolute;inset:34px 24px 90px;border:2px dashed rgba(255,255,255,.55);border-radius:16px}
+  .cam .hint{position:absolute;bottom:96px;left:0;right:0;text-align:center;color:#fff;font-size:11px;opacity:.85}
+  .cam .paper{width:196px;height:250px;background:#fbfaf6;border-radius:6px;transform:rotate(-2.5deg);
+    padding:14px 12px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+  .cam .paper .ln{height:6px;background:#d8d4c8;border-radius:3px;margin-bottom:9px}
+  .cam .paper .ttl{height:9px;width:60%;background:#b6b1a4;border-radius:4px;margin-bottom:13px}
+  .shutter{position:absolute;bottom:20px;left:0;right:0;display:flex;align-items:center;justify-content:center;gap:34px}
+  .shutter .ring{width:62px;height:62px;border-radius:50%;border:4px solid #fff;display:grid;place-items:center}
+  .shutter .ring i{width:48px;height:48px;border-radius:50%;background:#fff;display:block}
+  .shutter .side{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.18);color:#fff;display:grid;place-items:center;font-size:16px}
+  .thumbs{display:flex;gap:8px;margin-top:12px}
+  .thumb{width:56px;height:56px;border-radius:14px;background:#fff;border:1px solid var(--border);display:grid;place-items:center;
+    font-size:18px;position:relative;flex:0 0 56px}
+  .thumb .x{position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:var(--danger);
+    color:#fff;font-size:10px;display:grid;place-items:center}
+  .thumb.add{border-style:dashed;color:var(--muted-fg)}
+  .tipbox{background:var(--accent);border-radius:16px;padding:12px 14px;margin-top:12px}
+  .tipbox .tt{font-size:11.5px;font-weight:700;color:var(--primary);display:flex;gap:6px;align-items:center}
+  .tipbox ul{margin:7px 0 0 16px;font-size:11px;color:#4a5670;line-height:1.75}
+
+  /* ---------- frame 3: processing ---------- */
+  .procwrap{background:#fff;border-radius:24px;padding:26px 18px;text-align:center;margin-top:80px}
+  .spin{width:74px;height:74px;border-radius:50%;border:5px solid var(--muted);border-top-color:var(--primary);margin:0 auto 18px}
+  .procwrap .tt{font-size:15.5px;font-weight:700}
+  .procwrap .ds{font-size:12px;color:var(--muted-fg);margin-top:7px;line-height:1.6}
+  .steps{margin-top:20px;text-align:left}
+  .step{display:flex;gap:10px;align-items:center;padding:9px 0;font-size:12px}
+  .step .dot{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:11px;flex:0 0 22px}
+  .step.done .dot{background:var(--success-bg);color:#3d8f44}
+  .step.now .dot{background:var(--accent);color:var(--primary)}
+  .step.todo .dot{background:var(--muted);color:#b3bac6}
+  .step.todo{color:var(--muted-fg)}
+  .step.now{font-weight:600}
+  .bar{height:6px;background:var(--muted);border-radius:3px;overflow:hidden;margin-top:16px}
+  .bar i{display:block;height:100%;width:62%;background:var(--primary);border-radius:3px}
+  .cancel{font-size:12px;color:var(--muted-fg);text-align:center;margin-top:16px;text-decoration:underline}
+
+  /* ---------- frame 4/5: review ---------- */
+  .summary{background:#fff;border-radius:20px;padding:13px 14px;margin-bottom:12px}
+  .summary .tt{font-size:13px;font-weight:700}
+  .summary .ds{font-size:11px;color:var(--muted-fg);margin-top:3px;line-height:1.5}
+  .statrow{display:flex;gap:8px;margin-top:11px}
+  .stat{flex:1;border-radius:12px;padding:8px 6px;text-align:center}
+  .stat .n{font-size:17px;font-weight:700;line-height:1}
+  .stat .l{font-size:9.5px;margin-top:4px;font-weight:600;letter-spacing:.03em}
+  .stat.ok{background:var(--success-bg);color:#3d8f44}
+  .stat.warn{background:var(--warning-bg);color:#a9700a}
+  .stat.err{background:var(--danger-bg);color:#c0163a}
+  .filters{display:flex;gap:6px;margin-bottom:10px;overflow-x:auto;padding-bottom:2px}
+  .fchip{font-size:11px;font-weight:600;border-radius:14px;padding:6px 12px;background:#fff;
+    border:1px solid var(--border);white-space:nowrap;color:#5c6474}
+  .fchip.on{background:var(--primary);border-color:var(--primary);color:#fff}
+
+  .rcard{background:#fff;border-radius:18px;padding:12px 13px;margin-bottom:9px;border-left:4px solid transparent}
+  .rcard.ok{border-left-color:var(--success)}
+  .rcard.warn{border-left-color:var(--warning);background:#FFFCF4}
+  .rcard.err{border-left-color:var(--danger);background:#FFF7F9}
+  .rtop{display:flex;align-items:flex-start;gap:9px}
+  .rtop .cb{width:19px;height:19px;border-radius:6px;border:1.5px solid var(--border);flex:0 0 19px;margin-top:1px;
+    display:grid;place-items:center;font-size:11px}
+  .rtop .cb.on{background:var(--primary);border-color:var(--primary);color:#fff}
+  .rname{font-size:13px;font-weight:700;flex:1;line-height:1.35}
+  .rname input{all:unset;width:100%}
+  .rsrc{font-size:9.5px;color:var(--muted-fg);margin-top:3px}
+  .fields{display:flex;gap:7px;margin-top:9px}
+  .fld{flex:1}
+  .fld .lb{font-size:9px;color:var(--muted-fg);font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+  .fld .vl{margin-top:3px;height:34px;border:1px solid var(--border-input);border-radius:10px;display:flex;align-items:center;
+    padding:0 9px;font-size:12px;font-weight:600;background:#fff}
+  .fld .vl.blank{color:#c3c9d4;font-weight:400}
+  .fld .vl.flag{border-color:var(--warning);background:#FFFAEE}
+  .fld .vl.bad{border-color:var(--danger);background:#FFF3F6;color:var(--danger)}
+  .fld .vl.sel{justify-content:space-between;color:#5c6474}
+  .rnote{display:flex;gap:6px;align-items:flex-start;font-size:10.5px;line-height:1.5;margin-top:9px;
+    border-radius:9px;padding:7px 9px}
+  .rnote.warn{background:var(--warning-bg);color:#8a5d05}
+  .rnote.err{background:var(--danger-bg);color:#a81337}
+  .rnote.info{background:var(--accent);color:#33477e}
+  .conf{display:inline-flex;align-items:center;gap:4px;font-size:8.5px;font-weight:700;letter-spacing:.06em;
+    border-radius:6px;padding:2px 6px;margin-left:6px;vertical-align:middle}
+  .conf.hi{background:var(--success-bg);color:#3d8f44}
+  .conf.md{background:var(--warning-bg);color:#a9700a}
+  .conf.lo{background:var(--danger-bg);color:#c0163a}
+  .srcpeek{background:#fff;border-radius:18px;padding:11px 13px;margin-bottom:10px;display:flex;gap:11px;align-items:center}
+  .srcpeek .im{width:46px;height:46px;border-radius:12px;background:#e9e6dc;display:grid;place-items:center;font-size:19px;flex:0 0 46px}
+  .srcpeek .tt{font-size:12px;font-weight:600}
+  .srcpeek .ds{font-size:10.5px;color:var(--muted-fg);margin-top:2px}
+  .srcpeek .lk{font-size:11px;color:var(--primary);font-weight:600;margin-left:auto}
+  .sticky{position:sticky;bottom:0;background:linear-gradient(180deg,rgba(237,241,249,0),var(--bg) 26%);padding-top:14px;margin-top:6px}
+
+  /* zoom / crop compare */
+  .zoom{background:#fff;border-radius:18px;padding:12px;margin-bottom:10px}
+  .zoom .lbl{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-fg);margin-bottom:8px}
+  .crop{background:#f6f3ea;border:1px solid #e2ddcd;border-radius:12px;padding:14px 12px;text-align:center}
+  .crop .hand{font-family:'Bradley Hand','Segoe Script',cursive;font-size:19px;color:#3b3a33;letter-spacing:.5px}
+  .crop .zc{font-size:9.5px;color:var(--muted-fg);margin-top:8px}
+
+  /* ---------- states ---------- */
+  .state{background:#fff;border-radius:24px;padding:24px 18px;text-align:center;margin-top:70px}
+  .state .ic{width:70px;height:70px;border-radius:50%;display:grid;place-items:center;font-size:30px;margin:0 auto 16px}
+  .state .tt{font-size:15.5px;font-weight:700}
+  .state .ds{font-size:12px;color:var(--muted-fg);margin-top:8px;line-height:1.65}
+  .state .ic.warn{background:var(--warning-bg)}
+  .state .ic.err{background:var(--danger-bg)}
+  .state .ic.ok{background:var(--success-bg)}
+  .state .ic.off{background:var(--muted)}
+  .quotabar{background:var(--muted);height:8px;border-radius:4px;margin:16px 0 6px;overflow:hidden}
+  .quotabar i{display:block;height:100%;width:100%;background:var(--danger);border-radius:4px}
+  .quotalb{font-size:10.5px;color:var(--muted-fg)}
+  .planbox{background:var(--accent);border-radius:16px;padding:13px;margin-top:16px;text-align:left}
+  .planbox .tt{font-size:12.5px;font-weight:700;color:var(--primary)}
+  .planbox ul{margin:7px 0 0 16px;font-size:11px;color:#4a5670;line-height:1.8}
+  .badlist{text-align:left;background:var(--muted);border-radius:14px;padding:11px 13px;margin-top:14px}
+  .badlist .tt{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-fg)}
+  .badlist ul{margin:7px 0 0 16px;font-size:11px;line-height:1.8;color:#5c6474}
+
+  .flow{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px 20px;margin:22px 0 8px;
+    font-size:12.5px;line-height:2;color:#4a5670}
+  .flow b{color:var(--primary)}
+  table.spec{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;font-size:12.5px}
+  table.spec th{background:var(--bg-alt);text-align:left;padding:10px 14px;font-size:10.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--muted-fg);font-weight:700}
+  table.spec td{padding:10px 14px;border-top:1px solid var(--border-soft);vertical-align:top;line-height:1.6}
+  table.spec td:first-child{font-weight:600;white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Scan Produk dari Foto — mockup alur</h1>
+<p class="lede">
+  Alur input produk massal lewat foto (nota supplier, daftar harga tulis tangan, papan menu) yang diekstrak jadi
+  draft produk. Prinsip utamanya: <b>AI mengisi tabel tinjauan, tidak pernah menulis langsung ke database</b> —
+  jadi salah baca adalah gangguan kecil yang dikoreksi di layar, bukan data rusak.
+</p>
+
+<div class="notes">
+  <h3>Keputusan desain yang diuji lewat mockup ini</h3>
+  <ul>
+    <li><b>Satu muara.</b> Hasil scan masuk ke layar tinjauan yang sama dengan import Excel (<code>ParsedRow</code>) — bukan layar baru. Satu tempat untuk koreksi, satu tempat untuk simpan.</li>
+    <li><b>Confidence per baris.</b> Model mengembalikan tingkat keyakinan tiap baris; UI menandai kuning yang ragu dan merah yang gagal. Owner tahu <i>di mana</i> harus memeriksa, bukan disuruh memeriksa semuanya.</li>
+    <li><b>Kolom kosong, bukan tebakan.</b> Angka yang tak terbaca dikosongkan dan ditandai. Harga karangan jauh lebih berbahaya daripada kolom kosong.</li>
+    <li><b>Harga jual tetap milik owner.</b> Nota supplier berisi harga beli (HPP). Kolom Harga Jual sengaja kosong + ada pintasan margin — sistem tidak boleh menebak harga jual.</li>
+    <li><b>Potongan sumber bisa dilihat.</b> Tiap baris ragu bisa dibuka crop foto aslinya, jadi owner mengoreksi tanpa membuka nota fisik lagi.</li>
+    <li><b>Kuota terlihat sejak awal.</b> Sisa scan tampil di kartu promo dan sebelum proses jalan — bukan kejutan di tengah alur.</li>
+    <li><b>Fitur ini butuh internet.</b> App-nya offline-first, jadi status offline ditangani eksplisit dengan jalur alternatif, bukan spinner yang menggantung.</li>
+  </ul>
+</div>
+
+<div class="flow">
+  <b>Alur utama:</b> Produk → tombol “Foto” → ambil/pilih foto (bisa banyak) → proses (10–30 dtk) →
+  layar tinjauan (edit inline) → pilih baris → Simpan → produk masuk.
+  <br>
+  <b>Jalur menyimpang:</b> offline · kuota habis · foto tidak terbaca · sebagian baris gagal (tetap bisa simpan yang valid).
+</div>
+
+<div class="secttl">Alur utama</div>
+<div class="frames">
+
+  <!-- ============ 1. ENTRY ============ -->
+  <div class="frame">
+    <div class="cap">1 · <b>Halaman Produk</b> — titik masuk</div>
+    <div class="sub">Tombol “Foto” berdiri sejajar dengan Excel &amp; Tambah. Kartu promo hanya muncul saat produk masih sedikit.</div>
+    <div class="phone">
+      <div class="hdr"><div class="back">←</div><div class="t">Produk</div><div class="act">⋯</div></div>
+
+      <div class="actions">
+        <div class="abtn hi"><span class="newpill">BARU</span><div class="ic">📷</div><div class="lb">Foto</div></div>
+        <div class="abtn"><div class="ic">📊</div><div class="lb">Excel</div></div>
+        <div class="abtn"><div class="ic">📋</div><div class="lb">Tempel</div></div>
+        <div class="abtn"><div class="ic">＋</div><div class="lb">Tambah</div></div>
+      </div>
+
+      <div class="promo">
+        <div class="tt">📷 Punya daftar produk di kertas?</div>
+        <div class="ds">Foto nota supplier atau daftar harga kamu. Nama, harga, dan satuan terisi otomatis — kamu tinggal cek dan simpan.</div>
+        <div class="cta">Mulai Foto →</div>
+        <div class="quota">Sisa 4 dari 5 scan gratis bulan ini</div>
+      </div>
+
+      <div class="search">🔍 Cari produk…</div>
+      <div class="sechead">12 produk</div>
+
+      <div class="plist">
+        <div class="prow"><div class="th">☕</div><div><div class="nm">Kopi Susu Gula Aren</div><div class="mt">KOPI-001 · stok 24 pcs</div></div><div class="pr">Rp 15.000</div></div>
+        <div class="prow"><div class="th">🍚</div><div><div class="nm">Nasi Goreng Spesial</div><div class="mt">NASGOR-001 · tanpa stok</div></div><div class="pr">Rp 22.000</div></div>
+        <div class="prow"><div class="th">🥤</div><div><div class="nm">Es Teh Manis</div><div class="mt">ESTEH-001 · stok 40 pcs</div></div><div class="pr">Rp 5.000</div></div>
+        <div class="prow"><div class="th">🍜</div><div><div class="nm">Indomie Goreng</div><div class="mt">IDM-001 · stok 8 pcs</div></div><div class="pr">Rp 3.500</div></div>
+        <div class="prow"><div class="th">🍞</div><div><div class="nm">Roti Bakar Coklat</div><div class="mt">ROTI-001 · stok 6 pcs</div></div><div class="pr">Rp 12.000</div></div>
+        <div class="prow"><div class="th">🧃</div><div><div class="nm">Teh Kotak</div><div class="mt">TKT-001 · stok 15 pcs</div></div><div class="pr">Rp 4.000</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 2. CAPTURE ============ -->
+  <div class="frame">
+    <div class="cap">2 · <b>Ambil Foto</b> — bisa banyak lembar</div>
+    <div class="sub">Panduan bingkai + tips dipasang sebelum proses, karena kualitas foto menentukan kualitas hasil.</div>
+    <div class="phone">
+      <div class="hdr"><div class="back">←</div><div class="t">Foto Daftar Produk</div><div class="act">🖼️</div></div>
+
+      <div class="cam">
+        <div class="paper">
+          <div class="ttl"></div>
+          <div class="ln" style="width:88%"></div><div class="ln" style="width:72%"></div>
+          <div class="ln" style="width:91%"></div><div class="ln" style="width:66%"></div>
+          <div class="ln" style="width:84%"></div><div class="ln" style="width:58%"></div>
+          <div class="ln" style="width:79%"></div><div class="ln" style="width:88%"></div>
+        </div>
+        <div class="guide"></div>
+        <div class="hint">Pastikan seluruh daftar masuk ke dalam bingkai</div>
+        <div class="shutter">
+          <div class="side">⚡</div>
+          <div class="ring"><i></i></div>
+          <div class="side">🖼️</div>
+        </div>
+      </div>
+
+      <div class="sechead">2 foto siap diproses</div>
+      <div class="thumbs">
+        <div class="thumb">📄<div class="x">×</div></div>
+        <div class="thumb">📄<div class="x">×</div></div>
+        <div class="thumb add">＋</div>
+      </div>
+
+      <div class="tipbox">
+        <div class="tt">💡 Biar hasilnya akurat</div>
+        <ul>
+          <li>Ambil dari atas, jangan miring</li>
+          <li>Cahaya cukup, hindari bayangan tangan</li>
+          <li>Nota panjang? Foto per bagian, jangan dizoom out</li>
+        </ul>
+      </div>
+
+      <div class="btnrow">
+        <div class="btn ghost">Batal</div>
+        <div class="btn" style="flex:1.6">Proses 2 Foto →</div>
+      </div>
+      <div class="quotalb" style="text-align:center;margin-top:9px">Memakai 1 dari 4 sisa scan bulan ini</div>
+    </div>
+  </div>
+
+  <!-- ============ 3. PROCESSING ============ -->
+  <div class="frame">
+    <div class="cap">3 · <b>Memproses</b> — 10–30 detik</div>
+    <div class="sub">Progres bertahap dan jujur, bukan spinner kosong. Tetap bisa dibatalkan.</div>
+    <div class="phone">
+      <div class="hdr"><div class="back">←</div><div class="t">Memproses…</div></div>
+
+      <div class="procwrap">
+        <div class="spin"></div>
+        <div class="tt">Membaca daftar produk kamu</div>
+        <div class="ds">Butuh 10–30 detik tergantung jaringan.<br>Jangan tutup halaman ini.</div>
+
+        <div class="steps">
+          <div class="step done"><div class="dot">✓</div>Foto dikompres &amp; dikirim</div>
+          <div class="step done"><div class="dot">✓</div>Teks pada foto dikenali</div>
+          <div class="step now"><div class="dot">◍</div>Menyusun nama, harga, satuan</div>
+          <div class="step todo"><div class="dot">○</div>Mencocokkan dengan produk yang ada</div>
+        </div>
+
+        <div class="bar"><i></i></div>
+        <div class="cancel">Batalkan</div>
+      </div>
+
+      <div class="tipbox" style="margin-top:22px">
+        <div class="tt">ℹ️ Yang terjadi di balik layar</div>
+        <ul>
+          <li>Foto tidak disimpan permanen di server</li>
+          <li>Hasilnya masuk ke layar tinjauan dulu — belum tersimpan</li>
+          <li>Kamu yang menentukan baris mana yang jadi produk</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 4. REVIEW ============ -->
+  <div class="frame">
+    <div class="cap">4 · <b>Tinjau Hasil</b> — layar terpenting</div>
+    <div class="sub">Sama dengan layar tinjauan import Excel. Semua kolom bisa diedit langsung di sini.</div>
+    <div class="phone">
+      <div class="hdr"><div class="back">←</div><div class="t">Tinjau 18 Produk</div><div class="act">⋯</div></div>
+
+      <div class="summary">
+        <div class="tt">18 produk terbaca dari 2 foto</div>
+        <div class="ds">Periksa yang ditandai kuning dan merah sebelum menyimpan. Semua kolom bisa kamu ubah di sini.</div>
+        <div class="statrow">
+          <div class="stat ok"><div class="n">13</div><div class="l">SIAP</div></div>
+          <div class="stat warn"><div class="n">4</div><div class="l">PERIKSA</div></div>
+          <div class="stat err"><div class="n">1</div><div class="l">GAGAL</div></div>
+        </div>
+      </div>
+
+      <div class="srcpeek">
+        <div class="im">📄</div>
+        <div><div class="tt">Nota Sumber Jaya · 2 lembar</div><div class="ds">31 Agu 2026 · 18 baris terbaca</div></div>
+        <div class="lk">Lihat</div>
+      </div>
+
+      <div class="filters">
+        <div class="fchip on">Semua 18</div>
+        <div class="fchip">⚠️ Perlu dicek 5</div>
+        <div class="fchip">✓ Siap 13</div>
+      </div>
+
+      <div class="rcard ok">
+        <div class="rtop"><div class="cb on">✓</div>
+          <div style="flex:1">
+            <div class="rname">Indomie Goreng <span class="conf hi">YAKIN</span></div>
+            <div class="rsrc">Foto 1 · baris 3</div>
+          </div>
+        </div>
+        <div class="fields">
+          <div class="fld"><div class="lb">HPP</div><div class="vl">Rp 2.900</div></div>
+          <div class="fld"><div class="lb">Harga Jual</div><div class="vl">Rp 3.500</div></div>
+          <div class="fld" style="flex:.7"><div class="lb">Satuan</div><div class="vl sel">pcs <span style="font-size:9px">▾</span></div></div>
+        </div>
+        <div class="rnote info">🔗 <span>Cocok dengan produk yang sudah ada — akan <b>memperbarui harga</b>, bukan membuat produk baru.</span></div>
+      </div>
+
+      <div class="rcard warn">
+        <div class="rtop"><div class="cb on">✓</div>
+          <div style="flex:1">
+            <div class="rname">Kopi Kapal Api Special <span class="conf md">RAGU</span></div>
+            <div class="rsrc">Foto 1 · baris 7</div>
+          </div>
+        </div>
+        <div class="fields">
+          <div class="fld"><div class="lb">HPP</div><div class="vl flag">Rp 12.500</div></div>
+          <div class="fld"><div class="lb">Harga Jual</div><div class="vl blank">Belum diisi</div></div>
+          <div class="fld" style="flex:.7"><div class="lb">Satuan</div><div class="vl sel">renteng <span style="font-size:9px">▾</span></div></div>
+        </div>
+        <div class="rnote warn">⚠️ <span>Angka HPP agak buram di foto. <b>Lihat potongan foto</b> untuk memastikan.</span></div>
+      </div>
+
+      <div class="rcard warn">
+        <div class="rtop"><div class="cb on">✓</div>
+          <div style="flex:1">
+            <div class="rname">Gula Pasir Gulaku 1kg <span class="conf md">RAGU</span></div>
+            <div class="rsrc">Foto 1 · baris 9</div>
+          </div>
+        </div>
+        <div class="fields">
+          <div class="fld"><div class="lb">HPP</div><div class="vl">Rp 15.000</div></div>
+          <div class="fld"><div class="lb">Harga Jual</div><div class="vl blank">Belum diisi</div></div>
+          <div class="fld" style="flex:.7"><div class="lb">Satuan</div><div class="vl sel">kg <span style="font-size:9px">▾</span></div></div>
+        </div>
+        <div class="rnote warn">💰 <span>Nota hanya memuat harga beli. <b>Isi harga jual</b> — atau pakai pintasan margin di bawah.</span></div>
+      </div>
+
+      <div class="rcard err">
+        <div class="rtop"><div class="cb">　</div>
+          <div style="flex:1">
+            <div class="rname">Sabu… (tidak terbaca) <span class="conf lo">GAGAL</span></div>
+            <div class="rsrc">Foto 2 · baris 4</div>
+          </div>
+        </div>
+        <div class="fields">
+          <div class="fld"><div class="lb">HPP</div><div class="vl bad">tidak terbaca</div></div>
+          <div class="fld"><div class="lb">Harga Jual</div><div class="vl blank">Belum diisi</div></div>
+          <div class="fld" style="flex:.7"><div class="lb">Satuan</div><div class="vl blank">—</div></div>
+        </div>
+        <div class="rnote err">✕ <span>Tulisan tertutup lipatan kertas. Isi manual atau <b>lewati baris ini</b>.</span></div>
+      </div>
+
+      <div class="rcard ok">
+        <div class="rtop"><div class="cb on">✓</div>
+          <div style="flex:1">
+            <div class="rname">Minyak Goreng Sania 2L <span class="conf hi">YAKIN</span></div>
+            <div class="rsrc">Foto 2 · baris 1</div>
+          </div>
+        </div>
+        <div class="fields">
+          <div class="fld"><div class="lb">HPP</div><div class="vl">Rp 34.000</div></div>
+          <div class="fld"><div class="lb">Harga Jual</div><div class="vl">Rp 38.000</div></div>
+          <div class="fld" style="flex:.7"><div class="lb">Satuan</div><div class="vl sel">pcs <span style="font-size:9px">▾</span></div></div>
+        </div>
+      </div>
+
+      <div class="sticky">
+        <div class="btn ghost sm" style="margin-bottom:8px">✨ Isi semua harga jual = HPP + margin 20%</div>
+        <div class="btn">Simpan 17 Produk Terpilih</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 5. CORRECTION ============ -->
+  <div class="frame">
+    <div class="cap">5 · <b>Koreksi Baris</b> — buka potongan foto</div>
+    <div class="sub">Owner mengoreksi sambil melihat sumbernya, tanpa mencari nota fisik lagi.</div>
+    <div class="phone">
+      <div class="hdr"><div class="back">←</div><div class="t">Perbaiki Baris</div></div>
+
+      <div class="zoom">
+        <div class="lbl">Potongan asli · Foto 1, baris 7</div>
+        <div class="crop">
+          <div class="hand">Kopi Kapal Api Spesial &nbsp;— &nbsp;12.500</div>
+          <div class="zc">Ketuk untuk perbesar · geser untuk menggeser</div>
+        </div>
+      </div>
+
+      <div class="rcard warn" style="border-left-width:4px">
+        <div class="rtop"><div class="cb on">✓</div>
+          <div style="flex:1"><div class="rname"><input value="Kopi Kapal Api Special"></div>
+          <div class="rsrc">Ketuk teks untuk mengubah</div></div>
+        </div>
+        <div class="fields">
+          <div class="fld"><div class="lb">HPP</div><div class="vl flag">Rp 12.500</div></div>
+          <div class="fld"><div class="lb">Harga Jual</div><div class="vl blank">Rp —</div></div>
+        </div>
+        <div class="fields">
+          <div class="fld"><div class="lb">Kategori</div><div class="vl sel">Minuman <span style="font-size:9px">▾</span></div></div>
+          <div class="fld"><div class="lb">Satuan</div><div class="vl sel">renteng <span style="font-size:9px">▾</span></div></div>
+        </div>
+        <div class="fields">
+          <div class="fld"><div class="lb">Stok Awal</div><div class="vl">10</div></div>
+          <div class="fld"><div class="lb">SKU</div><div class="vl blank">otomatis</div></div>
+        </div>
+        <div class="rnote warn">⚠️ <span>Nilai ditandai karena tulisan buram. Setelah kamu ubah, tanda ini hilang.</span></div>
+      </div>
+
+      <div class="tipbox">
+        <div class="tt">💡 Pintasan harga jual</div>
+        <ul>
+          <li>Margin 20% → Rp 15.000</li>
+          <li>Margin 30% → Rp 16.250</li>
+          <li>Bulatkan ke ratusan terdekat</li>
+        </ul>
+      </div>
+
+      <div class="btnrow">
+        <div class="btn ghost">Lewati Baris</div>
+        <div class="btn" style="flex:1.6">Simpan &amp; Lanjut (2 lagi) →</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 6. SUCCESS ============ -->
+  <div class="frame">
+    <div class="cap">6 · <b>Selesai</b></div>
+    <div class="sub">Ringkasan jujur: yang masuk, yang diperbarui, dan yang dilewati.</div>
+    <div class="phone">
+      <div class="hdr"><div class="t" style="padding-left:12px">Selesai</div></div>
+
+      <div class="state">
+        <div class="ic ok">✓</div>
+        <div class="tt">17 produk tersimpan</div>
+        <div class="ds">Dari 2 foto, dalam waktu sekitar 3 menit.</div>
+
+        <div class="badlist">
+          <div class="tt">Rincian</div>
+          <ul>
+            <li><b>15</b> produk baru ditambahkan</li>
+            <li><b>2</b> produk lama diperbarui harganya</li>
+            <li><b>1</b> baris dilewati (tidak terbaca)</li>
+          </ul>
+        </div>
+
+        <div class="planbox">
+          <div class="tt">Langkah berikutnya</div>
+          <ul>
+            <li>6 produk belum punya harga jual — lengkapi dulu supaya bisa dijual</li>
+            <li>Masih ada nota lain? Sisa 3 scan bulan ini</li>
+          </ul>
+        </div>
+
+        <div class="btnrow">
+          <div class="btn ghost sm">Foto Lagi</div>
+          <div class="btn sm" style="flex:1.4">Lihat Produk</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="secttl">Jalur menyimpang (wajib ada sebelum rilis)</div>
+<div class="frames">
+
+  <!-- OFFLINE -->
+  <div class="frame">
+    <div class="cap">A · <b>Offline</b></div>
+    <div class="sub">App-nya offline-first; fitur ini satu-satunya yang butuh internet. Harus ditolak dengan jelas, bukan menggantung.</div>
+    <div class="phone">
+      <div class="hdr"><div class="back">←</div><div class="t">Foto Daftar Produk</div></div>
+      <div class="state">
+        <div class="ic off">📡</div>
+        <div class="tt">Butuh koneksi internet</div>
+        <div class="ds">Scan foto diproses di server, jadi fitur ini tidak bisa jalan saat offline. Fitur kasir dan produk lainnya tetap normal.</div>
+        <div class="badlist">
+          <div class="tt">Sementara ini kamu bisa</div>
+          <ul>
+            <li>Simpan fotonya dulu, proses nanti saat ada sinyal</li>
+            <li>Tambah produk manual</li>
+            <li>Import dari Excel (jalan offline)</li>
+          </ul>
+        </div>
+        <div class="btnrow">
+          <div class="btn ghost sm">Tambah Manual</div>
+          <div class="btn sm" style="flex:1.3">Simpan Foto Dulu</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUOTA -->
+  <div class="frame">
+    <div class="cap">B · <b>Kuota Habis</b></div>
+    <div class="sub">Satu-satunya tempat menawarkan upgrade — setelah owner merasakan manfaatnya, bukan sebelum.</div>
+    <div class="phone">
+      <div class="hdr"><div class="back">←</div><div class="t">Foto Daftar Produk</div></div>
+      <div class="state">
+        <div class="ic warn">📷</div>
+        <div class="tt">Kuota scan bulan ini habis</div>
+        <div class="ds">Kamu sudah memakai 5 dari 5 scan gratis. Kuota diperbarui 1 September.</div>
+        <div class="quotabar"><i></i></div>
+        <div class="quotalb">5 / 5 terpakai</div>
+
+        <div class="planbox">
+          <div class="tt">Paket Pro — Rp 49.000/bulan</div>
+          <ul>
+            <li>100 scan foto per bulan</li>
+            <li>Backup cloud otomatis</li>
+            <li>Multi-user &amp; multi-toko</li>
+          </ul>
+        </div>
+
+        <div class="btnrow">
+          <div class="btn ghost sm">Nanti</div>
+          <div class="btn sm" style="flex:1.4">Lihat Paket</div>
+        </div>
+        <div class="quotalb" style="margin-top:12px">Tetap bisa tambah produk manual atau lewat Excel.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UNREADABLE -->
+  <div class="frame">
+    <div class="cap">C · <b>Foto Tidak Terbaca</b></div>
+    <div class="sub">Gagal total harus memberi tahu <i>kenapa</i> dan tidak boleh memotong kuota.</div>
+    <div class="phone">
+      <div class="hdr"><div class="back">←</div><div class="t">Hasil Scan</div></div>
+      <div class="state">
+        <div class="ic err">😕</div>
+        <div class="tt">Tidak ada produk yang terbaca</div>
+        <div class="ds">Fotonya terlalu buram untuk dibaca. Kuota kamu tidak terpakai untuk percobaan ini.</div>
+
+        <div class="badlist">
+          <div class="tt">Coba perbaiki</div>
+          <ul>
+            <li>Ambil foto lebih dekat, teks jangan terlalu kecil</li>
+            <li>Pastikan cahaya cukup, hindari bayangan</li>
+            <li>Foto dari atas, bukan dari samping</li>
+            <li>Nota panjang? Bagi jadi beberapa foto</li>
+          </ul>
+        </div>
+
+        <div class="btnrow">
+          <div class="btn ghost sm">Tambah Manual</div>
+          <div class="btn sm" style="flex:1.4">Foto Ulang</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PARTIAL -->
+  <div class="frame">
+    <div class="cap">D · <b>Sebagian Gagal</b></div>
+    <div class="sub">Jangan buang yang berhasil hanya karena sebagian gagal.</div>
+    <div class="phone">
+      <div class="hdr"><div class="back">←</div><div class="t">Tinjau Hasil</div></div>
+
+      <div class="summary" style="margin-top:10px">
+        <div class="tt">Foto 2 gagal diproses</div>
+        <div class="ds">Foto 1 berhasil dibaca (11 produk). Foto 2 terputus karena jaringan — kamu bisa lanjut dengan hasil foto 1 dulu.</div>
+        <div class="statrow">
+          <div class="stat ok"><div class="n">11</div><div class="l">TERBACA</div></div>
+          <div class="stat err"><div class="n">1</div><div class="l">FOTO GAGAL</div></div>
+        </div>
+        <div class="btnrow">
+          <div class="btn ghost sm">Ulangi Foto 2</div>
+          <div class="btn sm" style="flex:1.3">Lanjut dengan 11</div>
+        </div>
+      </div>
+
+      <div class="rnote warn" style="margin:0 0 12px;padding:10px 12px">⚠️ <span>Kuota yang terpakai hanya untuk foto yang berhasil diproses.</span></div>
+
+      <div class="rcard ok">
+        <div class="rtop"><div class="cb on">✓</div><div style="flex:1"><div class="rname">Beras Ramos 5kg <span class="conf hi">YAKIN</span></div><div class="rsrc">Foto 1 · baris 1</div></div></div>
+        <div class="fields">
+          <div class="fld"><div class="lb">HPP</div><div class="vl">Rp 62.000</div></div>
+          <div class="fld"><div class="lb">Harga Jual</div><div class="vl">Rp 68.000</div></div>
+          <div class="fld" style="flex:.7"><div class="lb">Satuan</div><div class="vl sel">sak <span style="font-size:9px">▾</span></div></div>
+        </div>
+      </div>
+      <div class="rcard ok">
+        <div class="rtop"><div class="cb on">✓</div><div style="flex:1"><div class="rname">Telur Ayam <span class="conf hi">YAKIN</span></div><div class="rsrc">Foto 1 · baris 2</div></div></div>
+        <div class="fields">
+          <div class="fld"><div class="lb">HPP</div><div class="vl">Rp 27.000</div></div>
+          <div class="fld"><div class="lb">Harga Jual</div><div class="vl">Rp 30.000</div></div>
+          <div class="fld" style="flex:.7"><div class="lb">Satuan</div><div class="vl sel">kg <span style="font-size:9px">▾</span></div></div>
+        </div>
+      </div>
+      <div class="rcard ok">
+        <div class="rtop"><div class="cb on">✓</div><div style="flex:1"><div class="rname">Tepung Segitiga Biru 1kg <span class="conf hi">YAKIN</span></div><div class="rsrc">Foto 1 · baris 3</div></div></div>
+        <div class="fields">
+          <div class="fld"><div class="lb">HPP</div><div class="vl">Rp 11.500</div></div>
+          <div class="fld"><div class="lb">Harga Jual</div><div class="vl">Rp 13.000</div></div>
+          <div class="fld" style="flex:.7"><div class="lb">Satuan</div><div class="vl sel">pcs <span style="font-size:9px">▾</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="secttl">Catatan implementasi</div>
+<table class="spec">
+  <tr><th style="width:190px">Bagian</th><th>Catatan</th></tr>
+  <tr><td>Layar tinjauan</td><td>Pakai ulang struktur <code>ParsedRow</code> di <code>Products.tsx</code>. Tambahan field: <code>confidence</code>, <code>sourceRef</code> (foto ke-berapa, baris ke-berapa, kotak crop), <code>matchedProductId</code>. Prasyaratnya layar tinjauan harus bisa diedit inline — ini juga memperbaiki alur import Excel yang sudah ada.</td></tr>
+  <tr><td>Confidence</td><td>Tiga tingkat saja (yakin / ragu / gagal). Lebih dari itu tidak bisa ditindaklanjuti owner.</td></tr>
+  <tr><td>Kolom kosong</td><td>Model diinstruksikan mengosongkan yang tak terbaca. Kolom kosong ditandai dan tidak lolos validasi — tidak pernah diisi tebakan.</td></tr>
+  <tr><td>Harga jual</td><td>Tidak pernah diisi otomatis oleh model. Pintasan margin dihitung di client dari HPP.</td></tr>
+  <tr><td>Pencocokan produk lama</td><td>Cocokkan nama/barcode dengan produk yang ada → tandai “akan diperbarui”. Ini butuh mode upsert yang belum ada di import Excel sekarang.</td></tr>
+  <tr><td>SKU &amp; kategori</td><td>SKU dibuat otomatis kalau kosong. Kategori boleh dibuat baru dari hasil scan dengan konfirmasi.</td></tr>
+  <tr><td>Kuota</td><td>Dicek di backend sebelum panggil API; hanya dipotong kalau pemrosesan benar-benar menghasilkan sesuatu.</td></tr>
+  <tr><td>Foto</td><td>Dikompres di client, dikirim dari memory, tidak disimpan permanen — nota memuat harga beli dan nama supplier. Crop untuk layar koreksi disimpan sementara di sisi client saja.</td></tr>
+  <tr><td>Yang belum diputuskan</td><td>Batas jumlah foto per sekali proses · perlakuan nota multi-halaman yang barisnya terpotong antar foto · apakah stok awal ikut diambil dari nota atau selalu dikosongkan.</td></tr>
+</table>
+
+</div>
+</body>
+</html>

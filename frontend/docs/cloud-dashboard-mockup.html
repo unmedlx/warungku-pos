@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mockup — Dashboard Cloud KanPOS (Tier 1)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#3554C1; --primary-fg:#fff; --fg:#0D0D12; --accent:#EFF5FF;
+  --muted-fg:#818898; --muted:#ECEFF3; --bg:#EDF1F9; --bg-alt:#F8FAFE;
+  --card:#fff; --border:#DFE1E7; --border-soft:#ECEFF3;
+  --success:#5ABC61; --success-bg:#EFF8EF;
+  --danger:#DF1C41; --danger-bg:#FFF0F3;
+  --warning:#F9A616; --warning-bg:#FFF6E0;
+  --r-card:24px; --r-sec:20px; --r-in:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Sora,system-ui,sans-serif;background:var(--bg);color:var(--fg);font-size:14px;line-height:1.45}
+.shell{display:grid;grid-template-columns:232px 1fr;min-height:100vh}
+
+/* ---------- Sidebar ---------- */
+.side{background:var(--card);border-right:1px solid var(--border-soft);padding:20px 14px;display:flex;flex-direction:column;gap:22px}
+.logo{display:flex;align-items:center;gap:9px;padding:0 8px;font-weight:700;font-size:16px}
+.logo .mark{width:30px;height:30px;border-radius:9px;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:14px}
+.navlbl{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted-fg);padding:0 10px;font-weight:600}
+.nav{display:flex;flex-direction:column;gap:2px;margin-top:7px}
+.nav a{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:11px;color:var(--muted-fg);text-decoration:none;font-weight:500;font-size:13.5px}
+.nav a.on{background:var(--accent);color:var(--primary);font-weight:600}
+.nav a:hover:not(.on){background:var(--muted)}
+.plan{margin-top:auto;background:var(--bg-alt);border:1px solid var(--border-soft);border-radius:var(--r-sec);padding:13px}
+.plan .nm{font-weight:600;font-size:13px}
+.bar{height:5px;border-radius:3px;background:var(--muted);margin:9px 0 6px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--primary);border-radius:3px}
+
+/* ---------- Main ---------- */
+.main{padding:22px 26px 40px;max-width:1240px}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+h1{font-size:22px;font-weight:700;letter-spacing:-.01em}
+.sub{color:var(--muted-fg);font-size:13px;margin-top:3px}
+.ctrls{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 15px;border-radius:999px;border:1px solid var(--border);background:var(--card);font:inherit;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap}
+.pill.pri{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:600}
+.pill .cv{color:var(--muted-fg);font-size:11px}
+.seg{display:inline-flex;background:var(--muted);border-radius:999px;padding:3px}
+.seg span{padding:6px 14px;border-radius:999px;font-size:12.5px;font-weight:500;color:var(--muted-fg);cursor:pointer}
+.seg span.on{background:var(--card);color:var(--fg);font-weight:600;box-shadow:0 1px 2px rgba(13,13,18,.07)}
+
+section{margin-bottom:26px}
+.shead{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;gap:12px}
+.shead h2{font-size:15px;font-weight:600}
+.shead .hint{font-size:12px;color:var(--muted-fg)}
+.link{color:var(--primary);font-size:12.5px;font-weight:600;text-decoration:none}
+.card{background:var(--card);border:1px solid var(--border-soft);border-radius:var(--r-card);padding:18px}
+
+/* KPI total */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.kpi .lbl{font-size:12px;color:var(--muted-fg);font-weight:500}
+.kpi .val{font-size:23px;font-weight:700;letter-spacing:-.02em;margin:7px 0 6px}
+.delta{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;padding:3px 8px;border-radius:8px}
+.up{background:var(--success-bg);color:#3E8E45}
+.dn{background:var(--danger-bg);color:var(--danger)}
+.flat{background:var(--muted);color:var(--muted-fg)}
+.vs{font-size:11.5px;color:var(--muted-fg);margin-left:6px}
+
+/* Store cards */
+.stores{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.store{background:var(--card);border:1px solid var(--border-soft);border-radius:var(--r-card);padding:16px;cursor:pointer}
+.store:hover{border-color:#C0CAEC}
+.store .hd{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.ava{width:38px;height:38px;border-radius:12px;background:var(--accent);color:var(--primary);display:grid;place-items:center;font-weight:700;font-size:14px;flex:none}
+.store .nm{font-weight:600;font-size:14px}
+.sync{font-size:11px;color:var(--muted-fg);display:flex;align-items:center;gap:5px;margin-top:2px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--success);flex:none}
+.dot.w{background:var(--warning)} .dot.d{background:var(--danger)}
+.sync.warn{color:#B37400} .sync.bad{color:var(--danger)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:13px;background:var(--bg-alt);border-radius:var(--r-in)}
+.mini .l{font-size:11px;color:var(--muted-fg)}
+.mini .v{font-size:15px;font-weight:600;margin-top:2px}
+.spark{margin-top:12px}
+
+/* Compare table */
+table{width:100%;border-collapse:collapse}
+th{text-align:right;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted-fg);font-weight:600;padding:0 0 10px}
+th:first-child,td:first-child{text-align:left}
+td{padding:12px 0;border-top:1px solid var(--border-soft);text-align:right;font-size:13.5px;font-variant-numeric:tabular-nums}
+tbody tr:hover{background:var(--bg-alt)}
+td.nm{font-weight:600;display:flex;align-items:center;gap:9px}
+.rank{width:20px;height:20px;border-radius:6px;background:var(--muted);color:var(--muted-fg);font-size:10.5px;font-weight:700;display:grid;place-items:center;flex:none}
+.rank.g{background:var(--accent);color:var(--primary)}
+tfoot td{border-top:1.5px solid var(--border);font-weight:700;background:var(--bg-alt)}
+.mbar{display:inline-block;width:46px;height:5px;border-radius:3px;background:var(--muted);vertical-align:middle;margin-right:8px;overflow:hidden}
+.mbar i{display:block;height:100%;background:var(--primary)}
+
+/* Health */
+.health{display:grid;grid-template-columns:1.4fr 1fr;gap:14px}
+.hrow{display:flex;align-items:flex-start;gap:11px;padding:11px 0;border-top:1px solid var(--border-soft)}
+.hrow:first-of-type{border-top:0;padding-top:0}
+.ico{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex:none;font-size:14px}
+.ico.ok{background:var(--success-bg)} .ico.wr{background:var(--warning-bg)} .ico.dg{background:var(--danger-bg)}
+.hrow .tt{font-size:13px;font-weight:600}
+.hrow .ds{font-size:11.5px;color:var(--muted-fg);margin-top:2px}
+.hrow .act{margin-left:auto;font-size:12px;font-weight:600;color:var(--primary);white-space:nowrap;cursor:pointer}
+.note{margin-top:14px;padding:12px 14px;background:var(--accent);border-radius:var(--r-in);font-size:12px;color:#2B44A0}
+.legend{display:flex;gap:16px;font-size:11.5px;color:var(--muted-fg);margin-top:10px}
+.legend b{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:middle}
+.ann{background:#fff;border:1px dashed #C0CAEC;border-radius:var(--r-in);padding:10px 13px;font-size:11.5px;color:var(--muted-fg);margin-top:10px}
+.ann b{color:var(--primary);font-weight:600}
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(2,1fr)}.stores{grid-template-columns:1fr 1fr}.health{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- ================= SIDEBAR ================= -->
+<aside class="side">
+  <div class="logo"><span class="mark">K</span> KanPOS</div>
+  <div>
+    <div class="navlbl">Laporan</div>
+    <nav class="nav">
+      <a href="#" class="on">▦ &nbsp;Ringkasan</a>
+      <a href="#">⇄ &nbsp;Bandingkan Cabang</a>
+      <a href="#">◪ &nbsp;Tren Jangka Panjang</a>
+      <a href="#">☰ &nbsp;Transaksi</a>
+      <a href="#">⛁ &nbsp;Produk</a>
+    </nav>
+  </div>
+  <div>
+    <div class="navlbl">Akun</div>
+    <nav class="nav">
+      <a href="#">⌂ &nbsp;Toko &amp; Cabang</a>
+      <a href="#">♥ &nbsp;Status Data</a>
+      <a href="#">⚙ &nbsp;Pengaturan</a>
+    </nav>
+  </div>
+  <div class="plan">
+    <div class="nm">Paket Bisnis</div>
+    <div class="bar"><i style="width:41%"></i></div>
+    <div style="font-size:11px;color:var(--muted-fg)">820 MB / 2 GB · 3 dari 5 toko</div>
+    <div style="font-size:11px;color:var(--muted-fg);margin-top:5px">Aktif s/d 14 Sep 2026</div>
+  </div>
+</aside>
+
+<!-- ================= MAIN ================= -->
+<main class="main">
+
+  <div class="top">
+    <div>
+      <h1>Ringkasan Semua Toko</h1>
+      <div class="sub">Halo, Ahmad · 3 toko aktif · data per 20 Agu 2026, 14:32 WIB</div>
+    </div>
+    <div class="ctrls">
+      <div class="seg"><span>Hari ini</span><span>7 hari</span><span class="on">30 hari</span><span>Bulan ini</span></div>
+      <button class="pill">📅 22 Jul – 20 Agu 2026 <span class="cv">▾</span></button>
+      <button class="pill">⇩ Ekspor</button>
+      <button class="pill pri">⟳ Segarkan</button>
+    </div>
+  </div>
+  <div class="ann"><b>1.4 Rentang bebas + ekspor</b> — preset cepat di kiri, date-range picker bebas di tengah. Tombol Ekspor membuka menu: CSV transaksi, CSV rekap harian, Excel P&amp;L. Rentang yang dipilih berlaku untuk seluruh halaman.</div>
+
+  <!-- ---------- KPI gabungan ---------- -->
+  <section style="margin-top:22px">
+    <div class="shead"><h2>Total gabungan 3 toko</h2><span class="hint">dibanding 30 hari sebelumnya</span></div>
+    <div class="kpis">
+      <div class="card kpi"><div class="lbl">Omzet</div><div class="val">Rp 284,6 jt</div><span class="delta up">▲ 12,4%</span><span class="vs">Rp 253,2 jt</span></div>
+      <div class="card kpi"><div class="lbl">Laba bersih</div><div class="val">Rp 61,3 jt</div><span class="delta up">▲ 8,1%</span><span class="vs">margin 21,5%</span></div>
+      <div class="card kpi"><div class="lbl">Transaksi</div><div class="val">4.812</div><span class="delta up">▲ 6,0%</span><span class="vs">160 / hari</span></div>
+      <div class="card kpi"><div class="lbl">Rata-rata nota</div><div class="val">Rp 59.140</div><span class="delta dn">▼ 2,3%</span><span class="vs">Rp 60.530</span></div>
+    </div>
+    <div class="ann"><b>Catatan</b> — satu angka gabungan lintas cabang adalah hal yang mustahil ditampilkan aplikasi kasir lokal. Ini pembenaran paling langsung untuk paket multi-toko.</div>
+  </section>
+
+  <!-- ---------- 1.1 Kartu per toko ---------- -->
+  <section>
+    <div class="shead"><h2>Per toko</h2><a class="link" href="#">Kelola toko →</a></div>
+    <div class="stores">
+
+      <div class="store">
+        <div class="hd"><div class="ava">CB</div>
+          <div><div class="nm">Cabang Bintaro</div><div class="sync"><span class="dot"></span> Tersinkron 4 menit lalu</div></div>
+        </div>
+        <div class="grid2">
+          <div class="mini"><div class="l">Omzet hari ini</div><div class="v">Rp 4,82 jt</div></div>
+          <div class="mini"><div class="l">Laba kotor</div><div class="v">Rp 1,64 jt</div></div>
+          <div class="mini"><div class="l">Transaksi</div><div class="v">83</div></div>
+          <div class="mini"><div class="l">Rata-rata nota</div><div class="v">Rp 58.070</div></div>
+        </div>
+        <svg class="spark" width="100%" height="42" viewBox="0 0 260 42" preserveAspectRatio="none" aria-label="Tren 30 hari Cabang Bintaro">
+          <polyline fill="none" stroke="#3554C1" stroke-width="2" stroke-linejoin="round" points="0,32 20,28 40,30 60,22 80,25 100,18 120,20 140,14 160,17 180,11 200,15 220,9 240,12 260,6"/>
+          <polygon fill="#EFF5FF" points="0,32 20,28 40,30 60,22 80,25 100,18 120,20 140,14 160,17 180,11 200,15 220,9 240,12 260,6 260,42 0,42"/>
+        </svg>
+      </div>
+
+      <div class="store">
+        <div class="hd"><div class="ava">PS</div>
+          <div><div class="nm">Pusat Serpong</div><div class="sync"><span class="dot"></span> Tersinkron 11 menit lalu</div></div>
+        </div>
+        <div class="grid2">
+          <div class="mini"><div class="l">Omzet hari ini</div><div class="v">Rp 6,15 jt</div></div>
+          <div class="mini"><div class="l">Laba kotor</div><div class="v">Rp 2,21 jt</div></div>
+          <div class="mini"><div class="l">Transaksi</div><div class="v">104</div></div>
+          <div class="mini"><div class="l">Rata-rata nota</div><div class="v">Rp 59.130</div></div>
+        </div>
+        <svg class="spark" width="100%" height="42" viewBox="0 0 260 42" preserveAspectRatio="none" aria-label="Tren 30 hari Pusat Serpong">
+          <polyline fill="none" stroke="#3554C1" stroke-width="2" stroke-linejoin="round" points="0,26 20,24 40,19 60,22 80,16 100,18 120,12 140,15 160,10 180,13 200,8 220,11 240,7 260,5"/>
+          <polygon fill="#EFF5FF" points="0,26 20,24 40,19 60,22 80,16 100,18 120,12 140,15 160,10 180,13 200,8 220,11 240,7 260,5 260,42 0,42"/>
+        </svg>
+      </div>
+
+      <div class="store" style="border-color:#FFE2B0;background:linear-gradient(0deg,#FFFCF5,#FFFCF5)">
+        <div class="hd"><div class="ava" style="background:var(--warning-bg);color:#B37400">KD</div>
+          <div><div class="nm">Kios Depok</div><div class="sync warn"><span class="dot w"></span> Belum sinkron 2 hari</div></div>
+        </div>
+        <div class="grid2" style="background:#fff">
+          <div class="mini"><div class="l">Omzet hari ini</div><div class="v" style="color:var(--muted-fg)">—</div></div>
+          <div class="mini"><div class="l">Laba kotor</div><div class="v" style="color:var(--muted-fg)">—</div></div>
+          <div class="mini"><div class="l">Transaksi</div><div class="v" style="color:var(--muted-fg)">—</div></div>
+          <div class="mini"><div class="l">Rata-rata nota</div><div class="v" style="color:var(--muted-fg)">—</div></div>
+        </div>
+        <div style="margin-top:12px;font-size:11.5px;color:#B37400;background:var(--warning-bg);padding:9px 11px;border-radius:var(--r-in)">
+          Angka terakhir dari <b>18 Agu</b>. Minta kasir buka aplikasi &amp; sambungkan internet.
+        </div>
+      </div>
+
+    </div>
+    <div class="ann"><b>1.1 + keputusan penting</b> — toko yang basi <b>tidak</b> menampilkan angka lama seolah-olah data hari ini. Angka disembunyikan (—) dan diganti peringatan. Menampilkan angka basi tanpa penanda adalah cara tercepat kehilangan kepercayaan owner.</div>
+  </section>
+
+  <!-- ---------- 1.2 Bandingkan cabang ---------- -->
+  <section>
+    <div class="shead"><h2>Perbandingan cabang</h2><span class="hint">22 Jul – 20 Agu 2026</span></div>
+    <div class="card">
+      <table>
+        <thead><tr>
+          <th>Toko</th><th>Omzet</th><th>Kontribusi</th><th>Transaksi</th><th>Rata-rata nota</th><th>Laba bersih</th><th>Margin</th><th>vs periode lalu</th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="nm"><span class="rank g">1</span> Pusat Serpong</td><td>Rp 138,4 jt</td>
+            <td><span class="mbar"><i style="width:100%"></i></span>48,6%</td><td>2.341</td><td>Rp 59.120</td><td>Rp 31,2 jt</td><td>22,5%</td><td><span class="delta up">▲ 15,1%</span></td></tr>
+          <tr><td class="nm"><span class="rank">2</span> Cabang Bintaro</td><td>Rp 104,9 jt</td>
+            <td><span class="mbar"><i style="width:76%"></i></span>36,9%</td><td>1.806</td><td>Rp 58.080</td><td>Rp 22,8 jt</td><td>21,7%</td><td><span class="delta up">▲ 9,4%</span></td></tr>
+          <tr><td class="nm"><span class="rank">3</span> Kios Depok</td><td>Rp 41,3 jt</td>
+            <td><span class="mbar"><i style="width:30%"></i></span>14,5%</td><td>665</td><td>Rp 62.100</td><td>Rp 7,3 jt</td><td>17,7%</td><td><span class="delta dn">▼ 4,2%</span></td></tr>
+        </tbody>
+        <tfoot><tr><td>Total</td><td>Rp 284,6 jt</td><td>100%</td><td>4.812</td><td>Rp 59.140</td><td>Rp 61,3 jt</td><td>21,5%</td><td><span class="delta up">▲ 12,4%</span></td></tr></tfoot>
+      </table>
+    </div>
+    <div class="ann"><b>1.2</b> — kolom bisa diklik untuk urut. Margin Kios Depok yang 4 poin di bawah cabang lain adalah temuan yang tidak akan pernah terlihat dari aplikasi kasir mana pun secara terpisah.</div>
+  </section>
+
+  <!-- ---------- 1.3 Tren jangka panjang ---------- -->
+  <section>
+    <div class="shead"><h2>Tren 12 bulan</h2>
+      <div class="ctrls"><div class="seg"><span class="on">Omzet</span><span>Laba</span><span>Transaksi</span></div><a class="link" href="#">Semua toko ▾</a></div>
+    </div>
+    <div class="card">
+      <svg width="100%" height="240" viewBox="0 0 1000 240" preserveAspectRatio="none" role="img" aria-label="Grafik omzet 12 bulan dibanding tahun lalu">
+        <g stroke="#ECEFF3" stroke-width="1">
+          <line x1="0" y1="20" x2="1000" y2="20"/><line x1="0" y1="70" x2="1000" y2="70"/>
+          <line x1="0" y1="120" x2="1000" y2="120"/><line x1="0" y1="170" x2="1000" y2="170"/>
+          <line x1="0" y1="205" x2="1000" y2="205"/>
+        </g>
+        <!-- tahun lalu -->
+        <polyline fill="none" stroke="#C0CAEC" stroke-width="2" stroke-dasharray="5 5"
+          points="40,168 127,175 214,160 301,166 388,152 475,158 562,148 649,140 736,146 823,132 910,138 960,130"/>
+        <!-- tahun ini -->
+        <polygon fill="#EFF5FF" points="40,150 127,142 214,148 301,128 388,134 475,118 562,124 649,104 736,110 823,92 910,84 960,66 960,205 40,205"/>
+        <polyline fill="none" stroke="#3554C1" stroke-width="2.5" stroke-linejoin="round"
+          points="40,150 127,142 214,148 301,128 388,134 475,118 562,124 649,104 736,110 823,92 910,84 960,66"/>
+        <circle cx="960" cy="66" r="5" fill="#3554C1" stroke="#fff" stroke-width="2.5"/>
+        <g font-family="Sora" font-size="12" fill="#818898" text-anchor="middle">
+          <text x="40" y="228">Sep</text><text x="127" y="228">Okt</text><text x="214" y="228">Nov</text>
+          <text x="301" y="228">Des</text><text x="388" y="228">Jan</text><text x="475" y="228">Feb</text>
+          <text x="562" y="228">Mar</text><text x="649" y="228">Apr</text><text x="736" y="228">Mei</text>
+          <text x="823" y="228">Jun</text><text x="910" y="228">Jul</text><text x="960" y="228">Agu</text>
+        </g>
+      </svg>
+      <div class="legend">
+        <span><b style="background:#3554C1"></b>12 bulan terakhir</span>
+        <span><b style="background:#C0CAEC"></b>periode sama tahun lalu</span>
+        <span style="margin-left:auto;color:var(--primary);font-weight:600">Agustus berjalan: Rp 284,6 jt · +31% YoY</span>
+      </div>
+    </div>
+    <div class="ann"><b>1.3</b> — inilah satu-satunya bagian yang secara teknis mustahil ada di aplikasi lokal: IndexedDB di HP kasir tidak menyimpan riwayat sepanjang ini, dan hilang begitu ganti perangkat. Garis putus-putus YoY yang membuat angka punya arti.</div>
+  </section>
+
+  <!-- ---------- 1.5 Health check ---------- -->
+  <section>
+    <div class="shead"><h2>Status data &amp; langganan</h2><a class="link" href="#">Detail →</a></div>
+    <div class="health">
+      <div class="card">
+        <div class="hrow"><div class="ico wr">!</div>
+          <div><div class="tt">Kios Depok belum sinkron 2 hari</div><div class="ds">Terakhir 18 Agu 2026, 20:14 · perangkat: Samsung A15</div></div>
+          <div class="act">Kirim pengingat</div></div>
+        <div class="hrow"><div class="ico ok">✓</div>
+          <div><div class="tt">2 toko lain tersinkron normal</div><div class="ds">Pusat Serpong 11 menit lalu · Cabang Bintaro 4 menit lalu</div></div></div>
+        <div class="hrow"><div class="ico ok">✓</div>
+          <div><div class="tt">4 perangkat aktif 7 hari terakhir</div><div class="ds">2 Android, 1 Windows, 1 web</div></div>
+          <div class="act">Lihat</div></div>
+        <div class="hrow"><div class="ico dg">⏱</div>
+          <div><div class="tt">Langganan berakhir dalam 25 hari</div><div class="ds">Paket Bisnis · berakhir 14 Sep 2026 · Rp 149.000/bln</div></div>
+          <div class="act">Perpanjang</div></div>
+      </div>
+      <div class="card">
+        <div style="font-size:13px;font-weight:600;margin-bottom:12px">Penyimpanan</div>
+        <div style="display:flex;align-items:baseline;gap:7px"><span style="font-size:23px;font-weight:700">820 MB</span><span style="font-size:12px;color:var(--muted-fg)">/ 2 GB</span></div>
+        <div class="bar" style="height:8px;margin:11px 0 8px"><i style="width:41%"></i></div>
+        <div style="font-size:11.5px;color:var(--muted-fg)">41% terpakai · 128 berkas cadangan · cadangan terbaru hari ini 09:00</div>
+        <div class="note">Kuota cukup untuk ±14 bulan lagi pada laju sekarang. Cadangan lebih lama dari 12 bulan dihapus otomatis.</div>
+      </div>
+    </div>
+    <div class="ann"><b>1.5</b> — panel ini merangkap dua fungsi: menjaga kepercayaan pada angka (data segar atau tidak) sekaligus jadi kanal retensi langganan yang tidak terasa seperti iklan.</div>
+  </section>
+
+</main>
+</div>
+</body>
+</html>

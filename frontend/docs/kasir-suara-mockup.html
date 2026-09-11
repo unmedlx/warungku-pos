@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup — Kasir Suara (mikrofon menyala) · Kan POS</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#3554C1; --primary-fg:#fff; --fg:#0D0D12; --accent:#EFF5FF;
+    --muted-fg:#818898; --muted:#ECEFF3; --bg:#EDF1F9; --bg-alt:#F8FAFE;
+    --card:#fff; --border:#DFE1E7; --border-soft:#ECEFF3; --border-input:#EFF2F6;
+    --success:#5ABC61; --success-bg:#EFF8EF; --danger:#DF1C41; --danger-bg:#FFF0F3;
+    --warning:#F9A616; --warning-bg:#FFF6E0; --purple:#6B39F4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Sora,system-ui,sans-serif;background:#f2f4f8;color:var(--fg);padding:32px 20px 80px}
+  .wrap{max-width:1660px;margin:0 auto}
+  h1{font-size:24px;font-weight:700}
+  .lede{color:var(--muted-fg);font-size:14px;margin-top:6px;max-width:960px;line-height:1.6}
+  .notes{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px 20px;margin:24px 0 10px}
+  .notes h3{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted-fg);margin-bottom:10px}
+  .notes ul{margin-left:18px;font-size:13px;line-height:1.9}
+  .notes b{color:var(--primary)}
+  .notes code{background:var(--muted);padding:1px 6px;border-radius:6px;font-size:12px}
+  .secttl{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--muted-fg);margin:38px 0 16px}
+  .frames{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start}
+  .frame{width:375px;flex:0 0 375px}
+  .frame > .cap{font-size:12px;font-weight:600;color:var(--muted-fg);margin-bottom:8px;text-transform:uppercase;letter-spacing:.1em}
+  .frame > .cap b{color:var(--primary)}
+  .frame > .sub{font-size:11.5px;color:var(--muted-fg);margin:-4px 0 8px;line-height:1.5}
+  .phone{width:375px;height:790px;overflow-y:auto;background:var(--bg);border-radius:28px;
+    border:1px solid var(--border);box-shadow:0 12px 32px rgba(13,13,18,.10);padding:14px;scrollbar-width:thin}
+  .phone::-webkit-scrollbar{width:4px} .phone::-webkit-scrollbar-thumb{background:#c9d0dd;border-radius:2px}
+
+  /* ---------- chrome ---------- */
+  .hdr{height:46px;background:#fff;border-radius:23px;display:flex;align-items:center;gap:10px;padding:0 6px;margin-bottom:10px}
+  .hdr .back{width:38px;height:38px;border-radius:50%;background:var(--accent);color:var(--primary);display:grid;place-items:center;font-size:15px;flex:0 0 38px}
+  .hdr .t{font-size:15px;font-weight:600;flex:1}
+  .hdr .act{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);display:grid;place-items:center;margin-right:6px;font-size:13px;color:var(--muted-fg)}
+
+  .searchrow{display:flex;gap:8px;margin-bottom:10px}
+  .search{flex:1;height:44px;background:#fff;border:1px solid var(--border-input);border-radius:22px;display:flex;align-items:center;
+    gap:9px;padding:0 14px;color:var(--muted-fg);font-size:13px}
+  .search.filled{color:var(--fg)}
+  .search.warn{border-color:var(--warning);background:var(--warning-bg)}
+  .iconbtn{width:44px;height:44px;flex:0 0 44px;border-radius:22px;background:#fff;border:1px solid var(--border);
+    display:grid;place-items:center;font-size:16px;color:var(--muted-fg)}
+  .iconbtn.mic-on{background:var(--danger);border-color:var(--danger);color:#fff;box-shadow:0 0 0 4px rgba(223,28,65,.16)}
+
+  .sechead{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--muted-fg);margin:12px 2px 8px}
+
+  /* ---------- pita dengar ---------- */
+  .ribbon{background:linear-gradient(160deg,#22307A,#0D0D12);border-radius:20px;padding:13px 14px;color:#fff;margin-bottom:10px}
+  .ribbon .top{display:flex;align-items:center;gap:8px}
+  .ribbon .dot{width:9px;height:9px;border-radius:50%;background:#FF5C7A;box-shadow:0 0 0 4px rgba(255,92,122,.22)}
+  .ribbon .lbl{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.75}
+  .ribbon .stop{margin-left:auto;font-size:10.5px;font-weight:600;background:rgba(255,255,255,.14);border-radius:12px;padding:4px 10px}
+  .ribbon .txt{font-size:13px;line-height:1.55;margin-top:9px;min-height:20px}
+  .ribbon .txt .dim{opacity:.5}
+  .ribbon .txt .idle{opacity:.45;font-style:italic}
+  .wave{display:flex;align-items:flex-end;gap:3px;height:18px;margin-top:10px}
+  .wave i{width:3px;border-radius:2px;background:rgba(255,255,255,.55);display:block}
+
+  /* ---------- chip barang masuk ---------- */
+  .chips{display:flex;flex-direction:column;gap:7px;margin-bottom:10px}
+  .chip{background:#fff;border:1px solid var(--border);border-radius:16px;padding:9px 11px;display:flex;align-items:center;gap:9px}
+  .chip.ok{border-color:#BFE3C2;background:var(--success-bg)}
+  .chip.warn{border-color:#F6DFA8;background:var(--warning-bg);flex-direction:column;align-items:stretch;gap:8px}
+  .chip.bad{border-color:#F5C2CE;background:var(--danger-bg)}
+  .chip .ic{width:26px;height:26px;border-radius:9px;display:grid;place-items:center;font-size:13px;flex:0 0 26px;background:#fff}
+  .chip .nm{font-size:12.5px;font-weight:600;line-height:1.35}
+  .chip .mt{font-size:10.5px;color:var(--muted-fg);margin-top:2px;font-style:italic}
+  .chip .qty{margin-left:auto;font-size:12.5px;font-weight:700;flex:0 0 auto}
+  .chip .undo{width:28px;height:28px;border-radius:50%;background:#fff;border:1px solid var(--border);
+    display:grid;place-items:center;font-size:12px;color:var(--muted-fg);flex:0 0 28px}
+  .chip .head{display:flex;align-items:center;gap:9px}
+  .cands{display:flex;gap:6px;flex-wrap:wrap}
+  .cand{background:#fff;border:1px solid var(--border);border-radius:13px;padding:6px 10px;font-size:11.5px;font-weight:600}
+  .cand.dismiss{color:var(--muted-fg);font-weight:500}
+
+  /* ---------- grid produk ---------- */
+  .pgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .pcard{background:#fff;border-radius:16px;padding:10px;border:1px solid transparent}
+  .pcard.hit{border-color:var(--success);box-shadow:0 0 0 3px rgba(90,188,97,.15)}
+  .pcard .th{height:52px;border-radius:11px;background:var(--muted);display:grid;place-items:center;font-size:21px}
+  .pcard .nm{font-size:11.5px;font-weight:600;margin-top:7px;line-height:1.35}
+  .pcard .pr{font-size:12px;font-weight:700;color:var(--primary);margin-top:3px}
+  .pcard .st{font-size:9.5px;color:var(--muted-fg);margin-top:2px}
+
+  /* ---------- keranjang ---------- */
+  .cartbar{position:sticky;bottom:0;background:#fff;border-radius:22px;padding:12px 14px;margin-top:12px;
+    box-shadow:0 -6px 20px rgba(13,13,18,.08);border:1px solid var(--border-soft)}
+  .cartbar .row{display:flex;align-items:center;gap:10px}
+  .cartbar .cnt{width:36px;height:36px;border-radius:12px;background:var(--accent);color:var(--primary);
+    display:grid;place-items:center;font-size:13px;font-weight:700;flex:0 0 36px}
+  .cartbar .lb{font-size:10.5px;color:var(--muted-fg)}
+  .cartbar .tt{font-size:16px;font-weight:700}
+  .cartbar .pay{margin-left:auto;height:40px;border-radius:20px;background:var(--primary);color:#fff;
+    display:flex;align-items:center;gap:7px;padding:0 18px;font-size:13px;font-weight:600}
+
+  .cartlist{background:#fff;border-radius:20px;padding:4px 13px;margin-bottom:10px}
+  .crow{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border-soft)}
+  .crow:last-child{border-bottom:none}
+  .crow .th{width:36px;height:36px;border-radius:10px;background:var(--muted);display:grid;place-items:center;font-size:15px;flex:0 0 36px}
+  .crow .nm{font-size:12.5px;font-weight:600}
+  .crow .mt{font-size:10px;color:var(--muted-fg);margin-top:2px;display:flex;align-items:center;gap:5px}
+  .voicetag{background:var(--accent);color:var(--primary);border-radius:5px;padding:1px 5px;font-size:8.5px;font-weight:700;letter-spacing:.04em}
+  .crow .stp{display:flex;align-items:center;gap:7px;margin-left:auto}
+  .crow .stp b{font-size:12.5px;min-width:14px;text-align:center}
+  .crow .stp span{width:24px;height:24px;border-radius:50%;border:1px solid var(--border);display:grid;place-items:center;font-size:12px;color:var(--muted-fg)}
+
+  .banner{border-radius:16px;padding:10px 12px;font-size:11.5px;line-height:1.55;margin-bottom:10px;display:flex;gap:8px}
+  .banner.ok{background:var(--success-bg);color:#2C6B31;border:1px solid #BFE3C2}
+  .banner.info{background:var(--accent);color:#22307A;border:1px solid #C7D8F5}
+  .banner.warn{background:var(--warning-bg);color:#8A5A00;border:1px solid #F6DFA8}
+
+  /* ---------- tabel aturan ---------- */
+  table.rules{width:100%;border-collapse:collapse;font-size:12.5px;background:#fff;border-radius:14px;overflow:hidden}
+  table.rules th,table.rules td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border-soft);vertical-align:top}
+  table.rules th{font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted-fg);background:var(--bg-alt)}
+  table.rules td code{background:var(--muted);padding:1px 6px;border-radius:6px;font-size:11.5px}
+  table.rules tr:last-child td{border-bottom:none}
+  .tag{display:inline-block;border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;letter-spacing:.04em}
+  .tag.ok{background:var(--success-bg);color:#2C6B31}
+  .tag.warn{background:var(--warning-bg);color:#8A5A00}
+  .tag.bad{background:var(--danger-bg);color:#A21334}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Kasir Suara — mikrofon menyala selama transaksi</h1>
+  <p class="lede">
+    Kasir warung melayani pembeli seperti biasa sambil menyebut barangnya keras-keras — “Indomie goreng dua, teh gelas satu”.
+    Ucapan itu ditangkap dan langsung jadi isi keranjang, tanpa layar tinjau. Seluruh pencocokan berjalan
+    <b>di perangkat, tanpa AI dan tanpa internet</b>: yang dicari cuma produk milik toko ini, dan itu soal mencocokkan,
+    bukan mengarang.
+  </p>
+
+  <div class="notes">
+    <h3>Keputusan rancangan yang perlu direview</h3>
+    <ul>
+      <li><b>Suara tidak menambah pekerjaan.</b> Kasir warung memang sudah menyebut nama barang sambil memasukkan ke kantong. Fitur ini menangkap langkah yang sudah ada, bukan meminta langkah baru.</li>
+      <li><b>Tidak ada layar tinjau.</b> Barang langsung masuk keranjang. Yang menggantikan konfirmasi adalah <b>chip undo</b> — koreksi harus lebih murah daripada persetujuan, kalau tidak seluruh waktu yang dihemat habis di layar konfirmasi.</li>
+      <li><b>Kalau tidak yakin, jangan menebak.</b> Ucapan yang tidak cocok di atas ambang <code>0.74</code> tidak pernah masuk keranjang diam-diam. Ia jatuh jadi tawaran kandidat, atau ke kotak pencarian yang sudah ada.</li>
+      <li><b>Hanya potongan yang sudah final</b> yang diproses. Teks sementara ditampilkan (abu-abu) tapi tidak pernah menambah barang — teks sementara sering berubah total sedetik kemudian.</li>
+      <li><b>Obrolan dengan pembeli tersaring sendiri.</b> Katalog tertutup adalah penyaringnya: “bentar ya bu” tidak menyerupai nama produk mana pun, jadi ia lewat tanpa efek.</li>
+      <li><b>Angka di tengah nama bukan jumlah.</b> “Susu Tiga Sapi dua” terbaca 2 × Susu Tiga Sapi, bukan 3 × “sapi dua”.</li>
+      <li><b>Mikrofon mati sendiri</b> begitu transaksi dibayar, dan statusnya selalu terlihat — kasir tidak boleh ragu apakah HP-nya sedang mendengarkan.</li>
+    </ul>
+  </div>
+
+  <!-- ============================================================ -->
+  <div class="secttl">A · Alur utama</div>
+  <div class="frames">
+
+    <!-- 1 -->
+    <div class="frame">
+      <div class="cap"><b>1</b> · Mikrofon mati (keadaan sekarang)</div>
+      <div class="sub">Tombol mik duduk di sebelah pencarian yang sudah merangkap kolom scanner-gun. Tanpa fitur baru di layar, tanpa menggeser apa pun.</div>
+      <div class="phone">
+        <div class="hdr"><div class="back">←</div><div class="t">Kasir</div><div class="act">☰</div></div>
+        <div class="searchrow">
+          <div class="search">🔍 Cari produk / scan…</div>
+          <div class="iconbtn">🎙️</div>
+          <div class="iconbtn">▥</div>
+        </div>
+        <div class="sechead">Semua produk</div>
+        <div class="pgrid">
+          <div class="pcard"><div class="th">🍜</div><div class="nm">Indomie Goreng</div><div class="pr">Rp 3.500</div><div class="st">Stok 48</div></div>
+          <div class="pcard"><div class="th">🍜</div><div class="nm">Indomie Soto</div><div class="pr">Rp 3.500</div><div class="st">Stok 31</div></div>
+          <div class="pcard"><div class="th">🥤</div><div class="nm">Teh Gelas</div><div class="pr">Rp 2.000</div><div class="st">Stok 60</div></div>
+          <div class="pcard"><div class="th">💧</div><div class="nm">Aqua Botol 600ml</div><div class="pr">Rp 4.000</div><div class="st">Stok 24</div></div>
+          <div class="pcard"><div class="th">🚬</div><div class="nm">Sampoerna Mild 16</div><div class="pr">Rp 32.000</div><div class="st">Stok 12</div></div>
+          <div class="pcard"><div class="th">🍚</div><div class="nm">Gula Pasir</div><div class="pr">Rp 15.000</div><div class="st">Stok 20 kg</div></div>
+        </div>
+        <div class="cartbar">
+          <div class="row">
+            <div class="cnt">0</div>
+            <div><div class="lb">Keranjang kosong</div><div class="tt">Rp 0</div></div>
+            <div class="pay" style="background:#C0CAEC">Bayar</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="frame">
+      <div class="cap"><b>2</b> · Mendengarkan, belum ada ucapan</div>
+      <div class="sub">Satu ketukan pada mik. Pita hitam muncul di atas — satu-satunya penanda bahwa HP sedang mendengar, dan sengaja mencolok.</div>
+      <div class="phone">
+        <div class="hdr"><div class="back">←</div><div class="t">Kasir</div><div class="act">☰</div></div>
+        <div class="ribbon">
+          <div class="top">
+            <div class="dot"></div><div class="lbl">Mendengarkan</div>
+            <div class="stop">■ Stop</div>
+          </div>
+          <div class="txt"><span class="idle">Sebut nama barang dan jumlahnya…</span></div>
+          <div class="wave">
+            <i style="height:20%"></i><i style="height:35%"></i><i style="height:25%"></i><i style="height:45%"></i>
+            <i style="height:30%"></i><i style="height:22%"></i><i style="height:38%"></i><i style="height:28%"></i>
+            <i style="height:18%"></i><i style="height:33%"></i><i style="height:24%"></i><i style="height:40%"></i>
+            <i style="height:26%"></i><i style="height:20%"></i><i style="height:30%"></i>
+          </div>
+        </div>
+        <div class="searchrow">
+          <div class="search">🔍 Cari produk / scan…</div>
+          <div class="iconbtn mic-on">🎙️</div>
+        </div>
+        <div class="banner info">💡 <div>Bicara biasa saja. Contoh: “<b>Indomie goreng dua</b>”, “<b>dua teh gelas</b>”, “<b>gula setengah kilo</b>”.</div></div>
+        <div class="sechead">Semua produk</div>
+        <div class="pgrid">
+          <div class="pcard"><div class="th">🍜</div><div class="nm">Indomie Goreng</div><div class="pr">Rp 3.500</div><div class="st">Stok 48</div></div>
+          <div class="pcard"><div class="th">🍜</div><div class="nm">Indomie Soto</div><div class="pr">Rp 3.500</div><div class="st">Stok 31</div></div>
+          <div class="pcard"><div class="th">🥤</div><div class="nm">Teh Gelas</div><div class="pr">Rp 2.000</div><div class="st">Stok 60</div></div>
+          <div class="pcard"><div class="th">💧</div><div class="nm">Aqua Botol 600ml</div><div class="pr">Rp 4.000</div><div class="st">Stok 24</div></div>
+        </div>
+        <div class="cartbar">
+          <div class="row">
+            <div class="cnt">0</div>
+            <div><div class="lb">Keranjang kosong</div><div class="tt">Rp 0</div></div>
+            <div class="pay" style="background:#C0CAEC">Bayar</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="frame">
+      <div class="cap"><b>3</b> · Barang masuk sambil bicara</div>
+      <div class="sub">Dua barang dari satu tarikan napas. Teks abu-abu di pita adalah bagian yang belum final — belum menambah apa pun.</div>
+      <div class="phone">
+        <div class="hdr"><div class="back">←</div><div class="t">Kasir</div><div class="act">☰</div></div>
+        <div class="ribbon">
+          <div class="top"><div class="dot"></div><div class="lbl">Mendengarkan</div><div class="stop">■ Stop</div></div>
+          <div class="txt">Indomie goreng dua, teh gelas satu <span class="dim">sama aqua…</span></div>
+          <div class="wave">
+            <i style="height:55%"></i><i style="height:80%"></i><i style="height:40%"></i><i style="height:95%"></i>
+            <i style="height:60%"></i><i style="height:75%"></i><i style="height:35%"></i><i style="height:88%"></i>
+            <i style="height:50%"></i><i style="height:70%"></i><i style="height:45%"></i><i style="height:82%"></i>
+            <i style="height:38%"></i><i style="height:65%"></i><i style="height:52%"></i>
+          </div>
+        </div>
+        <div class="chips">
+          <div class="chip ok">
+            <div class="ic">🍜</div>
+            <div><div class="nm">Indomie Goreng</div><div class="mt">“indomie goreng dua”</div></div>
+            <div class="qty">×2</div>
+            <div class="undo">↩</div>
+          </div>
+          <div class="chip ok">
+            <div class="ic">🥤</div>
+            <div><div class="nm">Teh Gelas</div><div class="mt">“teh gelas satu”</div></div>
+            <div class="qty">×1</div>
+            <div class="undo">↩</div>
+          </div>
+        </div>
+        <div class="searchrow">
+          <div class="search">🔍 Cari produk / scan…</div>
+          <div class="iconbtn mic-on">🎙️</div>
+        </div>
+        <div class="sechead">Semua produk</div>
+        <div class="pgrid">
+          <div class="pcard hit"><div class="th">🍜</div><div class="nm">Indomie Goreng</div><div class="pr">Rp 3.500</div><div class="st">Stok 46</div></div>
+          <div class="pcard hit"><div class="th">🥤</div><div class="nm">Teh Gelas</div><div class="pr">Rp 2.000</div><div class="st">Stok 59</div></div>
+          <div class="pcard"><div class="th">🍜</div><div class="nm">Indomie Soto</div><div class="pr">Rp 3.500</div><div class="st">Stok 31</div></div>
+          <div class="pcard"><div class="th">💧</div><div class="nm">Aqua Botol 600ml</div><div class="pr">Rp 4.000</div><div class="st">Stok 24</div></div>
+        </div>
+        <div class="cartbar">
+          <div class="row">
+            <div class="cnt">3</div>
+            <div><div class="lb">3 barang</div><div class="tt">Rp 9.000</div></div>
+            <div class="pay">Bayar →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="frame">
+      <div class="cap"><b>4</b> · Keranjang saat dibuka</div>
+      <div class="sub">Barang dari suara diberi penanda kecil. Bukan untuk gaya — kalau ada yang keliru, kasir tahu duluan di mana harus curiga.</div>
+      <div class="phone">
+        <div class="hdr"><div class="back">←</div><div class="t">Keranjang</div><div class="act">🗑</div></div>
+        <div class="banner ok">✓ <div><b>3 barang</b> masuk lewat suara. Ketuk mana saja untuk mengubah jumlah atau menghapus.</div></div>
+        <div class="cartlist">
+          <div class="crow">
+            <div class="th">🍜</div>
+            <div><div class="nm">Indomie Goreng</div><div class="mt"><span class="voicetag">SUARA</span> Rp 3.500</div></div>
+            <div class="stp"><span>−</span><b>2</b><span>+</span></div>
+          </div>
+          <div class="crow">
+            <div class="th">🥤</div>
+            <div><div class="nm">Teh Gelas</div><div class="mt"><span class="voicetag">SUARA</span> Rp 2.000</div></div>
+            <div class="stp"><span>−</span><b>1</b><span>+</span></div>
+          </div>
+          <div class="crow">
+            <div class="th">💧</div>
+            <div><div class="nm">Aqua Botol 600ml</div><div class="mt"><span class="voicetag">SUARA</span> Rp 4.000</div></div>
+            <div class="stp"><span>−</span><b>1</b><span>+</span></div>
+          </div>
+        </div>
+        <div class="ribbon">
+          <div class="top"><div class="dot"></div><div class="lbl">Masih mendengarkan</div><div class="stop">■ Stop</div></div>
+          <div class="txt"><span class="idle">Mau tambah barang lagi? Sebut saja.</span></div>
+        </div>
+        <div class="cartbar">
+          <div class="row">
+            <div class="cnt">4</div>
+            <div><div class="lb">Total</div><div class="tt">Rp 13.000</div></div>
+            <div class="pay">Bayar →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================ -->
+  <div class="secttl">B · Saat tidak yakin — bagian yang paling menentukan</div>
+  <div class="frames">
+
+    <!-- 5 -->
+    <div class="frame">
+      <div class="cap"><b>5</b> · Ambigu — dua kandidat berdekatan</div>
+      <div class="sub">“Indomie dua” cocok dengan Goreng maupun Soto. Tidak ada yang dimasukkan. Kasir memilih dengan satu ketukan, jumlahnya sudah dibawa.</div>
+      <div class="phone">
+        <div class="hdr"><div class="back">←</div><div class="t">Kasir</div><div class="act">☰</div></div>
+        <div class="ribbon">
+          <div class="top"><div class="dot"></div><div class="lbl">Mendengarkan</div><div class="stop">■ Stop</div></div>
+          <div class="txt">Indomie dua</div>
+        </div>
+        <div class="chips">
+          <div class="chip warn">
+            <div class="head">
+              <div class="ic">❓</div>
+              <div><div class="nm">Yang mana? <span style="font-weight:500;color:var(--muted-fg)">— jumlah ×2</span></div><div class="mt">“indomie dua”</div></div>
+              <div class="undo">✕</div>
+            </div>
+            <div class="cands">
+              <div class="cand">🍜 Indomie Goreng</div>
+              <div class="cand">🍜 Indomie Soto</div>
+              <div class="cand dismiss">Lewati</div>
+            </div>
+          </div>
+        </div>
+        <div class="searchrow">
+          <div class="search">🔍 Cari produk / scan…</div>
+          <div class="iconbtn mic-on">🎙️</div>
+        </div>
+        <div class="banner warn">⚠️ <div>Beda nilai kandidat di bawah <code>0,08</code> dianggap tebakan, bukan pengenalan. Sistem tidak memilih sendiri.</div></div>
+        <div class="sechead">Semua produk</div>
+        <div class="pgrid">
+          <div class="pcard"><div class="th">🍜</div><div class="nm">Indomie Goreng</div><div class="pr">Rp 3.500</div><div class="st">Stok 48</div></div>
+          <div class="pcard"><div class="th">🍜</div><div class="nm">Indomie Soto</div><div class="pr">Rp 3.500</div><div class="st">Stok 31</div></div>
+        </div>
+        <div class="cartbar">
+          <div class="row">
+            <div class="cnt">0</div>
+            <div><div class="lb">Keranjang kosong</div><div class="tt">Rp 0</div></div>
+            <div class="pay" style="background:#C0CAEC">Bayar</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="frame">
+      <div class="cap"><b>6</b> · Tidak ketemu — jatuh ke pencarian</div>
+      <div class="sub">Gagal cocok bukan pesan galat buntu. Teksnya diserahkan ke kotak pencarian yang sudah ada, jadi kasir lanjut dengan cara lama tanpa mengetik ulang.</div>
+      <div class="phone">
+        <div class="hdr"><div class="back">←</div><div class="t">Kasir</div><div class="act">☰</div></div>
+        <div class="ribbon">
+          <div class="top"><div class="dot"></div><div class="lbl">Mendengarkan</div><div class="stop">■ Stop</div></div>
+          <div class="txt">kopi kapal api sachet tiga</div>
+        </div>
+        <div class="chips">
+          <div class="chip bad">
+            <div class="ic">🔍</div>
+            <div><div class="nm">Belum ada di produk kamu</div><div class="mt">“kopi kapal api sachet”</div></div>
+            <div class="undo">✕</div>
+          </div>
+        </div>
+        <div class="searchrow">
+          <div class="search filled warn">🔍 kopi kapal api sachet</div>
+          <div class="iconbtn mic-on">🎙️</div>
+        </div>
+        <div class="banner warn">⚠️ <div>Teksnya sudah dipindah ke pencarian. Kalau memang barang baru, tambahkan dulu lewat <b>Produk</b>.</div></div>
+        <div class="sechead">Hasil pencarian</div>
+        <div style="background:#fff;border-radius:20px;padding:26px 16px;text-align:center">
+          <div style="font-size:26px">🗂️</div>
+          <div style="font-size:12.5px;font-weight:600;margin-top:8px">Tidak ada yang cocok</div>
+          <div style="font-size:11px;color:var(--muted-fg);margin-top:4px;line-height:1.5">Coba sebut nama lain, atau ketik manual di kolom pencarian.</div>
+        </div>
+        <div class="cartbar">
+          <div class="row">
+            <div class="cnt">0</div>
+            <div><div class="lb">Keranjang kosong</div><div class="tt">Rp 0</div></div>
+            <div class="pay" style="background:#C0CAEC">Bayar</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7 -->
+    <div class="frame">
+      <div class="cap"><b>7</b> · Stok habis</div>
+      <div class="sub">Barangnya dikenali, tapi tidak masuk. Disembunyikan diam-diam justru membuat ucapan yang benar terasa seperti tidak terdengar.</div>
+      <div class="phone">
+        <div class="hdr"><div class="back">←</div><div class="t">Kasir</div><div class="act">☰</div></div>
+        <div class="ribbon">
+          <div class="top"><div class="dot"></div><div class="lbl">Mendengarkan</div><div class="stop">■ Stop</div></div>
+          <div class="txt">Sampoerna satu, teh gelas dua</div>
+        </div>
+        <div class="chips">
+          <div class="chip bad">
+            <div class="ic">🚬</div>
+            <div><div class="nm">Sampoerna Mild 16 — stok habis</div><div class="mt">“sampoerna satu”</div></div>
+            <div class="undo">✕</div>
+          </div>
+          <div class="chip ok">
+            <div class="ic">🥤</div>
+            <div><div class="nm">Teh Gelas</div><div class="mt">“teh gelas dua”</div></div>
+            <div class="qty">×2</div>
+            <div class="undo">↩</div>
+          </div>
+        </div>
+        <div class="searchrow">
+          <div class="search">🔍 Cari produk / scan…</div>
+          <div class="iconbtn mic-on">🎙️</div>
+        </div>
+        <div class="sechead">Semua produk</div>
+        <div class="pgrid">
+          <div class="pcard hit"><div class="th">🥤</div><div class="nm">Teh Gelas</div><div class="pr">Rp 2.000</div><div class="st">Stok 58</div></div>
+          <div class="pcard"><div class="th">🚬</div><div class="nm">Sampoerna Mild 16</div><div class="pr">Rp 32.000</div><div class="st" style="color:var(--danger)">Stok 0</div></div>
+        </div>
+        <div class="cartbar">
+          <div class="row">
+            <div class="cnt">2</div>
+            <div><div class="lb">2 barang</div><div class="tt">Rp 4.000</div></div>
+            <div class="pay">Bayar →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8 -->
+    <div class="frame">
+      <div class="cap"><b>8</b> · Offline — tetap jalan</div>
+      <div class="sub">Pembeda utama dari fitur suara di halaman Produk. Pencocokan lokal berarti tidak ada yang hilang saat internet warung mati.</div>
+      <div class="phone">
+        <div class="hdr"><div class="back">←</div><div class="t">Kasir</div><div class="act">☰</div></div>
+        <div class="banner info">📶 <div><b>Tidak ada internet.</b> Kasir suara tetap jalan — pencocokan nama dikerjakan di HP ini, bukan di server.</div></div>
+        <div class="ribbon">
+          <div class="top"><div class="dot"></div><div class="lbl">Mendengarkan · luring</div><div class="stop">■ Stop</div></div>
+          <div class="txt">gula setengah kilo</div>
+        </div>
+        <div class="chips">
+          <div class="chip ok">
+            <div class="ic">🍚</div>
+            <div><div class="nm">Gula Pasir</div><div class="mt">“gula setengah kilo”</div></div>
+            <div class="qty">×0,5</div>
+            <div class="undo">↩</div>
+          </div>
+        </div>
+        <div class="searchrow">
+          <div class="search">🔍 Cari produk / scan…</div>
+          <div class="iconbtn mic-on">🎙️</div>
+        </div>
+        <div class="sechead">Semua produk</div>
+        <div class="pgrid">
+          <div class="pcard hit"><div class="th">🍚</div><div class="nm">Gula Pasir</div><div class="pr">Rp 15.000</div><div class="st">Stok 19,5 kg</div></div>
+          <div class="pcard"><div class="th">🍜</div><div class="nm">Indomie Goreng</div><div class="pr">Rp 3.500</div><div class="st">Stok 48</div></div>
+        </div>
+        <div class="cartbar">
+          <div class="row">
+            <div class="cnt">1</div>
+            <div><div class="lb">1 barang</div><div class="tt">Rp 7.500</div></div>
+            <div class="pay">Bayar →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================ -->
+  <div class="secttl">C · Aturan keputusan</div>
+  <div class="notes" style="padding:0;overflow:hidden">
+    <table class="rules">
+      <tr><th style="width:230px">Ucapan</th><th style="width:200px">Dibaca sebagai</th><th>Hasil</th></tr>
+      <tr><td>“Indomie goreng dua”</td><td>Indomie Goreng · 2</td><td><span class="tag ok">MASUK</span> pola <code>&lt;nama&gt; &lt;jumlah&gt;</code></td></tr>
+      <tr><td>“dua Indomie goreng”</td><td>Indomie Goreng · 2</td><td><span class="tag ok">MASUK</span> pola <code>&lt;jumlah&gt; &lt;nama&gt;</code>, sama sahnya</td></tr>
+      <tr><td>“teh gelas satu”</td><td>Teh Gelas · 1</td><td><span class="tag ok">MASUK</span> “gelas” di sini bagian nama, bukan satuan</td></tr>
+      <tr><td>“gula dua kilo”</td><td>Gula Pasir · 2</td><td><span class="tag ok">MASUK</span> satuan setelah angka ikut dilahap</td></tr>
+      <tr><td>“gula setengah kilo”</td><td>Gula Pasir · 0,5</td><td><span class="tag ok">MASUK</span> pecahan didukung</td></tr>
+      <tr><td>“Susu Tiga Sapi dua”</td><td>Susu Tiga Sapi · 2</td><td><span class="tag ok">MASUK</span> angka di tengah nama tidak dianggap jumlah</td></tr>
+      <tr><td>“indomi gorng dua”</td><td>Indomie Goreng · 2</td><td><span class="tag ok">MASUK</span> salah dengar ringan masih tertangkap</td></tr>
+      <tr><td>“Indomie dua”</td><td>Goreng? Soto?</td><td><span class="tag warn">TANYA</span> dua kandidat terlalu dekat — kasir yang pilih</td></tr>
+      <tr><td>“sampoerna satu” (stok 0)</td><td>Sampoerna Mild 16</td><td><span class="tag warn">TOLAK</span> dikenali, tapi ditahan dan diberi tahu</td></tr>
+      <tr><td>“kopi kapal api sachet tiga”</td><td>—</td><td><span class="tag bad">LEWAT</span> tidak ada di katalog → jatuh ke pencarian</td></tr>
+      <tr><td>“bentar ya bu, ini kembaliannya”</td><td>—</td><td><span class="tag bad">ABAIKAN</span> tidak menyerupai produk mana pun, lewat tanpa efek</td></tr>
+      <tr><td>“dua ribu”</td><td>—</td><td><span class="tag bad">ABAIKAN</span> ribuan sengaja tidak diurai; itu harga, bukan jumlah</td></tr>
+    </table>
+  </div>
+
+  <div class="notes">
+    <h3>Yang belum diputuskan — butuh pendapat kamu</h3>
+    <ul>
+      <li><b>Mikrofon menyala saat apa?</b> Usulan: menyala sejak kasir menekan mik, mati sendiri setelah transaksi dibayar. Alternatifnya menyala terus sepanjang shift — lebih sedikit ketukan, tapi baterai dan rasa “selalu didengar” jadi soal.</li>
+      <li><b>Perlukah bunyi/getar saat barang masuk?</b> Di warung yang berisik, kasir mungkin tidak sempat melihat layar. Getaran pendek lebih murah perhatiannya daripada melirik.</li>
+      <li><b>Chip undo bertahan berapa lama?</b> Usulan: tiga chip terakhir saja, sisanya menghilang — daftar panjang justru menutupi grid produk.</li>
+      <li><b>Ambang <code>0,74</code> itu tebakan awal.</b> Angka sebenarnya harus datang dari uji dengan ucapan asli di warung berisik, bukan dari ruang sunyi.</li>
+      <li><b>Risiko terbesar yang belum teruji:</b> <code>SpeechRecognizer</code> Android sering tetap butuh jaringan kecuali paket bahasa luring terpasang. Kalau di HP target begitu, janji “tetap jalan offline” di layar 8 tidak bisa ditepati dan harus diganti.</li>
+    </ul>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup — Landing KanPOS (Shark UI)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* ─────────────────────────────────────────────────────────────
+   Token Shark UI (shark.vini.one) — nilai sama dengan kasir & dashboard.
+   Landing hanya mode terang. Primary = biru brand KanPOS.
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --font-sans:'Hanken Grotesk',system-ui,-apple-system,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  --r-md:6px; --r-lg:8px; --r-xl:12px; --r-2xl:16px;
+
+  --background:#fafafa; --foreground:#262626;
+  --card:#ffffff;       --muted:#f0f0f0;  --muted-foreground:#5e5e5e;
+  --border:#e2e2e2;     --input:#dbdbdb;
+  --primary:#3554C1;    --primary-foreground:#eff4ff;
+  --primary-dark:#0E1A52;
+  --destructive:#ef4444; --destructive-text:#b91c1c;
+  --success:#10b981;     --success-text:#047857;
+  --warning:#f59e0b;     --warning-text:#b45309;
+  --info:#3b82f6;        --info-text:#1d4ed8;
+  --wa:#25D366;          --wa-text:#128C4B;
+
+  --shadow-xs:0 1px 2px 0 rgb(0 0 0 / .05);
+  --shadow-sm:0 1px 3px 0 rgb(0 0 0 / .05),0 1px 2px -1px rgb(0 0 0 / .05);
+  --shadow-lg:0 10px 15px -3px rgb(0 0 0 / .06),0 4px 6px -4px rgb(0 0 0 / .05);
+  --shadow-hp:0 30px 60px -12px rgb(14 26 82 / .22),0 4px 12px rgb(14 26 82 / .08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;font-family:var(--font-sans);font-size:15px;line-height:1.5;color:var(--foreground);background:var(--card);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+svg{display:block;flex:none}
+h1,h2,h3,h4,p{margin:0}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted-foreground)}
+
+/* ── Bar catatan review ── */
+.review{position:sticky;top:0;z-index:100;background:#1b1b1f;color:#fff;font-size:13px;padding:10px 20px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.review b{font-weight:600}
+.review .tabs{display:flex;gap:4px}
+.review .tabs button{padding:5px 10px;border-radius:6px;color:#cfcfcf;font-weight:500;font-size:13px}
+.review .tabs button.on{background:#fff;color:#1b1b1f}
+.review .note{margin-left:auto;color:#9a9a9a}
+body.mobile #halaman{display:none}
+#hp-frame{display:none;padding:28px 0 40px;background:#e8e8e8;justify-content:center}
+body.mobile #hp-frame{display:flex}
+#hp-frame .bezel{width:390px;border:10px solid #111;border-radius:40px;background:#111;box-shadow:var(--shadow-hp);overflow:hidden}
+#hp-frame iframe{display:block;width:390px;height:844px;border:0;background:#fff}
+body.bare .review{display:none}
+
+/* ── Layout ── */
+.bungkus{max-width:1200px;margin:0 auto;padding:0 20px}
+.bungkus-lg{max-width:1024px;margin:0 auto;padding:0 20px}
+.seksi{padding:64px 0}
+.seksi.alt{background:var(--background);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.judul{max-width:620px;margin:0 auto 40px;text-align:center}
+.judul h2{font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1.2}
+.judul p{margin-top:10px;font-size:16px;color:var(--muted-foreground)}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+
+/* ── Komponen Shark ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 16px;border-radius:var(--r-lg);font-size:14px;font-weight:500;white-space:nowrap;border:1px solid transparent;transition:background .12s,filter .12s}
+.btn.sm{height:36px;padding:0 12px}
+.btn.xl{height:44px;padding:0 20px;font-size:15px}
+.btn.primary{background:var(--primary);color:var(--primary-foreground);box-shadow:0 1px 3px rgb(53 84 193 / .24)}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.outline{background:var(--card);border-color:var(--input);box-shadow:var(--shadow-xs)}
+.btn.outline:hover{background:var(--muted)}
+.btn.wa{background:var(--card);border-color:var(--input);color:var(--wa-text);box-shadow:var(--shadow-xs)}
+.btn.wa:hover{background:#ecfdf3}
+.btn.terang{background:#fff;color:var(--primary-dark);box-shadow:var(--shadow-sm)}
+.btn.hantu{background:rgb(255 255 255 / .12);color:#fff;border-color:rgb(255 255 255 / .28)}
+.btn.hantu:hover{background:rgb(255 255 255 / .18)}
+.btn.blok{width:100%}
+
+.badge{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:var(--r-md);font-size:12px;font-weight:500;border:1px solid transparent;white-space:nowrap}
+.badge.sm{height:20px;padding:0 6px;font-size:11px}
+.badge.success{background:color-mix(in srgb,var(--success) 10%,transparent);border-color:color-mix(in srgb,var(--success) 22%,transparent);color:var(--success-text)}
+.badge.warning{background:color-mix(in srgb,var(--warning) 10%,transparent);border-color:color-mix(in srgb,var(--warning) 25%,transparent);color:var(--warning-text)}
+.badge.primary{background:color-mix(in srgb,var(--primary) 10%,transparent);border-color:color-mix(in srgb,var(--primary) 22%,transparent);color:var(--primary)}
+.badge.outline{border-color:var(--border);color:var(--muted-foreground);background:var(--card)}
+.badge.terang{background:rgb(255 255 255 / .14);border-color:rgb(255 255 255 / .22);color:#fff}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-xl);box-shadow:var(--shadow-xs)}
+.card.p{padding:24px}
+.ikon{width:40px;height:40px;border-radius:var(--r-xl);display:grid;place-items:center;flex:none}
+.ikon.pri{background:color-mix(in srgb,var(--primary) 10%,transparent);color:var(--primary)}
+.ikon.ok{background:color-mix(in srgb,var(--success) 10%,transparent);color:var(--success-text)}
+.ikon.warn{background:color-mix(in srgb,var(--warning) 12%,transparent);color:var(--warning-text)}
+.ikon.info{background:color-mix(in srgb,var(--info) 10%,transparent);color:var(--info-text)}
+.ikon.bad{background:color-mix(in srgb,var(--destructive) 10%,transparent);color:var(--destructive-text)}
+.ikon.netral{background:var(--muted);color:var(--muted-foreground)}
+
+.cek{display:grid;gap:8px;margin:16px 0 0;padding:0;list-style:none}
+.cek li{display:flex;gap:10px;font-size:14px;color:var(--muted-foreground);line-height:1.45}
+.cek li svg{margin-top:2px;color:var(--primary)}
+
+/* ── Header ── */
+.hdr{position:sticky;top:41px;z-index:60;height:64px;background:rgb(255 255 255 / .85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+body.bare .hdr{top:0}
+.hdr .bungkus{height:100%;display:flex;align-items:center;gap:32px}
+.brand{display:flex;align-items:center;gap:9px;font-size:18px;font-weight:600;letter-spacing:-.01em}
+.brand .logo{width:32px;height:32px;border-radius:var(--r-lg);background:var(--primary);color:#fff;display:grid;place-items:center;font-size:14px;font-weight:600}
+.brand span b{color:var(--primary);font-weight:600}
+.menu{display:flex;gap:24px}
+.menu a{font-size:14px;font-weight:500;color:var(--muted-foreground)}
+.menu a:hover{color:var(--foreground)}
+.hdr .aksi{margin-left:auto;display:flex;gap:8px}
+
+/* ── Hero ── */
+.hero{padding:72px 0 80px;background:
+  radial-gradient(900px 420px at 80% 0%,color-mix(in srgb,var(--primary) 12%,transparent),transparent 60%),
+  linear-gradient(180deg,var(--background),var(--card) 75%)}
+.hero .bungkus{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+.hero h1{font-size:44px;font-weight:600;letter-spacing:-.03em;line-height:1.1;margin:18px 0 16px}
+.hero h1 em{font-style:normal;color:var(--primary)}
+.hero .lead{font-size:17px;color:var(--muted-foreground);max-width:32rem}
+.hero .cta{display:flex;gap:10px;margin:28px 0 14px}
+.hero .kecil{font-size:14px;color:var(--muted-foreground)}
+.hero .kecil a{color:var(--primary);font-weight:500}
+.jaminan{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+
+/* HP mock */
+.hp{width:300px;border-radius:36px;border:8px solid #111;background:#111;box-shadow:var(--shadow-hp);overflow:hidden;margin:0 auto}
+.hp .layar{background:var(--background);height:560px;display:flex;flex-direction:column;font-size:12px}
+.hp .top{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 10px;background:var(--card);border-bottom:1px solid var(--border)}
+.hp .top b{font-size:14px;font-weight:600}
+.hp .cari{margin:10px 12px 0;height:32px;border:1px solid var(--input);border-radius:var(--r-lg);background:var(--card);display:flex;align-items:center;gap:6px;padding:0 10px;color:var(--muted-foreground);font-size:12px;box-shadow:var(--shadow-xs)}
+.hp .kat{display:flex;gap:6px;padding:10px 12px 0;overflow:hidden}
+.hp .kat span{height:26px;padding:0 10px;border-radius:var(--r-lg);border:1px solid var(--border);background:var(--card);font-size:11px;display:flex;align-items:center;font-weight:500;color:var(--muted-foreground)}
+.hp .kat span.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+.hp .prod{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 12px}
+.hp .prod div{background:var(--card);border:1px solid var(--border);border-radius:var(--r-xl);padding:8px;box-shadow:var(--shadow-xs)}
+.hp .prod .g{height:44px;border-radius:var(--r-lg);background:var(--muted);display:grid;place-items:center;font-size:20px;margin-bottom:6px}
+.hp .prod .n{font-size:11.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hp .prod .h{font-size:12px;font-weight:600}
+.hp .prod .s{font-size:10.5px;color:var(--muted-foreground)}
+.hp .kr{margin:auto 10px 10px;background:var(--card);border:1px solid var(--border);border-radius:var(--r-xl);box-shadow:var(--shadow-lg);padding:10px 10px 10px 12px;display:flex;align-items:center;gap:8px}
+.hp .kr .t{flex:1}.hp .kr .t small{display:block;color:var(--muted-foreground);font-size:10.5px}.hp .kr .t b{font-size:13px;font-weight:600}
+.hp .kr .b{height:34px;padding:0 14px;border-radius:var(--r-lg);background:var(--primary);color:#fff;font-weight:500;font-size:12.5px;display:flex;align-items:center}
+.hp .nav{display:flex;justify-content:space-around;padding:8px 6px;border-top:1px solid var(--border);background:var(--card);font-size:10px;color:var(--muted-foreground)}
+.hp .nav span{display:flex;flex-direction:column;align-items:center;gap:3px}
+.hp .nav span.on{color:var(--primary);font-weight:500}
+
+/* ── Strip ── */
+.strip{background:var(--background);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:36px 0}
+.strip .item{display:flex;gap:12px}
+.strip b{display:block;font-size:14px;font-weight:600}
+.strip span{font-size:13px;color:var(--muted-foreground)}
+
+/* ── Masalah ── */
+.masalah .p{display:flex;gap:10px;align-items:flex-start;font-size:15px;font-weight:500}
+.masalah .p .x{width:24px;height:24px;border-radius:var(--r-md);flex:none;display:grid;place-items:center;background:color-mix(in srgb,var(--destructive) 10%,transparent);color:var(--destructive-text)}
+.masalah .j{display:flex;gap:10px;align-items:flex-start;margin-top:16px;padding:12px 14px;border-radius:var(--r-lg);background:color-mix(in srgb,var(--success) 8%,transparent);border:1px solid color-mix(in srgb,var(--success) 22%,transparent);font-size:14px;color:var(--muted-foreground)}
+.masalah .j svg{color:var(--success-text);margin-top:2px}
+
+/* ── Manfaat ── */
+.manfaat h3{font-size:16px;font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:16px}
+.manfaat .ket{font-size:14px;color:var(--muted-foreground);margin-top:6px}
+
+/* ── Langkah ── */
+.langkah .no{width:32px;height:32px;border-radius:var(--r-lg);background:var(--primary);color:#fff;display:grid;place-items:center;font-weight:600;font-size:14px;margin-bottom:14px}
+.langkah h3{font-size:16px;font-weight:600}
+.langkah .ket{font-size:14px;color:var(--muted-foreground);margin-top:6px}
+.mini{margin-top:16px;background:var(--card);border:1px solid var(--border);border-radius:var(--r-xl);box-shadow:var(--shadow-xs);overflow:hidden;font-size:12.5px}
+.mini .hd{padding:8px 12px;border-bottom:1px solid var(--border);font-size:11px;font-weight:500;color:var(--muted-foreground);background:var(--background)}
+.mini .r{display:flex;justify-content:space-between;gap:8px;padding:8px 12px;border-bottom:1px solid var(--border)}
+.mini .r:last-child{border-bottom:0}
+.mini .r small{display:block;color:var(--muted-foreground);font-size:11px}
+.mini .r.tot{font-weight:600;background:var(--background)}
+.mini .r.tot.ok{color:var(--success-text)}
+.mini .struk{font-family:var(--font-mono);font-size:11px;line-height:1.8;padding:10px 12px;color:var(--muted-foreground)}
+.mini .struk .c{text-align:center}.mini .struk b{color:var(--foreground);font-weight:600}
+.mini .struk .d{border-top:1px dashed var(--border);margin:6px 0}
+.mini .struk .f{display:flex;justify-content:space-between}
+
+/* ── Usaha ── */
+.usaha .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.usaha .chips span{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border-radius:var(--r-lg);border:1px solid var(--input);background:var(--card);font-size:14px;font-weight:500;box-shadow:var(--shadow-xs)}
+.usaha .chips span:hover{border-color:var(--primary);color:var(--primary)}
+.usaha .contoh{margin-top:28px;font-size:14px;color:var(--muted-foreground)}
+.usaha .contoh b{color:var(--foreground);font-weight:600}
+
+/* ── Harga ── */
+.harga .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:16px;align-items:start}
+.gratis{border-radius:var(--r-2xl);padding:32px;color:#fff;background:linear-gradient(150deg,var(--primary) 0%,var(--primary-dark) 100%)}
+.gratis .nol{font-size:60px;font-weight:600;letter-spacing:-.04em;line-height:1;margin:16px 0 6px}
+.gratis .ket{font-size:14px;opacity:.85}
+.gratis .cek li{color:rgb(255 255 255 / .88)}.gratis .cek li svg{color:#fff}
+.paket .grup{padding:22px 24px}
+.paket .grup + .grup{border-top:1px solid var(--border)}
+.paket h3{font-size:16px;font-weight:600}
+.paket .ket{font-size:14px;color:var(--muted-foreground);margin-top:6px}
+.paket .opsi{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px dashed var(--border)}
+.paket .opsi:last-child{border-bottom:0;padding-bottom:0}
+.paket .opsi b{display:block;font-size:14px;font-weight:600}
+.paket .opsi span{font-size:13px;color:var(--muted-foreground)}
+.paket .opsi .hg{text-align:right;white-space:nowrap}
+.paket .opsi .hg em{font-style:normal;font-size:18px;font-weight:600}
+.paket .opsi .hg small{display:block;font-size:11px;color:var(--muted-foreground)}
+.harga .catatan{font-size:14px;color:var(--muted-foreground);margin-top:16px;padding:0 4px}
+
+/* ── Jujur ── */
+.jujur .item{display:flex;gap:14px;padding:18px 20px}
+.jujur .item + .item{border-top:1px solid var(--border)}
+.jujur b{display:block;font-size:14px;font-weight:600;margin-bottom:3px}
+.jujur span{font-size:14px;color:var(--muted-foreground)}
+
+/* ── Testimoni slot ── */
+.slot{border:2px dashed var(--input);border-radius:var(--r-2xl);background:var(--background);padding:44px 24px;text-align:center}
+.slot h2{font-size:20px;font-weight:600;margin:14px 0 8px}
+.slot p{font-size:14px;color:var(--muted-foreground);max-width:52ch;margin:0 auto}
+
+/* ── FAQ ── */
+.faq .list{max-width:800px;margin:0 auto;border:1px solid var(--border);border-radius:var(--r-xl);background:var(--card);box-shadow:var(--shadow-xs);overflow:hidden}
+.faq details + details{border-top:1px solid var(--border)}
+.faq summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:16px 20px;font-size:15px;font-weight:500}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary .pl{width:24px;height:24px;border-radius:var(--r-md);flex:none;display:grid;place-items:center;background:var(--muted);color:var(--muted-foreground);transition:transform .15s}
+.faq details[open] summary .pl{transform:rotate(45deg);background:color-mix(in srgb,var(--primary) 10%,transparent);color:var(--primary)}
+.faq details[open] summary{background:var(--background)}
+.faq .a{padding:0 20px 18px 56px;font-size:14px;color:var(--muted-foreground)}
+
+/* ── Penutup ── */
+.penutup{background:var(--background);padding:0 0 64px}
+.penutup .panel{border-radius:var(--r-2xl);padding:56px 24px;text-align:center;color:#fff;background:linear-gradient(140deg,var(--primary-dark),var(--primary))}
+.penutup h2{font-size:28px;font-weight:600;letter-spacing:-.02em}
+.penutup .lead{font-size:16px;opacity:.85;margin-top:8px}
+.penutup .cta{display:flex;gap:10px;justify-content:center;margin-top:24px}
+.penutup .kecil{font-size:13px;opacity:.7;margin-top:18px}
+
+/* ── Footer ── */
+.ftr{background:#111;color:#c7c7c7;padding:56px 0 28px}
+.ftr .grid{display:grid;grid-template-columns:1.4fr 2fr;gap:48px}
+.ftr .brand{color:#fff}.ftr .brand span b{color:#8FA6F5}
+.ftr .ket{font-size:14px;color:#9a9a9a;margin-top:14px;max-width:38ch}
+.ftr .ket2{font-size:12px;color:#7c7c7c;margin-top:10px;max-width:38ch}
+.ftr .kol{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.ftr h4{color:#fff;font-size:13px;font-weight:600;margin-bottom:12px}
+.ftr ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.ftr li a{font-size:14px}.ftr li a:hover{color:#fff}
+.ftr li small{display:block;font-size:12px;color:#7c7c7c}
+.ftr .bawah{margin-top:40px;padding-top:20px;border-top:1px solid #262626;display:flex;justify-content:space-between;font-size:12px;color:#7c7c7c}
+
+/* ── Bar bawah (mobile) ── */
+.bar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:80;gap:8px;padding:10px 12px;background:var(--card);border-top:1px solid var(--border);box-shadow:0 -4px 20px rgb(0 0 0 / .06)}
+.bar .btn.primary{flex:1}
+.bar .wa{width:44px;padding:0;background:var(--wa);color:#fff;border-color:var(--wa)}
+
+/* ── Responsif ── */
+@media (max-width:899px){
+  body{padding-bottom:64px}
+  .seksi{padding:48px 0}
+  .judul{margin-bottom:28px}.judul h2{font-size:24px}
+  .grid3,.grid4,.hero .bungkus,.harga .grid,.ftr .grid{grid-template-columns:1fr}
+  .hero{padding:40px 0 48px}.hero h1{font-size:32px}.hero .cta{flex-direction:column}.hero .cta .btn{width:100%}
+  .hero .hp-wrap{margin-top:36px}.hp{width:260px}.hp .layar{height:480px}
+  .menu,.hdr .aksi .outline{display:none}
+  .strip{padding:28px 0}
+  .penutup .cta{flex-direction:column}.penutup .cta .btn{width:100%}.penutup h2{font-size:24px}
+  .ftr .kol{grid-template-columns:1fr 1fr}
+  .bar{display:flex}
+  .gratis{padding:24px}.gratis .nol{font-size:52px}
+  .faq .a{padding-left:20px}
+}
+</style>
+</head>
+<body>
+
+<div class="review">
+  <b>Mockup review</b> Landing KanPOS · Shark UI · Hanken Grotesk · radius 8/12/16 · tanpa pil
+  <div class="tabs"><button class="on" data-mode="desktop">Desktop</button><button data-mode="mobile">390px</button></div>
+  <span class="note">Copy dipertahankan dari landing yang ada; hanya visual yang berubah.</span>
+</div>
+
+<div id="hp-frame"><div class="bezel"><iframe title="Pratinjau 390px"></iframe></div></div>
+
+<div id="halaman">
+
+<!-- ═══════ HEADER ═══════ -->
+<header class="hdr">
+  <div class="bungkus">
+    <a class="brand" href="#beranda"><span class="logo">K</span><span>Kan<b>POS</b></span></a>
+    <nav class="menu"><a href="#fitur">Fitur</a><a href="#cara">Cara pakai</a><a href="#harga">Harga</a><a href="#tanya">Tanya jawab</a></nav>
+    <div class="aksi">
+      <a class="btn outline sm" href="#">Coba di browser</a>
+      <a class="btn primary sm" href="#">Download Gratis</a>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════ HERO ═══════ -->
+<section class="hero" id="beranda">
+  <div class="bungkus">
+    <div>
+      <span class="badge success"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>Gratis selamanya</span>
+      <h1>Aplikasi kasir gratis untuk <em>warung, toko &amp; resto kecil</em></h1>
+      <p class="lead">Catat jualan, hitung untung, atur stok. Semua dari HP kamu. Nggak perlu daftar, nggak perlu internet.</p>
+      <div class="cta">
+        <a class="btn primary xl" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Download Gratis</a>
+        <a class="btn wa xl" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.3-.6-.4zM12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>Tanya dulu via WhatsApp</a>
+      </div>
+      <p class="kecil">Nggak mau install dulu? <a href="#">Coba langsung dari browser</a>.</p>
+      <div class="jaminan"><span class="badge outline">Rp 0 selamanya</span><span class="badge outline">Tanpa daftar akun</span><span class="badge outline">Jalan tanpa sinyal</span></div>
+    </div>
+    <div class="hp-wrap">
+      <div class="hp"><div class="layar">
+        <div class="top"><b>Warung Bu Sri</b><span class="badge success sm">Offline OK</span></div>
+        <div class="cari"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Cari barang atau scan…</div>
+        <div class="kat"><span class="on">Semua</span><span>Sembako</span><span>Minuman</span><span>Rokok</span><span>Rumah</span></div>
+        <div class="prod">
+          <div><div class="g">🍚</div><div class="n">Beras 5 kg</div><div class="h">Rp 68.000</div><div class="s">Stok 12</div></div>
+          <div><div class="g">🍜</div><div class="n">Mie instan</div><div class="h">Rp 3.500</div><div class="s">Stok 48</div></div>
+          <div><div class="g">🥚</div><div class="n">Telur 1 kg</div><div class="h">Rp 28.000</div><div class="s">Stok 9</div></div>
+          <div><div class="g">🧴</div><div class="n">Minyak 1 L</div><div class="h">Rp 17.500</div><div class="s">Stok 20</div></div>
+        </div>
+        <div class="kr"><div class="t"><small>4 barang</small><b>Rp 78.500</b></div><div class="b">Bayar</div></div>
+        <div class="nav"><span class="on">▣ Kasir</span><span>▤ Riwayat</span><span>▥ Barang</span><span>▦ Laporan</span></div>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ STRIP ═══════ -->
+<section class="strip">
+  <div class="bungkus grid4">
+    <div class="item"><span class="ikon pri"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg></span><div><b>Rp 0 selamanya</b><span>Bukan masa coba 14 hari</span></div></div>
+    <div class="item"><span class="ikon pri"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 20h.01M8.5 16.4a5 5 0 0 1 7 0M5 12.9a10 10 0 0 1 5.2-2.7M2 8.8a15 15 0 0 1 8.3-4.2M22 8.8a15 15 0 0 0-5.7-3.4M19 12.9a10 10 0 0 0-3.6-2.2M2 2l20 20"/></svg></span><div><b>Sinyal hilang, tetap jalan</b><span>Kasir nggak ikut mati</span></div></div>
+    <div class="item"><span class="ikon pri"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg></span><div><b>Nggak perlu daftar akun</b><span>Akun Google cuma buat cloud</span></div></div>
+    <div class="item"><span class="ikon pri"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></span><div><b>HP, tablet, laptop</b><span>Ringan, HP lama pun kuat</span></div></div>
+  </div>
+</section>
+
+<!-- ═══════ MASALAH ═══════ -->
+<section class="seksi masalah">
+  <div class="bungkus">
+    <div class="judul"><h2>Kalau kamu masih ngalamin ini, wajar</h2><p>Hampir semua pemilik warung mulainya dari sini.</p></div>
+    <div class="grid3">
+      <div class="card p"><div class="p"><span class="x">✕</span>Nyatet di buku, tulisannya suka hilang.</div><div class="j"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>Tiap transaksi kecatat sendiri. Rekapnya jadi otomatis.</div></div>
+      <div class="card p"><div class="p"><span class="x">✕</span>Jualan ramai, tapi nggak tahu untungnya berapa.</div><div class="j"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>Modal barang otomatis dipotong. Untung bersih kelihatan tiap hari.</div></div>
+      <div class="card p"><div class="p"><span class="x">✕</span>Aplikasi lain mahal, sinyal jelek malah error.</div><div class="j"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>Ini gratis, dan jalannya dari HP kamu sendiri.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ MANFAAT ═══════ -->
+<section class="seksi alt manfaat" id="fitur">
+  <div class="bungkus">
+    <div class="judul"><h2>Yang kamu dapat</h2><p>Semua urusan kasirnya gratis. Yang butuh internet atau paket berbayar kami tandai, biar jelas dari awal.</p></div>
+    <div class="grid3" id="manfaat"></div>
+  </div>
+</section>
+
+<!-- ═══════ LANGKAH ═══════ -->
+<section class="seksi langkah" id="cara">
+  <div class="bungkus">
+    <div class="judul"><h2>Sehari pakai KanPOS</h2><p>Dari pembeli datang sampai warung tutup.</p></div>
+    <div class="grid4">
+      <div><span class="no">1</span><h3>Pembeli datang</h3><p class="ket">Ketuk barangnya, atau scan barcode-nya.</p>
+        <div class="mini"><div class="hd">Pilih barang</div><div class="r"><span>🍚 Beras 5kg<small>1 × Rp 68.000</small></span><span>68.000</span></div><div class="r"><span>🍜 Mie instan<small>3 × Rp 3.500</small></span><span>10.500</span></div><div class="r tot"><span>Total belanja</span><span>Rp 78.500</span></div></div></div>
+      <div><span class="no">2</span><h3>Terima uang</h3><p class="ket">Kembaliannya dihitung aplikasi, nggak perlu kalkulator.</p>
+        <div class="mini"><div class="hd">Bayar</div><div class="r"><span>Total</span><span>Rp 78.500</span></div><div class="r"><span>Uang diterima</span><span>Rp 100.000</span></div><div class="r tot"><span>Kembalian</span><span>Rp 21.500</span></div></div></div>
+      <div><span class="no">3</span><h3>Kasih struk</h3><p class="ket">Cetak ke printer bluetooth, atau kirim gambarnya lewat WhatsApp.</p>
+        <div class="mini"><div class="hd">Struk</div><div class="struk"><div class="c"><b>WARUNG BU SRI</b></div><div class="c">13 Agt 2026 · 19:24</div><div class="d"></div><div class="f"><span>Beras 5kg ×1</span><span>68.000</span></div><div class="f"><span>Mie instan ×3</span><span>10.500</span></div><div class="d"></div><div class="f"><b>TOTAL</b><b>78.500</b></div></div></div></div>
+      <div><span class="no">4</span><h3>Warung tutup</h3><p class="ket">Lihat hari ini untung berapa, tanpa hitung manual.</p>
+        <div class="mini"><div class="hd">Tutup toko · 13 Agustus</div><div class="r"><span>Omzet</span><span>Rp 1.284.000</span></div><div class="r"><span>Modal barang</span><span>Rp 1.043.100</span></div><div class="r"><span>Pengeluaran</span><span>Rp 67.000</span></div><div class="r tot ok"><span>Untung bersih</span><span>Rp 173.900</span></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ USAHA ═══════ -->
+<section class="seksi alt usaha">
+  <div class="bungkus-lg">
+    <div class="judul"><h2>Cocok buat usaha kamu</h2><p>Pilih jenis usahanya, barang contoh langsung terisi. Tinggal ganti harga.</p></div>
+    <div class="chips" id="usaha"></div>
+    <div class="card p contoh">Contoh: pilih <b>Warung Kelontong</b>, langsung dapat kategori Sembako, Minuman, Rokok, Kebutuhan Rumah, satuan pcs/kg/bungkus/renceng/sachet, plus 8 barang contoh lengkap dengan harga dan modalnya. Buat <b>laundry dan salon</b>, kolom stok otomatis dimatikan biar nggak bikin bingung.</div>
+  </div>
+</section>
+
+<!-- ═══════ HARGA ═══════ -->
+<section class="seksi harga" id="harga">
+  <div class="bungkus">
+    <div class="judul"><h2>Aplikasi kasirnya nol. Titik.</h2><p>Nggak ada hitungan mundur, nggak ada fitur kasir yang tiba-tiba dikunci.</p></div>
+    <div class="grid">
+      <div class="gratis">
+        <span class="badge terang">Aplikasi kasir lengkap</span>
+        <div class="nol num">Rp 0</div>
+        <p class="ket">Selamanya. Tanpa kartu kredit, tanpa daftar akun.</p>
+        <ul class="cek" id="fitur-gratis"></ul>
+        <a class="btn terang xl blok" href="#" style="margin-top:24px">Download Gratis</a>
+      </div>
+      <div>
+        <div class="card paket">
+          <div class="grup"><h3>Backup Otomatis</h3><p class="ket">Data warung dicadangkan ke internet. Kalau HP hilang, tinggal ambil lagi. Untuk satu pemilik saja — belum termasuk akses karyawan.</p>
+            <div style="margin-top:8px">
+              <div class="opsi"><div><b>1 GB</b><span>cukup untuk warung sehari-hari</span></div><div class="hg"><em class="num">Rp 29.000</em><small>/bulan</small></div></div>
+              <div class="opsi"><div><b>10 GB</b><span>buat yang backup-nya sering &amp; lama</span></div><div class="hg"><em class="num">Rp 99.000</em><small>/bulan</small></div></div>
+            </div></div>
+          <div class="grup"><h3>Banyak Kasir &amp; Pantau Dari Jauh</h3><p class="ket">Beberapa HP kasir berbagi satu data, plus ringkasan semua toko yang bisa kamu buka dari mana saja.</p>
+            <div style="margin-top:8px">
+              <div class="opsi"><div><b>1 toko</b><span>1 GB, kamu + 2 karyawan</span></div><div class="hg"><em class="num">Rp 49.000</em><small>/bulan</small></div></div>
+              <div class="opsi"><div><b>Sampai 5 toko</b><span>5 GB, kamu + 14 karyawan</span></div><div class="hg"><em class="num">Rp 149.000</em><small>/bulan</small></div></div>
+            </div></div>
+        </div>
+        <p class="catatan">Dua-duanya opsional dan dibayar per bulan. Nggak beli pun aplikasi kasirnya tetap lengkap — cuma backup-nya kamu simpan sendiri, dan kasirnya jalan di satu HP. Untuk pakai paket ini kamu perlu masuk dengan akun Google.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ JUJUR ═══════ -->
+<section class="seksi alt jujur">
+  <div class="bungkus-lg">
+    <div class="judul"><h2>Yang perlu kamu tahu dulu</h2></div>
+    <div class="card" id="jujur"></div>
+  </div>
+</section>
+
+<!-- ═══════ TESTIMONI (slot) ═══════ -->
+<section class="seksi">
+  <div class="bungkus-lg">
+    <div class="slot"><span class="badge warning">SLOT — BELUM DIISI</span><h2>Testimoni pemilik warung</h2><p>Di sinilah testimoni pemilik warung ditaruh, lengkap dengan foto dan nama tokonya. Bagian ini paling menaikkan kepercayaan, jadi jangan diisi karangan. Minta 3 pengguna yang sudah pakai, rekam suaranya lewat WhatsApp, tulis apa adanya.</p></div>
+  </div>
+</section>
+
+<!-- ═══════ FAQ ═══════ -->
+<section class="seksi alt faq" id="tanya" style="border-bottom:0">
+  <div class="bungkus">
+    <div class="judul"><h2>Yang sering ditanya</h2></div>
+    <div class="list" id="faq"></div>
+  </div>
+</section>
+
+<!-- ═══════ PENUTUP ═══════ -->
+<section class="penutup">
+  <div class="bungkus"><div class="panel">
+    <h2>Transaksi pertama kamu bisa dicatat malam ini</h2>
+    <p class="lead">Nggak ada demo, nggak ada sales yang nelpon.</p>
+    <div class="cta"><a class="btn terang xl" href="#">Download Gratis</a><a class="btn hantu xl" href="#">Chat WhatsApp</a></div>
+    <p class="kecil">Gratis · Tanpa daftar · Bisa langsung dicoba dari browser</p>
+  </div></div>
+</section>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer class="ftr">
+  <div class="bungkus">
+    <div class="grid">
+      <div>
+        <a class="brand" href="#"><span class="logo">K</span><span>Kan<b>POS</b></span></a>
+        <p class="ket">Aplikasi kasir gratis buat warung, toko, dan resto kecil di Indonesia.</p>
+        <p class="ket2">Nama domain kami masih beda-beda karena sejarah. Semuanya milik kami — tujuan tiap tautan ditulis biar kamu nggak ragu waktu diklik.</p>
+      </div>
+      <div class="kol">
+        <div><h4>Produk</h4><ul><li><a href="#">Fitur</a></li><li><a href="#">Harga</a></li><li><a href="#">Aplikasi Android<small>Google Play</small></a></li><li><a href="#">Buka dari browser<small>kasirgratisan.com</small></a></li><li><a href="#">Dashboard pemilik<small>dashboard.kankitu.com</small></a></li></ul></div>
+        <div><h4>Bantuan</h4><ul><li><a href="#">Tanya jawab</a></li><li><a href="#">WhatsApp</a></li><li><a href="#">Telegram</a></li><li><a href="#">Lapor kendala<small>kasirgratisan.fider.io</small></a></li></ul></div>
+        <div><h4>Lainnya</h4><ul><li><a href="#">Kebijakan privasi</a></li><li><a href="#">Syarat pakai</a></li></ul></div>
+      </div>
+    </div>
+    <div class="bawah"><span>© 2026 KanPOS</span><span>Indonesia · English · Malaysia</span></div>
+  </div>
+</footer>
+
+<!-- bar bawah mobile -->
+<div class="bar"><a class="btn primary" href="#">Download Gratis</a><a class="btn wa" href="#" aria-label="Chat WhatsApp"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.3-.6-.4zM12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg></a></div>
+
+</div><!-- /halaman -->
+
+<script>
+const CEK='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>';
+const IK={
+  cart:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2 2h3l2.7 12.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>',
+  line:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>',
+  box:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M21 8 12 3 3 8v8l9 5 9-5zM3 8l9 5 9-5M12 13v8"/></svg>',
+  print:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>',
+  store:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 9l1-5h16l1 5M3 9h18M3 9v11h18V9M9 20v-6h6v6"/></svg>',
+  bar:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 3v18h18M8 17V9M13 17V5M18 17v-3"/></svg>',
+};
+const MANFAAT=[
+  {t:'pri',i:'cart',j:'Kasir yang cepat',k:'Tinggal ketuk barangnya, kembalian dihitung sendiri.',l:['Scan barcode pakai kamera HP','Diskon per barang atau sekaligus','Pesanan belum bayar bisa disimpan','Tiket dapur buat kafe & resto']},
+  {t:'ok',i:'line',j:'Untung, bukan cuma omzet',k:'Modal barang dipotong otomatis, jadi angkanya jujur.',l:['Laporan harian, 7 hari, 30 hari','Barang paling laris kelihatan','Pengeluaran warung ikut dicatat','Rekap bisa diekspor ke Excel']},
+  {t:'warn',i:'box',j:'Stok nggak kacau lagi',k:'Stok berkurang sendiri tiap ada yang beli.',l:['Diingatkan kalau stok mau habis','Barang masuk dari supplier tercatat','Stok opname buat cocokkan hitungan fisik','Isi daftar barang sekaligus dari Excel']},
+  {t:'netral',i:'print',j:'Struk, utang & karyawan',k:'Cetak struk, catat kasbon, dan karyawan boleh pegang kasir dengan aman.',l:['Printer bluetooth, atau kirim lewat WA','Utang pelanggan tercatat & bisa dicicil','Karyawan masuk pakai PIN sendiri','Laporan bisa disembunyikan dari mereka']},
+  {t:'info',i:'store',j:'Toko online sendiri',k:'Barang di kasir bisa dipajang jadi etalase online, lengkap dengan QR untuk dicetak.',b:['warning','Butuh internet'],l:['Alamat toko sendiri yang bisa dibagikan','QR code siap tempel di meja kasir','Kamu yang atur mau tampil atau tidak']},
+  {t:'pri',i:'bar',j:'Banyak kasir, satu data',k:'Dua HP kasir atau lebih jalan bareng dengan katalog yang sama. Ringkasannya kamu buka dari mana saja.',b:['primary','Paket berbayar'],l:['Karyawan pegang HP sendiri, transaksinya masuk semua','Produk & harga diubah sekali, semua HP ikut','Ringkasan semua toko dalam satu layar','Bandingkan cabang & lihat tren 12 bulan']},
+];
+document.getElementById('manfaat').innerHTML=MANFAAT.map(m=>`<div class="card p"><span class="ikon ${m.t}">${IK[m.i]}</span><h3>${m.j}${m.b?` <span class="badge ${m.b[0]} sm">${m.b[1]}</span>`:''}</h3><p class="ket">${m.k}</p><ul class="cek">${m.l.map(x=>`<li>${CEK}${x}</li>`).join('')}</ul></div>`).join('');
+
+const USAHA=[['🏪','Warung kelontong'],['🍚','Toko sembako'],['☕','Kafe & resto kecil'],['🍵','Coffee shop'],['🧺','Laundry'],['💈','Salon & barbershop'],['💊','Apotek'],['👕','Toko pakaian'],['🔨','Toko bangunan'],['📱','Toko elektronik'],['📦','Jualan online'],['✨','Usaha lain']];
+document.getElementById('usaha').innerHTML=USAHA.map(u=>`<span><span aria-hidden="true">${u[0]}</span>${u[1]}</span>`).join('');
+
+document.getElementById('fitur-gratis').innerHTML=['Transaksi sepuasnya, barang sebanyak apa pun','Laporan untung rugi & stok','Cetak struk & scan barcode','Catat utang pelanggan & pengeluaran','Akun karyawan dengan PIN di HP itu sendiri','Backup data ke file sendiri'].map(x=>`<li>${CEK}${x}</li>`).join('');
+
+const JUJUR=[
+  ['Data tersimpan di HP kamu','Enaknya: nggak butuh internet. Risikonya: kalau HP hilang dan belum di-backup, datanya ikut hilang. Backup cuma dua ketukan — biasakan tiap minggu.'],
+  ['Banyak kasir cuma jalan di paket berbayar','Versi gratisnya satu HP, satu data — dan itu memang cukup buat kebanyakan warung. Begitu kamu mau dua kasir atau lebih berbagi data yang sama, itu masuk paket berbayar dan perlu internet.'],
+  ['Cetak struk paling lancar di Android','Pakai aplikasi Android-nya untuk printer bluetooth. Di iPhone, struknya disimpan jadi gambar lalu dikirim lewat WhatsApp.'],
+  ['Fitur cloud butuh akun Google','Kasirnya bisa dipakai tanpa daftar sama sekali. Tapi begitu kamu mau backup otomatis, pulihkan data dari cloud, pakai banyak kasir, atau buka toko online, kamu perlu masuk dengan akun Google.'],
+];
+document.getElementById('jujur').innerHTML=JUJUR.map(j=>`<div class="item"><span class="ikon warn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4m0 4h.01"/></svg></span><div><b>${j[0]}</b><span>${j[1]}</span></div></div>`).join('');
+
+const FAQ=[
+  ['Beneran gratis?','Iya. Aplikasinya jalan di HP kamu, jadi kami nggak keluar biaya server tiap toko. Yang berbayar cuma paket cloud-nya: backup otomatis dan pantau dari jauh. Kalau nggak butuh, kamu nggak akan pernah ditagih.'],
+  ['Kalau HP saya rusak atau hilang?','Kalau sudah pernah backup, tinggal restore dan datanya balik. Kalau belum pernah backup dan nggak langganan, datanya hilang — kami nggak menyimpan salinannya. Makanya biasakan backup tiap minggu, cuma dua ketukan.'],
+  ['HP saya jadul, kuat nggak?','Kuat. Aplikasinya ringan dan cuma sekali download. Setelah itu hampir nggak makan kuota karena datanya sudah ada di HP.'],
+  ['Saya belum pernah pakai aplikasi kasir.','Nggak apa-apa. Awalnya cuma tiga layar: pilih bahasa, pilih jenis usaha, isi nama toko. Barang contoh sudah disiapkan jadi kamu bisa langsung coba jualan tanpa ngetik apa-apa. Bingung? Chat kami di WhatsApp.'],
+  ['Printer struk saya merek murah, bisa?','Bisa, asal printer thermal bluetooth. Hampir semua printer struk di pasaran cocok. Paling lancar lewat aplikasi Android-nya.'],
+  ['Bedanya Backup Otomatis dan paket Banyak Kasir apa?','Backup Otomatis itu jaga-jaga: data warung disimpan di internet supaya bisa diambil lagi kalau HP-mu kenapa-kenapa. Paket Banyak Kasir itu kerja bareng: beberapa HP kasir pakai satu data yang sama, dan kamu bisa pantau dari jauh.'],
+  ['Karyawan saya bisa pakai HP-nya sendiri?','Bisa, dengan paket Banyak Kasir. Kamu undang mereka, HP mereka menerima daftar barang dan harga dari HP kamu, dan transaksi yang mereka catat masuk ke laporanmu.'],
+  ['Toko online itu maksudnya gimana?','Barang yang sudah ada di kasir bisa kamu pajang jadi etalase online dengan alamat sendiri, plus QR code untuk dicetak dan ditempel di meja. Fitur ini butuh internet.'],
+  ['Data jualan saya kamu intip nggak?','Nggak. Transaksi, produk, dan angka untung tersimpan di HP kamu, dan cuma naik ke cloud kalau kamu sendiri yang mengaktifkan backup atau paket cloud.'],
+  ['Karyawan bisa lihat untung saya nggak?','Nggak, kalau kamu nggak izinkan. Karyawan punya akun sendiri pakai PIN, dan kamu yang atur mereka boleh buka halaman apa saja.'],
+];
+document.getElementById('faq').innerHTML=FAQ.map((f,i)=>`<details${i===0?' open':''}><summary><span class="pl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg></span>${f[0]}</summary><div class="a">${f[1]}</div></details>`).join('');
+
+// ── Mode review: desktop vs bingkai 390px (iframe file yang sama, tanpa bar) ──
+const bare=new URLSearchParams(location.search).get('bare');
+if(bare){document.body.classList.add('bare');}
+else{
+  document.querySelectorAll('.review [data-mode]').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('.review [data-mode]').forEach(x=>x.classList.toggle('on',x===b));
+    const m=b.dataset.mode==='mobile';
+    document.body.classList.toggle('mobile',m);
+    const f=document.querySelector('#hp-frame iframe');
+    if(m&&!f.src) f.src=location.pathname+'?bare=1';
+    window.scrollTo(0,0);
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mockup — Admin Panel KanPOS (P0)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#3554C1; --primary-fg:#fff; --fg:#0D0D12; --accent:#EFF5FF;
+  --muted-fg:#818898; --muted:#ECEFF3; --bg:#EDF1F9; --bg-alt:#F8FAFE;
+  --card:#fff; --border:#DFE1E7; --border-soft:#ECEFF3;
+  --success:#5ABC61; --success-bg:#EFF8EF; --success-fg:#3E8E45;
+  --danger:#DF1C41; --danger-bg:#FFF0F3;
+  --warning:#F9A616; --warning-bg:#FFF6E0; --warning-fg:#B37400;
+  --r-card:24px; --r-sec:20px; --r-in:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Sora,system-ui,sans-serif;background:var(--bg);color:var(--fg);font-size:14px;line-height:1.45}
+.shell{display:grid;grid-template-columns:232px 1fr;min-height:100vh}
+
+/* ---------- Sidebar ---------- */
+.side{background:var(--card);border-right:1px solid var(--border-soft);padding:20px 14px;display:flex;flex-direction:column;gap:22px;position:sticky;top:0;height:100vh}
+.logo{display:flex;align-items:center;gap:9px;padding:0 8px;font-weight:700;font-size:16px}
+.logo .mark{width:30px;height:30px;border-radius:9px;background:var(--fg);color:#fff;display:grid;place-items:center;font-size:14px}
+.logo .adm{font-size:9.5px;font-weight:700;letter-spacing:.08em;background:var(--danger-bg);color:var(--danger);padding:2px 6px;border-radius:6px}
+.navlbl{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted-fg);padding:0 10px;font-weight:600}
+.nav{display:flex;flex-direction:column;gap:2px;margin-top:7px}
+.nav a{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:11px;color:var(--muted-fg);text-decoration:none;font-weight:500;font-size:13.5px}
+.nav a.on{background:var(--accent);color:var(--primary);font-weight:600}
+.nav a:hover:not(.on){background:var(--muted)}
+.nav .cnt{margin-left:auto;font-size:10.5px;font-weight:700;background:var(--danger-bg);color:var(--danger);padding:1px 7px;border-radius:999px}
+.nav a.soon{opacity:.45}
+.who{margin-top:auto;background:var(--bg-alt);border:1px solid var(--border-soft);border-radius:var(--r-sec);padding:12px;display:flex;align-items:center;gap:9px}
+.who .ava{width:30px;height:30px;border-radius:9px;background:var(--accent);color:var(--primary);display:grid;place-items:center;font-weight:700;font-size:12px;flex:none}
+.who .nm{font-size:12.5px;font-weight:600}
+.who .rl{font-size:10.5px;color:var(--muted-fg)}
+
+/* ---------- Main ---------- */
+.main{padding:22px 26px 60px;max-width:1280px}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+h1{font-size:22px;font-weight:700;letter-spacing:-.01em}
+.sub{color:var(--muted-fg);font-size:13px;margin-top:3px}
+.ctrls{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 15px;border-radius:999px;border:1px solid var(--border);background:var(--card);font:inherit;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;color:var(--fg)}
+.pill.pri{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:600}
+.pill.dgr{border-color:#F3C0CC;color:var(--danger);background:var(--danger-bg);font-weight:600}
+.pill .cv{color:var(--muted-fg);font-size:11px}
+.seg{display:inline-flex;background:var(--muted);border-radius:999px;padding:3px}
+.seg span{padding:6px 14px;border-radius:999px;font-size:12.5px;font-weight:500;color:var(--muted-fg);cursor:pointer}
+.seg span.on{background:var(--card);color:var(--fg);font-weight:600;box-shadow:0 1px 2px rgba(13,13,18,.07)}
+.search{display:flex;align-items:center;gap:8px;height:38px;padding:0 14px;border-radius:999px;border:1px solid var(--border);background:var(--card);min-width:260px;color:var(--muted-fg);font-size:13px}
+
+section{margin-bottom:26px}
+.shead{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;gap:12px}
+.shead h2{font-size:15px;font-weight:600}
+.shead .hint{font-size:12px;color:var(--muted-fg)}
+.link{color:var(--primary);font-size:12.5px;font-weight:600;text-decoration:none;cursor:pointer}
+.card{background:var(--card);border:1px solid var(--border-soft);border-radius:var(--r-card);padding:18px}
+
+/* Pembatas layar mockup */
+.screen{border-top:2px dashed #C0CAEC;margin:44px 0 22px;padding-top:14px;display:flex;align-items:center;gap:12px}
+.screen b{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--primary);background:var(--accent);padding:4px 10px;border-radius:999px}
+.screen span{font-size:12px;color:var(--muted-fg)}
+.screen:first-of-type{border-top:0;margin-top:0;padding-top:0}
+
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.kpi .lbl{font-size:12px;color:var(--muted-fg);font-weight:500}
+.kpi .val{font-size:23px;font-weight:700;letter-spacing:-.02em;margin:7px 0 6px;font-variant-numeric:tabular-nums}
+.kpi .val small{font-size:13px;font-weight:600;color:var(--muted-fg)}
+.delta{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;padding:3px 8px;border-radius:8px}
+.up{background:var(--success-bg);color:var(--success-fg)}
+.dn{background:var(--danger-bg);color:var(--danger)}
+.flat{background:var(--muted);color:var(--muted-fg)}
+.vs{font-size:11.5px;color:var(--muted-fg);margin-left:6px}
+
+/* Antrean kerja */
+.queue{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.qcard{background:var(--card);border:1px solid var(--border-soft);border-radius:var(--r-card);padding:16px;display:flex;flex-direction:column;gap:10px}
+.qcard.hot{border-color:#F3C0CC}
+.qhd{display:flex;align-items:center;gap:9px}
+.ico{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex:none;font-size:14px}
+.ico.ok{background:var(--success-bg)} .ico.wr{background:var(--warning-bg)} .ico.dg{background:var(--danger-bg)}
+.qhd .tt{font-size:13px;font-weight:600}
+.qbig{font-size:26px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.qds{font-size:11.5px;color:var(--muted-fg)}
+
+/* Tabel */
+table{width:100%;border-collapse:collapse}
+th{text-align:right;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted-fg);font-weight:600;padding:0 0 10px}
+th:first-child,td:first-child{text-align:left}
+td{padding:12px 0;border-top:1px solid var(--border-soft);text-align:right;font-size:13.5px;font-variant-numeric:tabular-nums}
+tbody tr:hover{background:var(--bg-alt)}
+td.nm{text-align:left}
+.uid{display:flex;align-items:center;gap:10px}
+.ava{width:32px;height:32px;border-radius:10px;background:var(--accent);color:var(--primary);display:grid;place-items:center;font-weight:700;font-size:12px;flex:none}
+.uid .n{font-weight:600;font-size:13.5px}
+.uid .e{font-size:11.5px;color:var(--muted-fg)}
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:8px;white-space:nowrap}
+.t-ok{background:var(--success-bg);color:var(--success-fg)}
+.t-wr{background:var(--warning-bg);color:var(--warning-fg)}
+.t-dg{background:var(--danger-bg);color:var(--danger)}
+.t-mt{background:var(--muted);color:var(--muted-fg)}
+.t-pr{background:var(--accent);color:var(--primary)}
+.mbar{display:inline-block;width:52px;height:5px;border-radius:3px;background:var(--muted);vertical-align:middle;margin-right:8px;overflow:hidden}
+.mbar i{display:block;height:100%;background:var(--primary)}
+.mbar i.wr{background:var(--warning)} .mbar i.dg{background:var(--danger)}
+.tbl-wrap{overflow-x:auto}
+.tbl-wrap table{min-width:820px}
+.pager{display:flex;align-items:center;justify-content:space-between;padding-top:14px;margin-top:2px;border-top:1px solid var(--border-soft);font-size:12.5px;color:var(--muted-fg)}
+.pager .pg{display:flex;gap:6px}
+.pager .pg span{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-size:12px;font-weight:600;cursor:pointer}
+.pager .pg span.on{background:var(--primary);color:#fff}
+.pager .pg span:not(.on){border:1px solid var(--border)}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:12px}
+
+/* Detail pengguna */
+.det{display:grid;grid-template-columns:1.55fr 1fr;gap:14px;align-items:start}
+.crumb{font-size:12px;color:var(--muted-fg);margin-bottom:8px}
+.crumb a{color:var(--primary);text-decoration:none;font-weight:600}
+.prof{display:flex;align-items:center;gap:14px}
+.prof .ava{width:54px;height:54px;border-radius:16px;font-size:19px}
+.prof h1{font-size:20px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:9px 16px;font-size:13px;margin-top:4px}
+.kv dt{color:var(--muted-fg);font-size:12px}
+.kv dd{font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.rows{display:flex;flex-direction:column}
+.row{display:flex;align-items:center;gap:11px;padding:11px 0;border-top:1px solid var(--border-soft)}
+.row:first-child{border-top:0;padding-top:0}
+.row .tt{font-size:13px;font-weight:600}
+.row .ds{font-size:11.5px;color:var(--muted-fg);margin-top:2px}
+.row .rt{margin-left:auto;text-align:right;font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.sync{font-size:11px;color:var(--muted-fg);display:flex;align-items:center;gap:5px;margin-top:2px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--success);flex:none}
+.dot.w{background:var(--warning)} .dot.d{background:var(--danger)}
+
+/* Anotasi & catatan */
+.note{margin-top:14px;padding:12px 14px;background:var(--accent);border-radius:var(--r-in);font-size:12px;color:#2B44A0}
+.ann{background:#fff;border:1px dashed #C0CAEC;border-radius:var(--r-in);padding:10px 13px;font-size:11.5px;color:var(--muted-fg);margin-top:10px}
+.ann b{color:var(--primary);font-weight:600}
+.ann.warn{border-color:#F3C0CC} .ann.warn b{color:var(--danger)}
+
+/* Drawer rekonsiliasi */
+.drawer{background:var(--card);border:1px solid var(--border);border-radius:var(--r-card);padding:20px;max-width:460px;box-shadow:0 18px 44px rgba(13,13,18,.13)}
+.drawer h3{font-size:16px;font-weight:700;margin-bottom:3px}
+.drawer .st{font-size:12px;color:var(--muted-fg);margin-bottom:16px}
+.steps{display:flex;flex-direction:column;gap:0;margin:6px 0 16px}
+.step{display:flex;gap:11px;padding:9px 0;border-top:1px solid var(--border-soft)}
+.step:first-child{border-top:0}
+.step .mk{width:22px;height:22px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:11px;font-weight:700}
+.step .mk.ok{background:var(--success-bg);color:var(--success-fg)}
+.step .mk.dg{background:var(--danger-bg);color:var(--danger)}
+.step .tt{font-size:12.5px;font-weight:600}
+.step .ds{font-size:11.5px;color:var(--muted-fg)}
+.acts{display:flex;gap:9px;flex-wrap:wrap}
+@media(max-width:1150px){.kpis{grid-template-columns:repeat(2,1fr)}.queue{grid-template-columns:1fr}.det{grid-template-columns:1fr}}
+@media(max-width:860px){.shell{grid-template-columns:1fr}.side{display:none}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- ================= SIDEBAR ================= -->
+<aside class="side">
+  <div class="logo"><span class="mark">K</span> KanPOS <span class="adm">ADMIN</span></div>
+  <div>
+    <div class="navlbl">Pantau</div>
+    <nav class="nav">
+      <a href="#s1" class="on">Ringkasan</a>
+      <a href="#s2">Pengguna</a>
+      <a href="#s4">Transaksi <span class="cnt">7</span></a>
+    </nav>
+  </div>
+  <div>
+    <div class="navlbl">Kelola — nanti</div>
+    <nav class="nav">
+      <a class="soon">Paket &amp; harga</a>
+      <a class="soon">Langganan manual</a>
+      <a class="soon">Audit log</a>
+      <a class="soon">Admin</a>
+    </nav>
+  </div>
+  <div class="who">
+    <span class="ava">AL</span>
+    <div><div class="nm">Ahmad Latief</div><div class="rl">Superadmin · sesi 7j lagi</div></div>
+  </div>
+</aside>
+
+<main class="main">
+
+<!-- ============================================================ -->
+<div class="screen" id="s1"><b>Layar 1</b><span>Ringkasan platform — halaman yang dibuka tiap pagi</span></div>
+
+<div class="top">
+  <div>
+    <h1>Ringkasan platform</h1>
+    <div class="sub">Data per 20 Agustus 2026, 09:14 WIB</div>
+  </div>
+  <div class="ctrls">
+    <span class="seg"><span>7 hari</span><span class="on">30 hari</span><span>90 hari</span></span>
+    <button class="pill">Ekspor CSV</button>
+  </div>
+</div>
+
+<section>
+  <div class="kpis">
+    <div class="card kpi">
+      <div class="lbl">Pengguna terdaftar</div>
+      <div class="val">1.284</div>
+      <span class="delta up">+62</span><span class="vs">30 hari terakhir</span>
+    </div>
+    <div class="card kpi">
+      <div class="lbl">Pengguna aktif</div>
+      <div class="val">741 <small>/ 1.284</small></div>
+      <span class="delta up">58%</span><span class="vs">sync atau backup 30 hari</span>
+    </div>
+    <div class="card kpi">
+      <div class="lbl">Langganan aktif</div>
+      <div class="val">193</div>
+      <span class="delta dn">28 habis &lt;30 hari</span>
+    </div>
+    <div class="card kpi">
+      <div class="lbl">Pendapatan Agustus</div>
+      <div class="val">Rp 14,7 jt</div>
+      <span class="delta up">+11%</span><span class="vs">vs Juli</span>
+    </div>
+  </div>
+  <div class="ann"><b>Catatan data:</b> “aktif” dihitung dari <span class="mono">SyncRecord.syncedAt</span> atau <span class="mono">Backup.createdAt</span> dalam 30 hari — bukan dari login, karena backend tidak menyimpan sesi. Pendapatan hanya menghitung <span class="mono">PaymentTransaction</span> berstatus lunas.</div>
+</section>
+
+<section>
+  <div class="shead"><h2>Perlu ditangani</h2><span class="hint">antrean kerja hari ini, bukan sekadar angka</span></div>
+  <div class="queue">
+    <div class="card qcard hot">
+      <div class="qhd"><span class="ico dg">!</span><span class="tt">Pembayaran nyangkut</span></div>
+      <div class="qbig">7</div>
+      <div class="qds">Pending &gt;24 jam atau gagal. Pelanggan sudah bayar tapi paket belum aktif.</div>
+      <a class="link" href="#s4">Buka daftar transaksi →</a>
+    </div>
+    <div class="card qcard">
+      <div class="qhd"><span class="ico wr">◷</span><span class="tt">Langganan segera habis</span></div>
+      <div class="qbig">28</div>
+      <div class="qds">Berakhir dalam 30 hari ke depan. 12 di antaranya belum pernah perpanjang.</div>
+      <a class="link" href="#s2">Lihat penggunanya →</a>
+    </div>
+    <div class="card qcard">
+      <div class="qhd"><span class="ico wr">◐</span><span class="tt">Kuota hampir penuh</span></div>
+      <div class="qbig">15</div>
+      <div class="qds">Pemakaian storage &gt;85%. Peluang tawarkan paket lebih besar.</div>
+      <a class="link" href="#s2">Lihat penggunanya →</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="shead"><h2>Sebaran paket</h2><span class="hint">1.284 pengguna</span></div>
+  <div class="card">
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Paket</th><th>Harga</th><th>Pengguna</th><th>Aktif</th><th>Pendapatan bulan ini</th></tr></thead>
+      <tbody>
+        <tr><td class="nm"><span class="tag t-mt">Gratis</span></td><td>—</td><td>1.091</td><td>—</td><td>—</td></tr>
+        <tr><td class="nm"><span class="tag t-pr">Sync 1 Tahun</span></td><td>Rp 249.000</td><td>118</td><td>104</td><td>Rp 8.715.000</td></tr>
+        <tr><td class="nm"><span class="tag t-pr">Storage 5 GB</span></td><td>Rp 99.000</td><td>61</td><td>57</td><td>Rp 3.960.000</td></tr>
+        <tr><td class="nm"><span class="tag t-pr">Storage 20 GB</span></td><td>Rp 299.000</td><td>14</td><td>13</td><td>Rp 2.093.000</td></tr>
+      </tbody>
+      <tfoot><tr><td class="nm">Total berbayar</td><td></td><td>193</td><td>174</td><td>Rp 14.768.000</td></tr></tfoot>
+    </table></div>
+    <div class="ann"><b>Perhatian teknis:</b> semua angka di layar ini agregat lintas seluruh pengguna. Wajib raw SQL beserta indexnya — <b>jangan</b> tiru pola <span class="mono">analytics/service.ts</span> yang menarik baris ke memori lalu dihitung di Node.</div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<div class="screen" id="s2"><b>Layar 2</b><span>Daftar pengguna — pencarian &amp; penyaringan</span></div>
+
+<div class="top">
+  <div>
+    <h1>Pengguna</h1>
+    <div class="sub">1.284 pengguna · 2.107 toko</div>
+  </div>
+  <div class="ctrls">
+    <span class="search">Cari nama, email, atau nama toko…</span>
+    <button class="pill">Paket <span class="cv">semua</span></button>
+    <button class="pill">Status <span class="cv">semua</span></button>
+    <button class="pill">Ekspor CSV</button>
+  </div>
+</div>
+
+<section>
+  <div class="card">
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Pengguna</th><th>Paket</th><th>Langganan</th><th>Toko</th><th>Storage</th><th>Aktivitas terakhir</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="nm"><div class="uid"><span class="ava">WS</span><div><div class="n">Warung Sederhana</div><div class="e">wsederhana@gmail.com</div></div></div></td>
+          <td><span class="tag t-pr">Sync 1 Tahun</span></td>
+          <td><span class="tag t-ok">Aktif · 214 hari</span></td>
+          <td>3</td>
+          <td><span class="mbar"><i style="width:41%"></i></span>2,1 / 5 GB</td>
+          <td>12 menit lalu</td>
+        </tr>
+        <tr>
+          <td class="nm"><div class="uid"><span class="ava">KB</span><div><div class="n">Kopi Balik Kanan</div><div class="e">kopibalik@gmail.com</div></div></div></td>
+          <td><span class="tag t-pr">Storage 20 GB</span></td>
+          <td><span class="tag t-wr">Habis 9 hari lagi</span></td>
+          <td>1</td>
+          <td><span class="mbar"><i class="wr" style="width:88%"></i></span>17,6 / 20 GB</td>
+          <td>2 jam lalu</td>
+        </tr>
+        <tr>
+          <td class="nm"><div class="uid"><span class="ava">DP</span><div><div class="n">Depot Pak Har</div><div class="e">pakhar.depot@gmail.com</div></div></div></td>
+          <td><span class="tag t-pr">Sync 1 Tahun</span></td>
+          <td><span class="tag t-dg">Pembayaran pending</span></td>
+          <td>2</td>
+          <td><span class="mbar"><i style="width:12%"></i></span>0,6 / 5 GB</td>
+          <td>1 hari lalu</td>
+        </tr>
+        <tr>
+          <td class="nm"><div class="uid"><span class="ava">TR</span><div><div class="n">Toko Rejeki</div><div class="e">rejeki.toko@gmail.com</div></div></div></td>
+          <td><span class="tag t-mt">Gratis</span></td>
+          <td><span class="tag t-mt">—</span></td>
+          <td>1</td>
+          <td><span class="mbar"><i style="width:0%"></i></span>0 / 0 MB</td>
+          <td>26 hari lalu</td>
+        </tr>
+        <tr>
+          <td class="nm"><div class="uid"><span class="ava">BM</span><div><div class="n">Bakmi Mahkota</div><div class="e">bakmimahkota@gmail.com</div></div></div></td>
+          <td><span class="tag t-pr">Storage 5 GB</span></td>
+          <td><span class="tag t-dg">Kedaluwarsa 12 hari</span></td>
+          <td>4</td>
+          <td><span class="mbar"><i class="dg" style="width:97%"></i></span>4,8 / 5 GB</td>
+          <td>34 hari lalu</td>
+        </tr>
+      </tbody>
+    </table></div>
+    <div class="pager">
+      <span>Menampilkan 1–5 dari 1.284</span>
+      <span class="pg"><span class="on">1</span><span>2</span><span>3</span><span>…</span><span>257</span></span>
+    </div>
+    <div class="ann"><b>Kolom “Aktivitas terakhir”</b> diambil dari <span class="mono">SyncRecord</span> terbaru milik pengguna, bukan waktu login. Ini sinyal churn paling awal — pelanggan berhenti menyinkron jauh sebelum langganannya habis.</div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<div class="screen" id="s3"><b>Layar 3</b><span>Detail pengguna — halaman yang dibuka saat ada komplain masuk</span></div>
+
+<div class="crumb"><a href="#s2">Pengguna</a> / Kopi Balik Kanan</div>
+<div class="top">
+  <div class="prof">
+    <span class="ava">KB</span>
+    <div>
+      <h1>Kopi Balik Kanan</h1>
+      <div class="sub">kopibalik@gmail.com · bergabung 14 Feb 2026 · <span class="mono">usr_c8f2a91b</span></div>
+    </div>
+  </div>
+  <div class="ctrls">
+    <button class="pill">Perpanjang manual</button>
+    <button class="pill">Ubah paket</button>
+    <button class="pill dgr">Suspend</button>
+  </div>
+</div>
+
+<section class="det">
+  <div style="display:flex;flex-direction:column;gap:14px">
+
+    <div class="card">
+      <div class="shead"><h2>Toko (1)</h2><span class="hint">maksimal 3 di paket ini</span></div>
+      <div class="rows">
+        <div class="row">
+          <span class="ava">KB</span>
+          <div>
+            <div class="tt">Kopi Balik Kanan — Cabang Kaliurang</div>
+            <div class="sync"><span class="dot"></span> Sinkron terakhir 2 jam lalu · Asia/Jakarta · publik</div>
+          </div>
+          <div class="rt">1.847 transaksi<br><span style="font-weight:400;color:var(--muted-fg);font-size:11.5px">30 hari terakhir</span></div>
+        </div>
+      </div>
+      <div class="ann"><b>Batas privasi:</b> admin melihat <b>jumlah</b> transaksi toko, bukan isinya. Nominal penjualan pelanggan sengaja tidak ditampilkan di panel ini.</div>
+    </div>
+
+    <div class="card">
+      <div class="shead"><h2>Riwayat transaksi</h2><a class="link" href="#s4">Lihat semua →</a></div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Tanggal</th><th>Paket</th><th>Nominal</th><th>Ref Tripay</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td class="nm">14 Feb 2026</td><td>Storage 20 GB</td><td>Rp 299.000</td><td class="mono">T-9F2K81</td><td><span class="tag t-ok">Lunas</span></td></tr>
+          <tr><td class="nm">14 Feb 2026</td><td>Storage 20 GB</td><td>Rp 299.000</td><td class="mono">T-9F2K7C</td><td><span class="tag t-mt">Kedaluwarsa</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="card">
+      <div class="shead"><h2>Backup</h2><span class="hint">12 berkas · 17,6 GB</span></div>
+      <div class="rows">
+        <div class="row"><span class="ico ok">✓</span><div><div class="tt">kanpos-backup-2026-08-20.db</div><div class="ds">Cabang Kaliurang · hari ini 06:02</div></div><div class="rt">1,6 GB</div></div>
+        <div class="row"><span class="ico ok">✓</span><div><div class="tt">kanpos-backup-2026-08-19.db</div><div class="ds">Cabang Kaliurang · kemarin 06:01</div></div><div class="rt">1,5 GB</div></div>
+        <div class="row"><span class="ico ok">✓</span><div><div class="tt">kanpos-backup-2026-08-18.db</div><div class="ds">Cabang Kaliurang · 18 Agu 06:03</div></div><div class="rt">1,5 GB</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:14px">
+    <div class="card">
+      <div class="shead"><h2>Langganan</h2></div>
+      <dl class="kv">
+        <dt>Paket</dt><dd>Storage 20 GB</dd>
+        <dt>Status</dt><dd><span class="tag t-wr">Habis 9 hari lagi</span></dd>
+        <dt>Mulai</dt><dd>14 Feb 2026</dd>
+        <dt>Berakhir</dt><dd>29 Agu 2026</dd>
+        <dt>Batas toko</dt><dd>3</dd>
+      </dl>
+      <div class="note">Belum ada transaksi perpanjangan. Kandidat untuk dihubungi minggu ini.</div>
+    </div>
+
+    <div class="card">
+      <div class="shead"><h2>Storage</h2></div>
+      <div class="kpi">
+        <div class="val">17,6 <small>/ 20 GB</small></div>
+        <span class="mbar" style="width:100%;height:7px"><i class="wr" style="width:88%"></i></span>
+        <div class="qds" style="margin-top:8px">Sisa 2,4 GB. Dengan laju 1,5 GB/hari, kuota penuh dalam ±2 hari.</div>
+      </div>
+      <div class="ann warn"><b>Konsekuensi:</b> begitu kuota penuh, <span class="mono">backups/service.ts</span> menolak unggahan — kasir berhenti punya cadangan tanpa pemberitahuan ke admin. Ini alasan kartu “kuota hampir penuh” ada di layar ringkasan.</div>
+    </div>
+
+    <div class="card">
+      <div class="shead"><h2>Tindakan</h2></div>
+      <div class="acts">
+        <button class="pill">Perpanjang manual</button>
+        <button class="pill">Naikkan kuota</button>
+        <button class="pill dgr">Suspend akun</button>
+      </div>
+      <div class="ann warn"><b>Tidak ada tombol hapus permanen.</b> Relasi Prisma memakai <span class="mono">onDelete: Cascade</span> — menghapus satu pengguna ikut menghapus toko, backup, sync, dan transaksinya tanpa jalan pulang. Panel hanya menyediakan suspend.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<div class="screen" id="s4"><b>Layar 4</b><span>Transaksi &amp; rekonsiliasi — fitur yang paling sering dipakai</span></div>
+
+<div class="top">
+  <div>
+    <h1>Transaksi</h1>
+    <div class="sub">7 perlu ditangani dari 341 transaksi bulan ini</div>
+  </div>
+  <div class="ctrls">
+    <span class="seg"><span class="on">Perlu ditangani</span><span>Semua</span><span>Lunas</span><span>Gagal</span></span>
+    <button class="pill">Ekspor CSV</button>
+  </div>
+</div>
+
+<section>
+  <div class="card">
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Pengguna</th><th>Paket</th><th>Nominal</th><th>Ref Tripay</th><th>Dibuat</th><th>Status</th><th>Aksi</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="nm"><div class="uid"><span class="ava">DP</span><div><div class="n">Depot Pak Har</div><div class="e">pakhar.depot@gmail.com</div></div></div></td>
+          <td>Sync 1 Tahun</td><td>Rp 249.000</td><td class="mono">T-A31M09</td><td>2 hari lalu</td>
+          <td><span class="tag t-dg">Pending 41 jam</span></td>
+          <td><span class="link">Verifikasi ulang</span></td>
+        </tr>
+        <tr>
+          <td class="nm"><div class="uid"><span class="ava">SR</span><div><div class="n">Sate Rembulan</div><div class="e">saterembulan@gmail.com</div></div></div></td>
+          <td>Storage 5 GB</td><td>Rp 99.000</td><td class="mono">T-A30X77</td><td>2 hari lalu</td>
+          <td><span class="tag t-dg">Callback gagal</span></td>
+          <td><span class="link">Verifikasi ulang</span></td>
+        </tr>
+        <tr>
+          <td class="nm"><div class="uid"><span class="ava">LM</span><div><div class="n">Laundry Mekar</div><div class="e">mekarlaundry@gmail.com</div></div></div></td>
+          <td>Sync 1 Tahun</td><td>Rp 249.000</td><td class="mono">T-A2Z145</td><td>3 hari lalu</td>
+          <td><span class="tag t-wr">Pending 68 jam</span></td>
+          <td><span class="link">Verifikasi ulang</span></td>
+        </tr>
+        <tr>
+          <td class="nm"><div class="uid"><span class="ava">AB</span><div><div class="n">Ayam Bakar Nusantara</div><div class="e">abnusantara@gmail.com</div></div></div></td>
+          <td>Storage 20 GB</td><td>Rp 299.000</td><td class="mono">T-A2Y803</td><td>4 hari lalu</td>
+          <td><span class="tag t-dg">Gagal</span></td>
+          <td><span class="link">Verifikasi ulang</span></td>
+        </tr>
+      </tbody>
+    </table></div>
+    <div class="ann"><b>Tombol “Verifikasi ulang”</b> memanggil <span class="mono">verifyPayment()</span> yang <b>sudah ada</b> di <span class="mono">payments/service.ts</span> — panel tinggal memanggilnya lintas pengguna. Ini menyelesaikan kasus “sudah bayar tapi paket belum aktif” tanpa membuka database.</div>
+  </div>
+</section>
+
+<section>
+  <div class="shead"><h2>Panel rekonsiliasi</h2><span class="hint">muncul saat “Verifikasi ulang” ditekan</span></div>
+  <div class="drawer">
+    <h3>Depot Pak Har</h3>
+    <div class="st">Sync 1 Tahun · Rp 249.000 · <span class="mono">T-A31M09</span></div>
+
+    <div class="steps">
+      <div class="step"><span class="mk ok">✓</span><div><div class="tt">Checkout dibuat</div><div class="ds">18 Agu 2026, 14:02 — <span class="mono">PaymentTransaction</span> tersimpan</div></div></div>
+      <div class="step"><span class="mk ok">✓</span><div><div class="tt">Tripay: sudah dibayar</div><div class="ds">18 Agu 2026, 14:19 — hasil pengecekan barusan</div></div></div>
+      <div class="step"><span class="mk dg">✕</span><div><div class="tt">Callback tidak diterima</div><div class="ds">Status lokal masih <span class="mono">pending</span> — langganan belum diaktifkan</div></div></div>
+    </div>
+
+    <div class="note">Tripay menyatakan lunas, backend belum. Menyetujui akan mengaktifkan Sync 1 Tahun sampai <b>18 Agu 2027</b> dan mencatatnya ke audit log.</div>
+
+    <div class="acts" style="margin-top:16px">
+      <button class="pill pri">Aktifkan langganan</button>
+      <button class="pill">Tandai gagal</button>
+      <button class="pill">Batal</button>
+    </div>
+    <div class="ann"><b>Wajib tercatat:</b> setiap penekanan tombol di panel ini menulis <span class="mono">AuditLog</span> berisi siapa, kapan, transaksi mana, dan nilai sebelum/sesudah.</div>
+  </div>
+</section>
+
+<section>
+  <div class="card">
+    <div class="shead"><h2>Yang sengaja tidak ada di P0</h2></div>
+    <div class="rows">
+      <div class="row"><span class="ico dg">✕</span><div><div class="tt">Hapus pengguna permanen</div><div class="ds">Cascade delete tanpa jalan pulang — diganti suspend</div></div></div>
+      <div class="row"><span class="ico dg">✕</span><div><div class="tt">Login sebagai pengguna (impersonasi)</div><div class="ds">Berguna untuk support, tapi tunggu audit log matang</div></div></div>
+      <div class="row"><span class="ico dg">✕</span><div><div class="tt">Isi data penjualan pelanggan</div><div class="ds">Admin lihat volume sync, bukan isi transaksinya</div></div></div>
+      <div class="row"><span class="ico wr">◷</span><div><div class="tt">CRUD paket, langganan manual, audit log</div><div class="ds">Masuk P1 — dikerjakan tepat setelah P0 disetujui</div></div></div>
+    </div>
+  </div>
+</section>
+
+</main>
+</div>
+</body>
+</html>

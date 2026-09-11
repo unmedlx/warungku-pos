@@ -1,0 +1,111 @@
+{
+  "title": {
+    "storeNameFallback": "KanPOS"
+  },
+  "setup": {
+    "title": "Set up your store",
+    "progress": "{{done}} of {{total}} done",
+    "dismiss": "Hide",
+    "items": {
+      "store": "Store created",
+      "product": "Add your first product",
+      "transaction": "Record your first sale",
+      "backup": "Secure your data (backup)"
+    }
+  },
+  "install": {
+    "title": "Install to home screen",
+    "desc": "Open it directly without a browser.",
+    "cta": "Install",
+    "dismiss": "Close",
+    "success": "KanPOS installed!",
+    "iosHint": "In Safari: tap Share (↑) → \"Add to Home Screen\""
+  },
+  "stats": {
+    "salesToday": "Today's Sales",
+    "transactions": "{{count}} transactions",
+    "salesSub": "{{count}} transactions, {{trend}}% vs yesterday",
+    "avgTransaction": "Average",
+    "perTransaction": "per transaction",
+    "profitToday": "Profit",
+    "expensesToday": "Expenses",
+    "expenseNotes": "{{count}} entries"
+  },
+  "attention": {
+    "title": "Needs Attention",
+    "empty": "No notifications"
+  },
+  "openBills": {
+    "title": "Open Bills",
+    "description": "{{count}} bill(s) awaiting payment"
+  },
+  "quickActions": {
+    "title": "Quick Access",
+    "all": "More",
+    "cashier": "Cashier",
+    "products": "Products",
+    "history": "History",
+    "reports": "Reports",
+    "expenses": "Expenses",
+    "customers": "Customers",
+    "supplier": "Supplier",
+    "stockIn": "Stock In",
+    "stockOut": "Stock Out"
+  },
+  "recentTransactions": {
+    "title": "Recent Transactions",
+    "viewAll": "View All",
+    "cashFallback": "Cash",
+    "itemCount": "{{count}} item",
+    "itemCount_plural": "{{count}} items",
+    "emptyTitle": "No transactions today",
+    "emptyDesc": "Create the first transaction to see sales history."
+  },
+  "chart": {
+    "weeklySales": "7 Day Sales",
+    "noData": "No sales data yet",
+    "todayLabel": "Today"
+  },
+  "searchPlaceholder": "Search products, transactions...",
+  "lowStock": {
+    "title": "Low Stock",
+    "summary": "{{count}} products need restock",
+    "remaining": "{{stock}} {{unit}} left"
+  },
+  "topProducts": {
+    "title": "Today's Top Products",
+    "sold": "sold",
+    "emptyTitle": "No sales today",
+    "emptyDesc": "Start the first transaction to see top products."
+  },
+  "pll": {
+    "in": "In",
+    "out": "Out",
+    "debt": "Credit"
+  },
+  "sessionExpired": {
+    "title": "Cloud session ended",
+    "desc": "The register keeps working. Sign in again to resume syncing.",
+    "descPending": "The register keeps working. {{count}} transactions are waiting to sync.",
+    "cta": "Sign in again",
+    "success": "Cloud session is active again",
+    "failed": "Sign-in failed. Please try again."
+  },
+  "linkAccount": {
+    "title": "Keep your store data safe",
+    "desc": "Your data only lives on this phone. If it is lost, broken, or the app is removed — everything goes with it.",
+    "benefit1": "Restore automatically on a new phone",
+    "benefit2": "Add staff with their own permissions",
+    "benefit3": "Open the register on several phones at once",
+    "cta": "Connect Google account",
+    "linking": "Connecting…",
+    "later": "Maybe later",
+    "toast": {
+      "linked": "{{name}} is now connected to the cloud",
+      "linkedSynced": "{{name}} connected — local data has been sent to the cloud",
+      "hasStores": "This account already has a store in the cloud. Pick which one to use.",
+      "quota": "Your plan's store quota is full. Manage it on the Cloud Store page.",
+      "failed": "Could not connect the account. Please try again."
+    }
+  }
+}

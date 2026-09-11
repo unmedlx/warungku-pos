@@ -1,0 +1,76 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+dev-dist
+*.local
+*.tsbuildinfo
+.eslintcache
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Editor directories and files
+.vscode/
+.idea
+.kilocode
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Test coverage
+coverage/
+
+# Internal API docs — do not publish
+/API.md
+/DASHBOARD.md
+/openapi.json
+
+# Android / Capacitor build outputs
+android/app/src/main/assets/
+android/.gradle/
+android/**/build/
+android/**/.cxx/
+android/local.properties
+android/captures/
+android/.idea/
+android/app/release/
+android/app/debug/
+*.apk
+*.aab
+*.keystore
+*.jks
+keystore.properties
+
+# Capacitor iOS (if added later)
+ios/
+
+# Electron build outputs
+electron/app/
+electron/build/
+electron/dist/
+electron/assets/
+electron/app/assets/
+
+# Vite temporary config artifacts
+*.timestamp-*.mjs
+
+# Knowledge base files (do not commit)
+Knowledge/
+knowledge/
+
+# Generated version file
+version.json

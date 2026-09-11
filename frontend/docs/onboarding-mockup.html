@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KanPOS — Mockup Onboarding v1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#3554C1;
+    --primary-fg:#FFFFFF;
+    --fg:#0D0D12;
+    --accent:#EFF5FF;
+    --accent-strong:#C0CAEC;
+    --muted-fg:#818898;
+    --muted:#ECEFF3;
+    --bg:#EDF1F9;
+    --surface-alt:#F8FAFE;
+    --card:#FFFFFF;
+    --border:#DFE1E7;
+    --border-soft:#ECEFF3;
+    --border-input:#EFF2F6;
+    --border-tab:#C1C7D0;
+    --success:#5ABC61;
+    --success-tint:#EFF8EF;
+    --warning:#F9A616;
+    --warning-tint:#FFF6E0;
+    --destructive:#DF1C41;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Sora',system-ui,sans-serif;
+    background:#0F1420;
+    color:var(--fg);
+    padding:40px 32px 80px;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- kerangka halaman mockup ---------- */
+  .doc-head{max-width:1200px;margin:0 auto 40px;color:#fff}
+  .doc-head h1{font-size:26px;font-weight:700;letter-spacing:-.02em}
+  .doc-head p{font-size:14px;color:#9AA4BC;margin-top:8px;line-height:1.6;max-width:760px}
+  .doc-head .meta{margin-top:16px;display:flex;gap:8px;flex-wrap:wrap}
+  .doc-head .meta span{
+    font-size:11px;font-weight:500;color:#B8C4E0;
+    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
+    padding:5px 11px;border-radius:8px;
+  }
+
+  .rail{
+    max-width:1200px;margin:0 auto;
+    display:flex;gap:28px;overflow-x:auto;padding-bottom:28px;
+    scroll-snap-type:x mandatory;
+    scrollbar-width:thin;
+    scrollbar-color:rgba(255,255,255,.22) rgba(255,255,255,.06);
+  }
+  .rail::-webkit-scrollbar{height:8px}
+  .rail::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:4px}
+  .rail::-webkit-scrollbar-track{background:rgba(255,255,255,.04);border-radius:4px}
+
+  .frame-wrap{flex:0 0 auto;scroll-snap-align:start}
+  .frame-label{color:#fff;margin-bottom:12px;padding-left:2px}
+  .frame-label .n{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:22px;height:22px;border-radius:11px;
+    background:var(--primary);color:#fff;font-size:11px;font-weight:700;margin-right:8px;
+  }
+  .frame-label .t{font-size:14px;font-weight:600;letter-spacing:-.01em}
+  .frame-label .s{font-size:11.5px;color:#8E9AB4;margin-top:5px;padding-left:30px;line-height:1.5;max-width:340px}
+
+  .frame{
+    width:375px;height:812px;
+    background:var(--bg);
+    border-radius:36px;
+    overflow:hidden;position:relative;
+    box-shadow:0 24px 60px rgba(0,0,0,.42);
+    display:flex;flex-direction:column;
+  }
+
+  /* status bar */
+  .statusbar{
+    height:44px;flex:0 0 44px;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 24px;font-size:12.5px;font-weight:600;color:var(--fg);
+  }
+  .statusbar .icons{display:flex;gap:5px;align-items:center;opacity:.85}
+
+  .screen{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+  .pad{padding-left:16px;padding-right:16px}
+
+  /* ---------- primitives (sesuai DESIGN-SPEC) ---------- */
+  .btn{
+    height:52px;border-radius:26px;border:none;
+    font-family:inherit;font-size:15px;font-weight:600;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    width:100%;cursor:pointer;transition:.18s;letter-spacing:-.01em;
+  }
+  .btn-primary{background:var(--primary);color:#fff}
+  .btn-primary:active{transform:scale(.985)}
+  .btn-primary:disabled{background:var(--accent-strong);cursor:not-allowed}
+  .btn-success{background:var(--success);color:#fff}
+  .btn-ghost{background:transparent;color:var(--muted-fg)}
+  .btn-outline{background:#fff;color:var(--fg);border:1px solid var(--border)}
+
+  .input{
+    height:52px;border-radius:26px;
+    background:#fff;border:1px solid var(--border-input);
+    display:flex;align-items:center;gap:10px;padding:0 20px;
+    font-size:14.5px;color:var(--fg);width:100%;
+  }
+  .input .ph{color:#A8B0BF}
+  .input.focused{border-color:var(--primary);box-shadow:0 0 0 3px rgba(53,84,193,.1)}
+  .input .caret{width:1.5px;height:19px;background:var(--primary);animation:blink 1.1s step-end infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  .card{background:#fff;border-radius:24px}
+  .blob{
+    width:72px;height:72px;border-radius:36px;
+    background:var(--accent);color:var(--primary);
+    display:flex;align-items:center;justify-content:center;flex:0 0 auto;
+  }
+  .blob-44{width:44px;height:44px;border-radius:22px;background:var(--accent);color:var(--primary);
+    display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .blob-36{width:36px;height:36px;border-radius:18px;background:var(--accent);color:var(--primary);
+    display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+
+  h2.title{font-size:24px;font-weight:700;letter-spacing:-.03em;line-height:1.25}
+  p.sub{font-size:13.5px;color:var(--muted-fg);line-height:1.6}
+
+  /* progress dots */
+  .dots{display:flex;align-items:center;justify-content:center;gap:6px}
+  .dots i{height:6px;width:6px;border-radius:3px;background:rgba(129,136,152,.25);transition:.3s}
+  .dots i.on{width:24px;background:var(--primary)}
+
+  .topbar{height:48px;display:flex;align-items:center;gap:12px;flex:0 0 48px}
+  .circle-btn{
+    width:44px;height:44px;border-radius:22px;background:#fff;border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;flex:0 0 auto;cursor:pointer;
+  }
+
+  /* ---------- layar 1 ---------- */
+  .brandmark{
+    width:96px;height:96px;border-radius:30px;
+    background:linear-gradient(150deg,#4867D9,#2A44A8);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 16px 34px rgba(53,84,193,.32);
+  }
+  .lang-row{display:flex;gap:8px;width:100%}
+  .lang{
+    flex:1;height:56px;border-radius:20px;background:#fff;border:1px solid var(--border-soft);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    cursor:pointer;transition:.16s;
+  }
+  .lang.on{border-color:var(--primary);background:#fff;box-shadow:0 0 0 1px var(--primary) inset}
+  .lang .flag{font-size:19px;line-height:1}
+  .lang .lb{font-size:10.5px;font-weight:600;color:var(--muted-fg)}
+  .lang.on .lb{color:var(--primary)}
+  .tnc{font-size:11px;color:var(--muted-fg);text-align:center;line-height:1.65}
+  .tnc a{color:var(--primary);font-weight:500;text-decoration:none;border-bottom:1px solid rgba(53,84,193,.3)}
+
+  /* ---------- layar 2: jenis usaha ---------- */
+  .biz-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .biz{
+    height:70px;border-radius:20px;background:#fff;border:1px solid var(--border-soft);
+    padding:10px 12px;display:flex;flex-direction:column;justify-content:space-between;
+    cursor:pointer;transition:.16s;position:relative;
+  }
+  .biz:hover{border-color:var(--accent-strong)}
+  .biz.on{border-color:var(--primary);box-shadow:0 0 0 1px var(--primary) inset,0 6px 16px rgba(53,84,193,.14)}
+  .biz .ico{width:30px;height:30px;border-radius:15px;background:var(--accent);
+    display:flex;align-items:center;justify-content:center;font-size:15px;line-height:1}
+  .biz.on .ico{background:var(--primary)}
+  .biz .nm{font-size:12.5px;font-weight:600;letter-spacing:-.01em;line-height:1.3}
+  .biz .tick{
+    position:absolute;top:10px;right:10px;width:18px;height:18px;border-radius:9px;
+    background:var(--primary);display:none;align-items:center;justify-content:center;
+  }
+  .biz.on .tick{display:flex}
+
+  /* preview personalisasi */
+  .perk{
+    border-radius:20px;background:var(--surface-alt);border:1px solid var(--border-soft);
+    padding:12px 14px;display:flex;gap:10px;align-items:flex-start;
+  }
+  .perk .k{font-size:11.5px;font-weight:600;line-height:1.5}
+  .perk .v{font-size:11px;color:var(--muted-fg);line-height:1.55;margin-top:2px}
+  .chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+  .chip{font-size:10px;font-weight:500;padding:3px 8px;border-radius:8px;background:var(--accent);color:var(--primary)}
+
+  /* ---------- layar 3: setup ---------- */
+  .field-label{font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:6px;margin-bottom:8px}
+  .req{color:var(--destructive)}
+  .disclosure{
+    height:48px;border-radius:24px;background:#fff;border:1px solid var(--border-soft);
+    display:flex;align-items:center;justify-content:space-between;padding:0 18px 0 14px;
+    cursor:pointer;font-size:13px;font-weight:500;color:var(--muted-fg);
+  }
+  .seg{
+    height:56px;border-radius:28px;background:#fff;border:1px solid var(--border-soft);
+    padding:4px;display:flex;gap:4px;
+  }
+  .seg > div{
+    flex:1;border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:1px;cursor:pointer;transition:.16s;
+  }
+  .seg > div.on{background:var(--primary)}
+  .seg .st{font-size:12.5px;font-weight:600;color:var(--muted-fg)}
+  .seg .sd{font-size:9.5px;color:#A8B0BF}
+  .seg > div.on .st,.seg > div.on .sd{color:#fff}
+  .seg > div.on .sd{opacity:.8}
+
+  /* ---------- layar 4: sukses ---------- */
+  .success-ring{
+    width:112px;height:112px;border-radius:56px;background:var(--success-tint);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .success-core{
+    width:76px;height:76px;border-radius:38px;background:var(--success);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 12px 26px rgba(90,188,97,.35);
+  }
+
+  /* ---------- layar 5: beranda + checklist ---------- */
+  .header-pill{
+    height:48px;border-radius:24px;background:#fff;
+    display:flex;align-items:center;gap:10px;padding:4px 4px 4px 4px;
+  }
+  .avatar-40{width:40px;height:40px;border-radius:20px;background:var(--primary);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex:0 0 auto}
+  .checklist-card{background:#fff;border-radius:24px;padding:16px;position:relative;overflow:hidden}
+  .progress-track{height:6px;border-radius:3px;background:var(--muted);overflow:hidden}
+  .progress-fill{height:100%;border-radius:3px;background:var(--primary);width:25%}
+  .task{
+    height:56px;border-radius:20px;background:var(--surface-alt);
+    display:flex;align-items:center;gap:10px;padding:0 12px;cursor:pointer;
+  }
+  .task.done{background:transparent}
+  .tickbox{width:22px;height:22px;border-radius:11px;border:1.5px solid var(--border-tab);flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center}
+  .tickbox.on{background:var(--success);border-color:var(--success)}
+  .task .tl{font-size:12.5px;font-weight:600;flex:1}
+  .task.done .tl{color:var(--muted-fg);text-decoration:line-through;text-decoration-color:rgba(129,136,152,.4)}
+  .stat-row{display:flex;gap:8px}
+  .stat{flex:1;background:#fff;border-radius:24px;padding:12px}
+  .stat .sl{font-size:10.5px;color:var(--muted-fg);font-weight:500}
+  .stat .sv{font-size:16px;font-weight:700;letter-spacing:-.02em;margin-top:3px}
+  .bottomnav{
+    height:64px;background:#fff;border-top:1px solid var(--border-soft);
+    display:flex;align-items:center;justify-content:space-around;padding:0 8px;flex:0 0 64px;
+  }
+  .nav-i{display:flex;flex-direction:column;align-items:center;gap:3px;color:#A8B0BF;font-size:9.5px;font-weight:500}
+  .nav-i.on{color:var(--primary)}
+
+  .stack{display:flex;flex-direction:column}
+  .gap-6{gap:6px}.gap-8{gap:8px}.gap-10{gap:10px}.gap-12{gap:12px}
+  .gap-16{gap:16px}.gap-20{gap:20px}.gap-24{gap:24px}.gap-32{gap:32px}
+  .grow{flex:1;min-height:0}
+  .center{align-items:center;justify-content:center;text-align:center}
+  .scroll{overflow-y:auto;scrollbar-width:none}
+  .scroll::-webkit-scrollbar{display:none}
+
+  /* catatan bawah */
+  .notes{max-width:1200px;margin:56px auto 0;color:#C3CCE2}
+  .notes h3{color:#fff;font-size:17px;font-weight:600;margin-bottom:18px;letter-spacing:-.01em}
+  .notes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+  .note{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:18px}
+  .note b{display:block;color:#fff;font-size:13px;font-weight:600;margin-bottom:8px}
+  .note p{font-size:12px;line-height:1.7;color:#96A2BC}
+  .note .del{color:#E3899E}
+  .note .add{color:#8FD79A}
+</style>
+</head>
+<body>
+
+<div class="doc-head">
+  <h1>Onboarding v1 — “Toko kamu siap dalam 60 detik”</h1>
+  <p>Mockup 3 layar + layar sukses + checklist beranda, menggantikan alur 7 langkah yang ada sekarang.
+     Semua warna, radius, dan tinggi mengikuti <code>DESIGN-SPEC.md</code> (biru #3554C1, pill 52px, kartu rx=24, blob lingkaran).</p>
+  <div class="meta">
+    <span>375 × 812</span>
+    <span>Sora</span>
+    <span>7 langkah → 3 layar</span>
+    <span>Interaktif: pilih jenis usaha, bahasa, segmented</span>
+  </div>
+</div>
+
+<div class="rail">
+
+  <!-- ══════════════ 1. SAMBUTAN ══════════════ -->
+  <div class="frame-wrap">
+    <div class="frame-label">
+      <span class="n">1</span><span class="t">Sambutan</span>
+      <div class="s">Bahasa + dua jalur. T&amp;C jadi teks, bukan checkbox yang memblokir. Jalur restore muncul di sini — bukan terkubur di langkah ke-7.</div>
+    </div>
+    <div class="frame">
+      <div class="statusbar">
+        <span>9:41</span>
+        <span class="icons">
+          <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.3" y="5" width="3" height="6" rx="1"/><rect x="8.6" y="2.5" width="3" height="8.5" rx="1"/><rect x="12.9" y="0" width="3" height="11" rx="1"/></svg>
+          <svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x=".5" y=".5" width="18" height="10" rx="3" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="14" height="7" rx="1.8" fill="currentColor"/><path d="M20.5 4v3a2 2 0 000-3z" fill="currentColor" opacity=".4"/></svg>
+        </span>
+      </div>
+
+      <div class="screen">
+        <div class="grow stack center gap-24 pad">
+          <div class="brandmark">
+            <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l1.5-5h15L21 9"/><path d="M3 9h18v11a1 1 0 01-1 1H4a1 1 0 01-1-1V9z"/>
+              <path d="M3 9a3 3 0 006 0 3 3 0 006 0 3 3 0 006 0"/><path d="M9 21v-6h6v6"/>
+            </svg>
+          </div>
+
+          <div class="stack gap-10 center">
+            <h2 class="title">KanPOS</h2>
+            <p class="sub" style="max-width:250px">Kasir, stok, dan laporan untung-rugi<br>tokomu — dalam satu aplikasi.</p>
+          </div>
+
+          <div class="stack gap-8" style="width:100%;margin-top:8px">
+            <div class="lang-row">
+              <div class="lang on"><span class="flag">🇮🇩</span><span class="lb">Indonesia</span></div>
+              <div class="lang"><span class="flag">🇬🇧</span><span class="lb">English</span></div>
+              <div class="lang"><span class="flag">🇲🇾</span><span class="lb">Melayu</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stack gap-10 pad" style="padding-bottom:20px">
+          <button class="btn btn-primary">
+            Buat Toko Baru
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+          <button class="btn btn-ghost">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+            Saya sudah punya backup
+          </button>
+          <p class="tnc" style="margin-top:4px">
+            Dengan melanjutkan, kamu setuju<br>
+            <a href="#">Syarat &amp; Ketentuan</a> dan <a href="#">Kebijakan Privasi</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ 2. JENIS USAHA ══════════════ -->
+  <div class="frame-wrap">
+    <div class="frame-label">
+      <span class="n">2</span><span class="t">Jualan apa?</span>
+      <div class="s">Pengganti 4 slide tutorial. Satu ketukan → kategori, satuan, dan produk contoh ikut menyesuaikan. Sekaligus menghapus survei yang selama ini menginterupsi di halaman Laporan.</div>
+    </div>
+    <div class="frame">
+      <div class="statusbar"><span>9:41</span><span class="icons">
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.3" y="5" width="3" height="6" rx="1"/><rect x="8.6" y="2.5" width="3" height="8.5" rx="1"/><rect x="12.9" y="0" width="3" height="11" rx="1"/></svg>
+        <svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x=".5" y=".5" width="18" height="10" rx="3" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="14" height="7" rx="1.8" fill="currentColor"/><path d="M20.5 4v3a2 2 0 000-3z" fill="currentColor" opacity=".4"/></svg>
+      </span></div>
+
+      <div class="screen">
+        <div class="topbar pad" style="justify-content:space-between">
+          <div class="circle-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0D0D12" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+          </div>
+          <div class="dots"><i class="on"></i><i></i><i></i></div>
+          <div style="width:44px"></div>
+        </div>
+
+        <div class="stack gap-6 pad" style="padding-top:14px;padding-bottom:14px">
+          <h2 class="title">Jualan apa?</h2>
+          <p class="sub">Kami siapkan kategori, satuan, dan produk contoh<br>yang cocok untuk usahamu.</p>
+        </div>
+
+        <div class="grow scroll pad">
+          <div class="biz-grid">
+            <div class="biz on" onclick="pickBiz(this)">
+              <div class="tick"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+              <div class="ico">☕</div><div class="nm">Kafe / Resto</div>
+            </div>
+            <div class="biz" onclick="pickBiz(this)">
+              <div class="tick"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+              <div class="ico">🏪</div><div class="nm">Warung Kelontong</div>
+            </div>
+            <div class="biz" onclick="pickBiz(this)">
+              <div class="tick"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+              <div class="ico">🍵</div><div class="nm">Coffee Shop</div>
+            </div>
+            <div class="biz" onclick="pickBiz(this)">
+              <div class="tick"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+              <div class="ico">👕</div><div class="nm">Toko Pakaian</div>
+            </div>
+            <div class="biz" onclick="pickBiz(this)">
+              <div class="tick"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+              <div class="ico">🍚</div><div class="nm">Toko Sembako</div>
+            </div>
+            <div class="biz" onclick="pickBiz(this)">
+              <div class="tick"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+              <div class="ico">💊</div><div class="nm">Apotek / Toko Obat</div>
+            </div>
+            <div class="biz" onclick="pickBiz(this)">
+              <div class="tick"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+              <div class="ico">🔨</div><div class="nm">Toko Bangunan</div>
+            </div>
+            <div class="biz" onclick="pickBiz(this)">
+              <div class="tick"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+              <div class="ico">📱</div><div class="nm">Toko Elektronik</div>
+            </div>
+            <div class="biz" onclick="pickBiz(this)">
+              <div class="tick"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+              <div class="ico">💈</div><div class="nm">Salon / Barbershop</div>
+            </div>
+            <div class="biz" onclick="pickBiz(this)">
+              <div class="tick"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+              <div class="ico">🧺</div><div class="nm">Laundry</div>
+            </div>
+            <div class="biz" onclick="pickBiz(this)">
+              <div class="tick"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+              <div class="ico">📦</div><div class="nm">Pedagang Online</div>
+            </div>
+            <div class="biz" onclick="pickBiz(this)">
+              <div class="tick"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+              <div class="ico">✨</div><div class="nm">Lainnya</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pad stack gap-10" style="padding-top:12px;padding-bottom:20px">
+          <div class="perk">
+            <div class="blob-36" style="width:32px;height:32px;border-radius:16px">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6 4.4 2.3 7.2-6.3-4.6L5.7 21 8 13.8 2 9.4h7.6z"/></svg>
+            </div>
+            <div style="flex:1">
+              <div class="k">Yang disiapkan untuk Kafe / Resto</div>
+              <div class="chips">
+                <span class="chip">Makanan</span><span class="chip">Minuman</span><span class="chip">Snack</span>
+                <span class="chip">porsi</span><span class="chip">gelas</span><span class="chip">pcs</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary">
+            Lanjut
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ 3. NAMA TOKO ══════════════ -->
+  <div class="frame-wrap">
+    <div class="frame-label">
+      <span class="n">3</span><span class="t">Nama toko</span>
+      <div class="s">Satu field wajib. Alamat &amp; telepon tertutup sebagai opsional. Pilihan data contoh jadi segmented eksplisit — bukan toggle yang terasa seperti mainan.</div>
+    </div>
+    <div class="frame">
+      <div class="statusbar"><span>9:41</span><span class="icons">
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.3" y="5" width="3" height="6" rx="1"/><rect x="8.6" y="2.5" width="3" height="8.5" rx="1"/><rect x="12.9" y="0" width="3" height="11" rx="1"/></svg>
+        <svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x=".5" y=".5" width="18" height="10" rx="3" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="14" height="7" rx="1.8" fill="currentColor"/><path d="M20.5 4v3a2 2 0 000-3z" fill="currentColor" opacity=".4"/></svg>
+      </span></div>
+
+      <div class="screen">
+        <div class="topbar pad" style="justify-content:space-between">
+          <div class="circle-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0D0D12" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+          </div>
+          <div class="dots"><i></i><i class="on"></i><i></i></div>
+          <div style="width:44px"></div>
+        </div>
+
+        <div class="stack gap-16 pad grow scroll" style="padding-top:14px">
+          <div class="stack gap-6">
+            <h2 class="title">Nama tokomu?</h2>
+            <p class="sub">Nama ini yang akan tercetak di struk pelanggan.</p>
+          </div>
+
+          <div>
+            <div class="field-label">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3554C1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9"/><path d="M3 9h18v11a1 1 0 01-1 1H4a1 1 0 01-1-1V9z"/><path d="M9 21v-6h6v6"/></svg>
+              Nama Toko <span class="req">*</span>
+            </div>
+            <div class="input focused">
+              <span>Toko Berkah Jaya</span><span class="caret"></span>
+            </div>
+          </div>
+
+          <div class="disclosure">
+            <span style="display:flex;align-items:center;gap:9px">
+              <span class="blob-36" style="width:30px;height:30px;border-radius:15px">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+              </span>
+              Tambah alamat &amp; telepon
+            </span>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#818898" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+
+          <div style="height:1px;background:var(--border-soft);margin:2px 0"></div>
+
+          <div>
+            <div class="field-label" style="margin-bottom:10px">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3554C1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"/><path d="M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/></svg>
+              Isi produk awal
+            </div>
+            <div class="seg">
+              <div class="on" onclick="pickSeg(this)"><span class="st">Produk contoh</span><span class="sd">11 produk kafe</span></div>
+              <div onclick="pickSeg(this)"><span class="st">Mulai kosong</span><span class="sd">isi sendiri</span></div>
+            </div>
+          </div>
+
+          <div class="perk" style="background:var(--success-tint);border-color:rgba(90,188,97,.22)">
+            <div style="width:32px;height:32px;border-radius:16px;background:rgba(90,188,97,.18);color:var(--success);display:flex;align-items:center;justify-content:center;flex:0 0 auto">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div style="flex:1">
+              <div class="k">Data tersimpan di HP kamu</div>
+              <div class="v">Tanpa internet, tanpa server, tanpa biaya bulanan.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top:12px;padding-bottom:20px">
+          <button class="btn btn-primary">Buka Toko</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ 4. SUKSES ══════════════ -->
+  <div class="frame-wrap">
+    <div class="frame-label">
+      <span class="n">4</span><span class="t">Sukses (1,2 detik)</span>
+      <div class="s">Bukan langkah — transisi otomatis. Menutup alur dengan rasa selesai, lalu langsung masuk beranda.</div>
+    </div>
+    <div class="frame">
+      <div class="statusbar"><span>9:41</span><span class="icons">
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.3" y="5" width="3" height="6" rx="1"/><rect x="8.6" y="2.5" width="3" height="8.5" rx="1"/><rect x="12.9" y="0" width="3" height="11" rx="1"/></svg>
+        <svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x=".5" y=".5" width="18" height="10" rx="3" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="14" height="7" rx="1.8" fill="currentColor"/><path d="M20.5 4v3a2 2 0 000-3z" fill="currentColor" opacity=".4"/></svg>
+      </span></div>
+
+      <div class="screen">
+        <div class="grow stack center gap-24 pad">
+          <div class="success-ring">
+            <div class="success-core">
+              <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            </div>
+          </div>
+          <div class="stack gap-10 center">
+            <h2 class="title">Toko Berkah Jaya siap!</h2>
+            <p class="sub" style="max-width:250px">3 kategori, 6 satuan, dan 11 produk contoh<br>sudah dimasukkan.</p>
+          </div>
+          <div class="stack gap-8" style="width:100%;max-width:280px;margin-top:4px">
+            <div style="display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--muted-fg)">
+              <span style="width:20px;height:20px;border-radius:10px;background:var(--success-tint);color:var(--success);display:flex;align-items:center;justify-content:center">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              </span>Kategori Makanan, Minuman, Snack
+            </div>
+            <div style="display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--muted-fg)">
+              <span style="width:20px;height:20px;border-radius:10px;background:var(--success-tint);color:var(--success);display:flex;align-items:center;justify-content:center">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              </span>Tunai, Transfer, QRIS aktif
+            </div>
+            <div style="display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--muted-fg)">
+              <span style="width:20px;height:20px;border-radius:10px;background:var(--success-tint);color:var(--success);display:flex;align-items:center;justify-content:center">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              </span>Satuan porsi, gelas, pcs
+            </div>
+          </div>
+        </div>
+        <div class="pad" style="padding-bottom:34px">
+          <div class="progress-track" style="max-width:120px;margin:0 auto">
+            <div class="progress-fill" style="width:78%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ 5. BERANDA + CHECKLIST ══════════════ -->
+  <div class="frame-wrap">
+    <div class="frame-label">
+      <span class="n">5</span><span class="t">Beranda — checklist “Siapkan toko”</span>
+      <div class="s">Pengganti sesungguhnya dari 4 slide tutorial: mengajar sambil user bekerja. Kartu hilang otomatis saat 100%.</div>
+    </div>
+    <div class="frame">
+      <div class="statusbar"><span>9:41</span><span class="icons">
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.3" y="5" width="3" height="6" rx="1"/><rect x="8.6" y="2.5" width="3" height="8.5" rx="1"/><rect x="12.9" y="0" width="3" height="11" rx="1"/></svg>
+        <svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x=".5" y=".5" width="18" height="10" rx="3" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="14" height="7" rx="1.8" fill="currentColor"/><path d="M20.5 4v3a2 2 0 000-3z" fill="currentColor" opacity=".4"/></svg>
+      </span></div>
+
+      <div class="screen">
+        <div class="pad" style="padding-top:6px;padding-bottom:12px">
+          <div class="header-pill">
+            <div class="avatar-40">B</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:10.5px;color:var(--muted-fg);font-weight:500">Selamat pagi 👋</div>
+              <div style="font-size:13px;font-weight:600;letter-spacing:-.01em">Toko Berkah Jaya</div>
+            </div>
+            <div class="circle-btn" style="border:none;background:var(--accent)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3554C1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="grow scroll pad">
+          <div class="stack gap-12">
+
+            <!-- CHECKLIST -->
+            <div class="checklist-card">
+              <div style="display:flex;align-items:flex-start;gap:11px">
+                <div class="blob-44" style="background:var(--primary);color:#fff">
+                  <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                </div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:14.5px;font-weight:700;letter-spacing:-.02em">Siapkan toko</div>
+                  <div style="font-size:11.5px;color:var(--muted-fg);margin-top:2px">1 dari 4 selesai · tinggal sedikit lagi</div>
+                </div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#818898" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-top:4px"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              </div>
+
+              <div class="progress-track" style="margin:13px 0 14px">
+                <div class="progress-fill" style="width:25%"></div>
+              </div>
+
+              <div class="stack gap-8">
+                <div class="task done">
+                  <div class="tickbox on"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                  <div class="tl">Toko dibuat</div>
+                </div>
+                <div class="task">
+                  <div class="tickbox"></div>
+                  <div class="tl">Tambah produk pertama</div>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3554C1" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                </div>
+                <div class="task">
+                  <div class="tickbox"></div>
+                  <div class="tl">Catat transaksi pertama</div>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3554C1" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                </div>
+                <div class="task">
+                  <div class="tickbox"></div>
+                  <div class="tl">Amankan data (backup)</div>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3554C1" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- statistik hari ini -->
+            <div class="stat-row">
+              <div class="stat">
+                <div class="sl">Penjualan hari ini</div>
+                <div class="sv">Rp 0</div>
+              </div>
+              <div class="stat">
+                <div class="sl">Transaksi</div>
+                <div class="sv">0</div>
+              </div>
+            </div>
+
+            <!-- banner install: MUNCUL NANTI, setelah transaksi pertama -->
+            <div class="card" style="padding:14px;display:flex;align-items:center;gap:11px;opacity:.45">
+              <div class="blob-44">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              </div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:12.5px;font-weight:600">Install di layar utama</div>
+                <div style="font-size:10.5px;color:var(--muted-fg);margin-top:2px">Muncul setelah transaksi pertama</div>
+              </div>
+              <div style="font-size:10px;font-weight:600;color:var(--muted-fg);background:var(--muted);padding:4px 9px;border-radius:8px">nanti</div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="bottomnav">
+          <div class="nav-i on">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-7 9 7v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
+            Beranda
+          </div>
+          <div class="nav-i">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/></svg>
+            Kasir
+          </div>
+          <div class="nav-i">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+            Produk
+          </div>
+          <div class="nav-i">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18.7 8l-5.2 5.2-3-3L7 14.7"/></svg>
+            Laporan
+          </div>
+          <div class="nav-i">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-2.9 1.2v.2a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.9.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00-1.2-2.9H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.9l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.9-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>
+            Lainnya
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="notes">
+  <h3>Ringkasan perubahan</h3>
+  <div class="notes-grid">
+    <div class="note">
+      <b>Dihapus dari wizard</b>
+      <p>
+        <span class="del">−</span> 4 slide tutorial (Kasir, Stok, Laporan, Data)<br>
+        <span class="del">−</span> Langkah install PWA → pindah ke banner beranda, muncul setelah transaksi pertama<br>
+        <span class="del">−</span> Pemilih warna tema → pindah ke Pengaturan<br>
+        <span class="del">−</span> Checkbox T&amp;C yang memblokir → jadi teks clickwrap<br>
+        <span class="del">−</span> Field alamat &amp; telepon → jadi opsional tertutup
+      </p>
+    </div>
+    <div class="note">
+      <b>Ditambahkan</b>
+      <p>
+        <span class="add">+</span> Layar jenis usaha (pakai <code>BUSINESS_TYPES</code> yang sudah ada)<br>
+        <span class="add">+</span> Seed kategori, satuan, dan produk contoh per jenis usaha<br>
+        <span class="add">+</span> Jalur restore di layar pertama<br>
+        <span class="add">+</span> Layar sukses 1,2 detik<br>
+        <span class="add">+</span> Kartu checklist “Siapkan toko” di beranda
+      </p>
+    </div>
+    <div class="note">
+      <b>Efek samping yang menguntungkan</b>
+      <p>
+        Jawaban jenis usaha dikirim ke webhook yang sama lalu <code>markUserTypeAnswered()</code> dipanggil — <b>UserTypeModal yang selama ini menginterupsi di halaman Laporan tidak akan muncul lagi</b>. Datanya justru lebih lengkap karena semua user baru menjawab, bukan hanya yang tidak mem-skip.
+      </p>
+    </div>
+    <div class="note">
+      <b>Perbaikan visual per DESIGN-SPEC</b>
+      <p>
+        Ikon slide “Stok” saat ini <code>text-accent bg-accent/10</code> → putih di atas putih, praktis tak terlihat. Semua blob jadi lingkaran 72px <code>bg-accent</code>. Override <code>h-12 rounded-2xl shadow-lg</code> dibuang agar pill 52px bawaan <code>jokoui/button</code> bekerja. Modal cloud yang di-hardcode jadi bottom sheet ber-grabber 40×4.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  function pickBiz(el){
+    el.closest('.biz-grid').querySelectorAll('.biz').forEach(b => b.classList.remove('on'));
+    el.classList.add('on');
+    const name = el.querySelector('.nm').textContent;
+    const screen = el.closest('.screen');
+    const perk = screen.querySelector('.perk .k');
+    if (perk) perk.textContent = 'Yang disiapkan untuk ' + name;
+    const map = {
+      'Kafe / Resto':['Makanan','Minuman','Snack','porsi','gelas','pcs'],
+      'Warung Kelontong':['Sembako','Minuman','Rokok','pcs','kg','renceng'],
+      'Coffee Shop':['Kopi','Non-Kopi','Pastry','gelas','pcs'],
+      'Toko Pakaian':['Atasan','Bawahan','Aksesoris','pcs','lusin'],
+      'Toko Sembako':['Beras','Minyak','Bumbu','kg','liter','pcs'],
+      'Apotek / Toko Obat':['Obat Bebas','Vitamin','Alkes','strip','botol','pcs'],
+      'Toko Bangunan':['Semen','Cat','Perkakas','sak','kaleng','batang'],
+      'Toko Elektronik':['Gadget','Aksesoris','Kabel','pcs','unit'],
+      'Salon / Barbershop':['Layanan','Produk','sesi','pcs'],
+      'Laundry':['Cuci Kiloan','Satuan','Setrika','kg','pcs'],
+      'Pedagang Online':['Produk','Bundling','pcs','paket'],
+      'Lainnya':['Umum','pcs'],
+    };
+    const chips = screen.querySelector('.chips');
+    if (chips) chips.innerHTML = (map[name]||['pcs']).map(c => '<span class="chip">'+c+'</span>').join('');
+  }
+  function pickSeg(el){
+    el.parentElement.querySelectorAll('div').forEach(d => d.classList.remove('on'));
+    el.classList.add('on');
+  }
+  document.querySelectorAll('.lang').forEach(l => l.addEventListener('click', () => {
+    l.parentElement.querySelectorAll('.lang').forEach(x => x.classList.remove('on'));
+    l.classList.add('on');
+  }));
+</script>
+</body>
+</html>
