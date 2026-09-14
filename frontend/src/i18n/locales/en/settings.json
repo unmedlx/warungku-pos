@@ -1400,7 +1400,7 @@
       "retry": "Try again",
       "error": {
         "network": "The microphone stopped because of a network problem. Speech recognition on this phone needs internet.",
-        "no-speech": "The microphone stopped because no speech was picked up.",
+        "no-speech": "The mic stopped after a long silence. Turn it back on to continue.",
         "unsupported": "This phone has no speech recognition service.",
         "unknown": "The microphone stopped on its own. Turn it back on to continue.",
         "denied": "Microphone permission denied."

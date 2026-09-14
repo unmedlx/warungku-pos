@@ -14,6 +14,7 @@ import {
   takeLegacyGoogleToken,
   needsRefresh,
   isRefreshExpired,
+  isSessionRejected,
   type CloudSession,
 } from '@/lib/cloud-auth';
 import { initOneSignal, oneSignalLogin, oneSignalLogout } from '@/lib/onesignal';
@@ -110,9 +111,15 @@ export function CloudAuthProvider({ children }: { children: ReactNode }) {
       const next = await refreshSession(current.refreshToken);
       applySession(next);
       return true;
-    } catch {
-      // Refresh ditolak backend (dicabut, akun disuspend) — sesi memang habis.
-      dropSession(true);
+    } catch (err) {
+      if (isSessionRejected(err)) {
+        // Backend menolak (token dicabut, akun disuspend) — sesi memang habis.
+        dropSession(true);
+        return false;
+      }
+      // Offline, DNS gagal, atau backend sedang tumbang. Refresh token masih
+      // berlaku, jadi sesi dipertahankan dan dicoba lagi pada kesempatan
+      // berikutnya — jangan hapus sesi karena gangguan jaringan.
       return false;
     }
   }, [applySession, dropSession]);

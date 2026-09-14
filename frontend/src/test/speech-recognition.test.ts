@@ -30,6 +30,7 @@ class FakeRecognition {
   startCount = 0;
   running = false;
 
+  onstart: (() => void) | null = null;
   onresult: ((e: unknown) => void) | null = null;
   onerror: ((e: unknown) => void) | null = null;
   onend: (() => void) | null = null;
@@ -41,9 +42,13 @@ class FakeRecognition {
   start() {
     this.startCount += 1;
     this.running = true;
+    this.onstart?.();
   }
 
   stop() {
+    // Browser sungguhan diam saja kalau mesinnya sudah berhenti: `onend` cuma
+    // dipancarkan untuk sesi yang memang sedang berjalan.
+    if (!this.running) return;
     this.running = false;
     this.onend?.();
   }
@@ -63,6 +68,20 @@ class FakeRecognition {
   /** Mesin berhenti sendiri karena hening, bukan karena diminta. */
   endBySilence() {
     this.running = false;
+    this.onend?.();
+  }
+
+  /**
+   * Galat seperti browser sungguhan memancarkannya.
+   *
+   * Urutan ini yang menentukan: `onend` SELALU menyusul `onerror`. Tes yang
+   * memanggil `onerror` saja tidak akan pernah melihat cacat yang paling
+   * merugikan di jalur ini — recognizer yang menyalakan dirinya kembali lewat
+   * `onend` setelah pemanggilnya sudah membuang sesinya.
+   */
+  failWith(code: string) {
+    this.running = false;
+    this.onerror?.({ error: code });
     this.onend?.();
   }
 }
@@ -210,5 +229,160 @@ describe('kegagalan', () => {
 
     expect(errors).toEqual([]);
     expect(rec.startCount).toBe(2);
+  });
+});
+
+/**
+ * Sesi yang sudah menyerah harus benar-benar berhenti.
+ *
+ * Ini bukan kerapian. Begitu `onError` dipancarkan, pemanggil membuang
+ * referensi sesinya — jadi recognizer yang menyalakan dirinya sendiri lewat
+ * `onend` tidak bisa dimatikan oleh siapa pun lagi sampai aplikasi ditutup.
+ * Mikrofon tinggal menyala dan prompt izin muncul berulang.
+ */
+describe('galat fatal mengakhiri sesi', () => {
+  it('izin ditolak tidak menyalakan ulang recognizer', async () => {
+    const { startSpeechSession } = await loadModule();
+    const errors: string[] = [];
+    const ends: string[] = [];
+    await startSpeechSession({
+      onTranscript: () => {},
+      onEnd: (t) => ends.push(t),
+      onError: (c) => errors.push(c),
+    });
+
+    const rec = FakeRecognition.last!;
+    rec.failWith('not-allowed');
+
+    expect(errors).toEqual(['denied']);
+    expect(rec.startCount).toBe(1);
+    expect(rec.running).toBe(false);
+    // Sudah dikabarkan lewat `onError`; mengabarkan lagi lewat `onEnd` akan
+    // membuat layar berpindah ke "siap dikirim" untuk sesi yang gagal.
+    expect(ends).toEqual([]);
+  });
+
+  it('galat jaringan tidak menyalakan ulang recognizer', async () => {
+    const { startSpeechSession } = await loadModule();
+    const errors: string[] = [];
+    await startSpeechSession({
+      onTranscript: () => {},
+      onEnd: () => {},
+      onError: (c) => errors.push(c),
+    });
+
+    const rec = FakeRecognition.last!;
+    rec.failWith('network');
+
+    expect(errors).toEqual(['network']);
+    expect(rec.startCount).toBe(1);
+  });
+
+  it('galat dilaporkan sekali saja walau datang beruntun', async () => {
+    const { startSpeechSession } = await loadModule();
+    const errors: string[] = [];
+    await startSpeechSession({
+      onTranscript: () => {},
+      onEnd: () => {},
+      onError: (c) => errors.push(c),
+    });
+
+    const rec = FakeRecognition.last!;
+    rec.failWith('network');
+    rec.failWith('network');
+
+    expect(errors).toEqual(['network']);
+  });
+
+  it('hening tetap menyambung sesi — bukan kegagalan', async () => {
+    const { startSpeechSession } = await loadModule();
+    const errors: string[] = [];
+    await startSpeechSession({
+      onTranscript: () => {},
+      onEnd: () => {},
+      onError: (c) => errors.push(c),
+    });
+
+    const rec = FakeRecognition.last!;
+    rec.failWith('no-speech');
+
+    expect(errors).toEqual([]);
+    expect(rec.startCount).toBe(2);
+  });
+
+  it('teks yang sudah terkumpul tetap utuh saat sesi gagal di tengah', async () => {
+    const { startSpeechSession } = await loadModule();
+    const seen: string[] = [];
+    await startSpeechSession({
+      onTranscript: (t) => seen.push(t),
+      onEnd: () => {},
+      onError: () => {},
+    });
+
+    const rec = FakeRecognition.last!;
+    rec.emit([{ text: 'indomie goreng tiga ribu', final: true }]);
+    rec.failWith('network');
+
+    expect(seen.at(-1)).toBe('indomie goreng tiga ribu');
+  });
+});
+
+describe('berhenti atas permintaan pemilik toko', () => {
+  it('selalu diakhiri sekali, walau mesin ikut memancarkan `onend`', async () => {
+    const { startSpeechSession } = await loadModule();
+    const ends: string[] = [];
+    const session = await startSpeechSession({
+      onTranscript: () => {},
+      onEnd: (t) => ends.push(t),
+      onError: () => {},
+    });
+
+    const rec = FakeRecognition.last!;
+    rec.emit([{ text: 'indomie goreng tiga ribu', final: true }]);
+    await session.stop();
+
+    // Dua jalur bisa mengakhiri sesi yang sama; bagi layar yang memakainya,
+    // dikte yang selesai dua kali berarti satu dikte yang ditimpa dirinya
+    // sendiri.
+    expect(ends).toEqual(['indomie goreng tiga ribu']);
+  });
+
+  it('stop di sela penyambungan sesi tetap dijawab', async () => {
+    vi.useFakeTimers();
+    const { startSpeechSession } = await loadModule();
+    const ends: string[] = [];
+    const session = await startSpeechSession({
+      onTranscript: () => {},
+      onEnd: (t) => ends.push(t),
+      onError: () => {},
+    });
+
+    const rec = FakeRecognition.last!;
+    rec.emit([{ text: 'teh gelas seribu', final: true }]);
+    // Mesin sedang berhenti sendiri karena hening. Stop yang jatuh tepat di
+    // celah ini tidak dijawab `onend` siapa pun — dan tanpa penjaganya,
+    // pewaktu di layar berjalan terus dengan tombol yang terasa mati.
+    rec.running = false;
+    await session.stop();
+
+    expect(ends).toEqual([]);
+    await vi.advanceTimersByTimeAsync(2500);
+    expect(ends).toEqual(['teh gelas seribu']);
+    vi.useRealTimers();
+  });
+
+  it('mengabarkan mikrofonnya padam saat berhenti', async () => {
+    const { startSpeechSession } = await loadModule();
+    const pulses: boolean[] = [];
+    const session = await startSpeechSession({
+      onTranscript: () => {},
+      onEnd: () => {},
+      onError: () => {},
+      onPulse: (alive) => pulses.push(alive),
+    });
+
+    expect(pulses).toEqual([true]);
+    await session.stop();
+    expect(pulses.at(-1)).toBe(false);
   });
 });

@@ -291,20 +291,36 @@ describe('sesi yang mati diam-diam', () => {
     expect(captured.segments).toEqual(['Teh Gelas satu']);
   });
 
-  it('berhenti mencoba dan mengabarkan kalau tidak pernah pulih', async () => {
+  it('bertahan sepanjang hening yang masuk akal, lalu berhenti', async () => {
     const { captured } = await startSession();
 
+    /**
+     * Batasnya diukur dengan WAKTU, bukan cacah percobaan — dan pembedaan itu
+     * seluruh isi keluhannya.
+     *
+     * Dulu tujuh denyut kosong sudah cukup, yang berarti mikrofon kasir mati
+     * setelah sekitar delapan detik diam. Padahal recognizer Android padam
+     * sendiri tiap beberapa detik tanpa suara, lebih cepat daripada selang
+     * pemeriksaan denyut, jadi delapan detik diam yang biasa saja sudah
+     * menghabiskannya. Yang dialami kasir: ia bicara lagi, dan tidak ada
+     * yang masuk.
+     */
     alive = false;
     await vi.advanceTimersByTimeAsync(12_000);
-    const afterGivingUp = startCalls;
+    expect(captured.errors).toEqual([]);
+    expect(startCalls).toBeGreaterThan(5);
 
+    // Tapi ujungnya tetap ada: mikrofon tidak boleh menyala selamanya di meja
+    // kasir yang sudah tutup.
+    await vi.advanceTimersByTimeAsync(40_000);
+    const afterGivingUp = startCalls;
     await vi.advanceTimersByTimeAsync(12_000);
 
-    // Yang diuji bukan berapa kali ia mencoba, tapi bahwa percobaannya
-    // BERHENTI — perangkat yang layanan pengenalannya rusak tidak boleh
-    // memanaskan HP kasir selamanya.
     expect(startCalls).toBe(afterGivingUp);
-    expect(captured.errors).toEqual(['unknown']);
+    // Kodenya menentukan kalimat yang dibaca kasir: hening bisa dijelaskan dan
+    // dinyalakan lagi dengan satu ketukan, `unknown` cuma bilang ada yang
+    // rusak.
+    expect(captured.errors).toEqual(['no-speech']);
   });
 
   it('tidak lagi memeriksa denyut setelah kasir menekan stop', async () => {
@@ -420,5 +436,59 @@ describe('hening bukan kegagalan', () => {
     // pemakaian yang paling normal.
     expect(captured.errors).toEqual([]);
     expect(startCalls).toBeGreaterThan(4);
+  });
+});
+
+describe('jeda antar barang tidak menumpuk', () => {
+  it('jam hening dihitung ulang dari kata terakhir', async () => {
+    const { captured } = await startSession();
+
+    // Recognizer tidak pernah tertangkap hidup — keadaan yang sebenarnya
+    // terjadi, karena ia padam lebih cepat daripada selang pemeriksaannya.
+    alive = false;
+    // Sepuluh barang, masing-masing didahului jeda sepuluh detik. Totalnya
+    // jauh melewati batas hening, tapi tidak ada satu jeda pun yang melewatinya.
+    for (let i = 0; i < 10; i += 1) {
+      await vi.advanceTimersByTimeAsync(10_000);
+      hear(`barang ${i}`);
+    }
+
+    expect(captured.errors).toEqual([]);
+  });
+
+  it('ucapan setelah hening panjang tetap tertangkap', async () => {
+    const { captured } = await startSession();
+
+    hear('Indomie goreng dua');
+    alive = false;
+    await vi.advanceTimersByTimeAsync(20_000);
+    hear('Teh Gelas satu');
+    alive = false;
+    await vi.advanceTimersByTimeAsync(1500);
+
+    // Inti keluhannya, dan satu-satunya hal yang benar-benar harus dijamin.
+    expect(captured.segments).toContain('Teh Gelas satu');
+    expect(captured.errors).toEqual([]);
+  });
+});
+
+describe('denyut dikabarkan ke layar', () => {
+  it('mesin yang padam terlihat sebagai padam, bukan sebagai sepi', async () => {
+    const { startSpeechSession } = await import('@/lib/speech-recognition');
+    const pulses: boolean[] = [];
+    await startSpeechSession({
+      onTranscript: () => {},
+      onEnd: () => {},
+      onError: () => {},
+      onPulse: (a) => pulses.push(a),
+    });
+
+    alive = false;
+    await vi.advanceTimersByTimeAsync(1500);
+    expect(pulses).toContain(false);
+
+    alive = true;
+    hear('Indomie goreng');
+    expect(pulses.at(-1)).toBe(true);
   });
 });

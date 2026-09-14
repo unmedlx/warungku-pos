@@ -92,6 +92,19 @@ export function needsRefresh(session: CloudSession | null): boolean {
   return exp - Date.now() < 5 * 60_000;
 }
 
+/**
+ * Bedakan "backend menolak sesi" dari "backend tidak terjangkau".
+ *
+ * Dulu keduanya berakhir di `catch` yang sama dan sesi langsung dihapus, jadi
+ * sekali aplikasi dibuka tanpa sinyal (atau saat API sempat down) refresh
+ * token yang masih hidup 90 hari ikut terbuang dan user harus login ulang.
+ * Hanya 401/403 dari backend yang benar-benar berarti sesi sudah mati.
+ */
+export function isSessionRejected(err: unknown): boolean {
+  const status = (err as { status?: unknown } | null)?.status;
+  return status === 401 || status === 403;
+}
+
 /** Refresh token habis → user memang harus masuk ulang. */
 export function isRefreshExpired(session: CloudSession | null): boolean {
   if (!session) return true;

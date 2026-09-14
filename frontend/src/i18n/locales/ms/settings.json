@@ -961,7 +961,7 @@
       "retry": "Cuba lagi",
       "error": {
         "network": "Mikrofon berhenti kerana masalah rangkaian. Pengecaman suara di telefon ini perlukan internet.",
-        "no-speech": "Mikrofon berhenti kerana tiada suara ditangkap.",
+        "no-speech": "Mikrofon berhenti selepas lama tiada suara. Hidupkan semula untuk menyambung.",
         "unsupported": "Telefon ini tiada perkhidmatan pengecaman suara.",
         "unknown": "Mikrofon berhenti sendiri. Hidupkan semula untuk teruskan.",
         "denied": "Kebenaran mikrofon ditolak."

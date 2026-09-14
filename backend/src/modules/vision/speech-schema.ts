@@ -144,6 +144,53 @@ const MODE_NOTE: Record<CatalogHints['businessMode'], string> = {
     'Usahanya restoran/warung makan. Pemilik biasanya HANYA menyebut harga jual menu, tanpa modal. HPP kosong itu normal di sini dan bukan alasan menurunkan confidence.',
 };
 
+/**
+ * Aturan kolom harga, satu rumusan untuk kedua jalur.
+ *
+ * Disatukan karena keduanya memang harus identik, dan sebelumnya tidak: teks
+ * yang sama ditulis dua kali di dua prompt, dan satu-satunya nasib yang
+ * menanti susunan seperti itu adalah menyimpang diam-diam — satu jalur
+ * mendapat kata pemicu baru, satu lagi tidak, lalu hasil dari mikrofon yang
+ * sama berbeda tergantung jalur mana yang kebetulan hidup di server.
+ *
+ * Yang dijaga aturan ini satu hal: tertukarnya modal dengan harga jual. Itu
+ * satu-satunya kesalahan di seluruh fitur ini yang merugikan pemilik toko
+ * dalam rupiah, bukan sekadar waktu — laba tiap penjualan dihitung dari
+ * keduanya, dan kalau tertukar, angkanya tetap terlihat wajar sampai laporan
+ * bulanan tidak masuk akal.
+ */
+const PRICE_RULES = `ATURAN HARGA (modal vs jual)
+- "hpp" = modal/harga beli. Kata pemicunya: "modal", "modalnya", "hpp", "harga pokok", "beli", "belinya", "kulakan", "kulak", "ambil dari agen", "dari agen".
+- "price" = harga jual. Kata pemicunya: "jual", "jualnya", "dijual", "harga", "harganya", "eceran", "dilepas", "lepas".
+- Kata pemicu menentukan kolom, BUKAN urutan angkanya. "jual tiga ribu modal dua ribu" berarti price 3000 dan hpp 2000, walaupun harga jual yang disebut lebih dulu.
+- BERBEDA dengan membaca nota: di sini pemilik toko menyatakan harganya sendiri, jadi kalau dia bilang "jual tiga ribu", ISI "price" dengan 3000. Jangan dikosongkan.
+- Kalau dia menyebut DUA angka harga tanpa kata pemicu sama sekali, urutan lisan yang lazim adalah modal lalu harga jual: isi "hpp" dengan yang pertama dan "price" dengan yang kedua, set confidence "medium", dan minta pemilik toko mengecek urutannya di "note".
+- Kalau dia hanya menyebut SATU angka tanpa kata pemicu: untuk restoran anggap itu harga jual ("price"); untuk warung dan grosir isi "price" juga tapi set confidence "medium" dan tanyakan di "note" apakah itu modal atau harga jual.
+- Modal yang lebih besar daripada harga jual mungkin saja benar, tapi jauh lebih sering berarti keduanya tertukar. Tetap isi apa yang kamu dengar, set confidence "medium", dan sebut kecurigaan itu di "note".
+- Kalau dia menyebut harga bertingkat ("kalau ambil dua belas ke atas empat belas ribu"), isi harga eceran di "price" dan tulis harga grosirnya di "note".`;
+
+/**
+ * Aturan kolom stok, dan satu pembedaan yang menentukan seluruh gunanya.
+ *
+ * Sebelumnya `qty` ada di skema tapi tidak dijelaskan satu kalimat pun di
+ * kedua prompt. Akibatnya bisa ditebak: angka stok yang jelas-jelas disebut
+ * ikut jatuh ke kolom harga, dan pemilik toko yang bilang "stok dua dus"
+ * menemukan kolom stoknya kosong.
+ *
+ * Yang paling perlu ditulis eksplisit adalah beda satuan HITUNG dari satuan
+ * UKURAN. "Aqua enam ratus mili" bukan enam ratus botol Aqua — enam ratus
+ * mili adalah ukuran kemasannya, dan itu bagian dari NAMA produk. Tanpa
+ * pembedaan ini angkanya konyol persis pada barang yang paling sering
+ * didaftarkan di warung: air mineral, minyak, dan gula kemasan.
+ */
+const STOCK_RULES = `ATURAN STOK / JUMLAH ("qty")
+- "qty" = banyaknya barang yang masuk atau tersisa. Kata pemicunya: "stok", "stoknya", "sisa", "sisanya", "masuk", "jumlah", "jumlahnya", "banyaknya", "ada".
+- Angka yang diikuti SATUAN HITUNG adalah stok, bukan harga: "dua dus" berarti qty 2 dengan unit "dus". Satuan hitung antara lain: pcs, biji, buah, bungkus, botol, kaleng, sachet, renteng, dus, karton, pak, lusin, ikat, porsi, batang, butir, lembar, slop, karung, sak, kg, kilo, liter.
+- PENTING — satuan UKURAN bukan stok, melainkan bagian dari NAMA produk: ml, mili, mililiter, gram, gr, ons, cc. "Aqua enam ratus mili" berarti name "Aqua 600ml" dengan qty null, BUKAN qty 600. Begitu juga "minyak satu liter" sebagai nama kemasan versus "minyak dua liter masuk" sebagai stok — kalau ragu, pakai kata pemicu stok sebagai penentu, dan kalau tidak ada kata pemicunya anggap itu ukuran kemasan.
+- Jumlah barang di warung hampir selalu angka kecil. Angka ribuan JANGAN dimasukkan ke "qty" walaupun ada satuan di dekatnya — "dua ribu" adalah harga, bukan dua ribu bungkus. Kalau memang terdengar seperti stok ribuan, isi apa adanya tapi set confidence "medium" dan sebutkan keraguannya di "note".
+- Stok boleh pecahan kalau satuannya menuntutnya: "setengah kilo" berarti qty 0.5 dengan unit "kg".
+- Kalau stok tidak disebut sama sekali, biarkan "qty" null. Jangan menganggap angka harga yang tersisa sebagai stok.`;
+
 /** Daftar acuan toko, dilampirkan sama persis di jalur audio maupun transkrip. */
 function catalogBlock(hints: CatalogHints): string {
   const catalog =
@@ -181,12 +228,9 @@ ATURAN ANGKA LISAN (paling menentukan)
 - PEWARISAN SKALA: kalau item sebelumnya "dua puluh lima ribu" lalu item berikutnya cuma "dua puluh tiga", itu berarti 23000. Ikuti skala item sebelumnya, set confidence "medium", dan jelaskan di "note".
 - Keluarkan angka murni tanpa "Rp", titik, atau koma.
 
-ATURAN HARGA
-- "hpp" = modal/harga beli. Kata yang dipakai pemilik toko: "modal", "hpp", "beli", "kulakan", "ambil dari agen".
-- "price" = harga jual. Kata yang dipakai: "jual", "harga", "eceran", "dilepas".
-- BERBEDA dengan membaca nota: di sini pemilik toko menyatakan harganya sendiri, jadi kalau dia bilang "jual tiga ribu", ISI "price" dengan 3000. Jangan dikosongkan.
-- Kalau dia hanya menyebut SATU angka tanpa kata "modal" atau "jual": untuk restoran anggap itu harga jual ("price"); untuk warung dan grosir isi "price" juga tapi set confidence "medium" dan tanyakan di "note" apakah itu modal atau harga jual.
-- Kalau dia menyebut harga bertingkat ("kalau ambil dua belas ke atas empat belas ribu"), isi harga eceran di "price" dan tulis harga grosirnya di "note".
+${PRICE_RULES}
+
+${STOCK_RULES}
 
 MEMISAHKAN PRODUK
 - Penanda ganti produk: "terus", "lalu", "abis itu", "selanjutnya", jeda panjang, atau nama produk baru yang jelas.
@@ -198,9 +242,10 @@ ATURAN KEKOSONGAN
 - Jangan menambahkan produk yang tidak disebut, walaupun ada di daftar produk toko.
 - Abaikan bagian rekaman yang bukan pendaftaran produk (batuk, bicara ke orang lain, suara latar).
 
-SATUAN
-- Pakai satuan yang disebut, huruf kecil: pcs, kg, gram, liter, ml, dus, renteng, lusin, sak, ikat, bungkus, botol, porsi.
-- Kalau tidak disebut, biarkan null.
+SATUAN ("unit")
+- Isi satuan HITUNG barangnya, huruf kecil: pcs, kg, gram, liter, dus, renteng, lusin, sak, ikat, bungkus, botol, porsi.
+- Satuan ukuran kemasan (ml, gram pada "Aqua 600ml") tidak masuk ke "unit" — ia bagian dari nama, sesuai aturan stok di atas.
+- Kalau tidak disebut, biarkan null. Jangan menebak dari jenis barangnya.
 
 CONFIDENCE
 - "high": ucapan jelas, angka tidak ambigu, tidak ada yang perlu ditebak.
@@ -318,12 +363,9 @@ ATURAN ANGKA (paling menentukan)
 - Pengenalan suara kadang menulis angka dengan digit yang menempel salah ("2 500" jadi "2500" atau "25 00"). Kalau angka hasilnya tidak masuk akal sebagai harga barang warung, pilih tafsir yang masuk akal dan turunkan confidence.
 - Keluarkan angka murni tanpa "Rp", titik, atau koma.
 
-ATURAN HARGA
-- "hpp" = modal/harga beli. Kata pemicu: "modal", "hpp", "beli", "kulakan", "ambil dari agen".
-- "price" = harga jual. Kata pemicu: "jual", "harga", "eceran", "dilepas".
-- BERBEDA dengan membaca nota: di sini pemilik toko menyatakan harganya sendiri, jadi kalau dia bilang "jual tiga ribu", ISI "price" dengan 3000. Jangan dikosongkan.
-- Kalau dia hanya menyebut SATU angka tanpa kata pemicu: untuk restoran anggap itu harga jual ("price"); untuk warung dan grosir isi "price" juga tapi set confidence "medium" dan tanyakan di "note" apakah itu modal atau harga jual.
-- Kalau dia menyebut harga bertingkat ("kalau ambil dua belas ke atas empat belas ribu"), isi harga eceran di "price" dan tulis harga grosirnya di "note".
+${PRICE_RULES}
+
+${STOCK_RULES}
 
 MEMISAHKAN PRODUK
 - Transkrip perangkat sering tanpa tanda baca. Pisahkan berdasarkan pergantian nama barang, BUKAN berdasarkan titik atau koma.
@@ -335,9 +377,10 @@ ATURAN KEKOSONGAN
 - Jangan menambahkan produk yang tidak disebut, walaupun ada di daftar acuan toko.
 - Buang kata pengisi dan sisa bunyi latar yang ikut tertranskrip: "eh", "anu", "itu", "apa namanya", "oke", "hmm".
 
-SATUAN
-- Pakai satuan yang disebut, huruf kecil: pcs, kg, gram, liter, ml, dus, renteng, lusin, sak, ikat, bungkus, botol, porsi.
-- Kalau tidak disebut, biarkan null.
+SATUAN ("unit")
+- Isi satuan HITUNG barangnya, huruf kecil: pcs, kg, gram, liter, dus, renteng, lusin, sak, ikat, bungkus, botol, porsi.
+- Satuan ukuran kemasan (ml, gram pada "Aqua 600ml") tidak masuk ke "unit" — ia bagian dari nama, sesuai aturan stok di atas.
+- Kalau tidak disebut, biarkan null. Jangan menebak dari jenis barangnya.
 
 CONFIDENCE
 - "high": nama ada persis di daftar acuan atau tidak ambigu sama sekali, DAN angkanya tidak perlu ditafsirkan. Di jalur transkrip ini "high" harus jarang.

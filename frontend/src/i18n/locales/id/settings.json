@@ -1373,7 +1373,7 @@
       "retry": "Coba lagi",
       "error": {
         "network": "Mikrofon berhenti karena jaringan bermasalah. Pengenalan suara di HP ini butuh internet.",
-        "no-speech": "Mikrofon berhenti karena tidak ada suara yang tertangkap.",
+        "no-speech": "Mikrofon berhenti karena lama tidak ada suara. Nyalakan lagi untuk melanjutkan.",
         "unsupported": "HP ini belum punya layanan pengenalan suara.",
         "unknown": "Mikrofon berhenti sendiri. Nyalakan lagi untuk melanjutkan.",
         "denied": "Izin mikrofon ditolak."

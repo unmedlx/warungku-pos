@@ -220,9 +220,14 @@
     "startButton": "Start recording",
     "stopButton": "Stop recording",
     "startHint": "Tap to start",
+    "continueHint": "Tap to keep dictating",
     "stopHint": "Tap when you are done",
+    "stoppingHint": "Wrapping up… just a moment",
     "levelOk": "Your voice is coming through clearly",
     "levelLow": "Too quiet — hold the phone closer",
+    "micLive": "Mic is live — we can hear you",
+    "micSilent": "No speech picked up yet — try speaking closer",
+    "micStalled": "The mic stopped responding — tap stop, then try again",
     "readyToSend": "Recording ready · {{duration}}",
     "recordAgain": "Record Again",
     "processButton": "Process Recording",
@@ -251,9 +256,10 @@
       ]
     },
     "tipsTitle": "For accurate results",
-    "tip1": "Say “cost” and “sell” — not just one number",
-    "tip2": "Say “next” or pause briefly between products",
-    "tip3": "If it is noisy, hold the phone closer",
+    "tip1": "Say \"modal\" and \"jual\" so cost and price don’t get swapped",
+    "tip2": "Say \"stok\" for the quantity: \"stok dua dus\"",
+    "tip3": "Say \"terus\" or pause briefly between products",
+    "tip4": "If it’s noisy, hold the phone closer",
     "quotaLeft": "{{remaining}} of {{limit}} AI uses left this month",
     "offlineTitle": "Internet connection needed",
     "offlineDesc": "Your voice is processed on the server, so this does not work offline. Cashier and other product features still work normally.",
@@ -274,6 +280,10 @@
     "unheardHelp": "Try holding the phone closer and saying the name along with the price. This attempt did not use your quota.",
     "timeoutError": "Processing took too long and was stopped",
     "timeoutHelp": "The network may be slow. Try again with a shorter recording. This attempt did not use your quota.",
-    "genericError": "Failed to process the recording. Try again."
+    "genericError": "Failed to process the recording. Try again.",
+    "micNetwork": "Speech recognition lost its connection, so the microphone stopped on its own.",
+    "micNoSpeech": "No speech was picked up, so the microphone stopped on its own.",
+    "micUnknown": "Speech recognition on this phone stopped before it finished.",
+    "micErrorHelp": "What was heard so far is kept — tap the mic to continue, or process what you have."
   }
 }

@@ -220,9 +220,14 @@
     "startButton": "Mulai merekam",
     "stopButton": "Selesai merekam",
     "startHint": "Tap untuk mulai",
+    "continueHint": "Tap untuk lanjut mendikte",
     "stopHint": "Tap kalau sudah selesai",
+    "stoppingHint": "Menyelesaikan… tunggu sebentar",
     "levelOk": "Suara kamu terdengar jelas",
     "levelLow": "Suaranya pelan — dekatkan HP ke mulut",
+    "micLive": "Mikrofon aktif — suara kamu sedang didengarkan",
+    "micSilent": "Belum ada suara yang tertangkap — coba bicara lebih dekat",
+    "micStalled": "Mikrofon berhenti merespons — tekan tombol stop, lalu ulangi",
     "readyToSend": "Rekaman siap diproses · {{duration}}",
     "recordAgain": "Rekam Ulang",
     "processButton": "Proses Rekaman",
@@ -251,9 +256,10 @@
       ]
     },
     "tipsTitle": "Biar hasilnya akurat",
-    "tip1": "Sebut “modal” dan “jual” — jangan cuma satu angka",
-    "tip2": "Bilang “terus” atau berhenti sebentar tiap ganti produk",
-    "tip3": "Kalau ramai, dekatkan HP ke mulut",
+    "tip1": "Sebut \"modal\" dan \"jual\" biar tidak tertukar: \"modal dua ribu, jual tiga ribu\"",
+    "tip2": "Sebut \"stok\" untuk jumlah barang: \"stok dua dus\"",
+    "tip3": "Bilang \"terus\" atau berhenti sebentar tiap ganti produk",
+    "tip4": "Kalau ramai, dekatkan HP ke mulut",
     "quotaLeft": "Sisa {{remaining}} dari {{limit}} pemakaian AI bulan ini",
     "offlineTitle": "Butuh koneksi internet",
     "offlineDesc": "Suara kamu diproses di server, jadi fitur ini tidak bisa jalan saat offline. Fitur kasir dan produk lainnya tetap normal.",
@@ -274,6 +280,10 @@
     "unheardHelp": "Coba dekatkan HP ke mulut dan sebutkan nama beserta harganya. Kuota kamu tidak terpakai untuk percobaan ini.",
     "timeoutError": "Pemrosesan rekaman terlalu lama dan dihentikan",
     "timeoutHelp": "Jaringan mungkin sedang lambat. Coba lagi dengan rekaman lebih pendek. Kuota kamu tidak terpakai untuk percobaan ini.",
-    "genericError": "Gagal memproses rekaman. Coba lagi."
+    "genericError": "Gagal memproses rekaman. Coba lagi.",
+    "micNetwork": "Pengenalan suara kehilangan koneksi, jadi mikrofon berhenti sendiri.",
+    "micNoSpeech": "Tidak ada suara yang tertangkap, jadi mikrofon berhenti sendiri.",
+    "micUnknown": "Pengenalan suara di HP ini berhenti sendiri sebelum selesai.",
+    "micErrorHelp": "Teks yang sudah terdengar tetap tersimpan — tekan mikrofon lagi untuk melanjutkan, atau langsung proses yang sudah ada."
   }
 }

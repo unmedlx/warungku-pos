@@ -20,7 +20,7 @@ import { db } from '@/lib/db';
 import ProductDraftReview from './ProductDraftReview';
 import { buildDraftRows, isDraftReady, saveDraftRows, type DraftRow } from '@/lib/product-draft';
 import { useAudioRecorder } from '@/hooks/use-audio-recorder';
-import { useSpeechDictation } from '@/hooks/use-speech-dictation';
+import { SILENCE_WARN_SEC, useSpeechDictation } from '@/hooks/use-speech-dictation';
 import { useBusinessMode } from '@/hooks/use-business-mode';
 import { trackEvent } from '@/lib/analytics';
 import { useAuth } from '@/hooks/use-auth';
@@ -84,19 +84,29 @@ export default function SpeechProductsDialog({ open, onClose, onSaved }: Props) 
   /**
    * Dua cara menangkap ucapan, dipilih otomatis.
    *
-   * `transcript` adalah jalur utama: pengenalan suara dikerjakan perangkat,
-   * yang dikirim cuma teks. Lebih cepat, jauh lebih murah, dan pemilik toko
-   * melihat hasil dengarnya selagi bicara.
+   * `audio` adalah jalur utama: seluruh ucapan direkam utuh dulu, baru diubah
+   * jadi teks dan diurai sesudahnya. Yang menentukan pilihan ini bukan biaya,
+   * tapi bahwa pendaftaran produk TIDAK dikerjakan sambil bicara. Pemilik toko
+   * menyebut satu produk beserta modal, harga jual, dan stoknya dalam satu
+   * tarikan, lalu berhenti untuk mengambil kardus berikutnya — dan pengenalan
+   * suara di perangkat tidak punya konsep "belum selesai": ia memotong di
+   * setiap jeda, menyerah kalau heningnya panjang, dan tidak bisa
+   * mempertimbangkan ulang kata pertama setelah mendengar kata terakhir.
    *
-   * `audio` adalah cadangannya untuk perangkat tanpa layanan pengenalan suara
-   * — HP Android murah tanpa Google App lengkap bukan kasus langka di pasar
-   * fitur ini. Cadangannya bukan pesan galat, tapi jalur yang benar-benar
+   * Rekaman utuh membalik semuanya. Jeda tidak lagi berarti apa-apa, dan yang
+   * mengurai mendengar seluruh kalimat sekaligus — termasuk informasi akustik
+   * yang hilang begitu ucapan jadi teks di perangkat: penekanan pada "modal"
+   * dan "jual", jeda yang memisahkan angka harga dari angka stok, dan intonasi
+   * yang membedakan enam ratus mili dari enam ratus botol.
+   *
+   * `transcript` tetap ada sebagai cadangan untuk server yang jalur audionya
+   * dimatikan. Cadangannya bukan pesan galat, tapi jalur yang benar-benar
    * bekerja, jadi pemilik toko tidak pernah tahu bedanya.
    */
   const captureMode: 'transcript' | 'audio' | null = useMemo(() => {
     if (!status) return null;
-    if (status.transcriptEnabled && dictation.available) return 'transcript';
     if (status.speechEnabled) return 'audio';
+    if (status.transcriptEnabled && dictation.available) return 'transcript';
     return null;
   }, [status, dictation.available]);
 
@@ -126,6 +136,32 @@ export default function SpeechProductsDialog({ open, onClose, onSaved }: Props) 
       .catch(() => setStatus(null))
       .finally(() => setStatusLoading(false));
   }, [open, online, isLoggedIn]);
+
+  /**
+   * Kegagalan mikrofon ditampilkan di panel galat yang sama dengan kegagalan
+   * server.
+   *
+   * `dictation.state` memetakan `no-speech`, `network`, dan `unknown` ke
+   * `'idle'` — layar yang identik dengan keadaan awal. Tanpa ini, dikte yang
+   * gagal terlihat seperti tombol yang tidak melakukan apa-apa, dan itulah
+   * bentuk kegagalan yang paling sering dilaporkan sebagai "fiturnya rusak".
+   * `denied` dan `unsupported` dikecualikan: keduanya sudah punya layar
+   * penjelasan sendiri di bawah.
+   */
+  useEffect(() => {
+    const code = dictation.error;
+    if (!code || code === 'denied' || code === 'unsupported') return;
+    setError({
+      code: 'MIC',
+      message: t(
+        code === 'network'
+          ? 'speech.micNetwork'
+          : code === 'no-speech'
+            ? 'speech.micNoSpeech'
+            : 'speech.micUnknown',
+      ),
+    });
+  }, [dictation.error, t]);
 
   useEffect(() => {
     if (open) return;
@@ -284,6 +320,24 @@ export default function SpeechProductsDialog({ open, onClose, onSaved }: Props) 
     ? dictation.state === 'unsupported'
     : recorder.state === 'unsupported';
   const elapsedSec = byText ? dictation.elapsedSec : recorder.elapsedSec;
+  /** Permintaan berhenti sedang diselesaikan mesin pengenalan. */
+  const isStopping = byText && dictation.stopping;
+  /**
+   * Apa yang sedang terjadi di mikrofon, dalam satu nilai.
+   *
+   * Jalur rekam punya meter suara untuk ini; jalur dikte tadinya tidak punya
+   * apa pun selain pewaktu — dan pewaktu yang berjalan di atas kotak teks
+   * kosong tidak membedakan mesin yang sedang menunggu suara dari mesin yang
+   * sudah mati. Keduanya butuh tindakan yang berbeda, jadi keduanya harus
+   * terbaca berbeda.
+   */
+  const micHealth: 'dead' | 'silent' | 'ok' = !byText
+    ? 'ok'
+    : !dictation.alive
+      ? 'dead'
+      : dictation.silentSec >= SILENCE_WARN_SEC
+        ? 'silent'
+        : 'ok';
   const spokenText = dictation.transcript.trim();
   /** Ada bahan yang siap dikirim ke server. */
   const hasCapture = byText ? dictation.state === 'done' && spokenText.length > 0 : recording != null;
@@ -465,6 +519,11 @@ export default function SpeechProductsDialog({ open, onClose, onSaved }: Props) 
                         {t('speech.unheardHelp')}
                       </p>
                     )}
+                    {error.code === 'MIC' && (
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        {t('speech.micErrorHelp')}
+                      </p>
+                    )}
                     {error.code === 'TIMEOUT' && (
                       <p className="text-xs text-muted-foreground leading-relaxed">
                         {t('speech.timeoutHelp')}
@@ -524,15 +583,47 @@ export default function SpeechProductsDialog({ open, onClose, onSaved }: Props) 
                         Ini bukan hiasan: pemilik toko bisa mengulang kalimat
                         yang salah tangkap sebelum kuota terpakai sama sekali. */}
                     {byText ? (
-                      <div className="mt-3 min-h-[3.5rem] rounded-xl bg-background/70 border border-border px-3 py-2 text-left">
-                        {spokenText.length > 0 ? (
-                          <p className="text-[13px] leading-relaxed">{spokenText}</p>
-                        ) : (
-                          <p className="text-[12px] text-muted-foreground italic">
-                            {t('speech.listeningEmpty')}
+                      <>
+                        <div className="mt-3 min-h-[3.5rem] rounded-xl bg-background/70 border border-border px-3 py-2 text-left">
+                          {spokenText.length > 0 ? (
+                            <p className="text-[13px] leading-relaxed">{spokenText}</p>
+                          ) : (
+                            <p className="text-[12px] text-muted-foreground italic">
+                              {t('speech.listeningEmpty')}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Tanda hidup. Titik yang berdenyut adalah satu-satunya
+                            hal di layar ini yang membedakan mesin yang sedang
+                            menunggu suara dari mesin yang sudah berhenti — dan
+                            tanpa itu pemilik toko tidak punya cara tahu apakah
+                            fiturnya bekerja sama sekali. */}
+                        <div className="flex items-center justify-center gap-1.5 mt-2">
+                          <span
+                            className={cn(
+                              'w-1.5 h-1.5 rounded-full',
+                              micHealth === 'dead'
+                                ? 'bg-warning-text'
+                                : 'bg-destructive animate-pulse',
+                            )}
+                          />
+                          <p
+                            className={cn(
+                              'text-[11px]',
+                              micHealth === 'ok' ? 'text-muted-foreground' : 'text-warning-text',
+                            )}
+                          >
+                            {t(
+                              micHealth === 'dead'
+                                ? 'speech.micStalled'
+                                : micHealth === 'silent'
+                                  ? 'speech.micSilent'
+                                  : 'speech.micLive',
+                            )}
                           </p>
-                        )}
-                      </div>
+                        </div>
+                      </>
                     ) : (
                       <>
                         <div className="flex items-end justify-center gap-[3px] h-12 mt-3">
@@ -558,7 +649,7 @@ export default function SpeechProductsDialog({ open, onClose, onSaved }: Props) 
                   <button
                     type="button"
                     onClick={() => (isRecording ? endCapture() : beginCapture())}
-                    disabled={noQuota || statusLoading || isPreparing}
+                    disabled={noQuota || statusLoading || isPreparing || isStopping}
                     className={cn(
                       'w-20 h-20 grid place-items-center mx-auto text-white transition-all disabled:opacity-40',
                       isRecording
@@ -567,7 +658,7 @@ export default function SpeechProductsDialog({ open, onClose, onSaved }: Props) 
                     )}
                     aria-label={isRecording ? t('speech.stopButton') : t('speech.startButton')}
                   >
-                    {isPreparing ? (
+                    {isPreparing || isStopping ? (
                       <Loader2 className="w-7 h-7 animate-spin" />
                     ) : isRecording ? (
                       <span className="w-6 h-6 rounded bg-white" />
@@ -576,7 +667,17 @@ export default function SpeechProductsDialog({ open, onClose, onSaved }: Props) 
                     )}
                   </button>
                   <p className="text-[11px] text-muted-foreground mt-3">
-                    {isRecording ? t('speech.stopHint') : t('speech.startHint')}
+                    {isStopping
+                      ? t('speech.stoppingHint')
+                      : isRecording
+                        ? t('speech.stopHint')
+                        : /* Dikte yang sudah punya teks disambung, bukan
+                             dimulai ulang — dan tombolnya harus mengatakan itu,
+                             karena "Tap untuk mulai" di atas daftar yang sudah
+                             setengah jadi terbaca seperti ancaman. */
+                          byText && spokenText.length > 0
+                          ? t('speech.continueHint')
+                          : t('speech.startHint')}
                   </p>
                 </div>
               </div>
@@ -640,6 +741,7 @@ export default function SpeechProductsDialog({ open, onClose, onSaved }: Props) 
                   <li>{t('speech.tip1')}</li>
                   <li>{t('speech.tip2')}</li>
                   <li>{t('speech.tip3')}</li>
+                  <li>{t('speech.tip4')}</li>
                 </ul>
               </div>
 

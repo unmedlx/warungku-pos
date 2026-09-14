@@ -50,6 +50,17 @@ export interface SpeechSessionHandlers {
   /** Mesin berhenti total dan tidak akan disambung lagi. */
   onEnd: (finalText: string) => void;
   onError: (code: SpeechErrorCode) => void;
+  /**
+   * Denyut mesin pengenalan: masih mendengarkan atau tidak.
+   *
+   * Satu-satunya hal yang bisa membedakan "mikrofon hidup tapi ruangannya
+   * sepi" dari "mikrofon sudah mati" di layar. Tanpa kabar ini keduanya
+   * terlihat persis sama — pewaktu berjalan dan teksnya kosong — dan pemilik
+   * toko terus bicara ke mesin yang sudah berhenti. Jalur rekam punya meter
+   * suara untuk ini; jalur dikte tidak bisa membuka mikrofon kedua karena
+   * recognizer Android memegangnya eksklusif, jadi denyutnya yang dipakai.
+   */
+  onPulse?: (alive: boolean) => void;
 }
 
 export type SpeechErrorCode = 'denied' | 'unsupported' | 'no-speech' | 'network' | 'unknown';
@@ -75,6 +86,7 @@ type WebSpeechRecognition = {
   onresult: ((e: unknown) => void) | null;
   onerror: ((e: unknown) => void) | null;
   onend: (() => void) | null;
+  onstart: (() => void) | null;
 };
 
 function webSpeechCtor(): (new () => WebSpeechRecognition) | null {
@@ -169,13 +181,30 @@ const RETRY_BACKOFF_MS = 500;
 const MAX_CONSECUTIVE_FAILURES = 4;
 
 /**
- * Jatah terpisah untuk denyut yang hilang, jauh lebih longgar.
+ * Sepanjang apa mikrofon dibiarkan menyala tanpa satu kata pun tertangkap.
  *
- * Sekitar delapan detik mikrofon benar-benar bisu sebelum menyerah — cukup
- * untuk melewati keheningan panjang di antara pembeli, tapi tetap ada ujungnya
- * supaya perangkat yang layanan pengenalannya rusak tidak dicoba selamanya.
+ * Satu-satunya ujung sesi selain permintaan pengguna, dan sengaja diukur
+ * dengan WAKTU, bukan cacah penyambungan.
+ *
+ * Cacah penyambunganlah yang dulu dipakai, dan itu salah mengukur. Yang
+ * dihitungnya adalah seberapa sering Android menyerah, bukan seberapa lama
+ * penuturnya diam — dan keduanya tidak berhubungan. Recognizer padam sendiri
+ * tiap beberapa detik tanpa suara, sering lebih cepat daripada selang
+ * pemeriksaan denyut, jadi tujuh kepadaman terkumpul dalam sekitar delapan
+ * detik. Akibatnya mikrofon kasir mati setelah delapan detik diam, dan ucapan
+ * sesudahnya tidak pernah tertangkap lagi sampai tombolnya ditekan ulang.
+ * Delapan detik diam di antara pembeli bukan kerusakan; itu hari kerja yang
+ * biasa.
+ *
+ * Sepanjang jendela ini sesi disambung berapa kali pun diperlukan, dan
+ * jendelanya dihitung ulang dari kata TERAKHIR yang terdengar — jadi jeda
+ * antar barang tidak pernah menumpuk. Ujungnya tetap ada karena mikrofon yang
+ * tertinggal menyala di meja kasir yang sudah tutup memakan baterai tanpa ada
+ * yang menunggunya, dan habisnya dilaporkan sebagai `no-speech`: keadaan yang
+ * bisa dijelaskan dan dinyalakan lagi dengan satu ketukan, bukan kerusakan
+ * tanpa nama.
  */
-const MAX_PULSE_FAILURES = 7;
+const MAX_SILENT_MS = 45_000;
 
 /**
  * Selang pemeriksaan denyut, dalam milidetik.
@@ -214,6 +243,33 @@ const SILENCE_ERROR = /no match|speech timeout|no speech input|didn't understand
 /** Kerusakan sesaat: recognizer belum selesai dibereskan, atau jaringan kedip. */
 const TRANSIENT_ERROR = /busy|client side|audio recording|network/i;
 
+/**
+ * Sepanjang apa permintaan berhenti ditunggu sebelum diselesaikan sendiri.
+ *
+ * `SpeechRecognition.stop()` tidak selalu menjawab. Di sebagian Android ia
+ * menggantung kalau recognizer sudah dibereskan sistem, dan karena seluruh
+ * ekor `stop()` — pembersihan listener sampai `onEnd` — menunggu di belakang
+ * `await` itu, yang terlihat pemilik toko adalah tombol stop yang tidak
+ * melakukan apa-apa sementara pewaktu terus berjalan. Menekan lagi cuma
+ * menambah satu penantian yang sama.
+ *
+ * Karena itu jawabannya tidak lagi ditunggu tanpa batas: lewat tenggat ini
+ * sesi diselesaikan dengan teks yang sudah terkumpul.
+ */
+const STOP_TIMEOUT_MS = 2000;
+
+/** Tunggu `p`, tapi menyerah setelah `ms`. Tidak pernah menolak. */
+function settleWithin(p: Promise<unknown>, ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    const timer = setTimeout(resolve, ms);
+    const done = () => {
+      clearTimeout(timer);
+      resolve();
+    };
+    void Promise.resolve(p).then(done, done);
+  });
+}
+
 async function startNativeSession(handlers: SpeechSessionHandlers): Promise<SpeechSession> {
   const { SpeechRecognition } = await import('@capacitor-community/speech-recognition');
 
@@ -222,7 +278,18 @@ async function startNativeSession(handlers: SpeechSessionHandlers): Promise<Spee
   let stopping = false;
   let cancelled = false;
   let failures = 0;
-  let pulseFailures = 0;
+  /**
+   * `onEnd` sudah dikabarkan.
+   *
+   * Wajib ada karena dua jalur bisa mengakhiri sesi yang sama. Saat pemilik
+   * toko menekan stop, `listeningState` biasanya memancarkan "stopped" lalu
+   * `finish()` mengabarkan hasilnya — dan ekor `stop()` yang menunggu di
+   * belakang `await` kemudian mengabarkannya sekali lagi. Bagi pemakai, dikte
+   * yang sama selesai dua kali.
+   */
+  let ended = false;
+  /** Kapan terakhir ada kata yang benar-benar tertangkap. */
+  let heardAt = Date.now();
   let timer: ReturnType<typeof setTimeout> | null = null;
   let watchdog: ReturnType<typeof setInterval> | null = null;
   let probing = false;
@@ -242,6 +309,13 @@ async function startNativeSession(handlers: SpeechSessionHandlers): Promise<Spee
     handlers.onPartial?.(partial);
   };
 
+  /** Kabarkan akhir sesi tepat sekali, dari jalur mana pun ia datang. */
+  const emitEnd = () => {
+    if (ended) return;
+    ended = true;
+    handlers.onEnd(joinSegments(committed, ''));
+  };
+
   /**
    * Akhiri sesi karena kegagalan yang tidak bisa dipulihkan.
    *
@@ -256,7 +330,11 @@ async function startNativeSession(handlers: SpeechSessionHandlers): Promise<Spee
   const fail = (code: SpeechErrorCode) => {
     if (stopping || cancelled) return;
     stopping = true;
+    // Kegagalan sudah dikabarkan lewat `onError`; `onEnd` tidak boleh menyusul
+    // kalau pemakai kemudian memanggil `stop()` pada sesi yang sudah mati.
+    ended = true;
     void teardown();
+    handlers.onPulse?.(false);
     handlers.onError(code);
   };
 
@@ -267,7 +345,8 @@ async function startNativeSession(handlers: SpeechSessionHandlers): Promise<Spee
     // Ada suara yang benar-benar dikenali: rangkaian kegagalan sebelumnya
     // tidak relevan lagi.
     failures = 0;
-    pulseFailures = 0;
+    heardAt = Date.now();
+    handlers.onPulse?.(true);
     partial = best;
     emit();
   });
@@ -287,7 +366,7 @@ async function startNativeSession(handlers: SpeechSessionHandlers): Promise<Spee
   const finish = () => {
     clearTimer();
     commit();
-    handlers.onEnd(joinSegments(committed, ''));
+    emitEnd();
   };
 
   const runSession = async () => {
@@ -371,30 +450,39 @@ async function startNativeSession(handlers: SpeechSessionHandlers): Promise<Spee
     probing = true;
     try {
       const { listening } = await SpeechRecognition.isListening();
+      handlers.onPulse?.(listening);
       if (listening) {
         // Sehat. Riwayat kegagalan sebelumnya tidak boleh menumpuk sampai
         // sebuah hiccup jauh di kemudian hari melewati batas.
         failures = 0;
-        pulseFailures = 0;
         return;
       }
       if (cancelled || stopping || timer != null) return;
 
       /**
-       * Denyut yang hilang paling sering berarti ERROR_NO_MATCH — kasir diam,
-       * atau menyebut sesuatu yang tidak dikenali. Itu keadaan normal, jadi
-       * jatahnya jauh lebih longgar daripada kegagalan menyalakan sesi.
+       * Denyut yang hilang paling sering berarti ERROR_NO_MATCH atau
+       * ERROR_SPEECH_TIMEOUT: penuturnya diam, atau menyebut sesuatu yang
+       * tidak dikenali. Itu bukan kerusakan, dan jawabannya selalu sama —
+       * sambung lagi, berapa kali pun diperlukan.
        */
-      pulseFailures += 1;
-      if (pulseFailures >= MAX_PULSE_FAILURES) {
-        fail('unknown');
+      if (Date.now() - heardAt >= MAX_SILENT_MS) {
+        // Hening yang sangat panjang: bukan jeda antar barang lagi, melainkan
+        // mikrofon yang tertinggal menyala.
+        fail('no-speech');
         return;
       }
+
       // Apa pun yang sempat terdengar sebelum mesin berhenti tetap dipakai.
       commit();
       await runSession();
     } catch {
-      /* Perangkat tidak menjawab; percobaan berikutnya yang menentukan. */
+      /**
+       * Perangkat tidak menjawab. Bukan alasan menyerah — percobaan berikutnya
+       * yang menentukan — tapi layar wajib tahu, karena diamnya `isListening()`
+       * adalah satu-satunya gejala yang tersisa saat layanan pengenalan
+       * menggantung.
+       */
+      handlers.onPulse?.(false);
     } finally {
       probing = false;
     }
@@ -415,27 +503,34 @@ async function startNativeSession(handlers: SpeechSessionHandlers): Promise<Spee
       stopping = true;
       clearTimer();
       clearWatchdog();
-      try {
-        await SpeechRecognition.stop();
-      } catch {
-        /* mesin mungkin sudah berhenti sendiri */
-      }
-      await teardown();
+      handlers.onPulse?.(false);
+      // Jawaban plugin tidak ditunggu tanpa batas: sebagian Android tidak
+      // pernah menjawab, dan seluruh ekor di bawah ini yang menunggunya.
+      await settleWithin(
+        Promise.resolve()
+          .then(() => SpeechRecognition.stop())
+          .catch(() => {}),
+        STOP_TIMEOUT_MS,
+      );
+      await settleWithin(teardown(), STOP_TIMEOUT_MS);
       // `listeningState` sudah memanggil `onEnd` di jalur normal. Ini jaring
       // pengaman untuk perangkat yang tidak mengirim event itu saat di-stop.
       commit();
-      handlers.onEnd(joinSegments(committed, ''));
+      emitEnd();
     },
     cancel: async () => {
       cancelled = true;
       stopping = true;
+      ended = true;
       clearWatchdog();
-      try {
-        await SpeechRecognition.stop();
-      } catch {
-        /* abaikan */
-      }
-      await teardown();
+      handlers.onPulse?.(false);
+      await settleWithin(
+        Promise.resolve()
+          .then(() => SpeechRecognition.stop())
+          .catch(() => {}),
+        STOP_TIMEOUT_MS,
+      );
+      await settleWithin(teardown(), STOP_TIMEOUT_MS);
     },
   };
 }
@@ -457,6 +552,52 @@ async function startWebSession(handlers: SpeechSessionHandlers): Promise<SpeechS
   let partial = '';
   let stopping = false;
   let cancelled = false;
+  /**
+   * Sesi sudah menyerah karena galat yang tidak bisa dipulihkan.
+   *
+   * Terpisah dari `stopping` karena keduanya berakhir berbeda: berhenti atas
+   * permintaan pengguna wajib memancarkan `onEnd` dengan teks yang terkumpul,
+   * sedangkan kegagalan sudah dikabarkan lewat `onError` dan tidak boleh
+   * dikabarkan dua kali.
+   *
+   * Wajib ada karena browser SELALU memancarkan `onend` setelah `onerror`.
+   * Tanpa penanda ini `onend` melihat sesi yang masih dianggap sehat lalu
+   * menyalakan ulang recognizer — padahal pemanggil sudah membuang
+   * referensinya saat menerima `onError`. Yang tersisa adalah mikrofon yang
+   * menyala tanpa ada lagi yang bisa mematikannya sampai aplikasi ditutup.
+   */
+  let failed = false;
+  let ended = false;
+  /** Penjaga kalau `onend` tidak pernah datang setelah `stop()`. */
+  let stopTimer: ReturnType<typeof setTimeout> | null = null;
+
+  const clearStopTimer = () => {
+    if (stopTimer) clearTimeout(stopTimer);
+    stopTimer = null;
+  };
+
+  /** Kabarkan akhir sesi tepat sekali, dari jalur mana pun ia datang. */
+  const emitEnd = () => {
+    if (ended) return;
+    ended = true;
+    clearStopTimer();
+    handlers.onEnd(joinSegments(committed, partial));
+  };
+
+  /** Akhiri sesi untuk selamanya dan kabarkan sekali. */
+  const fail = (code: SpeechErrorCode) => {
+    if (failed || cancelled) return;
+    failed = true;
+    ended = true;
+    clearStopTimer();
+    handlers.onPulse?.(false);
+    handlers.onError(code);
+  };
+
+  recognition.onstart = () => {
+    if (cancelled || failed) return;
+    handlers.onPulse?.(true);
+  };
 
   recognition.onresult = (e: unknown) => {
     const ev = e as { resultIndex: number; results: ArrayLike<ArrayLike<{ transcript: string }> & { isFinal: boolean }> };
@@ -472,6 +613,7 @@ async function startWebSession(handlers: SpeechSessionHandlers): Promise<SpeechS
         }
       } else partial += text;
     }
+    handlers.onPulse?.(true);
     handlers.onTranscript(joinSegments(committed, partial));
     handlers.onPartial?.(partial);
   };
@@ -480,45 +622,63 @@ async function startWebSession(handlers: SpeechSessionHandlers): Promise<SpeechS
     const code = (e as { error?: string }).error ?? '';
     if (cancelled) return;
     if (code === 'not-allowed' || code === 'service-not-allowed') {
-      handlers.onError('denied');
+      fail('denied');
       return;
     }
     if (code === 'network') {
-      handlers.onError('network');
+      fail('network');
       return;
     }
     // `no-speech` dan `aborted` normal terjadi di sela dikte; `onend` yang
     // memutuskan apakah sesinya perlu disambung.
-    if (code !== 'no-speech' && code !== 'aborted') handlers.onError('unknown');
+    if (code !== 'no-speech' && code !== 'aborted') fail('unknown');
   };
 
   recognition.onend = () => {
-    if (cancelled) return;
+    if (cancelled || failed) return;
     if (stopping) {
-      handlers.onEnd(joinSegments(committed, partial));
+      emitEnd();
       return;
     }
     try {
       recognition.start();
     } catch {
-      handlers.onEnd(joinSegments(committed, partial));
+      emitEnd();
     }
   };
 
   try {
     recognition.start();
   } catch {
-    handlers.onError('unknown');
+    fail('unknown');
   }
 
   return {
     stop: async () => {
       stopping = true;
-      recognition.stop();
+      handlers.onPulse?.(false);
+      /**
+       * `stop()` pada recognizer yang sudah berhenti tidak memancarkan `onend`.
+       *
+       * Celahnya nyata: sesi ini menyalakan ulang recognizer sendiri tiap kali
+       * penuturnya diam, dan stop yang jatuh tepat di sela itu tidak dijawab
+       * siapa pun. Tanpa penjaga ini pewaktu terus berjalan dan tombolnya
+       * terasa mati.
+       */
+      clearStopTimer();
+      stopTimer = setTimeout(emitEnd, STOP_TIMEOUT_MS);
+      try {
+        recognition.stop();
+      } catch {
+        emitEnd();
+      }
     },
     cancel: async () => {
       cancelled = true;
       stopping = true;
+      ended = true;
+      clearStopTimer();
+      handlers.onPulse?.(false);
       recognition.abort();
     },
   };
