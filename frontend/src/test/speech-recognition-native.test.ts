@@ -281,6 +281,32 @@ describe('sesi yang mati diam-diam', () => {
     expect(startCalls).toBe(2);
   });
 
+  /**
+   * Bug "mikrofon diam setelah teks pertama terbaca".
+   *
+   * Penyambungan setelah jeda meninggalkan `timer` berisi id pewaktu yang
+   * sudah lewat, dan pemantau denyut menganggapnya "sedang disambung" untuk
+   * selamanya. Recognizer baru yang kemudian mati karena hening (ERROR_NO_MATCH,
+   * yang tidak memancarkan event apa pun) tidak pernah dibangunkan lagi,
+   * sementara pita di layar tetap menyala.
+   */
+  it('sesi yang mati SETELAH disambung tetap dibangunkan', async () => {
+    const { captured } = await startSession();
+
+    hear('Indomie goreng jual tiga ribu');
+    silence();
+    await vi.advanceTimersByTimeAsync(400);
+    expect(captured.segments).toEqual(['Indomie goreng jual tiga ribu']);
+    expect(startCalls).toBe(2);
+
+    // Pemilik toko diam mengambil barang berikutnya; recognizer baru menyerah.
+    alive = false;
+    await vi.advanceTimersByTimeAsync(3000);
+
+    expect(startCalls).toBeGreaterThanOrEqual(3);
+    expect(captured.errors).toEqual([]);
+  });
+
   it('menyelamatkan ucapan yang sempat terdengar sebelum mesin mati', async () => {
     const { captured } = await startSession();
 

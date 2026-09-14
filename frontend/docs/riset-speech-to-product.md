@@ -378,3 +378,25 @@ menyambung, batal tidak menyisakan hasil.
 - `prisma db push` untuk kolom `kind` dan `duration_ms`.
 - Uji di perangkat Android sungguhan — perilaku `SpeechRecognizer` di HP murah
   adalah hal yang tidak bisa diverifikasi dari emulator maupun jsdom.
+
+---
+
+## 16. Refactor ke pola kasir suara (2026-09-14)
+
+Alur rekam → kirim → tinjau diganti kartu yang muncul sambil bicara. Mockup dan
+analisanya ada di [speech-to-product-live-mockup.html](speech-to-product-live-mockup.html).
+
+- `hooks/use-live-dictation.ts`: siklus mikrofon bersama kasir dan produk.
+  `useCartDictation` sekarang dibangun di atasnya, API publiknya tidak berubah.
+- `hooks/use-product-dictation.ts`: mengurai ulang ucapan final dengan
+  `spoken-product.ts`, lalu mengunci produk jadi kartu saat produk berikutnya
+  terdengar, saat hening 2,5 detik (kalau harga jual sudah ada), atau saat
+  mikrofon berhenti.
+- `components/voice/VoiceRibbon.tsx`: pita "mendengarkan" yang dipakai berdua.
+- `SpeechProductsDialog.tsx`: dikte lokal tanpa login/internet; AI jadi tombol
+  "Rapikan" (satu panggilan `/parse-transcript` untuk seluruh ucapan, mengganti
+  kartu). Jalur audio hanya untuk HP tanpa pengenal suara.
+- `use-speech-dictation.ts` beserta tesnya dihapus.
+
+Belum: uji di Android sungguhan, dan endpoint AI masih mengurai ulang dari nol
+(bukan memperbaiki kartu satu per satu seperti di rencana mockup).

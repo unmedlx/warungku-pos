@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analisa & Mockup — Speech to Product gaya Kasir Suara · Kan POS</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#3554C1; --primary-fg:#fff; --fg:#0D0D12; --accent:#EFF5FF;
+    --muted-fg:#818898; --muted:#ECEFF3; --bg:#EDF1F9; --bg-alt:#F8FAFE;
+    --card:#fff; --border:#DFE1E7; --border-soft:#ECEFF3; --border-input:#EFF2F6;
+    --success:#5ABC61; --success-bg:#EFF8EF; --danger:#DF1C41; --danger-bg:#FFF0F3;
+    --warning:#F9A616; --warning-bg:#FFF6E0; --purple:#6B39F4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Sora,system-ui,sans-serif;background:#f2f4f8;color:var(--fg);padding:32px 20px 80px}
+  .wrap{max-width:1660px;margin:0 auto}
+  h1{font-size:24px;font-weight:700}
+  .lede{color:var(--muted-fg);font-size:14px;margin-top:6px;max-width:960px;line-height:1.6}
+  .notes{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px 20px;margin:24px 0 10px}
+  .notes h3{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted-fg);margin-bottom:10px}
+  .notes ul,.notes ol{margin-left:18px;font-size:13px;line-height:1.9}
+  .notes p{font-size:13px;line-height:1.7;margin-bottom:8px}
+  .notes b{color:var(--primary)}
+  .notes code{background:var(--muted);padding:1px 6px;border-radius:6px;font-size:12px}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:16px}
+  .secttl{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--muted-fg);margin:38px 0 16px}
+  .frames{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start}
+  .frame{width:375px;flex:0 0 375px}
+  .frame > .cap{font-size:12px;font-weight:600;color:var(--muted-fg);margin-bottom:8px;text-transform:uppercase;letter-spacing:.1em}
+  .frame > .cap b{color:var(--primary)}
+  .frame > .sub{font-size:11.5px;color:var(--muted-fg);margin:-4px 0 8px;line-height:1.5}
+  .phone{width:375px;height:790px;overflow-y:auto;background:var(--bg);border-radius:28px;
+    border:1px solid var(--border);box-shadow:0 12px 32px rgba(13,13,18,.10);padding:14px;scrollbar-width:thin;position:relative}
+
+  .hdr{height:46px;background:#fff;border-radius:23px;display:flex;align-items:center;gap:10px;padding:0 6px;margin-bottom:10px}
+  .hdr .back{width:38px;height:38px;border-radius:50%;background:var(--accent);color:var(--primary);display:grid;place-items:center;font-size:15px;flex:0 0 38px}
+  .hdr .t{font-size:15px;font-weight:600;flex:1}
+  .hdr .act{height:32px;border-radius:16px;border:1px solid var(--border);display:flex;align-items:center;padding:0 11px;margin-right:4px;font-size:11px;font-weight:600;color:var(--muted-fg);gap:5px}
+  .quota{font-size:10.5px;color:var(--muted-fg);margin:0 4px 10px;display:flex;justify-content:space-between}
+
+  .ribbon{background:linear-gradient(160deg,#22307A,#0D0D12);border-radius:20px;padding:13px 14px;color:#fff;margin-bottom:10px}
+  .ribbon .top{display:flex;align-items:center;gap:8px}
+  .ribbon .dot{width:9px;height:9px;border-radius:50%;background:#FF5C7A;box-shadow:0 0 0 4px rgba(255,92,122,.22)}
+  .ribbon .lbl{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.75}
+  .ribbon .stop{margin-left:auto;font-size:10.5px;font-weight:600;background:rgba(255,255,255,.14);border-radius:12px;padding:4px 10px}
+  .ribbon .txt{font-size:13px;line-height:1.55;margin-top:9px;min-height:20px}
+  .ribbon .txt .dim{opacity:.5}
+  .ribbon .txt .idle{opacity:.45;font-style:italic}
+
+  /* kartu yang sedang dirakit */
+  .build{background:#fff;border:1.5px dashed #9BB0EA;border-radius:18px;padding:11px 12px;margin-bottom:10px}
+  .build .h{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--primary)}
+  .build .h .pulse{width:7px;height:7px;border-radius:50%;background:var(--primary);box-shadow:0 0 0 3px rgba(53,84,193,.2)}
+  .build .nm{font-size:14px;font-weight:600;margin:7px 0 8px}
+  .fields{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .f{background:var(--bg-alt);border:1px solid var(--border-soft);border-radius:11px;padding:6px 8px}
+  .f .k{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted-fg);font-weight:600}
+  .f .v{font-size:12.5px;font-weight:700;margin-top:2px}
+  .f.empty .v{color:#B7BDC8;font-weight:500}
+  .f.new{border-color:var(--primary);background:var(--accent)}
+  .f.warn{border-color:#F6DFA8;background:var(--warning-bg)}
+
+  .sechead{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--muted-fg);margin:12px 2px 8px;display:flex;justify-content:space-between}
+  .list{display:flex;flex-direction:column;gap:7px}
+  .row{background:#fff;border:1px solid var(--border);border-radius:16px;padding:9px 11px}
+  .row.ok{border-color:#BFE3C2}
+  .row.warn{border-color:#F6DFA8;background:var(--warning-bg)}
+  .row .top{display:flex;align-items:center;gap:8px}
+  .row .ic{width:24px;height:24px;border-radius:8px;display:grid;place-items:center;font-size:12px;flex:0 0 24px;background:var(--success-bg)}
+  .row.warn .ic{background:#fff}
+  .row .nm{font-size:12.5px;font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row .x{width:24px;height:24px;border-radius:50%;border:1px solid var(--border);background:#fff;display:grid;place-items:center;font-size:11px;color:var(--muted-fg);flex:0 0 24px}
+  .row .meta{font-size:11px;color:var(--muted-fg);margin:4px 0 0 32px;display:flex;gap:10px;flex-wrap:wrap}
+  .row .meta b{color:var(--fg);font-weight:600}
+  .tag{font-size:8.5px;font-weight:700;letter-spacing:.04em;border-radius:5px;padding:1px 5px;text-transform:uppercase}
+  .tag.upd{background:var(--accent);color:var(--primary)}
+  .tag.ai{background:#F1ECFE;color:var(--purple)}
+  .ask{margin:7px 0 0 32px;font-size:11.5px}
+  .ask .q{font-weight:600;margin-bottom:6px}
+  .ask .heard{font-style:italic;color:var(--muted-fg);font-weight:400}
+  .cands{display:flex;gap:6px;flex-wrap:wrap}
+  .cand{background:#fff;border:1px solid var(--border);border-radius:12px;padding:5px 10px;font-size:11.5px;font-weight:600}
+  .cand.pick{border-color:var(--primary);color:var(--primary)}
+  .cand.dim{color:var(--muted-fg);font-weight:500;border-color:transparent;background:transparent}
+
+  .examples{background:#fff;border-radius:18px;padding:12px 14px;margin-bottom:10px}
+  .examples .k{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-fg);margin-bottom:8px}
+  .examples p{font-size:12.5px;line-height:1.6;padding:7px 0;border-bottom:1px solid var(--border-soft)}
+  .examples p:last-child{border:none}
+  .examples em{color:var(--primary);font-style:normal;font-weight:600}
+  .bigmic{width:96px;height:96px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:38px;margin:26px auto 10px;box-shadow:0 0 0 10px rgba(53,84,193,.12)}
+  .center{text-align:center;font-size:12.5px;color:var(--muted-fg);line-height:1.6}
+  .center b{color:var(--fg)}
+
+  .footer{position:sticky;bottom:0;background:#fff;border-radius:22px;padding:11px 12px;margin-top:12px;
+    box-shadow:0 -6px 20px rgba(13,13,18,.08);border:1px solid var(--border-soft);display:flex;gap:8px;align-items:center}
+  .btn{height:40px;border-radius:20px;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 14px;font-size:12.5px;font-weight:600}
+  .btn.pri{background:var(--primary);color:#fff;flex:1}
+  .btn.ghost{border:1px solid var(--border);color:var(--fg)}
+  .btn.mic{width:40px;padding:0;border:1px solid var(--border);color:var(--primary)}
+  .btn.mic.on{background:var(--danger);border-color:var(--danger);color:#fff;box-shadow:0 0 0 4px rgba(223,28,65,.16)}
+
+  .banner{border-radius:16px;padding:10px 12px;font-size:11.5px;line-height:1.55;margin-bottom:10px;display:flex;gap:8px}
+  .banner.ok{background:var(--success-bg);color:#2C6B31;border:1px solid #BFE3C2}
+  .banner.info{background:var(--accent);color:#22307A;border:1px solid #C7D8F5}
+  .banner.warn{background:var(--warning-bg);color:#8A5A00;border:1px solid #F6DFA8}
+  .banner.ai{background:#F6F2FF;color:#4A24B8;border:1px solid #DCCFFB}
+
+  table.rules{width:100%;border-collapse:collapse;font-size:12.5px;background:#fff;border-radius:14px;overflow:hidden}
+  table.rules th,table.rules td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--border-soft);vertical-align:top;line-height:1.55}
+  table.rules th{font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted-fg);background:var(--bg-alt)}
+  .tblwrap{overflow-x:auto}
+  pre.diagram{background:#0D0D12;color:#DCE3F5;border-radius:14px;padding:14px 16px;font-size:12px;line-height:1.6;overflow-x:auto}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Speech to Product → pola Kasir Suara</h1>
+<p class="lede">
+  Analisa refactor dan mockup. Sekarang alur produk adalah <b>rekam → kirim → tinjau</b>. Targetnya jadi seperti kasir:
+  <b>setiap produk yang selesai disebut langsung muncul sebagai kartu</b>, bisa dikoreksi saat itu juga, dan
+  tidak butuh internet untuk hasil dasarnya. Dokumen ini belum mengubah kode apa pun.
+</p>
+
+<!-- ================================================================== -->
+<div class="secttl">1 · Kondisi sekarang</div>
+<div class="tblwrap">
+<table class="rules">
+  <tr><th></th><th>Kasir Suara (<code>useCartDictation</code>)</th><th>Speech to Product (<code>SpeechProductsDialog</code>)</th></tr>
+  <tr><td><b>Kapan bertindak</b></td><td>Sambil bicara, per potongan final (<code>onSegment</code>)</td><td>Sekali di akhir, lewat tombol "Proses"</td></tr>
+  <tr><td><b>Pengurai</b></td><td>Lokal (<code>parseSpokenCart</code>), mencocokkan ke katalog</td><td>Server Gemini (<code>/parse-transcript</code> atau audio)</td></tr>
+  <tr><td><b>Syarat</b></td><td>Tidak butuh apa-apa, jalan offline</td><td>Online, login, kuota</td></tr>
+  <tr><td><b>Koreksi</b></td><td>Chip: undo / pilih kandidat / lewati</td><td>Sunting transkrip dulu, lalu tabel <code>ProductDraftReview</code></td></tr>
+  <tr><td><b>Ukuran kode</b></td><td>hook 353 + bar 179</td><td>dialog 801 + hook 376 + recorder, dengan 2 mesin tangkap</td></tr>
+  <tr><td><b>Masalah dirasakan</b></td><td>—</td><td>Tidak ada umpan balik sampai akhir. Salah satu angka baru ketahuan setelah kuota terpakai. Layar status bertumpuk.</td></tr>
+</table>
+</div>
+
+<!-- ================================================================== -->
+<div class="secttl">2 · Masalah inti: produk tidak sama dengan barang keranjang</div>
+<div class="grid2">
+  <div class="notes" style="margin:0">
+    <h3>Kenapa tidak bisa langsung pakai <code>onSegment</code></h3>
+    <p>Satu barang keranjang = <b>nama + jumlah kecil</b>, selesai dalam satu potongan. Satu produk = <b>nama + modal + jual + stok</b>,
+    dan pemilik toko berhenti di tengahnya ("indomie goreng… modal dua ribu lima ratus… jual tiga ribu"). Recognizer memotong di setiap jeda,
+    jadi <b>satu produk bisa datang dalam 2–4 potongan</b>.</p>
+    <p>Karena itu perlu lapisan baru antara potongan dan kartu: <b>perakit produk</b>. Potongan ditampung ke kartu yang "sedang dirakit"
+    dan baru dikunci saat ada sinyal batas.</p>
+  </div>
+  <div class="notes" style="margin:0">
+    <h3>Sinyal batas produk (urutan prioritas)</h3>
+    <ol>
+      <li><b>Nama baru muncul</b> setelah kartu berjalan sudah punya harga jual → kunci kartu lama, mulai kartu baru.</li>
+      <li><b>Kata penutup</b>: "lanjut", "berikutnya", "terus", "oke", "next".</li>
+      <li><b>Hening ≥ 2,5 detik</b> dan kartu sudah punya nama + jual.</li>
+      <li><b>Tombol Stop</b> → kartu berjalan dikunci apa adanya (boleh belum lengkap, ditandai kuning).</li>
+      <li>Kata koreksi "<b>eh salah / ralat</b>" → nilai field terakhir ditimpa, bukan bikin kartu baru.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- ================================================================== -->
+<div class="secttl">3 · Arsitektur yang disarankan</div>
+<div class="grid2">
+<pre class="diagram">speech-recognition.ts  (tidak berubah)
+        │ onPartial / onSegment / onPulse / onError
+        ▼
+useLiveDictation            ← BARU, diekstrak dari use-cart-dictation
+  izin · available · listening · error · liveText
+  start / stop / toggle · cleanup · ref handler
+        │ segment
+   ┌────┴─────────────────────────┐
+   ▼                              ▼
+useCartDictation            useProductDictation      ← BARU
+  parseSpokenCart             spoken-product.ts (lokal)
+  chip antrian + auto-dismiss   perakit: draft berjalan → kunci
+  onAdd(product, qty)           rows: DraftRow[]  (persisten)
+                                edit / hapus / pilih alternatif
+                                refine?(rows) → /parse-transcript
+        │                              │
+VoiceCartBar                SpeechProductsSheet
+  └─ VoiceRibbon  ◄── BARU, dipakai berdua ──┘
+                                  └─ saveDraftRows (sudah ada)</pre>
+  <div class="notes" style="margin:0">
+    <h3>Keputusan (default yang saya ambil)</h3>
+    <ul>
+      <li><b>Pengurai lokal dulu, AI opsional.</b> Kartu muncul instan dan offline, sama seperti kasir. Tombol "Rapikan dengan AI" mengirim
+        <i>transkrip per kartu</i> yang sudah terkumpul ke <code>/parse-transcript</code>, satu panggilan untuk semua kartu, hanya kalau online.
+        Kuota tetap satu panggilan per sesi.</li>
+      <li><b>Pengurai baru <code>spoken-product.ts</code></b>, bukan memperluas <code>spoken-cart.ts</code>. File kasir sengaja menolak angka ribuan
+        ("memasukkan 2000 bungkus berbahaya"). Produk justru butuh ribuan. Yang dipakai bersama: <code>normalizeText</code>, tokenizer,
+        <code>scoreName</code> (untuk mencocokkan produk lama → tag "Perbarui"), dan inti <code>parseQty</code> yang diperluas ke <code>ribu/rebu/rb/k/juta</code>.</li>
+      <li><b>Jalur audio + Gemini tetap sebagai cadangan</b> untuk perangkat tanpa recognizer (<code>available === false</code>).
+        Alurnya tetap rekam → kirim → tinjau, tapi hasilnya dirender ke daftar kartu yang sama. Dihapus nanti setelah ada data pemakaian.</li>
+      <li><b>Wadahnya tetap dialog/sheet</b> di halaman Produk, bukan pita di atas grid. Daftar produk tidak perlu terlihat saat mendikte, dan kartu
+        draft butuh ruang.</li>
+      <li><b>Kartu tidak auto-dismiss.</b> Beda watak dengan chip kasir: chip kasir cuma kabar karena hasilnya ada di keranjang, sedangkan kartu produk
+        <i>adalah</i> hasilnya sebelum disimpan.</li>
+      <li>Tabel <code>ProductDraftReview</code> tetap dipakai untuk "Edit detail" (kategori, SKU, margin cepat), bukan tahap wajib.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ================================================================== -->
+<div class="secttl">4 · Mockup</div>
+<div class="frames">
+
+  <!-- 1 -->
+  <div class="frame">
+    <div class="cap"><b>1</b> · Siap</div>
+    <div class="sub">Contoh kalimat tetap ada karena paling menentukan hasil. Tanpa gerbang login/online di depan: dikte lokal jalan tanpa keduanya.</div>
+    <div class="phone">
+      <div class="hdr"><div class="back">✕</div><div class="t">Tambah lewat suara</div></div>
+      <div class="bigmic">🎙️</div>
+      <p class="center"><b>Ketuk lalu sebut produknya satu per satu.</b><br>Kartu muncul sambil kamu bicara.</p>
+      <div class="examples" style="margin-top:18px">
+        <div class="k">Contoh cara bicara</div>
+        <p><em>Indomie goreng</em> modal dua ribu lima ratus jual tiga ribu stok empat puluh</p>
+        <p><em>Aqua botol 600</em> jual lima ribu, <b>lanjut</b></p>
+        <p>Salah sebut? Bilang <b>“ralat”</b> lalu ulangi angkanya.</p>
+      </div>
+      <div class="banner info">ℹ️ Tidak butuh internet. Kuota AI hanya dipakai kalau kamu menekan “Rapikan dengan AI”.</div>
+    </div>
+  </div>
+
+  <!-- 2 -->
+  <div class="frame">
+    <div class="cap"><b>2</b> · Mendengarkan, kartu dirakit</div>
+    <div class="sub">Kartu putus-putus terisi field demi field. Field yang baru terisi disorot. Kartu yang sudah dikunci turun ke daftar.</div>
+    <div class="phone">
+      <div class="hdr"><div class="back">✕</div><div class="t">Tambah lewat suara</div><div class="act">3 produk</div></div>
+      <div class="ribbon">
+        <div class="top"><span class="dot"></span><span class="lbl">Mendengarkan</span><span class="stop">Selesai</span></div>
+        <div class="txt">gula pasir gulaku sekilo modal tiga belas ribu <span class="dim">jual…</span></div>
+      </div>
+      <div class="build">
+        <div class="h"><span class="pulse"></span>Sedang disebut</div>
+        <div class="nm">Gula Pasir Gulaku 1kg</div>
+        <div class="fields">
+          <div class="f new"><div class="k">Modal</div><div class="v">13.000</div></div>
+          <div class="f empty"><div class="k">Jual</div><div class="v">—</div></div>
+          <div class="f empty"><div class="k">Stok</div><div class="v">—</div></div>
+        </div>
+      </div>
+      <div class="sechead"><span>Terkumpul</span><span>ketuk untuk edit</span></div>
+      <div class="list">
+        <div class="row ok">
+          <div class="top"><span class="ic">✓</span><span class="nm">Aqua Botol 600ml</span><span class="tag upd">Perbarui</span><span class="x">✕</span></div>
+          <div class="meta"><span>Jual <b>5.000</b></span><span>Modal <b>3.000</b></span><span>Stok <b>+24</b></span></div>
+        </div>
+        <div class="row ok">
+          <div class="top"><span class="ic">✓</span><span class="nm">Indomie Goreng</span><span class="tag upd">Perbarui</span><span class="x">✕</span></div>
+          <div class="meta"><span>Jual <b>3.000</b></span><span>Modal <b>2.500</b></span><span>Stok <b>+40</b></span></div>
+        </div>
+        <div class="row ok">
+          <div class="top"><span class="ic">✓</span><span class="nm">Teh Pucuk Harum 350ml</span><span class="x">✕</span></div>
+          <div class="meta"><span>Jual <b>4.000</b></span><span>Modal <b>3.200</b></span><span>Stok —</span></div>
+        </div>
+      </div>
+      <div class="footer"><div class="btn mic on">■</div><div class="btn pri" style="opacity:.45">Simpan 3 produk</div></div>
+    </div>
+  </div>
+
+  <!-- 3 -->
+  <div class="frame">
+    <div class="cap"><b>3</b> · Perlu keputusan</div>
+    <div class="sub">Pola chip "unclear" dari kasir, dipakai untuk angka ambigu dan nama yang mirip produk lama. Kartu kuning tidak ikut disimpan sebelum dijawab.</div>
+    <div class="phone">
+      <div class="hdr"><div class="back">✕</div><div class="t">Tambah lewat suara</div><div class="act">5 produk</div></div>
+      <div class="ribbon">
+        <div class="top"><span class="dot"></span><span class="lbl">Mendengarkan</span><span class="stop">Selesai</span></div>
+        <div class="txt"><span class="idle">Sebut produk berikutnya…</span></div>
+      </div>
+      <div class="list">
+        <div class="row warn">
+          <div class="top"><span class="ic">⚠️</span><span class="nm">Gula Pasir Gulaku 1kg</span><span class="x">✕</span></div>
+          <div class="ask">
+            <div class="q">Harga jual berapa? <span class="heard">“jual empat belas”</span></div>
+            <div class="cands"><span class="cand pick">14.000</span><span class="cand">14.500</span><span class="cand dim">Isi sendiri</span></div>
+          </div>
+        </div>
+        <div class="row warn">
+          <div class="top"><span class="ic">⚠️</span><span class="nm">“mie sedap soto”</span><span class="x">✕</span></div>
+          <div class="ask">
+            <div class="q">Produk lama atau baru? <span class="heard">jual 3.000</span></div>
+            <div class="cands"><span class="cand">Mie Sedaap Soto</span><span class="cand">Mie Sedaap Kari Ayam</span><span class="cand dim">Buat baru</span></div>
+          </div>
+        </div>
+        <div class="row warn">
+          <div class="top"><span class="ic">⚠️</span><span class="nm">Kopi Kapal Api Mix</span><span class="x">✕</span></div>
+          <div class="ask">
+            <div class="q">Harga jual belum disebut <span class="heard">modal 1.200</span></div>
+            <div class="cands"><span class="cand">+20% · 1.500</span><span class="cand">+30% · 1.600</span><span class="cand dim">Isi sendiri</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="sechead"><span>Siap</span><span>2</span></div>
+      <div class="list">
+        <div class="row ok"><div class="top"><span class="ic">✓</span><span class="nm">Aqua Botol 600ml</span><span class="tag upd">Perbarui</span><span class="x">✕</span></div></div>
+        <div class="row ok"><div class="top"><span class="ic">✓</span><span class="nm">Indomie Goreng</span><span class="tag upd">Perbarui</span><span class="x">✕</span></div></div>
+      </div>
+      <div class="footer"><div class="btn mic on">■</div><div class="btn pri">Simpan 2 · 3 menunggu</div></div>
+    </div>
+  </div>
+
+  <!-- 4 -->
+  <div class="frame">
+    <div class="cap"><b>4</b> · Selesai, siap simpan</div>
+    <div class="sub">Tidak ada layar "memproses". AI jadi tombol sekunder yang jujur soal kuota. "Detail" membuka <code>ProductDraftReview</code> untuk kategori/SKU.</div>
+    <div class="phone">
+      <div class="hdr"><div class="back">✕</div><div class="t">5 produk terkumpul</div><div class="act">Detail</div></div>
+      <div class="banner ai">✨ <span>Ada yang salah dengar? <b>Rapikan dengan AI</b> memeriksa ulang kelima kartu. Pakai 1 kuota · sisa 18.</span></div>
+      <div class="list">
+        <div class="row ok"><div class="top"><span class="ic">✓</span><span class="nm">Aqua Botol 600ml</span><span class="tag upd">Perbarui</span><span class="x">✕</span></div>
+          <div class="meta"><span>Jual <b>5.000</b></span><span>Modal <b>3.000</b></span><span>Stok <b>+24</b></span></div></div>
+        <div class="row ok"><div class="top"><span class="ic">✓</span><span class="nm">Indomie Goreng</span><span class="tag upd">Perbarui</span><span class="x">✕</span></div>
+          <div class="meta"><span>Jual <b>3.000</b></span><span>Modal <b>2.500</b></span><span>Stok <b>+40</b></span></div></div>
+        <div class="row ok"><div class="top"><span class="ic">✓</span><span class="nm">Teh Pucuk Harum 350ml</span><span class="x">✕</span></div>
+          <div class="meta"><span>Jual <b>4.000</b></span><span>Modal <b>3.200</b></span></div></div>
+        <div class="row ok"><div class="top"><span class="ic">✓</span><span class="nm">Gula Pasir Gulaku 1kg</span><span class="x">✕</span></div>
+          <div class="meta"><span>Jual <b>14.000</b></span><span>Modal <b>13.000</b></span></div></div>
+        <div class="row ok"><div class="top"><span class="ic">✓</span><span class="nm">Kopi Kapal Api Mix</span><span class="tag ai">Dirapikan AI</span><span class="x">✕</span></div>
+          <div class="meta"><span>Jual <b>1.500</b></span><span>Modal <b>1.200</b></span></div></div>
+      </div>
+      <div class="footer"><div class="btn mic">🎙️</div><div class="btn ghost">✨ Rapikan</div><div class="btn pri">Simpan 5</div></div>
+    </div>
+  </div>
+
+  <!-- 5 -->
+  <div class="frame">
+    <div class="cap"><b>5</b> · Cadangan: HP tanpa recognizer</div>
+    <div class="sub">Jalur audio lama tetap ada, tapi hasilnya masuk ke daftar kartu yang sama (frame 4), bukan layar tinjau terpisah.</div>
+    <div class="phone">
+      <div class="hdr"><div class="back">✕</div><div class="t">Tambah lewat suara</div></div>
+      <div class="banner warn">⚠️ <span>HP ini tidak punya pengenal suara, jadi kartu tidak bisa muncul sambil bicara. Rekaman dikirim ke AI setelah selesai (butuh internet, 1 kuota).</span></div>
+      <div class="bigmic" style="background:var(--danger)">■</div>
+      <p class="center"><b>0:23</b> / 1:00 · merekam</p>
+      <div class="examples" style="margin-top:18px">
+        <div class="k">Contoh cara bicara</div>
+        <p><em>Indomie goreng</em> modal dua ribu lima ratus jual tiga ribu</p>
+      </div>
+      <div class="footer"><div class="btn ghost">Batal</div><div class="btn pri">Selesai & kirim</div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ================================================================== -->
+<div class="secttl">5 · Rencana file</div>
+<div class="tblwrap">
+<table class="rules">
+  <tr><th>File</th><th>Aksi</th><th>Catatan</th></tr>
+  <tr><td><code>hooks/use-live-dictation.ts</code></td><td>Baru</td><td>Siklus sesi dari <code>useCartDictation</code> baris ~117–306: izin, available, error, liveText, start/stop/toggle, cleanup. Ambil juga penjaga stop dan <code>failedEarly</code> dari <code>useSpeechDictation</code> karena hook kasir belum punya keduanya.</td></tr>
+  <tr><td><code>hooks/use-cart-dictation.ts</code></td><td>Diperkecil</td><td>Hanya chip + <code>consumeSegment</code> di atas hook bersama. API publik tetap sama, jadi <code>Cashier.tsx</code> dan <code>cart-dictation.test.ts</code> harus lolos tanpa diubah (ini jaring pengaman refactor).</td></tr>
+  <tr><td><code>lib/spoken-number.ts</code></td><td>Baru</td><td>Angka lisan dengan ribuan: "dua ribu lima ratus", "tiga belas lima", "15rb", "1,5jt", "rebu". <code>spoken-cart</code> tetap memakai versi terbatasnya.</td></tr>
+  <tr><td><code>lib/spoken-product.ts</code></td><td>Baru</td><td>Fungsi murni: <code>feedSegment(draft, text, ctx) → { draft, committed[] }</code>. Kata kunci modal/hpp/beli/kulakan, jual/harga/eceran, stok/isi, "ralat", pencocokan produk lama via <code>scoreName</code>. Mudah dites tanpa mikrofon.</td></tr>
+  <tr><td><code>hooks/use-product-dictation.ts</code></td><td>Baru</td><td>Draft berjalan + <code>rows: DraftRow[]</code>, pewaktu hening untuk batas, <code>resolve/remove/edit</code>, <code>refineWithAi()</code>.</td></tr>
+  <tr><td><code>components/voice/VoiceRibbon.tsx</code></td><td>Baru</td><td>Pita gelap dari <code>VoiceCartBar</code>. Dipakai kasir dan produk.</td></tr>
+  <tr><td><code>components/products/SpeechProductsDialog.tsx</code></td><td>Tulis ulang</td><td>Target di bawah ~350 baris. Gerbang login/online dipindah ke tombol AI dan jalur cadangan saja.</td></tr>
+  <tr><td><code>lib/product-draft.ts</code>, <code>ProductDraftReview.tsx</code></td><td>Tetap</td><td><code>DraftRow</code> dipakai sebagai bentuk kartu. Mungkin perlu tambah <code>pending?: 'price' | 'match' | 'number'</code>.</td></tr>
+  <tr><td><code>hooks/use-speech-dictation.ts</code></td><td>Dihapus (fase 3)</td><td>Setelah dialog baru tidak lagi memakai dikte kumulatif.</td></tr>
+  <tr><td>backend <code>/parse-transcript</code></td><td>Kecil</td><td>Terima <code>items: {transcript, draft}[]</code> supaya AI memperbaiki kartu yang ada, bukan mengurai ulang dari nol, sehingga urutan dan jumlah kartu tetap stabil.</td></tr>
+</table>
+</div>
+
+<div class="grid2" style="margin-top:16px">
+  <div class="notes" style="margin:0">
+    <h3>Tahapan</h3>
+    <ol>
+      <li><b>Fase 1 · Tanpa perubahan perilaku.</b> Ekstrak <code>useLiveDictation</code> + <code>VoiceRibbon</code>. Tes kasir harus tetap hijau.</li>
+      <li><b>Fase 2 · Pengurai lokal.</b> <code>spoken-number</code> + <code>spoken-product</code> dengan tabel tes dari contoh di riset §4 (retail, grosir, resto). Belum ada UI.</li>
+      <li><b>Fase 3 · Dialog baru.</b> <code>useProductDictation</code> + frame 1–4. Jalur audio dipasang ke daftar kartu (frame 5). Hapus <code>useSpeechDictation</code>.</li>
+      <li><b>Fase 4 · AI refine.</b> Ubah endpoint ke mode perbaikan kartu, lalu tombol "Rapikan".</li>
+    </ol>
+  </div>
+  <div class="notes" style="margin:0">
+    <h3>Risiko</h3>
+    <ul>
+      <li><b>Akurasi angka tanpa AI.</b> Riset §5 mencatat STT perangkat paling sering salah justru di angka. Mitigasi: angka yang tidak diikuti kata kunci ("modal", "jual") selalu masuk kartu kuning, jangan ditebak. Aturannya sama dengan kasir: <i>kalau tidak yakin, jangan menebak</i>.</li>
+      <li><b>Batas produk salah</b> (dua produk jadi satu kartu, atau sebaliknya). Mitigasi: kartu yang sedang dirakit terlihat terus, jadi salahnya langsung kelihatan, dan tombol ✕ membuang satu kartu saja.</li>
+      <li><b>Potongan final Android datang telat</b> setelah Stop (1–2 detik). Kartu terakhir harus menunggu <code>onEnd</code> sebelum dikunci, jangan dikunci saat tombol ditekan.</li>
+      <li><b>Hilangnya transkrip yang bisa disunting.</b> Diganti edit per kartu. Lebih kecil, tapi pengguna lama kehilangan satu cara koreksi.</li>
+      <li>Belum bisa diverifikasi di jsdom: perilaku jeda recognizer di HP murah. Wajib uji di perangkat Android sungguhan sebelum rilis.</li>
+    </ul>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

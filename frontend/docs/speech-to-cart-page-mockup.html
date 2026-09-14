@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup — Halaman Keranjang Suara · Kan POS</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#3554C1; --fg:#0D0D12; --accent:#EFF5FF;
+    --muted-fg:#818898; --muted:#ECEFF3; --bg:#EDF1F9; --bg-alt:#F8FAFE;
+    --card:#fff; --border:#DFE1E7; --border-soft:#ECEFF3;
+    --success:#5ABC61; --success-bg:#EFF8EF; --danger:#DF1C41; --danger-bg:#FFF0F3;
+    --warning:#F9A616; --warning-bg:#FFF6E0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Sora,system-ui,sans-serif;background:#f2f4f8;color:var(--fg);padding:32px 20px 80px}
+  button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
+  .wrap{max-width:1660px;margin:0 auto}
+  h1{font-size:24px;font-weight:700}
+  .lede{color:var(--muted-fg);font-size:14px;margin-top:6px;max-width:980px;line-height:1.6}
+  .notes{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px 20px;margin:24px 0 10px}
+  .notes h3{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted-fg);margin-bottom:10px}
+  .notes ul,.notes ol{margin-left:18px;font-size:13px;line-height:1.9}
+  .notes b{color:var(--primary)}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:16px}
+  .secttl{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--muted-fg);margin:38px 0 16px}
+  .frames{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start}
+  .frame{width:375px;flex:0 0 375px}
+  .frame > .cap{font-size:12px;font-weight:600;color:var(--muted-fg);margin-bottom:4px;text-transform:uppercase;letter-spacing:.1em}
+  .frame > .cap b{color:var(--primary)}
+  .frame > .sub{font-size:11.5px;color:var(--muted-fg);margin-bottom:8px;line-height:1.5;min-height:34px}
+  .phone{width:375px;height:790px;background:var(--bg);border-radius:28px;border:1px solid var(--border);
+    box-shadow:0 12px 32px rgba(13,13,18,.10);position:relative;display:flex;flex-direction:column;overflow:hidden}
+  .scroll{flex:1;overflow-y:auto;padding:14px 14px 10px;scrollbar-width:thin}
+
+  .hdr{height:46px;background:#fff;border-radius:23px;display:flex;align-items:center;gap:10px;padding:0 6px;margin-bottom:10px}
+  .hdr .back{width:38px;height:38px;border-radius:50%;background:var(--accent);color:var(--primary);display:grid;place-items:center;font-size:15px;flex:0 0 38px}
+  .hdr .t{font-size:15px;font-weight:600;flex:1}
+  .hdr .act{height:32px;border-radius:16px;border:1px solid var(--border);display:flex;align-items:center;padding:0 11px;margin-right:4px;font-size:11px;font-weight:600;color:var(--muted-fg)}
+
+  /* pita mic */
+  .ribbon{background:linear-gradient(160deg,#22307A,#0D0D12);border-radius:20px;padding:12px 14px;color:#fff;margin-bottom:10px}
+  .ribbon .top{display:flex;align-items:center;gap:8px}
+  .ribbon .dot{width:9px;height:9px;border-radius:50%;background:#FF5C7A;box-shadow:0 0 0 4px rgba(255,92,122,.22);animation:pl 1.4s infinite}
+  .ribbon.off .dot{background:#818898;box-shadow:none;animation:none}
+  @keyframes pl{50%{box-shadow:0 0 0 7px rgba(255,92,122,.08)}}
+  .ribbon .lbl{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.75}
+  .ribbon .stop{margin-left:auto;font-size:10.5px;font-weight:600;background:rgba(255,255,255,.14);border-radius:12px;padding:4px 10px;color:#fff}
+  .ribbon .txt{font-size:13px;line-height:1.55;margin-top:8px;min-height:20px}
+  .ribbon .txt .idle{opacity:.45;font-style:italic}
+
+  /* ringkasan angka */
+  .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px}
+  .stat{background:#fff;border-radius:14px;padding:8px 10px}
+  .stat .k{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted-fg);font-weight:600}
+  .stat .v{font-size:15px;font-weight:700;margin-top:2px}
+  .stat.warn .v{color:#B87500}
+
+  .lh{display:flex;align-items:center;justify-content:space-between;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-fg);margin:12px 4px 7px}
+  .lh .c{background:var(--muted);border-radius:9px;padding:1px 7px;letter-spacing:0}
+  .lh.warn{color:#B87500}.lh.warn .c{background:var(--warning-bg)}
+
+  /* baris keranjang */
+  .cart{background:#fff;border-radius:18px;overflow:hidden}
+  .row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--border-soft);position:relative}
+  .row:last-child{border-bottom:0}
+  .row .th{width:40px;height:40px;border-radius:11px;background:var(--bg-alt);display:grid;place-items:center;font-size:19px;flex:0 0 40px}
+  .row .mid{flex:1;min-width:0}
+  .row .nm{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row .pr{font-size:11px;color:var(--muted-fg);margin-top:2px}
+  .row .pr b{color:var(--fg);font-weight:600}
+  .step{display:flex;align-items:center;background:var(--bg-alt);border:1px solid var(--border-soft);border-radius:12px;height:32px}
+  .step button{width:30px;height:30px;font-size:15px;font-weight:600;color:var(--primary)}
+  .step .q{min-width:24px;text-align:center;font-size:14px;font-weight:700}
+  .row.new{background:linear-gradient(90deg,var(--success-bg),#fff 70%);animation:flash 1.6s ease-out}
+  @keyframes flash{0%{background:#D4F0D6}}
+  .badge{position:absolute;left:44px;top:6px;background:var(--success);color:#fff;font-size:9.5px;font-weight:700;border-radius:8px;padding:1px 5px}
+  .row .tag{font-size:9px;font-weight:700;color:var(--primary);background:var(--accent);border-radius:6px;padding:1px 5px;margin-left:5px;vertical-align:1px}
+
+  /* butuh perhatian */
+  .att{background:#fff;border:1.5px solid #F7D38A;border-radius:18px;padding:10px 12px;margin-bottom:8px}
+  .att .t1{display:flex;gap:8px;align-items:flex-start}
+  .att .ic{width:22px;height:22px;border-radius:50%;background:var(--warning-bg);color:#B87500;display:grid;place-items:center;font-size:12px;font-weight:700;flex:0 0 22px}
+  .att .ttl{font-size:12.5px;font-weight:600}
+  .att .heard{font-size:10.5px;color:var(--muted-fg);font-style:italic;margin-top:1px}
+  .att .x{margin-left:auto;color:var(--muted-fg);font-size:14px}
+  .opts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;padding-left:30px}
+  .opt{border:1px solid var(--border);border-radius:11px;padding:6px 10px;font-size:11.5px;font-weight:600;background:#fff}
+  .opt small{color:var(--muted-fg);font-weight:500}
+  .opt.ghost{border-color:transparent;color:var(--muted-fg)}
+  .att.gray{border-color:var(--border)}
+  .att.gray .ic{background:var(--muted);color:var(--muted-fg)}
+  .att.red{border-color:#F5B3C1}.att.red .ic{background:var(--danger-bg);color:var(--danger)}
+
+  /* toast undo */
+  .toast{position:absolute;left:14px;right:14px;bottom:128px;background:#0D0D12;color:#fff;border-radius:14px;padding:10px 12px;font-size:12px;display:flex;align-items:center;gap:8px;box-shadow:0 8px 20px rgba(0,0,0,.2)}
+  .toast b{font-weight:600}
+  .toast button{margin-left:auto;color:#9BB0EA;font-weight:700;font-size:12px}
+
+  /* footer */
+  .foot{background:#fff;border-top:1px solid var(--border);padding:10px 14px 14px}
+  .foot .tot{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px}
+  .foot .tot span{font-size:11.5px;color:var(--muted-fg)}
+  .foot .tot b{font-size:19px;font-weight:700}
+  .btns{display:flex;gap:8px}
+  .mic{width:52px;height:48px;border-radius:16px;background:var(--danger-bg);color:var(--danger);font-size:20px;display:grid;place-items:center;flex:0 0 52px}
+  .mic.off{background:var(--accent);color:var(--primary)}
+  .pay{flex:1;height:48px;border-radius:16px;background:var(--primary);color:#fff;font-size:14px;font-weight:600}
+  .pay:disabled{background:#B9C4E8}
+
+  .empty{text-align:center;padding:40px 20px;color:var(--muted-fg)}
+  .empty .big{font-size:40px;margin-bottom:10px}
+  .empty p{font-size:12.5px;line-height:1.6}
+  .ex{display:inline-block;background:#fff;border:1px solid var(--border);border-radius:10px;padding:4px 9px;margin:4px 2px;font-size:11.5px;color:var(--fg)}
+
+  /* kasir biasa (entry point) */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .pc{background:#fff;border-radius:16px;padding:10px;font-size:12px;font-weight:600}
+  .pc .im{height:60px;border-radius:11px;background:var(--bg-alt);display:grid;place-items:center;font-size:26px;margin-bottom:6px}
+  .pc .p{font-size:11px;color:var(--muted-fg);font-weight:500}
+  .search{height:42px;background:#fff;border-radius:21px;display:flex;align-items:center;padding:0 6px 0 14px;font-size:12px;color:var(--muted-fg);margin-bottom:10px}
+  .search .vbtn{margin-left:auto;height:32px;border-radius:16px;background:var(--primary);color:#fff;font-size:11px;font-weight:600;padding:0 12px;display:flex;align-items:center;gap:5px}
+  .coach{position:absolute;right:14px;top:112px;width:220px;background:#0D0D12;color:#fff;border-radius:14px;padding:10px 12px;font-size:11.5px;line-height:1.5}
+  .coach:before{content:"";position:absolute;right:40px;top:-6px;border:6px solid transparent;border-top:0;border-bottom-color:#0D0D12}
+
+  /* sheet alternatif */
+  .dim{position:absolute;inset:0;background:rgba(13,13,18,.35)}
+  .sheet{position:absolute;left:0;right:0;bottom:0;height:62%;background:var(--bg);border-radius:24px 24px 0 0;display:flex;flex-direction:column}
+  .sheet .grab{width:40px;height:4px;border-radius:2px;background:#C9CED8;margin:8px auto 4px}
+
+  .demo{margin-top:10px;display:flex;gap:6px;flex-wrap:wrap}
+  .demo button{background:#fff;border:1px solid var(--border);border-radius:10px;padding:6px 10px;font-size:11.5px;font-weight:600}
+  .demo button.p{background:var(--primary);color:#fff;border-color:var(--primary)}
+  .pc-x{font-size:11px;color:var(--muted-fg)}
+  table{border-collapse:collapse;font-size:12.5px;width:100%}
+  td,th{border-bottom:1px solid var(--border-soft);padding:8px 6px;text-align:left;vertical-align:top}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted-fg)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Keranjang Suara — halaman khusus</h1>
+  <p class="lede">Masalah sekarang: hasil suara cuma muncul sebagai chip tipis di atas grid produk, sedangkan keranjangnya ada di tempat lain. Kasir harus menebak "barang apa saja yang sudah masuk, jumlahnya berapa". Usulan: saat mikrofon dinyalakan, buka <b>halaman Keranjang Suara</b> yang menampilkan keranjang itu sendiri, lengkap dengan qty, harga, dan total, dan diperbarui langsung setiap kali kamu menyebut barang.</p>
+
+  <div class="grid2">
+    <div class="notes">
+      <h3>Rekomendasi (Opsi A)</h3>
+      <ul>
+        <li><b>Keranjang = layar utama.</b> Isinya bukan riwayat kabar, tapi daftar barang final: satu baris per produk. Qty dijumlah, jadi "kopi 2" lalu "kopi 1" tampil <b>×3</b>, bukan dua chip.</li>
+        <li><b>Barang yang baru masuk menyala hijau</b> dengan lencana <b>+2</b> selama ~2 detik, lalu naik ke paling atas. Mata langsung tahu apa yang barusan tertangkap.</li>
+        <li><b>Stepper − / +</b> di tiap baris untuk koreksi qty tanpa bicara ulang. Qty 0 = hapus, ditambah toast "Batalkan".</li>
+        <li><b>"Perlu dicek"</b> (yang mana?, tidak ketemu, stok habis) dipisah ke atas keranjang dengan warna kuning, jadi tidak tercampur dengan yang sudah pasti masuk.</li>
+        <li><b>Footer tetap:</b> total + tombol mic + <b>Bayar</b>. Angka ringkas (jenis barang, total qty, perlu dicek) ada di atas.</li>
+      </ul>
+    </div>
+    <div class="notes">
+      <h3>Kenapa bukan cuma memperbesar chip</h3>
+      <ul>
+        <li>Chip = <b>log kejadian</b>; kasir butuh <b>status akhir</b>. Dua hal ini beda, dan mencampurnya membingungkan.</li>
+        <li>Selama bicara, kasir tidak memilih dari grid produk, jadi grid tidak perlu terlihat. Ruangnya lebih berguna untuk keranjang.</li>
+        <li>Keranjang di halaman ini <b>sama</b> dengan keranjang kasir biasa (bukan salinan). Menutup halaman tidak menghapus apa pun.</li>
+        <li>Opsi B (bottom sheet) di bawah lebih ringan untuk dibuat, tapi ruangnya sempit kalau barangnya lebih dari ~5.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ================= OPSI A ================= -->
+  <div class="secttl">Opsi A · Halaman Keranjang Suara (direkomendasikan)</div>
+  <div class="frames">
+
+    <!-- 0: entry -->
+    <div class="frame">
+      <div class="cap"><b>A0</b> · Titik masuk</div>
+      <div class="sub">Tombol "Suara" di kolom cari halaman Kasir. Sekali tap langsung buka halaman + mic menyala.</div>
+      <div class="phone">
+        <div class="scroll">
+          <div class="hdr"><div class="back">☰</div><div class="t">Kasir</div><div class="act">🛒 2</div></div>
+          <div class="search">🔍 Cari produk… <span class="vbtn">🎙 Suara</span></div>
+          <div class="grid">
+            <div class="pc"><div class="im">☕</div>Kopi Susu<div class="p">Rp 18.000</div></div>
+            <div class="pc"><div class="im">🧋</div>Es Teh Manis<div class="p">Rp 8.000</div></div>
+            <div class="pc"><div class="im">🍞</div>Roti Bakar<div class="p">Rp 15.000</div></div>
+            <div class="pc"><div class="im">🍜</div>Indomie Goreng<div class="p">Rp 12.000</div></div>
+            <div class="pc"><div class="im">🥤</div>Air Mineral<div class="p">Rp 5.000</div></div>
+            <div class="pc"><div class="im">🍫</div>Coklat Panas<div class="p">Rp 20.000</div></div>
+          </div>
+        </div>
+        <div class="coach"><b>Baru:</b> sebut "kopi susu dua, roti bakar satu" dan lihat keranjangnya terisi sendiri.</div>
+      </div>
+    </div>
+
+    <!-- 1: kosong -->
+    <div class="frame">
+      <div class="cap"><b>A1</b> · Baru dibuka</div>
+      <div class="sub">Mic sudah menyala. Keranjang kosong berisi contoh kalimat, supaya kasir tahu cara bicaranya.</div>
+      <div class="phone">
+        <div class="scroll">
+          <div class="hdr"><div class="back">←</div><div class="t">Keranjang Suara</div><div class="act">Kosongkan</div></div>
+          <div class="ribbon"><div class="top"><span class="dot"></span><span class="lbl">Mendengarkan</span><button class="stop">Stop</button></div>
+            <div class="txt"><span class="idle">Sebut nama barang dan jumlahnya…</span></div></div>
+          <div class="cart"><div class="empty"><div class="big">🛒</div>
+            <p>Belum ada barang. Coba sebut:</p>
+            <div style="margin-top:8px"><span class="ex">"kopi susu dua"</span><span class="ex">"tiga es teh"</span><span class="ex">"roti bakar satu, air mineral dua"</span></div>
+          </div></div>
+        </div>
+        <div class="foot">
+          <div class="tot"><span>Total · 0 barang</span><b>Rp 0</b></div>
+          <div class="btns"><button class="mic">⏹</button><button class="pay" disabled>Bayar</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2: sedang mengisi -->
+    <div class="frame">
+      <div class="cap"><b>A2</b> · Sedang mengisi</div>
+      <div class="sub">Baris hijau + lencana "+2" = barang yang barusan tertangkap. Kopi Susu sudah ×3 karena disebut dua kali.</div>
+      <div class="phone">
+        <div class="scroll">
+          <div class="hdr"><div class="back">←</div><div class="t">Keranjang Suara</div><div class="act">Kosongkan</div></div>
+          <div class="ribbon"><div class="top"><span class="dot"></span><span class="lbl">Mendengarkan</span><button class="stop">Stop</button></div>
+            <div class="txt">indomie goreng dua…</div></div>
+          <div class="stats">
+            <div class="stat"><div class="k">Jenis</div><div class="v">4</div></div>
+            <div class="stat"><div class="k">Total qty</div><div class="v">8</div></div>
+            <div class="stat"><div class="k">Perlu dicek</div><div class="v">0</div></div>
+          </div>
+          <div class="lh">Di keranjang <span class="c">4</span></div>
+          <div class="cart">
+            <div class="row new"><span class="badge">+2</span><div class="th">🍜</div><div class="mid"><div class="nm">Indomie Goreng<span class="tag">🎙</span></div><div class="pr">Rp 12.000 × 2 = <b>Rp 24.000</b></div></div><div class="step"><button>−</button><span class="q">2</span><button>+</button></div></div>
+            <div class="row"><div class="th">☕</div><div class="mid"><div class="nm">Kopi Susu<span class="tag">🎙</span></div><div class="pr">Rp 18.000 × 3 = <b>Rp 54.000</b></div></div><div class="step"><button>−</button><span class="q">3</span><button>+</button></div></div>
+            <div class="row"><div class="th">🍞</div><div class="mid"><div class="nm">Roti Bakar<span class="tag">🎙</span></div><div class="pr">Rp 15.000 × 1 = <b>Rp 15.000</b></div></div><div class="step"><button>−</button><span class="q">1</span><button>+</button></div></div>
+            <div class="row"><div class="th">🥤</div><div class="mid"><div class="nm">Air Mineral</div><div class="pr">Rp 5.000 × 2 = <b>Rp 10.000</b></div></div><div class="step"><button>−</button><span class="q">2</span><button>+</button></div></div>
+          </div>
+        </div>
+        <div class="foot">
+          <div class="tot"><span>Total · 8 barang</span><b>Rp 103.000</b></div>
+          <div class="btns"><button class="mic">⏹</button><button class="pay">Bayar Rp 103.000</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3: perlu dicek -->
+    <div class="frame">
+      <div class="cap"><b>A3</b> · Ada yang perlu dicek</div>
+      <div class="sub">Yang ragu tidak masuk keranjang; ditaruh di atas dengan warna kuning. Tap pilihan → langsung jadi baris hijau.</div>
+      <div class="phone">
+        <div class="scroll">
+          <div class="hdr"><div class="back">←</div><div class="t">Keranjang Suara</div><div class="act">Kosongkan</div></div>
+          <div class="ribbon"><div class="top"><span class="dot"></span><span class="lbl">Mendengarkan</span><button class="stop">Stop</button></div>
+            <div class="txt"><span class="idle">Sebut nama barang dan jumlahnya…</span></div></div>
+          <div class="stats">
+            <div class="stat"><div class="k">Jenis</div><div class="v">2</div></div>
+            <div class="stat"><div class="k">Total qty</div><div class="v">4</div></div>
+            <div class="stat warn"><div class="k">Perlu dicek</div><div class="v">3</div></div>
+          </div>
+          <div class="lh warn">Perlu dicek <span class="c">3</span></div>
+          <div class="att"><div class="t1"><span class="ic">?</span><div><div class="ttl">Teh yang mana? <span style="color:var(--muted-fg);font-weight:500">— ×2</span></div><div class="heard">"teh dua"</div></div><button class="x">✕</button></div>
+            <div class="opts"><button class="opt">Es Teh Manis <small>8rb</small></button><button class="opt">Teh Tawar <small>5rb</small></button><button class="opt">Teh Tarik <small>12rb</small></button><button class="opt ghost">Lewati</button></div></div>
+          <div class="att red"><div class="t1"><span class="ic">!</span><div><div class="ttl">Coklat Panas — stok habis</div><div class="heard">"coklat panas satu"</div></div><button class="x">✕</button></div>
+            <div class="opts"><button class="opt">Tetap tambahkan</button><button class="opt ghost">Lewati</button></div></div>
+          <div class="att gray"><div class="t1"><span class="ic">🔍</span><div><div class="ttl">Belum ada di produk kamu</div><div class="heard">"pisang goreng tiga"</div></div><button class="x">✕</button></div>
+            <div class="opts"><button class="opt">Cari manual</button><button class="opt ghost">Lewati</button></div></div>
+          <div class="lh">Di keranjang <span class="c">2</span></div>
+          <div class="cart">
+            <div class="row"><div class="th">☕</div><div class="mid"><div class="nm">Kopi Susu</div><div class="pr">Rp 18.000 × 3 = <b>Rp 54.000</b></div></div><div class="step"><button>−</button><span class="q">3</span><button>+</button></div></div>
+            <div class="row"><div class="th">🍞</div><div class="mid"><div class="nm">Roti Bakar</div><div class="pr">Rp 15.000 × 1 = <b>Rp 15.000</b></div></div><div class="step"><button>−</button><span class="q">1</span><button>+</button></div></div>
+          </div>
+        </div>
+        <div class="foot">
+          <div class="tot"><span>Total · 4 barang</span><b>Rp 69.000</b></div>
+          <div class="btns"><button class="mic">⏹</button><button class="pay">Bayar Rp 69.000</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4: selesai / mic mati + undo -->
+    <div class="frame">
+      <div class="cap"><b>A4</b> · Mic dimatikan + koreksi</div>
+      <div class="sub">Setelah Stop, halaman tetap terbuka untuk dicek. Qty diturunkan ke 0 → baris hilang, muncul toast "Batalkan".</div>
+      <div class="phone">
+        <div class="scroll">
+          <div class="hdr"><div class="back">←</div><div class="t">Keranjang Suara</div><div class="act">Kosongkan</div></div>
+          <div class="ribbon off"><div class="top"><span class="dot"></span><span class="lbl">Mic mati</span><button class="stop">Lanjut bicara</button></div>
+            <div class="txt"><span class="idle">Cek lagi daftarnya, lalu Bayar.</span></div></div>
+          <div class="stats">
+            <div class="stat"><div class="k">Jenis</div><div class="v">3</div></div>
+            <div class="stat"><div class="k">Total qty</div><div class="v">6</div></div>
+            <div class="stat"><div class="k">Perlu dicek</div><div class="v">0</div></div>
+          </div>
+          <div class="lh">Di keranjang <span class="c">3</span></div>
+          <div class="cart">
+            <div class="row"><div class="th">☕</div><div class="mid"><div class="nm">Kopi Susu</div><div class="pr">Rp 18.000 × 3 = <b>Rp 54.000</b></div></div><div class="step"><button>−</button><span class="q">3</span><button>+</button></div></div>
+            <div class="row"><div class="th">🧋</div><div class="mid"><div class="nm">Es Teh Manis</div><div class="pr">Rp 8.000 × 2 = <b>Rp 16.000</b></div></div><div class="step"><button>−</button><span class="q">2</span><button>+</button></div></div>
+            <div class="row"><div class="th">🍞</div><div class="mid"><div class="nm">Roti Bakar</div><div class="pr">Rp 15.000 × 1 = <b>Rp 15.000</b></div></div><div class="step"><button>−</button><span class="q">1</span><button>+</button></div></div>
+          </div>
+        </div>
+        <div class="toast">🗑 <span><b>Indomie Goreng ×2</b> dihapus</span><button>Batalkan</button></div>
+        <div class="foot">
+          <div class="tot"><span>Total · 6 barang</span><b>Rp 85.000</b></div>
+          <div class="btns"><button class="mic off">🎙</button><button class="pay">Bayar Rp 85.000</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5: interaktif -->
+    <div class="frame">
+      <div class="cap"><b>A★</b> · Coba sendiri</div>
+      <div class="sub">Simulasi: tekan tombol ucapan di bawah untuk merasakan bagaimana keranjang terisi.</div>
+      <div class="phone">
+        <div class="scroll">
+          <div class="hdr"><div class="back">←</div><div class="t">Keranjang Suara</div><div class="act" id="sClear" style="cursor:pointer">Kosongkan</div></div>
+          <div class="ribbon"><div class="top"><span class="dot"></span><span class="lbl">Mendengarkan</span><button class="stop">Stop</button></div>
+            <div class="txt" id="sLive"><span class="idle">Sebut nama barang dan jumlahnya…</span></div></div>
+          <div class="stats">
+            <div class="stat"><div class="k">Jenis</div><div class="v" id="sJenis">0</div></div>
+            <div class="stat"><div class="k">Total qty</div><div class="v" id="sQty">0</div></div>
+            <div class="stat" id="sWarnBox"><div class="k">Perlu dicek</div><div class="v" id="sWarn">0</div></div>
+          </div>
+          <div id="sAtt"></div>
+          <div class="lh">Di keranjang <span class="c" id="sCount">0</span></div>
+          <div class="cart" id="sCart"></div>
+        </div>
+        <div class="foot">
+          <div class="tot"><span id="sTotLbl">Total · 0 barang</span><b id="sTot">Rp 0</b></div>
+          <div class="btns"><button class="mic">⏹</button><button class="pay" id="sPay" disabled>Bayar</button></div>
+        </div>
+      </div>
+      <div class="demo">
+        <button class="p" data-say="kopi susu dua">"kopi susu dua"</button>
+        <button class="p" data-say="roti bakar satu">"roti bakar satu"</button>
+        <button class="p" data-say="kopi susu satu">"kopi susu satu"</button>
+        <button class="p" data-say="teh dua">"teh dua" (ragu)</button>
+        <button class="p" data-say="pisang goreng">"pisang goreng" (tidak ada)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= OPSI B ================= -->
+  <div class="secttl">Opsi B · Bottom sheet di atas Kasir (alternatif lebih ringan)</div>
+  <div class="frames">
+    <div class="frame">
+      <div class="cap"><b>B1</b> · Sheet keranjang saat bicara</div>
+      <div class="sub">Grid kasir tetap di belakang. Cepat dibuat, tapi hanya muat ±4 baris sebelum harus scroll.</div>
+      <div class="phone">
+        <div class="scroll">
+          <div class="hdr"><div class="back">☰</div><div class="t">Kasir</div><div class="act">🛒 3</div></div>
+          <div class="search">🔍 Cari produk… <span class="vbtn">🎙 Suara</span></div>
+          <div class="grid">
+            <div class="pc"><div class="im">☕</div>Kopi Susu<div class="p">Rp 18.000</div></div>
+            <div class="pc"><div class="im">🧋</div>Es Teh Manis<div class="p">Rp 8.000</div></div>
+            <div class="pc"><div class="im">🍞</div>Roti Bakar<div class="p">Rp 15.000</div></div>
+            <div class="pc"><div class="im">🍜</div>Indomie Goreng<div class="p">Rp 12.000</div></div>
+          </div>
+        </div>
+        <div class="dim"></div>
+        <div class="sheet">
+          <div class="grab"></div>
+          <div class="scroll" style="padding-top:4px">
+            <div class="ribbon"><div class="top"><span class="dot"></span><span class="lbl">Mendengarkan</span><button class="stop">Stop</button></div>
+              <div class="txt">es teh dua…</div></div>
+            <div class="cart">
+              <div class="row new"><span class="badge">+2</span><div class="th">🧋</div><div class="mid"><div class="nm">Es Teh Manis</div><div class="pr">×2 · <b>Rp 16.000</b></div></div><div class="step"><button>−</button><span class="q">2</span><button>+</button></div></div>
+              <div class="row"><div class="th">☕</div><div class="mid"><div class="nm">Kopi Susu</div><div class="pr">×3 · <b>Rp 54.000</b></div></div><div class="step"><button>−</button><span class="q">3</span><button>+</button></div></div>
+              <div class="row"><div class="th">🍞</div><div class="mid"><div class="nm">Roti Bakar</div><div class="pr">×1 · <b>Rp 15.000</b></div></div><div class="step"><button>−</button><span class="q">1</span><button>+</button></div></div>
+            </div>
+          </div>
+          <div class="foot"><div class="btns"><button class="mic">⏹</button><button class="pay">Bayar Rp 85.000</button></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame" style="flex:1 1 420px;width:auto;max-width:620px">
+      <div class="cap">Perbandingan</div>
+      <div class="notes" style="margin-top:0">
+        <table>
+          <tr><th></th><th>A · Halaman</th><th>B · Sheet</th></tr>
+          <tr><td>Lihat semua barang + qty</td><td>✅ Lega, 8–10 baris</td><td>⚠️ ±4 baris</td></tr>
+          <tr><td>Tahu barang yang baru masuk</td><td>✅ Sorot + naik ke atas</td><td>✅ Sama</td></tr>
+          <tr><td>Area "perlu dicek" terpisah</td><td>✅ Ada ruang</td><td>⚠️ Berdesakan</td></tr>
+          <tr><td>Masih bisa tap produk di grid</td><td>❌ (kembali dulu)</td><td>✅ Tarik sheet ke bawah</td></tr>
+          <tr><td>Usaha implementasi</td><td>Sedang: route/overlay baru, pakai ulang hook <code>useCartDictation</code></td><td>Ringan: ganti isi <code>VoiceCartBar</code></td></tr>
+        </table>
+        <p style="font-size:12.5px;line-height:1.7;margin-top:12px">Catatan implementasi (untuk nanti): hook <code>useCartDictation</code> tetap dipakai; yang berubah hanya tampilan. Chip <code>added</code> tidak lagi dirender sebagai daftar, melainkan memicu sorotan pada baris keranjang produk yang sama. Chip <code>unclear / blocked / notfound</code> pindah ke bagian "Perlu dicek".</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const P = {
+    'kopi susu':{nm:'Kopi Susu',em:'☕',pr:18000},
+    'roti bakar':{nm:'Roti Bakar',em:'🍞',pr:15000},
+    'es teh manis':{nm:'Es Teh Manis',em:'🧋',pr:8000},
+    'teh tawar':{nm:'Teh Tawar',em:'🍵',pr:5000},
+  };
+  const num = {satu:1,dua:2,tiga:3};
+  let cart = [], att = [], lastKey = null, lastAdd = 0;
+  const rp = n => 'Rp ' + n.toLocaleString('id-ID');
+  const $ = id => document.getElementById(id);
+
+  function add(key, q){
+    const i = cart.findIndex(c => c.key === key);
+    if (i >= 0){ const [c] = cart.splice(i,1); c.q += q; cart.unshift(c); }
+    else cart.unshift({key, q, ...P[key]});
+    lastKey = key; lastAdd = q;
+  }
+  function render(){
+    const qty = cart.reduce((s,c)=>s+c.q,0), tot = cart.reduce((s,c)=>s+c.q*c.pr,0);
+    $('sJenis').textContent = cart.length; $('sQty').textContent = qty; $('sCount').textContent = cart.length;
+    $('sWarn').textContent = att.length; $('sWarnBox').className = 'stat' + (att.length ? ' warn' : '');
+    $('sTot').textContent = rp(tot); $('sTotLbl').textContent = 'Total · ' + qty + ' barang';
+    $('sPay').disabled = !qty; $('sPay').textContent = qty ? 'Bayar ' + rp(tot) : 'Bayar';
+    $('sCart').innerHTML = cart.length ? cart.map(c => `
+      <div class="row ${c.key===lastKey?'new':''}">${c.key===lastKey?`<span class="badge">+${lastAdd}</span>`:''}
+        <div class="th">${c.em}</div><div class="mid"><div class="nm">${c.nm}</div><div class="pr">${rp(c.pr)} × ${c.q} = <b>${rp(c.pr*c.q)}</b></div></div>
+        <div class="step"><button data-k="${c.key}" data-d="-1">−</button><span class="q">${c.q}</span><button data-k="${c.key}" data-d="1">+</button></div></div>`).join('')
+      : '<div class="empty"><div class="big">🛒</div><p>Belum ada barang.</p></div>';
+    $('sAtt').innerHTML = att.length ? '<div class="lh warn">Perlu dicek <span class="c">'+att.length+'</span></div>' + att.map((a,i) => a.type==='unclear' ? `
+      <div class="att"><div class="t1"><span class="ic">?</span><div><div class="ttl">Teh yang mana? <span style="color:var(--muted-fg);font-weight:500">— ×${a.q}</span></div><div class="heard">"${a.heard}"</div></div><button class="x" data-skip="${i}">✕</button></div>
+        <div class="opts"><button class="opt" data-pick="${i}" data-key="es teh manis">Es Teh Manis <small>8rb</small></button><button class="opt" data-pick="${i}" data-key="teh tawar">Teh Tawar <small>5rb</small></button><button class="opt ghost" data-skip="${i}">Lewati</button></div></div>` : `
+      <div class="att gray"><div class="t1"><span class="ic">🔍</span><div><div class="ttl">Belum ada di produk kamu</div><div class="heard">"${a.heard}"</div></div><button class="x" data-skip="${i}">✕</button></div>
+        <div class="opts"><button class="opt">Cari manual</button><button class="opt ghost" data-skip="${i}">Lewati</button></div></div>`).join('') : '';
+  }
+  function say(text){
+    $('sLive').textContent = text + '…';
+    setTimeout(() => {
+      const parts = text.split(' '), q = num[parts[parts.length-1]] || 1;
+      const name = parts.filter(w => !num[w]).join(' ');
+      if (P[name]) add(name, q);
+      else if (name === 'teh') att.push({type:'unclear', heard:text, q});
+      else att.push({type:'notfound', heard:text});
+      $('sLive').innerHTML = '<span class="idle">Sebut nama barang dan jumlahnya…</span>';
+      render();
+    }, 700);
+  }
+  document.querySelectorAll('[data-say]').forEach(b => b.onclick = () => say(b.dataset.say));
+  document.addEventListener('click', e => {
+    const t = e.target.closest('button,[id=sClear]'); if (!t) return;
+    if (t.id === 'sClear'){ cart=[]; att=[]; lastKey=null; render(); }
+    if (t.dataset.d){ const c = cart.find(x => x.key===t.dataset.k); c.q += +t.dataset.d; if (c.q<=0) cart = cart.filter(x=>x!==c); lastKey=null; render(); }
+    if (t.dataset.pick){ const a = att.splice(+t.dataset.pick,1)[0]; add(t.dataset.key, a.q); render(); }
+    else if (t.dataset.skip){ att.splice(+t.dataset.skip,1); render(); }
+  });
+  render();
+})();
+</script>
+</body>
+</html>

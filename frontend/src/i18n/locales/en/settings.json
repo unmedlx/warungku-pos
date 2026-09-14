@@ -1404,6 +1404,28 @@
         "unsupported": "This phone has no speech recognition service.",
         "unknown": "The microphone stopped on its own. Turn it back on to continue.",
         "denied": "Microphone permission denied."
+      },
+      "page": {
+        "title": "Voice Cart",
+        "back": "Back to cashier",
+        "clear": "Clear",
+        "micOff": "Mic is off. Check the list, then Pay.",
+        "resume": "Keep talking",
+        "kinds": "Items",
+        "qty": "Total qty",
+        "needsCheck": "Needs check",
+        "inCart": "In cart",
+        "empty": "No items yet. Try saying:",
+        "examples": [
+          "two iced coffees",
+          "three iced teas",
+          "one toast, two water"
+        ],
+        "totalLabel": "Total · {{count}} items",
+        "searchManual": "Search manually",
+        "removed": "{{name}} removed",
+        "cleared": "Cart cleared",
+        "undo": "Undo"
       }
     }
   },

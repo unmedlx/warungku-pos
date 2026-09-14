@@ -88,7 +88,7 @@ describe('chip kabar tidak menumpuk', () => {
     await speak('teh gelas satu');
     await speak('gula pasir tiga');
 
-    const info = result.current.chips.filter((c) => c.kind !== 'unclear');
+    const info = result.current.chips.filter((c) => c.kind === 'added');
     expect(info).toHaveLength(1);
     // Yang bertahan adalah yang terbaru — barang yang barusan disebut.
     expect(info[0].product?.name).toBe('Gula Pasir');
@@ -180,5 +180,16 @@ describe('stok habis', () => {
 
     expect(result.current.chips[0].kind).toBe('blocked');
     expect(result.current.chips[0].product?.name).toBe('Teh Gelas');
+  });
+
+  it('penolakan bertahan sampai dicek kasir', async () => {
+    const { result } = await setup(() => false);
+
+    await speak('teh gelas satu');
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(10_000);
+    });
+
+    expect(result.current.chips[0].kind).toBe('blocked');
   });
 });

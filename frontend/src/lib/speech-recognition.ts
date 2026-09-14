@@ -224,6 +224,16 @@ const MAX_SILENT_MS = 45_000;
 const WATCHDOG_MS = 1200;
 
 /**
+ * Recognizer yang baru dinyalakan tidak diperiksa denyutnya dulu.
+ *
+ * Plugin menyalakannya lewat `post()` ke thread UI, jadi `isListening()` masih
+ * false sesaat sesudah `start()` selesai. Memeriksanya terlalu cepat membuat
+ * sesi sehat disambung dua kali — dan `beginListening` menghancurkan
+ * recognizer yang baru saja mulai mendengar.
+ */
+const START_GRACE_MS = 1000;
+
+/**
  * Kegagalan yang wajar terjadi di tengah dikte dan layak dicoba lagi.
  *
  * "No match" dan "speech timeout" adalah cara Android bilang penuturnya diam —
@@ -293,6 +303,8 @@ async function startNativeSession(handlers: SpeechSessionHandlers): Promise<Spee
   let timer: ReturnType<typeof setTimeout> | null = null;
   let watchdog: ReturnType<typeof setInterval> | null = null;
   let probing = false;
+  /** Kapan recognizer terakhir dinyalakan; lihat `START_GRACE_MS`. */
+  let startedAt = 0;
 
   const clearTimer = () => {
     if (timer) clearTimeout(timer);
@@ -371,6 +383,7 @@ async function startNativeSession(handlers: SpeechSessionHandlers): Promise<Spee
 
   const runSession = async () => {
     if (cancelled || stopping) return;
+    startedAt = Date.now();
     try {
       await SpeechRecognition.start({
         language: LANGUAGE,
@@ -407,7 +420,10 @@ async function startNativeSession(handlers: SpeechSessionHandlers): Promise<Spee
           return;
         }
         clearTimer();
-        timer = setTimeout(() => void runSession(), RETRY_BACKOFF_MS);
+        timer = setTimeout(() => {
+          timer = null;
+          void runSession();
+        }, RETRY_BACKOFF_MS);
         return;
       }
 
@@ -433,6 +449,11 @@ async function startNativeSession(handlers: SpeechSessionHandlers): Promise<Spee
      */
     clearTimer();
     timer = setTimeout(() => {
+      // Wajib dikosongkan. Pemantau denyut membaca `timer != null` sebagai
+      // "penyambungan sedang dijadwalkan"; id pewaktu yang sudah lewat membuat
+      // pemantau itu diam selamanya, dan recognizer yang mati karena hening
+      // sesudah ini tidak pernah dibangunkan lagi.
+      timer = null;
       if (cancelled || stopping) return;
       commit();
       void runSession();
@@ -447,6 +468,7 @@ async function startNativeSession(handlers: SpeechSessionHandlers): Promise<Spee
    */
   const checkPulse = async () => {
     if (cancelled || stopping || probing || timer != null) return;
+    if (Date.now() - startedAt < START_GRACE_MS) return;
     probing = true;
     try {
       const { listening } = await SpeechRecognition.isListening();

@@ -965,6 +965,28 @@
         "unsupported": "Telefon ini tiada perkhidmatan pengecaman suara.",
         "unknown": "Mikrofon berhenti sendiri. Hidupkan semula untuk teruskan.",
         "denied": "Kebenaran mikrofon ditolak."
+      },
+      "page": {
+        "title": "Troli Suara",
+        "back": "Kembali ke juruwang",
+        "clear": "Kosongkan",
+        "micOff": "Mikrofon mati. Semak senarai, kemudian Bayar.",
+        "resume": "Sambung bercakap",
+        "kinds": "Jenis",
+        "qty": "Jumlah kuantiti",
+        "needsCheck": "Perlu disemak",
+        "inCart": "Dalam troli",
+        "empty": "Belum ada barang. Cuba sebut:",
+        "examples": [
+          "kopi susu dua",
+          "tiga teh ais",
+          "roti bakar satu, air mineral dua"
+        ],
+        "totalLabel": "Jumlah · {{count}} barang",
+        "searchManual": "Cari manual",
+        "removed": "{{name}} dibuang",
+        "cleared": "Troli dikosongkan",
+        "undo": "Batalkan"
       }
     }
   },

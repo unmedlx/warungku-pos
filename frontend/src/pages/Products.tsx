@@ -621,9 +621,14 @@ export default function Produk() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="min-w-[180px]">
-                <DropdownMenuItem onClick={() => setSpeechDialogOpen(true)} className="gap-2.5">
+                {/* Tambah produk lewat suara masih dikembangkan: terlihat supaya
+                    pemilik toko tahu fiturnya akan datang, tapi belum bisa dibuka. */}
+                <DropdownMenuItem disabled className="gap-2.5">
                   <Mic className="w-4 h-4" />
                   {t('speech.button')}
+                  <span className="ml-auto rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold text-primary">
+                    {t('speech.comingSoon')}
+                  </span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setScanDialogOpen(true)} className="gap-2.5">
                   <Camera className="w-4 h-4" />

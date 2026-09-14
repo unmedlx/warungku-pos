@@ -1,12 +1,12 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, isStockManaged, type Product, type Category, type Transaction, type TransactionItemRecord } from '@/lib/db';
 import { useState, useEffect, useMemo } from 'react';
-import { Search, Check, ScanBarcode, Mic, MicOff, HandCoins, Clock, Package as PackageIcon, ClipboardList, User, Hash, FileText, Printer, Trash2, Save, Plus, ChevronRight } from '@/components/icons';
+import { Search, Check, ScanBarcode, Mic, HandCoins, Clock, Package as PackageIcon, ClipboardList, User, Hash, FileText, Printer, Trash2, Save, Plus, ChevronRight } from '@/components/icons';
 import Receipt from '@/components/Receipt';
 import KitchenTicket from '@/components/KitchenTicket';
 import BarcodeScanner from '@/components/BarcodeScanner';
-import VoiceCartBar from '@/components/cashier/VoiceCartBar';
-import { useCartDictation, type CartChip } from '@/hooks/use-cart-dictation';
+import VoiceCartPage from '@/components/cashier/VoiceCartPage';
+import { useCartDictation } from '@/hooks/use-cart-dictation';
 import { Card, CardContent } from '@/components/jokoui/card';
 import { Button } from '@/components/jokoui/button';
 import { Input } from '@/components/jokoui/input';
@@ -225,18 +225,39 @@ export default function Kasir() {
     return accepted;
   };
 
-  /** Batalkan barang yang telanjur masuk lewat suara, sebanyak yang tadi masuk. */
-  const undoSpoken = (chip: CartChip) => {
-    const id = chip.product?.id;
-    if (id == null) return;
-    setCart(prev =>
-      prev.flatMap(c => {
-        if (c.product.id !== id) return [c];
-        const remaining = c.qty - chip.qty;
-        return remaining > 0 ? [{ ...c, qty: remaining }] : [];
-      }),
-    );
-    voice.dismissChip(chip.id);
+  /**
+   * Halaman Keranjang Suara. Terbuka selama kasir memakai suara; menutupnya
+   * mematikan mikrofon tapi tidak menyentuh isi keranjang.
+   */
+  const [voicePageOpen, setVoicePageOpen] = useState(false);
+
+  const openVoicePage = () => {
+    setVoicePageOpen(true);
+    if (!voice.listening && !voice.starting) void voice.start();
+  };
+
+  const closeVoicePage = () => {
+    setVoicePageOpen(false);
+    void voice.stop();
+  };
+
+  /** Hapus satu baris dari halaman suara, dengan jalan kembali. */
+  const removeWithUndo = (item: CartItem) => {
+    removeFromCart(item.product.id!);
+    toast(t('cashier.voice.page.removed', { name: item.product.name }), {
+      action: {
+        label: t('cashier.voice.page.undo'),
+        onClick: () => setCart(prev => (prev.some(c => c.product.id === item.product.id) ? prev : [...prev, item])),
+      },
+    });
+  };
+
+  const clearWithUndo = () => {
+    const snapshot = cart;
+    setCart([]);
+    toast(t('cashier.voice.page.cleared'), {
+      action: { label: t('cashier.voice.page.undo'), onClick: () => setCart(snapshot) },
+    });
   };
 
   /**
@@ -934,9 +955,6 @@ export default function Kasir() {
             </div>
           )}
 
-          {/* Pita "sedang mendengarkan" + chip hasil ucapan */}
-          <VoiceCartBar dictation={voice} onUndo={undoSpoken} />
-
           {/* Search — also the scanner-gun field (Enter on exact SKU/barcode adds to cart) */}
           <div className="flex gap-2 mb-3">
             <div className="relative flex-1">
@@ -954,15 +972,13 @@ export default function Kasir() {
                 lebih buruk daripada tidak menawarkannya sama sekali. */}
             {voice.available && (
               <Button
-                variant={voice.listening ? 'default' : 'outline'}
+                variant="outline"
                 size="icon"
-                aria-label={t(voice.listening ? 'cashier.voice.stop' : 'cashier.voice.start')}
-                aria-pressed={voice.listening}
-                onClick={voice.toggle}
+                aria-label={t('cashier.voice.page.title')}
+                onClick={openVoicePage}
                 disabled={voice.starting}
-                className={voice.listening ? 'bg-destructive hover:bg-destructive/90' : undefined}
               >
-                {voice.listening ? <MicOff /> : <Mic />}
+                <Mic />
               </Button>
             )}
             {traits.barcode && (
@@ -975,7 +991,7 @@ export default function Kasir() {
           {/* Mikrofon yang padam sendiri WAJIB memberi alasan dan jalan
               kembali. Tanpa ini kasir cuma melihat suaranya berhenti bekerja,
               tanpa tahu kenapa dan tanpa tahu harus berbuat apa. */}
-          {voice.error && (
+          {voice.error && !voicePageOpen && (
             <div className="mb-3 flex items-start gap-2 rounded-xl border border-warning/40 bg-warning/10 px-3 py-2">
               <p className="flex-1 text-[11.5px] leading-relaxed text-warning-text">
                 {t(voice.denied ? 'cashier.voice.denied' : `cashier.voice.error.${voice.error}`)}
@@ -985,7 +1001,7 @@ export default function Kasir() {
                   variant="outline"
                   size="sm"
                   className="h-7 shrink-0 gap-1 text-[11px]"
-                  onClick={() => void voice.start()}
+                  onClick={openVoicePage}
                 >
                   <Mic className="h-3 w-3" />
                   {t('cashier.voice.retry')}
@@ -1228,6 +1244,23 @@ export default function Kasir() {
             </Button>
           </div>
         </div>
+      )}
+
+      {voicePageOpen && (
+        <VoiceCartPage
+          dictation={voice}
+          cart={cart}
+          total={total}
+          rp={rp}
+          unitPriceOf={itemUnitPrice}
+          subtotalOf={getItemSubtotal}
+          onUpdateQty={updateQty}
+          onRemove={removeWithUndo}
+          onClear={clearWithUndo}
+          onClose={closeVoicePage}
+          onPay={() => { closeVoicePage(); openCheckout(false); }}
+          onSearchManual={closeVoicePage}
+        />
       )}
 
       {/* Cart Sheet (mobile only) */}

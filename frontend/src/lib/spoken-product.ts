@@ -175,6 +175,10 @@ const FILLERS = new Set([
   'dengan',
   'ke',
   'di',
+  // "jual tiga ribu, ralat, jual tiga ribu lima ratus": kata pemicu yang
+  // disebut ulang sudah menimpa nilai sebelumnya, jadi "ralat" cukup dibuang
+  // supaya tidak terbaca sebagai nama produk berikutnya.
+  'ralat',
 ]);
 
 /**

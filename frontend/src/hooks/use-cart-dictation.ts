@@ -1,20 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Product } from '@/lib/db';
-import {
-  isSpeechRecognitionAvailable,
-  requestSpeechPermission,
-  startSpeechSession,
-  type SpeechErrorCode,
-  type SpeechSession,
-} from '@/lib/speech-recognition';
+import type { SpeechErrorCode } from '@/lib/speech-recognition';
+import { useLiveDictation } from '@/hooks/use-live-dictation';
 import { parseSpokenCart } from '@/lib/spoken-cart';
 
 /**
  * Mikrofon yang menyala selama transaksi kasir.
  *
- * Berbeda dari `useSpeechDictation` yang mengumpulkan ucapan lalu mengirimnya
- * sekali di akhir, hook ini bertindak SAMBIL kasir bicara. Itu menuntut dua
- * hal yang tidak berlaku di sana:
+ * Siklus mikrofonnya dipinjam dari `useLiveDictation`; yang khas kasir ada di
+ * sini. Dua aturannya:
  *
  * - hanya potongan FINAL yang boleh menambah barang. Hasil sementara sering
  *   berubah total sedetik kemudian, dan barang yang muncul lalu hilang sendiri
@@ -78,28 +72,20 @@ export interface UseCartDictation {
 /**
  * Chip dibagi dua watak, dan keduanya diperlakukan berbeda.
  *
- * Yang MEMINTA TINDAKAN — pilihan saat ambigu — harus menunggu kasir, jadi ia
- * bertahan sampai disentuh. Yang cuma MENGABARKAN — barang masuk, stok habis,
- * tidak ketemu — tidak boleh menumpuk: kasir sudah melihat hasilnya di
- * keranjang, dan tumpukan kartu justru mendorong grid produk keluar layar.
+ * `added` hanya KABAR: barangnya sudah tampil di halaman Keranjang Suara, jadi
+ * chip ini cuma dipakai untuk menyorot baris yang barusan masuk, lalu padam.
  *
- * Karena itu kabar hanya ditampilkan satu pada satu waktu, dan padam sendiri.
+ * Sisanya — ambigu, stok habis, tidak ketemu — PERLU DICEK. Ia bertahan sampai
+ * disentuh kasir: kalau padam sendiri, ucapan yang gagal masuk hilang tanpa
+ * jejak dan kasir mengira keranjangnya sudah lengkap.
  */
-const MAX_ACTIONABLE_CHIPS = 2;
+const MAX_ISSUE_CHIPS = 5;
 const MAX_INFO_CHIPS = 1;
 
-/**
- * Berapa lama chip kabar bertahan sebelum padam sendiri.
- *
- * Cukup lama untuk terbaca dan dibatalkan, cukup singkat supaya tidak menjadi
- * riwayat. Penolakan diberi waktu lebih panjang karena isinya perlu dibaca,
- * bukan sekadar dilirik.
- */
-const DISMISS_AFTER: Record<Exclude<CartChipKind, 'unclear'>, number> = {
-  added: 4000,
-  blocked: 6000,
-  notfound: 6000,
-};
+/** Berapa lama sorotan barang yang baru masuk bertahan. */
+const HIGHLIGHT_FOR = 2500;
+
+export const needsCheck = (chip: CartChip) => chip.kind !== 'added';
 
 let chipSeq = 0;
 const nextChipId = () => `chip-${(chipSeq += 1)}`;
@@ -109,39 +95,16 @@ export function useCartDictation({
   onAdd,
   onFallbackSearch,
 }: UseCartDictationOptions): UseCartDictation {
-  const [available, setAvailable] = useState<boolean | null>(null);
-  const [listening, setListening] = useState(false);
-  const [starting, setStarting] = useState(false);
-  const [denied, setDenied] = useState(false);
-  const [unsupported, setUnsupported] = useState(false);
-  const [error, setError] = useState<SpeechErrorCode | null>(null);
-  const [liveText, setLiveText] = useState('');
   const [chips, setChips] = useState<CartChip[]>([]);
 
-  const sessionRef = useRef<SpeechSession | null>(null);
-
-  // Sesi dibuat sekali lalu hidup sepanjang transaksi, sementara katalog dan
-  // penangan keranjang ikut berubah tiap render. Tanpa ref, penangan yang
-  // dipegang sesi membeku di nilai saat mikrofon dinyalakan — barang yang baru
-  // ditambahkan pemilik toko tidak akan pernah dikenali sampai mik dimatikan.
+  // Katalog dan penangan keranjang berubah tiap render, sementara potongan
+  // ucapan datang dari sesi yang hidup sepanjang transaksi.
   const productsRef = useRef(products);
   productsRef.current = products;
   const addRef = useRef(onAdd);
   addRef.current = onAdd;
   const searchRef = useRef(onFallbackSearch);
   searchRef.current = onFallbackSearch;
-
-  useEffect(() => {
-    let alive = true;
-    void isSpeechRecognitionAvailable().then((ok) => {
-      if (!alive) return;
-      setAvailable(ok);
-      setUnsupported(!ok);
-    });
-    return () => {
-      alive = false;
-    };
-  }, []);
 
   const dismissTimers = useRef(new Map<string, ReturnType<typeof setTimeout>>());
 
@@ -154,8 +117,8 @@ export function useCartDictation({
 
   const scheduleDismiss = useCallback(
     (chip: CartChip) => {
-      if (chip.kind === 'unclear') return;
-      const timer = setTimeout(() => dismissChip(chip.id), DISMISS_AFTER[chip.kind]);
+      if (needsCheck(chip)) return;
+      const timer = setTimeout(() => dismissChip(chip.id), HIGHLIGHT_FOR);
       dismissTimers.current.set(chip.id, timer);
     },
     [dismissChip],
@@ -171,14 +134,14 @@ export function useCartDictation({
         // satu kabar baru tidak menggusur pertanyaan yang belum dijawab.
         const merged = [...incoming, ...prev];
         const keep = new Set<string>();
-        let actionable = 0;
+        let issues = 0;
         let info = 0;
 
         for (const c of merged) {
-          if (c.kind === 'unclear') {
-            if (actionable < MAX_ACTIONABLE_CHIPS) {
+          if (needsCheck(c)) {
+            if (issues < MAX_ISSUE_CHIPS) {
               keep.add(c.id);
-              actionable += 1;
+              issues += 1;
             }
           } else if (info < MAX_INFO_CHIPS) {
             keep.add(c.id);
@@ -241,69 +204,15 @@ export function useCartDictation({
     [pushChips],
   );
 
-  const stop = useCallback(async () => {
-    const session = sessionRef.current;
-    sessionRef.current = null;
-    setListening(false);
-    setLiveText('');
-    setError(null);
-    await session?.cancel();
-  }, []);
+  const live = useLiveDictation({ onSegment: consumeSegment });
 
-  const start = useCallback(async () => {
-    if (sessionRef.current) return;
-    setStarting(true);
-    setDenied(false);
-    setError(null);
-
-    const granted = await requestSpeechPermission();
-    if (!granted) {
-      setStarting(false);
-      setDenied(true);
-      return;
-    }
-
-    const session = await startSpeechSession({
-      // Pita menampilkan ucapan yang SEDANG berjalan saja. Teks kumulatif
-      // membuat kalimat menumpuk sampai barang yang baru disebut tenggelam.
-      onTranscript: () => {},
-      onPartial: setLiveText,
-      onSegment: consumeSegment,
-      // Mesin berhenti total hanya kalau perangkat menyerah; pita padam
-      // sendiri supaya kasir tidak mengira HP-nya masih mendengarkan.
-      onEnd: () => {
-        sessionRef.current = null;
-        setListening(false);
-        setLiveText('');
-      },
-      /**
-       * Galat apa pun yang sampai ke sini berarti sesi sudah menyerah —
-       * pembungkusnya mencoba ulang sendiri selama masih ada harapan. Karena
-       * itu pita WAJIB padam, tanpa kecuali.
-       *
-       * Membiarkannya menyala adalah kegagalan yang paling merugikan di
-       * seluruh fitur ini: kasir terus bicara, tidak ada yang masuk, dan tidak
-       * ada satu pun tanda di layar yang memberi tahu kenapa.
-       */
-      onError: (code) => {
-        if (code === 'denied') setDenied(true);
-        if (code === 'unsupported') setUnsupported(true);
-        setError(code);
-        sessionRef.current = null;
-        setListening(false);
-        setLiveText('');
-      },
-    });
-
-    sessionRef.current = session;
-    setStarting(false);
-    setListening(true);
-  }, [consumeSegment]);
-
+  // Di kasir, berhenti berarti berhenti SEKARANG: potongan yang belum final
+  // tidak boleh menyusul masuk keranjang setelah kasir mematikan mikrofon.
+  const { cancel, start } = live;
   const toggle = useCallback(() => {
-    if (sessionRef.current) void stop();
+    if (live.listening || live.starting) void cancel();
     else void start();
-  }, [start, stop]);
+  }, [live.listening, live.starting, cancel, start]);
 
   const resolveChip = useCallback(
     (chipId: string, product: Product) => {
@@ -317,7 +226,7 @@ export function useCartDictation({
             product,
             candidates: undefined,
           };
-          // Sudah bukan pertanyaan lagi, jadi ia ikut aturan kabar: padam sendiri.
+          // Kalau berhasil masuk, ia jadi sorotan biasa dan padam sendiri.
           scheduleDismiss(resolved);
           return resolved;
         }),
@@ -331,21 +240,20 @@ export function useCartDictation({
     return () => {
       timers.forEach((t) => clearTimeout(t));
       timers.clear();
-      void sessionRef.current?.cancel();
     };
   }, []);
 
   return {
-    available,
-    listening,
-    starting,
-    denied,
-    unsupported,
-    error,
-    liveText,
+    available: live.available,
+    listening: live.listening,
+    starting: live.starting,
+    denied: live.denied,
+    unsupported: live.unsupported,
+    error: live.error,
+    liveText: live.liveText,
     chips,
     start,
-    stop,
+    stop: cancel,
     toggle,
     resolveChip,
     dismissChip,

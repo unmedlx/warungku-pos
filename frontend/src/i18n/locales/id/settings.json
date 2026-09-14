@@ -1377,6 +1377,28 @@
         "unsupported": "HP ini belum punya layanan pengenalan suara.",
         "unknown": "Mikrofon berhenti sendiri. Nyalakan lagi untuk melanjutkan.",
         "denied": "Izin mikrofon ditolak."
+      },
+      "page": {
+        "title": "Keranjang Suara",
+        "back": "Kembali ke kasir",
+        "clear": "Kosongkan",
+        "micOff": "Mic mati. Cek lagi daftarnya, lalu Bayar.",
+        "resume": "Lanjut bicara",
+        "kinds": "Jenis",
+        "qty": "Total qty",
+        "needsCheck": "Perlu dicek",
+        "inCart": "Di keranjang",
+        "empty": "Belum ada barang. Coba sebut:",
+        "examples": [
+          "kopi susu dua",
+          "tiga es teh",
+          "roti bakar satu, air mineral dua"
+        ],
+        "totalLabel": "Total · {{count}} barang",
+        "searchManual": "Cari manual",
+        "removed": "{{name}} dihapus",
+        "cleared": "Keranjang dikosongkan",
+        "undo": "Batalkan"
       }
     }
   },
