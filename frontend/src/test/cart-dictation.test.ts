@@ -193,3 +193,35 @@ describe('stok habis', () => {
     expect(result.current.chips[0].kind).toBe('blocked');
   });
 });
+
+describe('penjaga kuota', () => {
+  it('jatah habis: mikrofon tidak dinyalakan dan ajakan berlangganan muncul', async () => {
+    const { useCartDictation } = await import('@/hooks/use-cart-dictation');
+    const gate = { canStart: () => false, onStarted: vi.fn(async () => true), onStopped: vi.fn(), onBlocked: vi.fn() };
+    const { result } = renderHook(() => useCartDictation({ products: CATALOG, onAdd: () => true, gate }));
+    await waitFor(() => expect(result.current.available).toBe(true));
+
+    await act(async () => {
+      await result.current.start();
+    });
+
+    expect(gate.onBlocked).toHaveBeenCalledTimes(1);
+    expect(result.current.listening).toBe(false);
+    expect(gate.onStarted).not.toHaveBeenCalled();
+  });
+
+  it('sesi dihitung saat mikrofon menyala; ditolak server berarti dimatikan', async () => {
+    const { useCartDictation } = await import('@/hooks/use-cart-dictation');
+    const gate = { canStart: () => true, onStarted: vi.fn(async () => false), onStopped: vi.fn(), onBlocked: vi.fn() };
+    const { result } = renderHook(() => useCartDictation({ products: CATALOG, onAdd: () => true, gate }));
+    await waitFor(() => expect(result.current.available).toBe(true));
+
+    await act(async () => {
+      await result.current.start();
+    });
+
+    await waitFor(() => expect(gate.onStarted).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(gate.onBlocked).toHaveBeenCalledTimes(1));
+    expect(cancel).toHaveBeenCalled();
+  });
+});

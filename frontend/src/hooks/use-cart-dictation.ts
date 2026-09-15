@@ -41,6 +41,22 @@ export interface UseCartDictationOptions {
   onAdd: (product: Product, qty: number) => boolean;
   /** Ucapan yang tidak dikenali diserahkan ke kotak pencarian yang sudah ada. */
   onFallbackSearch?: (text: string) => void;
+  /**
+   * Penjaga kuota. Tanpa ini mikrofon bebas dipakai (dipakai tes dan build
+   * tanpa langganan). Dipasang di hook, bukan di tombol, supaya SEMUA jalan
+   * menyalakan mikrofon — tombol kasir, "Coba lagi", "Lanjut bicara" — ikut
+   * terjaga.
+   */
+  gate?: CartDictationGate;
+}
+
+export interface CartDictationGate {
+  canStart: () => boolean;
+  /** Mikrofon baru saja menyala. `false` = ditolak, mikrofon dimatikan lagi. */
+  onStarted: () => Promise<boolean>;
+  onStopped: () => void;
+  /** Jatah habis — tampilkan ajakan berlangganan. */
+  onBlocked: () => void;
 }
 
 export interface UseCartDictation {
@@ -94,6 +110,7 @@ export function useCartDictation({
   products,
   onAdd,
   onFallbackSearch,
+  gate,
 }: UseCartDictationOptions): UseCartDictation {
   const [chips, setChips] = useState<CartChip[]>([]);
 
@@ -208,11 +225,44 @@ export function useCartDictation({
 
   // Di kasir, berhenti berarti berhenti SEKARANG: potongan yang belum final
   // tidak boleh menyusul masuk keranjang setelah kasir mematikan mikrofon.
-  const { cancel, start } = live;
+  const { cancel, start: liveStart } = live;
+
+  const gateRef = useRef(gate);
+  gateRef.current = gate;
+
+  const start = useCallback(async () => {
+    const g = gateRef.current;
+    if (g && !g.canStart()) {
+      g.onBlocked();
+      return;
+    }
+    await liveStart();
+  }, [liveStart]);
+
   const toggle = useCallback(() => {
     if (live.listening || live.starting) void cancel();
     else void start();
   }, [live.listening, live.starting, cancel, start]);
+
+  // Sesi dihitung saat mikrofon BENAR-BENAR menyala, bukan saat tombol
+  // ditekan: izin yang ditolak atau perangkat tanpa pengenal suara tidak
+  // boleh memakan jatah.
+  const wasListening = useRef(false);
+  useEffect(() => {
+    const g = gateRef.current;
+    if (live.listening === wasListening.current) return;
+    wasListening.current = live.listening;
+    if (!g) return;
+    if (live.listening) {
+      void g.onStarted().then((ok) => {
+        if (ok) return;
+        void cancel();
+        g.onBlocked();
+      });
+    } else {
+      g.onStopped();
+    }
+  }, [live.listening, cancel]);
 
   const resolveChip = useCallback(
     (chipId: string, product: Product) => {

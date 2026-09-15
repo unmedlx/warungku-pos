@@ -14,6 +14,7 @@ import WhatsNewModal from '@/components/WhatsNewModal';
 import { FEATURES, getUnseenFeatures } from '@/lib/whats-new';
 import { APP_VERSION } from '@/lib/app-version';
 import { useTranslation } from 'react-i18next';
+import AppUpdateRows from '@/components/app-update/AppUpdateRows';
 
 const RowIcon = ({ icon: Icon }: { icon: typeof Globe }) => (
   <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${TONE_CLASS.gray}`}>
@@ -79,6 +80,7 @@ export default function AppSettings() {
             </>
           }
         />
+        <AppUpdateRows />
         <Link to="/settings/report-issue" className="block">
           <SettingsItem
             interactive

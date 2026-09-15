@@ -31,6 +31,28 @@ export function createApp(): Application {
   // tetap, jadi API pelanggan tetap terbuka seperti sebelumnya. Panel admin
   // berbeda: ia membuka data seluruh pelanggan, jadi hanya boleh dipanggil
   // dari origin yang terdaftar di ADMIN_ORIGIN.
+  // Penolakan origin tetap membawa Access-Control-Allow-Origin milik peminta.
+  // Tanpa itu browser menyembunyikan respons 403-nya, dan yang terlihat di
+  // panel hanya "CORS header missing" — bukan origin mana yang harus
+  // ditambahkan ke ADMIN_ORIGIN. Isinya hanya pesan penolakan, tanpa data.
+  app.use('/api/admin', (req: Request, res: Response, next) => {
+    const origin = req.get('origin');
+    if (origin && !config.ADMIN_ORIGIN.includes(origin)) {
+      res.set('Access-Control-Allow-Origin', origin).set('Vary', 'Origin');
+      if (req.method === 'OPTIONS') {
+        res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        res.set('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
+        res.status(204).end();
+        return;
+      }
+      res.status(403).json({
+        error: `Origin ${origin} tidak diizinkan mengakses panel admin. Tambahkan ke ADMIN_ORIGIN di server.`,
+        code: 'ORIGIN_NOT_ALLOWED',
+      });
+      return;
+    }
+    next();
+  });
   app.use('/api/admin', cors({ origin: adminOrigin, credentials: true }));
   app.use(cors({ origin: true, credentials: true }));
   // Signature callback Tripay dihitung dari body mentah. Menandatangani ulang

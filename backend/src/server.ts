@@ -15,6 +15,13 @@ async function main() {
     console.warn('[WARNING] Storage/MinIO belum tersedia:', (err as Error).message);
   }
 
+  if (config.NODE_ENV === 'production' && !config.PUBLIC_API_URL) {
+    console.warn(
+      '[WARNING] PUBLIC_API_URL kosong — link unduhan installer disusun dari header Host, ' +
+        'yang di belakang reverse proxy bisa menjadi http://localhost/...',
+    );
+  }
+
   app.listen(config.PORT, () => {
     console.log(`KanPOS Cloud API berjalan di http://localhost:${config.PORT}`);
   });

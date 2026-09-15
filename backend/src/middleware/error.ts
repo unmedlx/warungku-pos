@@ -9,6 +9,11 @@ import { MulterError } from 'multer';
  * pemilik toko melihat "kesalahan server" untuk masalah yang ada di tangannya.
  */
 function multerMessage(err: MulterError): string {
+  if (err.field === 'installer') {
+    return err.code === 'LIMIT_FILE_SIZE'
+      ? 'File installer melebihi batas ukuran unggahan (RELEASE_MAX_MB).'
+      : 'File installer gagal diunggah.';
+  }
   switch (err.code) {
     case 'LIMIT_FILE_SIZE':
       return 'Ukuran foto terlalu besar. Maksimal 6 MB per foto.';

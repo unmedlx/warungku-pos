@@ -68,7 +68,7 @@ export default function Harga() {
               Selamanya. Tanpa kartu kredit, tanpa daftar akun.
             </p>
             <DaftarCek items={fiturGratis} terang />
-            <Tombol href={TAUTAN.playStore} variant="terang" size="xl" blok className="mt-6">
+            <Tombol href={TAUTAN.download} variant="terang" size="xl" blok className="mt-6">
               Download Gratis
             </Tombol>
           </div>

@@ -32,6 +32,8 @@
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Memasang update APK dari KanPOS Cloud (distribusi di luar Play Store). -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="com.android.vending.BILLING" />
 
     <!-- Kamera untuk scan barcode/QR (SKU & barcode produk, kasir) -->

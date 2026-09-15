@@ -1,6 +1,8 @@
 import { clearSession, getToken, setSession, type Session } from './auth';
 import type {
   AdminPlan,
+  AppRelease,
+  ReleaseInput,
   AuditList,
   GrantResult,
   PlanInput,
@@ -15,7 +17,7 @@ import type {
   UserList,
 } from './types';
 
-const BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || 'http://localhost:3210';
+export const BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || 'http://localhost:3210';
 
 export class ApiError extends Error {
   constructor(
@@ -144,3 +146,69 @@ export const fetchAudit = (params: { page?: number; limit?: number }) =>
 
 export const reconcilePayment = (id: string) =>
   request<ReconcileResult>(`/api/admin/payments/${id}/reconcile`, { method: 'POST' });
+
+export const fetchReleases = () => request<{ releases: AppRelease[] }>('/api/admin/releases');
+
+/**
+ * Unggah installer lewat XHR, bukan fetch: fetch belum bisa melaporkan
+ * kemajuan unggahan, dan file ratusan MB tanpa progres terlihat seperti macet.
+ */
+export function uploadRelease(
+  body: ReleaseInput,
+  file: File,
+  onProgress: (ratio: number) => void,
+): Promise<{ message: string; release: AppRelease }> {
+  const form = new FormData();
+  form.set('platform', body.platform);
+  form.set('versionName', body.versionName);
+  form.set('versionCode', String(body.versionCode));
+  form.set('changelog', body.changelog);
+  form.set('mandatory', String(body.mandatory));
+  form.set('publish', String(body.publish));
+  // File terakhir: multer membaca field teks yang datang sebelum file.
+  form.set('installer', file);
+
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', new URL('/api/admin/releases', BASE_URL).toString());
+    const token = getToken();
+    if (token) xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable) onProgress(e.loaded / e.total);
+    };
+    xhr.onerror = () => reject(new ApiError('Koneksi terputus saat mengunggah.', 0));
+    xhr.onload = () => {
+      let data: any = null;
+      try {
+        data = JSON.parse(xhr.responseText);
+      } catch {
+        /* bukan JSON */
+      }
+      if (xhr.status === 401) {
+        clearSession();
+        onUnauthorized?.();
+        reject(new ApiError('Sesi berakhir, silakan masuk lagi.', 401));
+      } else if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(data);
+      } else {
+        reject(new ApiError(data?.error ?? `Unggahan gagal (${xhr.status})`, xhr.status));
+      }
+    };
+    xhr.send(form);
+  });
+}
+
+export const updateRelease = (
+  id: string,
+  body: { changelog?: string; mandatory?: boolean; published?: boolean },
+) =>
+  request<{ message: string; release: AppRelease }>(`/api/admin/releases/${id}`, {
+    method: 'PATCH',
+    body,
+  });
+
+export const deleteRelease = (id: string, reason: string) =>
+  request<{ message: string }>(`/api/admin/releases/${id}`, {
+    method: 'DELETE',
+    body: { reason },
+  });

@@ -190,3 +190,31 @@ export type UserFilter =
   | 'suspended';
 
 export type PaymentFilter = 'attention' | 'all' | 'completed' | 'pending' | 'failed';
+
+export type ReleasePlatform = 'ANDROID' | 'WINDOWS';
+
+export interface AppRelease {
+  id: string;
+  platform: ReleasePlatform;
+  versionName: string;
+  versionCode: number;
+  fileName: string;
+  fileSize: number;
+  sha256: string;
+  changelog: string;
+  mandatory: boolean;
+  published: boolean;
+  publishedAt: string | null;
+  downloads: number;
+  uploadedBy: string | null;
+  createdAt: string;
+}
+
+export interface ReleaseInput {
+  platform: ReleasePlatform;
+  versionName: string;
+  versionCode: number;
+  changelog: string;
+  mandatory: boolean;
+  publish: boolean;
+}

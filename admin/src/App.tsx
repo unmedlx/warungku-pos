@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
   ApiError,
+  BASE_URL,
   archivePlan,
   createPlan,
   fetchAdminPlans,
@@ -46,6 +47,7 @@ import { PaymentsSection } from '@/components/Payments';
 import { GrowthSection } from '@/components/GrowthChart';
 import { AuditSection } from '@/components/Audit';
 import { PlansSection } from '@/components/Plans';
+import { ReleasesSection } from '@/components/Releases';
 import { Button, ErrorBox, PageHeader, SearchInput } from '@/components/Common';
 import { Topbar } from '@/components/Topbar';
 
@@ -54,6 +56,7 @@ const JUDUL: Record<Halaman, { judul: string; sub: string }> = {
   pengguna: { judul: 'Pengguna', sub: 'Cari, saring, dan telusuri satu akun' },
   transaksi: { judul: 'Transaksi', sub: 'Pembayaran Tripay dan rekonsiliasinya' },
   paket: { judul: 'Paket & harga', sub: 'Yang bisa dibeli pelanggan' },
+  rilis: { judul: 'Rilis aplikasi', sub: 'Installer Android dan Windows di luar Play Store' },
   audit: { judul: 'Audit log', sub: 'Jejak setiap tindakan admin' },
 };
 
@@ -130,7 +133,13 @@ export default function App() {
       const session = await loginWithGoogle(idToken);
       setAdmin(session.admin);
     } catch (err) {
-      setErrorMasuk(err instanceof ApiError ? err.message : 'Gagal masuk. Coba lagi.');
+      // Status 0 / TypeError = permintaan tidak sampai ke API (alamat salah,
+      // server mati, atau CORS menolak) — beda penanganan dari akun ditolak.
+      setErrorMasuk(
+        err instanceof ApiError
+          ? err.message
+          : `Tidak bisa menghubungi server di ${BASE_URL}. Periksa VITE_API_BASE_URL dan pastikan backend berjalan.`,
+      );
     } finally {
       setSedangMasuk(false);
     }
@@ -342,7 +351,7 @@ export default function App() {
   };
 
   if (!admin) {
-    return <Login onCredential={masuk} error={errorMasuk} memuat={sedangMasuk} />;
+    return <Login onCredential={masuk} onGoogleError={setErrorMasuk} error={errorMasuk} memuat={sedangMasuk} />;
   }
 
   const judul = userTerpilih
@@ -518,6 +527,8 @@ export default function App() {
               onMuatUlang={() => void muatPaket()}
             />
           )}
+
+          {halaman === 'rilis' && <ReleasesSection onBerubah={() => setAudit(null)} />}
 
           {halaman === 'audit' && (
             <AuditSection

@@ -25,6 +25,11 @@ enum UserRole {
 /// akses panel admin platform. OWNER adalah penanggung langganan: kuota
 /// storage, masa aktif SYNC, dan pembayaran selalu dibaca dari dia, bukan
 /// dari anggota yang sedang login.
+enum ReleasePlatform {
+  ANDROID
+  WINDOWS
+}
+
 enum StoreRole {
   OWNER
   ADMIN
@@ -55,9 +60,11 @@ model User {
   paymentTransactions PaymentTransaction[]
   syncRecords         SyncRecord[]
   auditLogs           AuditLog[]
+  appReleases         AppRelease[]
   memberships         StoreMember[]
   invitesSent         StoreInvite[]
   aiScanUsages        AiScanUsage[]
+  voiceCartSessions   VoiceCartSession[]
 
   @@index([email])
   @@index([role])
@@ -270,6 +277,30 @@ model AiScanUsage {
   @@map("ai_scan_usages")
 }
 
+/// Satu sesi mikrofon Keranjang Suara di kasir. Pengenalan suaranya berjalan
+/// di perangkat dan tidak berbiaya, jadi tabel ini murni penjaga jatah
+/// pengguna gratis — terpisah dari `AiScanUsage` yang menjaga biaya provider.
+///
+/// `clientSessionId` dibuat perangkat. Sesi yang terjadi saat offline dikirim
+/// belakangan, dan id inilah yang membuat pengiriman ulang tidak tercatat dua kali.
+model VoiceCartSession {
+  id              String   @id @default(cuid())
+  userId          String   @map("user_id")
+  clientSessionId String   @map("client_session_id")
+  storeId         String?  @map("store_id")
+  /// Kapan mikrofon menyala di perangkat — dasar periode kuota.
+  startedAt       DateTime @map("started_at")
+  /// true bila dicatat lewat sinkron setelah offline.
+  offline         Boolean  @default(false)
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, clientSessionId])
+  @@index([userId, startedAt])
+  @@map("voice_cart_sessions")
+}
+
 model SyncRecord {
   id        String   @id @default(cuid())
   storeId   String   @map("store_id")
@@ -317,4 +348,34 @@ model AuditLog {
   @@index([targetType, targetId])
   @@index([createdAt])
   @@map("audit_logs")
+}
+
+/// Installer aplikasi yang dibagikan di luar Play Store. File-nya disimpan di
+/// storage (MinIO/S3); baris ini yang menentukan versi mana yang diunduh
+/// halaman /download dan dicek aplikasi saat dibuka.
+model AppRelease {
+  id           String          @id @default(cuid())
+  platform     ReleasePlatform
+  versionName  String          @map("version_name")
+  /// Pembanding versi. Harus naik terus per platform — aplikasi menganggap
+  /// ada update bila angka ini lebih besar dari miliknya.
+  versionCode  Int             @map("version_code")
+  fileKey      String          @map("file_key")
+  fileName     String          @map("file_name")
+  fileSize     Int             @map("file_size")
+  sha256       String
+  changelog    String          @default("")
+  /// Aplikasi di bawah versi ini tidak boleh lanjut dipakai sebelum update.
+  mandatory    Boolean         @default(false)
+  /// Kosong = draf, belum terlihat oleh pengguna.
+  publishedAt  DateTime?       @map("published_at")
+  downloads    Int             @default(0)
+  uploadedById String          @map("uploaded_by_id")
+  createdAt    DateTime        @default(now()) @map("created_at")
+
+  uploadedBy User @relation(fields: [uploadedById], references: [id])
+
+  @@unique([platform, versionCode])
+  @@index([platform, publishedAt])
+  @@map("app_releases")
 }

@@ -41,7 +41,7 @@ export default function Header() {
           <Tombol href={TAUTAN.aplikasiWeb} size="sm" className="hidden desktop:inline-flex">
             Coba di browser
           </Tombol>
-          <Tombol href={TAUTAN.playStore} variant="primary" size="sm">
+          <Tombol href={TAUTAN.download} variant="primary" size="sm">
             Download Gratis
           </Tombol>
         </div>

@@ -7,6 +7,7 @@ import KitchenTicket from '@/components/KitchenTicket';
 import BarcodeScanner from '@/components/BarcodeScanner';
 import VoiceCartPage from '@/components/cashier/VoiceCartPage';
 import { useCartDictation } from '@/hooks/use-cart-dictation';
+import { useVoiceCartQuota } from '@/hooks/use-voice-cart-quota';
 import { Card, CardContent } from '@/components/jokoui/card';
 import { Button } from '@/components/jokoui/button';
 import { Input } from '@/components/jokoui/input';
@@ -41,6 +42,7 @@ import { trackEvent } from '@/lib/analytics';
 import CustomerPicker from '@/components/CustomerPicker';
 import { CartItems, CustomerTableInputs, CartSummary, type CartItem } from '@/components/cashier/CartPanel';
 import LockedPage from '@/components/LockedPage';
+import { setTransactionBusy } from '@/lib/transaction-busy';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const CURRENCY_SYMBOL: Record<string, string> = {
@@ -76,6 +78,12 @@ export default function Kasir() {
   const [search, setSearch] = useState('');
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [cart, setCart] = useState<CartItem[]>([]);
+
+  // Dialog update aplikasi menunggu sampai keranjang kosong.
+  useEffect(() => {
+    setTransactionBusy(cart.length > 0);
+  }, [cart.length]);
+  useEffect(() => () => setTransactionBusy(false), []);
   const [editingTxId, setEditingTxId] = useState<number | null>(null);
   const [cartOpen, setCartOpen] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
@@ -232,6 +240,11 @@ export default function Kasir() {
   const [voicePageOpen, setVoicePageOpen] = useState(false);
 
   const openVoicePage = () => {
+    // Jatah habis: jangan buka halaman kosong dengan mikrofon yang tak mau menyala.
+    if (!voice.listening && !voiceQuota.canStart()) {
+      setVoiceUpsellOpen(true);
+      return;
+    }
     setVoicePageOpen(true);
     if (!voice.listening && !voice.starting) void voice.start();
   };
@@ -264,8 +277,18 @@ export default function Kasir() {
    * Mikrofon kasir. Menyala atas permintaan, mati sendiri setelah transaksi
    * ditutup — lihat `doFullReset`.
    */
+  const voiceQuota = useVoiceCartQuota();
+  const [voiceUpsellOpen, setVoiceUpsellOpen] = useState(false);
+
   const voice = useCartDictation({
     products: products ?? [],
+    // Pengguna gratis: 10 sesi mikrofon per bulan. Pelanggan tidak dibatasi.
+    gate: {
+      canStart: voiceQuota.canStart,
+      onStarted: voiceQuota.recordStart,
+      onStopped: voiceQuota.recordStop,
+      onBlocked: () => setVoiceUpsellOpen(true),
+    },
     onAdd: addSpokenToCart,
     // Ucapan yang tidak dikenali tidak dibuang: ia diserahkan ke kotak
     // pencarian yang sudah ada, jadi kasir lanjut dengan cara lama tanpa
@@ -977,8 +1000,20 @@ export default function Kasir() {
                 aria-label={t('cashier.voice.page.title')}
                 onClick={openVoicePage}
                 disabled={voice.starting}
+                className="relative"
               >
                 <Mic />
+                {!voiceQuota.quota.unlimited && (
+                  <span
+                    className={cn(
+                      'absolute -right-1.5 -top-1.5 min-w-[18px] rounded-full px-1 text-[10px] font-semibold leading-[18px] tabular-nums',
+                      voiceQuota.quota.remaining > 0 ? 'bg-muted text-muted-foreground' : 'bg-warning text-white',
+                    )}
+                    title={t('cashier.voice.quota.remaining', { remaining: voiceQuota.quota.remaining, limit: voiceQuota.quota.limit })}
+                  >
+                    {voiceQuota.quota.remaining}
+                  </span>
+                )}
               </Button>
             )}
             {traits.barcode && (
@@ -1246,9 +1281,32 @@ export default function Kasir() {
         </div>
       )}
 
+      <AlertDialog open={voiceUpsellOpen} onOpenChange={setVoiceUpsellOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('cashier.voice.quota.exhaustedTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('cashier.voice.quota.exhaustedBody', { limit: voiceQuota.quota.limit })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('cashier.voice.quota.later')}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                closeVoicePage();
+                navigate('/settings/cloud-backup');
+              }}
+            >
+              {t('cashier.voice.quota.seePlans')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {voicePageOpen && (
         <VoiceCartPage
           dictation={voice}
+          quota={voiceQuota.quota}
           cart={cart}
           total={total}
           rp={rp}

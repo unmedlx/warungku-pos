@@ -64,6 +64,18 @@ const envSchema = z.object({
   /// delapan produk; lebih dari itu pemilik toko lupa apa saja yang sudah
   /// disebut dan hasilnya justru sulit ditinjau.
   SPEECH_MAX_SECONDS: z.string().default('60').transform(Number),
+  /// Jatah sesi Keranjang Suara per bulan untuk pengguna tanpa langganan
+  /// aktif. Pelanggan berbayar tidak dibatasi.
+  VOICE_CART_FREE_QUOTA: z.string().default('10').transform(Number),
+
+  /// Alamat publik API, mis. `https://api.kankitu.com`. Dipakai menyusun link
+  /// unduhan installer; kosong = diturunkan dari header permintaan.
+  PUBLIC_API_URL: z
+    .string()
+    .default('')
+    .transform((v) => v.trim().replace(/\/+$/, '')),
+  /// Batas ukuran file installer yang boleh diunggah dari panel admin, dalam MB.
+  RELEASE_MAX_MB: z.string().default('400').transform(Number),
 
   JWT_SECRET: z.string().default('change-this-secret'),
 
@@ -120,6 +132,7 @@ export const visionConfig = {
   timeoutMs: config.VISION_TIMEOUT_SECONDS * 1000,
   freeQuota: config.VISION_FREE_QUOTA,
   maxAudioSeconds: config.SPEECH_MAX_SECONDS,
+  voiceCartFreeQuota: config.VOICE_CART_FREE_QUOTA,
   /// Provider dianggap siap hanya kalau kunci benar-benar ada. Tanpa ini,
   /// fitur menyala di UI lalu gagal di request pertama.
   get enabled() {

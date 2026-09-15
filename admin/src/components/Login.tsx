@@ -9,10 +9,13 @@ import { Alert, Card } from './Common';
  */
 export function Login({
   onCredential,
+  onGoogleError,
   error,
   memuat,
 }: {
   onCredential: (idToken: string) => void;
+  /** Kegagalan di sisi Google (origin belum terdaftar, popup ditutup/diblokir). */
+  onGoogleError: (pesan: string) => void;
   error?: string | null;
   memuat?: boolean;
 }) {
@@ -38,8 +41,18 @@ export function Login({
             <span className="self-center text-[13px] text-muted-foreground">Memeriksa akses…</span>
           ) : (
             <GoogleLogin
-              onSuccess={(res) => res.credential && onCredential(res.credential)}
-              onError={() => undefined}
+              onSuccess={(res) =>
+                res.credential
+                  ? onCredential(res.credential)
+                  : onGoogleError('Google tidak mengirim token. Coba masuk lagi.')
+              }
+              // Dulu diabaikan diam-diam, sehingga origin yang belum terdaftar di
+              // Google Cloud Console tampak seperti tombol yang tidak bereaksi.
+              onError={() =>
+                onGoogleError(
+                  `Login Google gagal. Pastikan ${window.location.origin} terdaftar sebagai Authorized JavaScript origin di Google Cloud Console, lalu coba lagi.`,
+                )
+              }
               locale="id"
               width="336"
             />

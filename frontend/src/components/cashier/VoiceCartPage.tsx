@@ -5,6 +5,7 @@ import { Button } from '@/components/jokoui/button';
 import VoiceRibbon from '@/components/voice/VoiceRibbon';
 import { needsCheck, type CartChip, type UseCartDictation } from '@/hooks/use-cart-dictation';
 import { cn } from '@/lib/utils';
+import type { VoiceCartQuotaView } from '@/lib/voice-cart-quota';
 import type { CartItem } from '@/components/cashier/CartPanel';
 
 /**
@@ -22,6 +23,8 @@ import type { CartItem } from '@/components/cashier/CartPanel';
 
 interface Props {
   dictation: UseCartDictation;
+  /** Sisa jatah pengguna gratis; tidak ditampilkan untuk pelanggan. */
+  quota?: VoiceCartQuotaView;
   cart: CartItem[];
   total: number;
   rp: (n: number) => string;
@@ -39,6 +42,7 @@ interface Props {
 
 export default function VoiceCartPage({
   dictation,
+  quota,
   cart,
   total,
   rp,
@@ -84,6 +88,16 @@ export default function VoiceCartPage({
               <ArrowLeft />
             </Button>
             <h2 className="flex-1 text-base font-semibold">{t('cashier.voice.page.title')}</h2>
+            {quota && !quota.unlimited && (
+              <span
+                className={cn(
+                  'rounded-full px-2 py-0.5 text-[11px] tabular-nums',
+                  quota.remaining > 0 ? 'bg-muted text-muted-foreground' : 'bg-warning/15 text-warning-text',
+                )}
+              >
+                {t('cashier.voice.quota.remaining', { remaining: quota.remaining, limit: quota.limit })}
+              </span>
+            )}
             {cart.length > 0 && (
               <Button variant="ghost" size="sm" onClick={onClear} className="text-muted-foreground">
                 {t('cashier.voice.page.clear')}

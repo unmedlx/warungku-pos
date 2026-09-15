@@ -1,4 +1,7 @@
+import { unlink } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import { Router, Request, Response, NextFunction } from 'express';
+import multer from 'multer';
 import rateLimit from 'express-rate-limit';
 import { z } from 'zod';
 import { prisma } from '@/lib/db';
@@ -11,6 +14,18 @@ import { getUserDetail, listUsers, setSuspended, UserFilter } from './users.serv
 import { listTransactions, PaymentFilter, reconcile } from './payments.service';
 import { grantManual } from './subscriptions.service';
 import { createPlan, listPlans, setArchived, updatePlan } from './plans.service';
+import { config } from '@/config';
+import { BadRequestError } from '@/lib/error';
+import * as releases from '@/modules/releases/service';
+
+/**
+ * Installer ditulis ke folder sementara, bukan memori: satu APK/EXE bisa
+ * ratusan MB dan akan membengkakkan heap proses API.
+ */
+const uploadInstaller = multer({
+  dest: tmpdir(),
+  limits: { fileSize: config.RELEASE_MAX_MB * 1024 * 1024, files: 1 },
+});
 
 export const adminRoutes = Router();
 
@@ -312,6 +327,89 @@ adminRoutes.get('/audit', async (req, res: Response, next) => {
     ]);
 
     res.json({ logs, pagination: buildPagination(page, limit, totalItems) });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/* ── Rilis aplikasi ──────────────────────────────────────────── */
+
+adminRoutes.get('/releases', async (_req, res: Response, next) => {
+  try {
+    res.json({ releases: await releases.listReleases() });
+  } catch (err) {
+    next(err);
+  }
+});
+
+const releaseBody = z.object({
+  platform: z.enum(['ANDROID', 'WINDOWS']),
+  versionName: z.string().trim().min(1).max(40).regex(/^[0-9A-Za-z.\-+]+$/, 'hanya angka, huruf, titik, dan strip'),
+  versionCode: z.coerce.number().int().positive(),
+  changelog: z.string().max(5000).default(''),
+  // multipart mengirim semua nilai sebagai teks
+  mandatory: z.enum(['true', 'false']).default('false').transform((v) => v === 'true'),
+  publish: z.enum(['true', 'false']).default('false').transform((v) => v === 'true'),
+});
+
+adminRoutes.post(
+  '/releases',
+  uploadInstaller.single('installer'),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (!req.file) throw new BadRequestError('File installer wajib diunggah');
+      const input = releaseBody.parse(req.body);
+      const after = await releases.createRelease(input, req.file, req.user!.id);
+      await recordAudit(req, {
+        action: 'release.create',
+        targetType: 'AppRelease',
+        targetId: after.id,
+        after,
+      });
+      res.status(201).json({ message: 'Rilis diunggah', release: after });
+    } catch (err) {
+      next(err);
+    } finally {
+      if (req.file) await unlink(req.file.path).catch(() => undefined);
+    }
+  },
+);
+
+adminRoutes.patch('/releases/:id', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const input = z
+      .object({
+        changelog: z.string().max(5000).optional(),
+        mandatory: z.boolean().optional(),
+        published: z.boolean().optional(),
+      })
+      .parse(req.body);
+    const { before, after } = await releases.updateRelease(req.params.id, input);
+    await recordAudit(req, {
+      action: 'release.update',
+      targetType: 'AppRelease',
+      targetId: req.params.id,
+      before,
+      after,
+    });
+    res.json({ message: 'Rilis diperbarui', release: after });
+  } catch (err) {
+    next(err);
+  }
+});
+
+adminRoutes.delete('/releases/:id', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { reason } = z.object({ reason: z.string().min(3) }).parse(req.body);
+    const before = await releases.deleteRelease(req.params.id);
+    await recordAudit(req, {
+      action: 'release.delete',
+      targetType: 'AppRelease',
+      targetId: req.params.id,
+      reason,
+      before,
+    });
+    res.json({ message: 'Rilis dihapus' });
   } catch (err) {
     next(err);
   }

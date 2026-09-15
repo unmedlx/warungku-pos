@@ -9,6 +9,7 @@ import { initAnalytics } from "@/lib/analytics";
 import { Capacitor } from "@capacitor/core";
 import { StatusBar } from "@capacitor/status-bar";
 import { useAppUpdate } from "@/hooks/use-app-update";
+import AppUpdateHost from "@/components/app-update/AppUpdateHost";
 import { AuthProvider } from "@/hooks/use-auth";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { CloudAuthProvider } from "@/hooks/use-cloud-auth";
@@ -99,6 +100,7 @@ const App = () => {
           <TooltipProvider>
             <Toaster />
             <Sonner />
+            <AppUpdateHost />
             <BrowserRouter>
               <AuthProvider>
                 <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>

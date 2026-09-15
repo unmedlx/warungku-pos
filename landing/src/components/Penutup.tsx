@@ -4,9 +4,10 @@ import { Tombol } from "./ui";
 import { TAUTAN } from "../tautan";
 
 /** Ajakan terakhir sebelum footer, di atas panel gradien yang sama dengan kartu harga. */
-export default function Penutup() {
+/** `alt` = latar abu, menyambung FAQ di atasnya. */
+export default function Penutup({ alt = true }: { alt?: boolean }) {
   return (
-    <section className="bg-background pb-12 pt-0 desktop:pb-16">
+    <section className={`${alt ? "bg-background" : "bg-card"} pb-12 pt-0 desktop:pb-16`}>
       <div className="bungkus">
         <div
           className="rounded-2xl px-6 py-12 text-center text-white desktop:py-14"
@@ -22,7 +23,7 @@ export default function Penutup() {
             Nggak ada demo, nggak ada sales yang nelpon.
           </p>
           <div className="mt-6 flex flex-col justify-center gap-2.5 desktop:flex-row">
-            <Tombol href={TAUTAN.playStore} variant="terang" size="xl" blok className="desktop:w-auto">
+            <Tombol href={TAUTAN.download} variant="terang" size="xl" blok className="desktop:w-auto">
               <Download className="h-[18px] w-[18px]" />
               Download Gratis
             </Tombol>

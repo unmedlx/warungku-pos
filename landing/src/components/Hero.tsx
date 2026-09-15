@@ -35,7 +35,7 @@ export default function Hero() {
           </p>
 
           <div className="mb-3.5 mt-7 flex flex-col gap-2.5 desktop:flex-row">
-            <Tombol href={TAUTAN.playStore} variant="primary" size="xl" blok className="desktop:w-auto">
+            <Tombol href={TAUTAN.download} variant="primary" size="xl" blok className="desktop:w-auto">
               <Download className="h-[18px] w-[18px]" />
               Download Gratis
             </Tombol>

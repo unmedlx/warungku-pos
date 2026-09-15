@@ -1,3 +1,4 @@
+import type { Readable } from 'node:stream';
 import {
   S3Client,
   PutObjectCommand,
@@ -184,4 +185,60 @@ export async function getSignedDownloadUrl(key: string, expiresIn = 3600) {
     { expiresIn },
   );
   return url;
+}
+
+/**
+ * Unggah dari stream dengan panjang yang sudah diketahui. Installer bisa
+ * ratusan MB, jadi tidak boleh dimuat utuh ke memori seperti `uploadBuffer`.
+ */
+export async function uploadStream(
+  key: string,
+  body: Readable,
+  contentLength: number,
+  contentType: string,
+) {
+  if (!s3Client) throw new AppError('Storage S3 tidak dikonfigurasi', 500);
+
+  try {
+    await s3Client.send(
+      new PutObjectCommand({
+        Bucket: storageConfig.bucket,
+        Key: key,
+        Body: body,
+        ContentLength: contentLength,
+        ContentType: contentType,
+      }),
+    );
+  } catch (err) {
+    console.error('[storage] PutObject (stream) gagal:', { key, bucket: storageConfig.bucket }, err);
+    throw new AppError(`Gagal menyimpan file ke storage (${describeS3Error(err)})`, 502, 'STORAGE_UNAVAILABLE');
+  }
+
+  return key;
+}
+
+/**
+ * Ambil objek sebagai stream, meneruskan header Range apa adanya supaya
+ * unduhan yang terputus di koneksi HP bisa dilanjutkan.
+ */
+export async function getObjectStream(key: string, range?: string) {
+  if (!s3Client) throw new AppError('Storage S3 tidak dikonfigurasi', 500);
+
+  try {
+    const res = await s3Client.send(
+      new GetObjectCommand({ Bucket: storageConfig.bucket, Key: key, Range: range }),
+    );
+    return {
+      body: res.Body as Readable,
+      contentLength: res.ContentLength,
+      contentRange: res.ContentRange,
+      partial: Boolean(range && res.ContentRange),
+    };
+  } catch (err) {
+    const status = (err as any)?.$metadata?.httpStatusCode;
+    if (status === 416) throw new AppError('Rentang unduhan tidak valid', 416, 'RANGE_NOT_SATISFIABLE');
+    if (isBucketMissingError(err)) throw new AppError('File installer tidak ditemukan', 404, 'NOT_FOUND');
+    console.error('[storage] GetObject (stream) gagal:', { key }, err);
+    throw new AppError(`Gagal membaca file dari storage (${describeS3Error(err)})`, 502, 'STORAGE_UNAVAILABLE');
+  }
 }

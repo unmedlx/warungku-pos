@@ -49,9 +49,9 @@ const faq = [
  * statis, dan dengan begitu isinya tetap ada di HTML untuk mesin pencari serta
  * bisa dibuka lewat Ctrl+F meski akordeonnya tertutup.
  */
-export default function Faq() {
+export default function Faq({ alt = true }: { alt?: boolean }) {
   return (
-    <section id="tanya" className="seksi seksi-alt border-b-0">
+    <section id="tanya" className={alt ? "seksi seksi-alt border-b-0" : "seksi"}>
       <div className="bungkus">
         <JudulSeksi judul="Yang sering ditanya" />
         <Kartu className="mx-auto max-w-[800px] divide-y divide-border overflow-hidden">

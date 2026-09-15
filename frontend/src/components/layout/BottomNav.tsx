@@ -1,4 +1,5 @@
 import { ShoppingCart } from '@/components/icons';
+import { useUpdateState } from '@/lib/app-updater/store';
 import { NavLink, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
@@ -16,7 +17,7 @@ import { NAV_GROUPS, groupForPath, type NavGroup } from '@/lib/nav-groups';
  *
  * Status aktif dihitung per *kelompok* (lihat `lib/nav-groups`).
  */
-function NavItem({ group, active }: { group: NavGroup; active: boolean }) {
+function NavItem({ group, active, dot }: { group: NavGroup; active: boolean; dot?: boolean }) {
   const { t } = useTranslation('common');
   const label = t(group.labelKey);
   const Icon = group.icon;
@@ -32,7 +33,15 @@ function NavItem({ group, active }: { group: NavGroup; active: boolean }) {
         active ? 'text-primary' : 'text-muted-foreground hover:text-foreground',
       )}
     >
-      <Icon className="h-5 w-5 shrink-0" />
+      <span className="relative">
+        <Icon className="h-5 w-5 shrink-0" />
+        {dot && (
+          <span
+            className="absolute -right-1 -top-0.5 h-2 w-2 rounded-full bg-primary ring-2 ring-background"
+            aria-hidden="true"
+          />
+        )}
+      </span>
       <span className="truncate text-xs font-medium">{label}</span>
     </NavLink>
   );
@@ -47,6 +56,9 @@ export default function BottomNav() {
   const [home, goods, notes, me] = NAV_GROUPS;
   const showCashier = can('create_transaction');
   const cashierActive = pathname.startsWith('/cashier');
+  // Titik di menu Pengaturan selama ada update aplikasi yang belum dipasang.
+  const update = useUpdateState();
+  const adaUpdate = ['available', 'downloading', 'downloaded'].includes(update.status);
 
   return (
     <nav
@@ -76,7 +88,7 @@ export default function BottomNav() {
         )}
 
         <NavItem group={notes} active={activeId === 'notes'} />
-        <NavItem group={me} active={activeId === 'me'} />
+        <NavItem group={me} active={activeId === 'me'} dot={adaUpdate} />
       </div>
     </nav>
   );

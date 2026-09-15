@@ -6,7 +6,7 @@ import { TAUTAN } from "../tautan";
 export default function BottomBar() {
   return (
     <div className="fixed inset-x-0 bottom-0 z-[80] flex gap-2 border-t border-border bg-card px-3 py-2.5 shadow-bar desktop:hidden">
-      <Tombol href={TAUTAN.playStore} variant="primary" className="flex-1">
+      <Tombol href={TAUTAN.download} variant="primary" className="flex-1">
         Download Gratis
       </Tombol>
       <a

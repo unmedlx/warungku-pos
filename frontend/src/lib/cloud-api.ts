@@ -7,6 +7,9 @@
 
 const BASE_URL = (import.meta.env.VITE_AUTH_API_URL ?? 'http://localhost:3210').replace(/\/$/, '');
 
+/** Dipakai modul lain yang memanggil endpoint publik tanpa sesi (mis. cek update). */
+export const CLOUD_API_URL = BASE_URL;
+
 let tokenGetter: () => string | null = () => null;
 export function setCloudTokenGetter(fn: () => string | null) {
   tokenGetter = fn;

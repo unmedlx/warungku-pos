@@ -1426,6 +1426,13 @@
         "removed": "{{name}} removed",
         "cleared": "Cart cleared",
         "undo": "Undo"
+      },
+      "quota": {
+        "remaining": "{{remaining}}/{{limit}} left",
+        "exhaustedTitle": "Voice Cart limit reached this month",
+        "exhaustedBody": "Free accounts can use Voice Cart {{limit}} times a month. It resets on the 1st. Subscribe for unlimited use, or keep adding items manually for now.",
+        "later": "Not now",
+        "seePlans": "See plans"
       }
     }
   },
@@ -1937,6 +1944,57 @@
       "pinMismatch": "The PINs do not match. Try again.",
       "createOwnerFailed": "Could not create the owner account.",
       "activated": "Shift-based cashiers is on"
+    }
+  },
+  "appUpdate": {
+    "availableTitle": "Update available",
+    "downloadingTitle": "Downloading update…",
+    "readyTitle": "Update ready to install",
+    "versionSize": "Version {{version}} · {{size}}",
+    "versionOnly": "Version {{version}}",
+    "whatsNew": "What's new",
+    "noChangelog": "Minor fixes and performance improvements.",
+    "dataSafe": "Your sales data stays safe. Current version {{version}}.",
+    "later": "Not now",
+    "updateNow": "Update now",
+    "cancel": "Cancel",
+    "keepSelling": "Keep selling",
+    "progress": "{{done}} of {{total}}",
+    "downloadingHint": "You can keep using the cashier. If the connection drops, the download resumes automatically.",
+    "installHintAndroid": "After tapping Install, Android shows a confirmation screen. Tap Update, then open KanPOS again.",
+    "installHintWindows": "KanPOS closes briefly, installs the update, then opens again.",
+    "install": "Install",
+    "restartNow": "Restart now",
+    "notNow": "Later",
+    "permissionTitle": "Allow KanPOS to install updates",
+    "permissionBody": "Android asks for this once. On the next screen, turn on \"Allow from this source\", then return to KanPOS.",
+    "openSettings": "Open Settings",
+    "mandatoryTitle": "Please update first",
+    "mandatoryBody": "This version can no longer be used safely. Update now to keep your data and sync safe.",
+    "mandatoryBadge": "Required",
+    "mandatoryButton": "Update now · {{size}}",
+    "installedVersion": "Installed version {{version}}",
+    "needHelp": "Need help? Chat on WhatsApp",
+    "toastReadyTitle": "Update ready",
+    "toastReadyBody": "It will be installed when KanPOS closes.",
+    "rowTitle": "App version",
+    "rowUpToDate": "Latest",
+    "rowAvailable": "Update available",
+    "rowReady": "Ready to install",
+    "rowAvailableTitle": "Version {{version}} available",
+    "rowReadyTitle": "Update downloaded",
+    "rowDownloading": "Downloading {{percent}}%",
+    "checkTitle": "Check for updates",
+    "checkedAgo": "Last checked {{time}}",
+    "neverChecked": "Not checked yet",
+    "check": "Check",
+    "checking": "Checking…",
+    "update": "Update",
+    "errors": {
+      "checkFailed": "Couldn't check for updates. Check your internet connection.",
+      "downloadFailed": "Download failed. Check your connection and try again.",
+      "checksum": "The update file is corrupted. Please download again.",
+      "fileMissing": "Update file not found. Please download again."
     }
   }
 }

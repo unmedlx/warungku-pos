@@ -14,9 +14,9 @@ const tautan: {
   {
     judul: "Produk",
     items: [
-      { label: "Fitur", href: "#fitur" },
-      { label: "Harga", href: "#harga" },
-      { label: "Aplikasi Android", href: TAUTAN.playStore, dom: "Google Play" },
+      { label: "Fitur", href: "/#fitur" },
+      { label: "Harga", href: "/#harga" },
+      { label: "Download aplikasi", href: TAUTAN.download, dom: "Android & Windows" },
       { label: "Buka dari browser", href: TAUTAN.aplikasiWeb, dom: "kasirgratisan.com" },
       { label: "Dashboard pemilik", href: TAUTAN.dashboard, dom: "dashboard.kankitu.com" },
     ],
@@ -24,7 +24,7 @@ const tautan: {
   {
     judul: "Bantuan",
     items: [
-      { label: "Tanya jawab", href: "#tanya" },
+      { label: "Tanya jawab", href: "/#tanya" },
       { label: "WhatsApp", href: TAUTAN.whatsapp },
       { label: "Telegram", href: TAUTAN.telegram },
       { label: "Lapor kendala", href: TAUTAN.laporKendala, dom: "kasirgratisan.fider.io" },
@@ -45,7 +45,7 @@ export default function Footer() {
       <div className="bungkus">
         <div className="desktop:grid desktop:grid-cols-[1.4fr_2fr] desktop:items-start desktop:gap-12">
           <div>
-            <a href="#beranda" className="flex items-center gap-2.5">
+            <a href="/#beranda" className="flex items-center gap-2.5">
               <Logo className="h-8 w-8 shrink-0 rounded-lg" />
               <span className="whitespace-nowrap text-lg font-semibold tracking-tight text-white">
                 Kan<span className="text-[#8FA6F5]">POS</span>

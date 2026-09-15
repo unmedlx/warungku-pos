@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup — Halaman Download KanPOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* Token sama dengan landing-shark-mockup.html. Hanya mode terang. */
+:root{
+  --font-sans:'Hanken Grotesk',system-ui,-apple-system,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  --r-md:6px; --r-lg:8px; --r-xl:12px; --r-2xl:16px;
+  --background:#fafafa; --foreground:#262626;
+  --card:#ffffff; --muted:#f0f0f0; --muted-foreground:#5e5e5e;
+  --border:#e2e2e2; --input:#dbdbdb;
+  --primary:#3554C1; --primary-foreground:#eff4ff; --primary-dark:#0E1A52;
+  --success:#10b981; --success-text:#047857;
+  --warning:#f59e0b; --warning-text:#b45309;
+  --info:#3b82f6; --info-text:#1d4ed8;
+  --wa:#25D366; --wa-text:#128C4B;
+  --shadow-xs:0 1px 2px 0 rgb(0 0 0 / .05);
+  --shadow-sm:0 1px 3px 0 rgb(0 0 0 / .05),0 1px 2px -1px rgb(0 0 0 / .05);
+  --shadow-hp:0 30px 60px -12px rgb(14 26 82 / .22),0 4px 12px rgb(14 26 82 / .08);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font-sans);font-size:15px;line-height:1.5;color:var(--foreground);background:var(--card);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+svg{display:block;flex:none}
+h1,h2,h3,p{margin:0}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted-foreground)}
+.mono{font-family:var(--font-mono);font-size:12px}
+
+/* Bar review */
+.review{position:sticky;top:0;z-index:100;background:#1b1b1f;color:#fff;font-size:13px;padding:10px 20px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.review .tabs{display:flex;gap:4px}
+.review .tabs button{padding:5px 10px;border-radius:6px;color:#cfcfcf;font-weight:500;font-size:13px}
+.review .tabs button.on{background:#fff;color:#1b1b1f}
+.review .note{margin-left:auto;color:#9a9a9a}
+body.mobile #halaman{display:none}
+#hp-frame{display:none;padding:28px 0 40px;background:#e8e8e8;justify-content:center}
+body.mobile #hp-frame{display:flex}
+#hp-frame .bezel{width:390px;border:10px solid #111;border-radius:40px;background:#111;box-shadow:var(--shadow-hp);overflow:hidden}
+#hp-frame iframe{display:block;width:390px;height:844px;border:0;background:#fff}
+body.bare .review{display:none}
+
+.bungkus{max-width:1040px;margin:0 auto;padding:0 20px}
+.seksi{padding:56px 0}
+.seksi.alt{background:var(--background);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.judul{max-width:620px;margin:0 auto 32px;text-align:center}
+.judul h2{font-size:26px;font-weight:600;letter-spacing:-.02em;line-height:1.2}
+.judul p{margin-top:8px;font-size:16px;color:var(--muted-foreground)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 16px;border-radius:var(--r-lg);font-size:14px;font-weight:500;white-space:nowrap;border:1px solid transparent}
+.btn.xl{height:48px;padding:0 22px;font-size:16px}
+.btn.primary{background:var(--primary);color:var(--primary-foreground);box-shadow:0 1px 3px rgb(53 84 193 / .24)}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.outline{background:var(--card);border-color:var(--input);box-shadow:var(--shadow-xs)}
+.btn.outline:hover{background:var(--muted)}
+.btn.wa{background:var(--card);border-color:var(--input);color:var(--wa-text);box-shadow:var(--shadow-xs)}
+.btn.blok{width:100%}
+.badge{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:var(--r-md);font-size:12px;font-weight:500;border:1px solid transparent;white-space:nowrap}
+.badge.success{background:color-mix(in srgb,var(--success) 10%,transparent);border-color:color-mix(in srgb,var(--success) 22%,transparent);color:var(--success-text)}
+.badge.outline{border-color:var(--border);color:var(--muted-foreground);background:var(--card)}
+.badge.primary{background:color-mix(in srgb,var(--primary) 10%,transparent);border-color:color-mix(in srgb,var(--primary) 22%,transparent);color:var(--primary)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-xl);box-shadow:var(--shadow-xs)}
+.card.p{padding:24px}
+.alert{display:flex;gap:10px;align-items:flex-start;border-radius:var(--r-xl);border:1px solid;padding:12px 14px;font-size:14px}
+.alert.warn{background:color-mix(in srgb,var(--warning) 8%,transparent);border-color:color-mix(in srgb,var(--warning) 25%,transparent)}
+.alert.warn svg{color:var(--warning-text);margin-top:2px}
+.alert.info{background:color-mix(in srgb,var(--info) 7%,transparent);border-color:color-mix(in srgb,var(--info) 20%,transparent)}
+.alert.info svg{color:var(--info-text);margin-top:2px}
+.alert b{font-weight:600}
+
+/* Header */
+.hdr{position:sticky;top:41px;z-index:60;height:64px;background:rgb(255 255 255 / .85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+body.bare .hdr{top:0}
+.hdr .bungkus{height:100%;display:flex;align-items:center;gap:24px}
+.brand{display:flex;align-items:center;gap:9px;font-size:18px;font-weight:600}
+.brand .logo{width:32px;height:32px;border-radius:var(--r-lg);background:var(--primary);color:#fff;display:grid;place-items:center;font-size:14px;font-weight:600}
+.hdr .aksi{margin-left:auto;display:flex;gap:8px}
+
+/* Hero */
+.hero{padding:48px 0 56px;background:
+  radial-gradient(800px 380px at 85% 0%,color-mix(in srgb,var(--primary) 11%,transparent),transparent 60%),
+  linear-gradient(180deg,var(--background),var(--card) 80%)}
+.hero .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:start}
+.hero h1{font-size:38px;font-weight:600;letter-spacing:-.03em;line-height:1.12;margin:14px 0 12px}
+.hero .lead{font-size:17px;color:var(--muted-foreground);max-width:34rem}
+
+.pilih{display:inline-flex;gap:4px;padding:4px;background:var(--muted);border-radius:var(--r-lg);margin-top:24px}
+.pilih button{height:34px;padding:0 14px;border-radius:6px;font-size:14px;font-weight:500;color:var(--muted-foreground);display:flex;gap:7px;align-items:center}
+.pilih button.on{background:var(--card);color:var(--foreground);box-shadow:var(--shadow-sm)}
+
+.unduh{margin-top:16px;padding:20px}
+.unduh .atas{display:flex;gap:14px;align-items:center}
+.unduh .ikon{width:48px;height:48px;border-radius:var(--r-xl);display:grid;place-items:center;background:color-mix(in srgb,var(--primary) 10%,transparent);color:var(--primary)}
+.unduh h3{font-size:17px;font-weight:600}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted-foreground);margin-top:2px}
+.unduh .btn{margin-top:18px}
+.unduh .bawah{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;font-size:13px;color:var(--muted-foreground)}
+.unduh .bawah a{color:var(--primary);font-weight:500}
+
+.qr{padding:24px;text-align:center}
+.qr .kotak{width:176px;height:176px;margin:14px auto;padding:10px;border:1px solid var(--border);border-radius:var(--r-xl);background:#fff}
+.qr h3{font-size:16px;font-weight:600}
+
+/* Langkah */
+.langkah{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;counter-reset:l}
+.langkah .card{padding:18px}
+.langkah .no{width:28px;height:28px;border-radius:var(--r-lg);background:var(--primary);color:#fff;display:grid;place-items:center;font-size:14px;font-weight:600}
+.langkah h3{font-size:15px;font-weight:600;margin:12px 0 4px}
+.langkah p{font-size:14px;color:var(--muted-foreground)}
+.layar-mini{margin-top:14px;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--background);padding:10px;font-size:12px;min-height:92px}
+.layar-mini .dlg{background:#fff;border-radius:8px;box-shadow:var(--shadow-sm);padding:10px}
+.layar-mini .dlg b{font-size:12px;display:block;margin-bottom:4px}
+.layar-mini .aks{display:flex;justify-content:flex-end;gap:12px;margin-top:8px;font-weight:600;color:var(--primary)}
+.layar-mini .aks span.redup{color:var(--muted-foreground);font-weight:500}
+.layar-mini .toggle{display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:8px;padding:8px 10px;box-shadow:var(--shadow-sm)}
+.sw{width:30px;height:17px;border-radius:9px;background:var(--primary);position:relative}
+.sw:after{content:"";position:absolute;right:2px;top:2px;width:13px;height:13px;border-radius:50%;background:#fff}
+.sorot{outline:2px solid var(--primary);outline-offset:2px;border-radius:4px}
+
+/* Changelog + FAQ */
+.dua{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.log h3{font-size:16px;font-weight:600}
+.log ul{margin:10px 0 0;padding-left:18px;color:var(--muted-foreground);font-size:14px;display:grid;gap:4px}
+.riwayat{margin-top:18px;border-top:1px solid var(--border)}
+.riwayat div{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px}
+.riwayat a{color:var(--primary);font-weight:500}
+details{border-bottom:1px solid var(--border);padding:14px 0}
+details:first-of-type{padding-top:0}
+summary{font-weight:600;font-size:15px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::after{content:"+";color:var(--muted-foreground);font-weight:500}
+details[open] summary::after{content:"–"}
+details p{margin-top:8px;font-size:14px;color:var(--muted-foreground)}
+.sha{word-break:break-all}
+
+.penutup{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border-radius:var(--r-2xl);padding:32px;display:flex;gap:20px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.penutup h2{font-size:22px;font-weight:600}
+.penutup p{color:rgb(255 255 255 / .78);margin-top:4px}
+.penutup .btn{background:#fff;color:var(--wa-text)}
+footer{padding:28px 0;font-size:13px;color:var(--muted-foreground);text-align:center}
+
+/* Sticky bar HP */
+.sticky{display:none}
+
+/* Keadaan: belum ada rilis */
+body.kosong .ada-rilis{display:none}
+.tanpa-rilis{display:none}
+body.kosong .tanpa-rilis{display:block}
+
+@media (max-width:760px){
+  .hdr .aksi .btn.outline{display:none}
+  .hero{padding:28px 0 36px}
+  .hero .grid{grid-template-columns:1fr;gap:0}
+  .hero h1{font-size:28px}
+  .hero .lead{font-size:15px}
+  .qr{display:none}
+  .pilih{display:flex}
+  .pilih button{flex:1;justify-content:center}
+  .langkah{grid-template-columns:1fr}
+  .dua{grid-template-columns:1fr}
+  .judul h2{font-size:22px}
+  .seksi{padding:40px 0}
+  .penutup{padding:22px}
+  .penutup .btn{width:100%}
+  .sticky{display:flex;gap:8px;position:sticky;bottom:0;padding:10px 16px;background:rgb(255 255 255 / .95);border-top:1px solid var(--border);backdrop-filter:blur(8px)}
+  .sticky .btn{flex:1}
+  body.kosong .sticky{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="review">
+  <b>Mockup: halaman /download</b>
+  <div class="tabs" id="tab-layar">
+    <button class="on" data-l="desktop">Desktop</button>
+    <button data-l="mobile">HP 390px</button>
+  </div>
+  <div class="tabs" id="tab-keadaan">
+    <button class="on" data-k="ada">Ada rilis</button>
+    <button data-k="kosong">Belum ada rilis</button>
+  </div>
+  <span class="note">Data dari GET /api/releases · angka contoh</span>
+</div>
+
+<div id="halaman">
+<header class="hdr">
+  <div class="bungkus">
+    <a class="brand" href="#"><span class="logo">K</span>KanPOS</a>
+    <div class="aksi">
+      <a class="btn outline" href="#">← Kembali ke beranda</a>
+      <a class="btn wa" href="#">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-3.3-.8-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.7 1.2 1.6 2 1.1 1 2 1.3 2.3 1.4.3.2.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.3Z"/></svg>
+        Tanya via WhatsApp
+      </a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="bungkus">
+    <div class="grid">
+      <div>
+        <span class="badge success">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>
+          Gratis · resmi dari KanPOS
+        </span>
+        <h1>Download aplikasi kasir KanPOS</h1>
+        <p class="lead">Pasang di HP Android atau laptop Windows kamu. Nggak perlu lewat Play Store, cukup unduh dan pasang dalam 2 menit.</p>
+
+        <div class="pilih" role="tablist">
+          <button class="on" data-p="android">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/></svg>
+            Android
+          </button>
+          <button data-p="windows">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            Windows
+          </button>
+        </div>
+
+        <div class="card unduh ada-rilis">
+          <div class="atas">
+            <span class="ikon" id="ikon-p">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/></svg>
+            </span>
+            <div>
+              <h3 id="nama-p">KanPOS untuk Android</h3>
+              <div class="meta num">
+                <span>Versi <b id="versi" style="font-weight:500;color:var(--foreground)">2026.09.14.5</b></span>
+                <span id="ukuran">38,4 MB</span>
+                <span>Rilis 14 Sep 2026</span>
+                <span id="syarat">Android 7.0 ke atas</span>
+              </div>
+            </div>
+          </div>
+          <a class="btn primary xl blok" href="#" id="tombol-unduh">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+            <span id="label-unduh">Download APK</span>
+          </a>
+          <div class="bawah">
+            <span>Pakai Windows? <a href="#" id="tukar">Download versi Windows</a></span>
+            <a href="#langkah">Cara pasang ↓</a>
+          </div>
+        </div>
+
+        <div class="card p tanpa-rilis" style="margin-top:16px">
+          <h3 style="font-size:17px;font-weight:600">Versi terbaru sedang disiapkan</h3>
+          <p class="muted" style="margin-top:6px;font-size:14px">Hubungi kami lewat WhatsApp, file installer akan kami kirim langsung.</p>
+          <a class="btn wa blok" style="margin-top:16px" href="#">Minta file via WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="card qr ada-rilis">
+        <h3>Buka dari laptop?</h3>
+        <p class="muted" style="font-size:14px;margin-top:4px">Scan pakai kamera HP untuk langsung download.</p>
+        <div class="kotak">
+          <svg viewBox="0 0 29 29" width="100%" height="100%" shape-rendering="crispEdges" id="qr"></svg>
+        </div>
+        <div class="mono muted">kankitu.com/download/android</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="seksi alt ada-rilis" id="langkah">
+  <div class="bungkus">
+    <div class="judul">
+      <h2 id="judul-langkah">Cara pasang di Android</h2>
+      <p>Cuma sekali di awal. Update berikutnya muncul otomatis di aplikasi.</p>
+    </div>
+
+    <div class="langkah" id="langkah-android">
+      <div class="card">
+        <span class="no">1</span>
+        <h3>Download APK</h3>
+        <p>Tekan tombol Download. Kalau Chrome bertanya, pilih <b>Tetap download</b>.</p>
+        <div class="layar-mini"><div class="dlg"><b>File ini dapat membahayakan perangkat</b>kankitu-pos-2026.09.14.5.apk<div class="aks"><span class="redup">Batal</span><span class="sorot">Tetap download</span></div></div></div>
+      </div>
+      <div class="card">
+        <span class="no">2</span>
+        <h3>Buka file</h3>
+        <p>Buka notifikasi download, atau cari di folder <b>Download</b>.</p>
+        <div class="layar-mini"><div class="dlg"><b>Download selesai</b>kankitu-pos-2026.09.14.5.apk · 38,4 MB<div class="aks"><span class="sorot">Buka</span></div></div></div>
+      </div>
+      <div class="card">
+        <span class="no">3</span>
+        <h3>Izinkan pemasangan</h3>
+        <p>Android minta izin sekali. Tekan <b>Setelan</b>, lalu nyalakan <b>Izinkan dari sumber ini</b>.</p>
+        <div class="layar-mini"><div class="toggle"><span>Izinkan dari sumber ini</span><span class="sw sorot"></span></div></div>
+      </div>
+      <div class="card">
+        <span class="no">4</span>
+        <h3>Pasang &amp; buka</h3>
+        <p>Tekan <b>Instal</b>. Selesai, KanPOS muncul di layar HP kamu.</p>
+        <div class="layar-mini"><div class="dlg"><b>KanPOS</b>Ingin menginstal aplikasi ini?<div class="aks"><span class="redup">Batal</span><span class="sorot">Instal</span></div></div></div>
+      </div>
+    </div>
+
+    <div class="langkah" id="langkah-windows" hidden>
+      <div class="card">
+        <span class="no">1</span>
+        <h3>Download installer</h3>
+        <p>Tekan tombol Download. Kalau browser bertanya, pilih <b>Simpan</b>.</p>
+      </div>
+      <div class="card">
+        <span class="no">2</span>
+        <h3>Jalankan file</h3>
+        <p>Buka <b>kankitu-pos-setup.exe</b> dari folder Downloads.</p>
+      </div>
+      <div class="card">
+        <span class="no">3</span>
+        <h3>Kalau muncul layar biru</h3>
+        <p>Klik <b>More info</b>, lalu <b>Run anyway</b>.</p>
+        <div class="layar-mini" style="background:#0b5cad;color:#fff;border:0"><b style="display:block">Windows protected your PC</b><span style="text-decoration:underline" class="sorot">More info</span></div>
+      </div>
+      <div class="card">
+        <span class="no">4</span>
+        <h3>Selesai</h3>
+        <p>Ikon KanPOS muncul di desktop dan menu Start.</p>
+      </div>
+    </div>
+
+    <div class="alert info" style="margin-top:20px">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 4 6v6c0 5 3.4 8.3 8 9 4.6-.7 8-4 8-9V6l-8-3Z"/></svg>
+      <div><b>Aman.</b> Peringatan tadi muncul untuk semua aplikasi di luar Play Store, bukan karena ada masalah di KanPOS. Pastikan kamu download hanya dari halaman ini.</div>
+    </div>
+  </div>
+</section>
+
+<section class="seksi ada-rilis">
+  <div class="bungkus">
+    <div class="dua">
+      <div class="card p log">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+          <h3>Yang baru di versi ini</h3>
+          <span class="badge primary">2026.09.14.5</span>
+        </div>
+        <ul>
+          <li>Keranjang suara lebih akurat untuk nama produk lokal</li>
+          <li>Cetak struk Bluetooth lebih stabil</li>
+          <li>Perbaikan sinkron data antar HP</li>
+        </ul>
+        <div class="riwayat">
+          <div><span class="num">2026.09.10.2</span><a href="#">Download</a></div>
+          <div><span class="num">2026.09.02.1</span><a href="#">Download</a></div>
+        </div>
+      </div>
+
+      <div>
+        <h3 style="font-size:18px;font-weight:600;margin-bottom:14px">Pertanyaan yang sering muncul</h3>
+        <details open>
+          <summary>Kenapa tidak ada di Play Store?</summary>
+          <p>Supaya update bisa kami kirim lebih cepat ke kamu. File di halaman ini sama resminya dengan aplikasi di toko aplikasi.</p>
+        </details>
+        <details>
+          <summary>Bagaimana cara update nanti?</summary>
+          <p>Aplikasi memberi tahu sendiri kalau ada versi baru. Tinggal tekan <b>Update</b>, data jualan kamu tetap aman.</p>
+        </details>
+        <details>
+          <summary>Data saya hilang kalau pasang ulang?</summary>
+          <p>Tidak, selama kamu memasang di atas aplikasi yang lama (jangan uninstall dulu). Aktifkan backup cloud supaya lebih tenang.</p>
+        </details>
+        <details>
+          <summary>Cara memastikan file asli</summary>
+          <p>Cocokkan kode SHA-256 file yang kamu unduh:<br><span class="mono sha">9f2c4e1a7b0d53e8c6a1f4b29d7e0c3a5b8f1e6d2c9a4b7e0f3d6c1a8b5e2f9d</span></p>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="seksi" style="padding-top:0">
+  <div class="bungkus">
+    <div class="penutup">
+      <div>
+        <h2>Bingung saat pasang?</h2>
+        <p>Chat kami, kami bantu sampai aplikasinya jalan.</p>
+      </div>
+      <a class="btn xl" href="#">Chat WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<footer>© 2026 KanPOS · <a href="#">Kebijakan privasi</a></footer>
+
+<div class="sticky">
+  <a class="btn primary xl" href="#">Download APK · 38,4 MB</a>
+</div>
+</div>
+
+<div id="hp-frame"><div class="bezel"><iframe id="hp" title="Tampilan HP"></iframe></div></div>
+
+<script>
+// QR contoh (pola acak berbentuk QR, bukan kode yang bisa di-scan)
+(function(){
+  const svg=document.getElementById('qr');let d='';let s=7;
+  const rnd=()=>{s=(s*9301+49297)%233280;return s/233280};
+  const finder=(x,y)=>{for(let i=0;i<7;i++)for(let j=0;j<7;j++){const b=i===0||i===6||j===0||j===6||(i>1&&i<5&&j>1&&j<5);if(b)d+=`M${x+i} ${y+j}h1v1h-1z`}};
+  for(let i=0;i<29;i++)for(let j=0;j<29;j++){const inF=(i<8&&j<8)||(i>20&&j<8)||(i<8&&j>20);if(!inF&&rnd()>.52)d+=`M${i} ${j}h1v1h-1z`}
+  finder(0,0);finder(22,0);finder(0,22);
+  svg.innerHTML=`<path d="${d}" fill="#111"/>`;
+})();
+
+const DATA={
+  android:{nama:'KanPOS untuk Android',ukuran:'38,4 MB',syarat:'Android 7.0 ke atas',label:'Download APK',tukar:'Download versi Windows',judul:'Cara pasang di Android',
+    ikon:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/></svg>'},
+  windows:{nama:'KanPOS untuk Windows',ukuran:'92,1 MB',syarat:'Windows 10 ke atas',label:'Download untuk Windows',tukar:'Download versi Android',judul:'Cara pasang di Windows',
+    ikon:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>'}
+};
+let aktif='android';
+function pilih(p){
+  aktif=p;const x=DATA[p];
+  document.querySelectorAll('.pilih button').forEach(b=>b.classList.toggle('on',b.dataset.p===p));
+  nama_p.textContent=x.nama;ukuran.textContent=x.ukuran;syarat.textContent=x.syarat;
+  label_unduh.textContent=x.label;tukar.textContent=x.tukar;judul_langkah.textContent=x.judul;ikon_p.innerHTML=x.ikon;
+  document.getElementById('langkah-android').hidden=p!=='android';
+  document.getElementById('langkah-windows').hidden=p!=='windows';
+}
+const nama_p=document.getElementById('nama-p'),ukuran=document.getElementById('ukuran'),syarat=document.getElementById('syarat'),
+  label_unduh=document.getElementById('label-unduh'),tukar=document.getElementById('tukar'),judul_langkah=document.getElementById('judul-langkah'),ikon_p=document.getElementById('ikon-p');
+document.querySelectorAll('.pilih button').forEach(b=>b.onclick=()=>pilih(b.dataset.p));
+tukar.onclick=e=>{e.preventDefault();pilih(aktif==='android'?'windows':'android')};
+
+// Deteksi perangkat: di halaman asli, Windows dipilih otomatis untuk pengunjung desktop.
+const q=new URLSearchParams(location.search);
+if(q.has('bare'))document.body.classList.add('bare');
+if(q.get('k')==='kosong')document.body.classList.add('kosong');
+if(!q.has('bare')&&!/Android/i.test(navigator.userAgent)&&/Windows/i.test(navigator.userAgent))pilih('windows');
+
+let keadaan='ada';
+const hp=document.getElementById('hp');
+function muatHp(){hp.src=location.pathname+'?bare=1'+(keadaan==='kosong'?'&k=kosong':'')}
+document.querySelectorAll('#tab-layar button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#tab-layar button').forEach(x=>x.classList.toggle('on',x===b));
+  document.body.classList.toggle('mobile',b.dataset.l==='mobile');
+  if(b.dataset.l==='mobile')muatHp();
+});
+document.querySelectorAll('#tab-keadaan button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#tab-keadaan button').forEach(x=>x.classList.toggle('on',x===b));
+  keadaan=b.dataset.k;document.body.classList.toggle('kosong',keadaan==='kosong');
+  if(document.body.classList.contains('mobile'))muatHp();
+});
+</script>
+</body>
+</html>

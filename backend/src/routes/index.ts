@@ -14,6 +14,8 @@ import { storageRoutes } from '@/modules/storage/routes';
 import { analyticsRoutes } from '@/modules/analytics/routes';
 import { adminRoutes } from '@/modules/admin/routes';
 import { visionRoutes } from '@/modules/vision/routes';
+import { voiceCartRoutes } from '@/modules/voice-cart/routes';
+import { releaseRoutes } from '@/modules/releases/routes';
 
 export const routes = Router();
 
@@ -30,6 +32,8 @@ routes.use('/storage', storageRoutes);
 routes.use('/analytics', analyticsRoutes);
 routes.use('/admin', adminRoutes);
 routes.use('/vision', visionRoutes);
+routes.use('/voice-cart', voiceCartRoutes);
+routes.use('/releases', releaseRoutes);
 routes.use('/invites', inviteRoutes);
 routes.use('/', memberRoutes); // /api/stores/:storeId/members, /invites, /leave
 routes.use('/', syncRoutes); // /api/stores/:storeId/sync

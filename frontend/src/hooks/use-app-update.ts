@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { AppUpdate, AppUpdateAvailability, FlexibleUpdateInstallStatus } from '@capawesome/capacitor-app-update';
 import { Capacitor } from '@capacitor/core';
 import { toast } from 'sonner';
+import { isPlayStoreInstall } from '@/lib/app-updater/platform';
 
 export function useAppUpdate() {
   useEffect(() => {
@@ -14,6 +15,10 @@ export function useAppUpdate() {
 
     const checkUpdate = async () => {
       try {
+        // APK dari halaman download diupdate lewat KanPOS Cloud (AppUpdateHost),
+        // bukan Play — flow Play hanya gagal di pemasangan seperti itu.
+        if (!(await isPlayStoreInstall())) return;
+
         const info = await AppUpdate.getAppUpdateInfo();
         
         // Cek jika ada update baru dan flow fleksibel diizinkan

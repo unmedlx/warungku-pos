@@ -987,6 +987,13 @@
         "removed": "{{name}} dibuang",
         "cleared": "Troli dikosongkan",
         "undo": "Batalkan"
+      },
+      "quota": {
+        "remaining": "Baki {{remaining}}/{{limit}}",
+        "exhaustedTitle": "Had Troli Suara bulan ini sudah habis",
+        "exhaustedBody": "Akaun percuma boleh guna Troli Suara {{limit}} kali sebulan. Had diset semula pada 1 haribulan. Langgan untuk guna tanpa had, atau tambah barang secara manual dahulu.",
+        "later": "Nanti",
+        "seePlans": "Lihat pelan"
       }
     }
   },
@@ -1515,6 +1522,57 @@
       "pinMismatch": "PIN tidak sama. Cuba lagi.",
       "createOwnerFailed": "Gagal membuat akaun pemilik.",
       "activated": "Juruwang bergilir aktif"
+    }
+  },
+  "appUpdate": {
+    "availableTitle": "Kemas kini tersedia",
+    "downloadingTitle": "Memuat turun kemas kini…",
+    "readyTitle": "Kemas kini sedia dipasang",
+    "versionSize": "Versi {{version}} · {{size}}",
+    "versionOnly": "Versi {{version}}",
+    "whatsNew": "Apa yang baharu",
+    "noChangelog": "Pembaikan kecil dan peningkatan prestasi.",
+    "dataSafe": "Data jualan anda tetap selamat. Versi sekarang {{version}}.",
+    "later": "Nanti",
+    "updateNow": "Kemas kini sekarang",
+    "cancel": "Batal",
+    "keepSelling": "Teruskan berjual",
+    "progress": "{{done}} daripada {{total}}",
+    "downloadingHint": "Kaunter masih boleh digunakan. Jika sambungan terputus, muat turun disambung semula secara automatik.",
+    "installHintAndroid": "Selepas menekan Pasang, Android memaparkan skrin pengesahan. Tekan Kemas kini, kemudian buka semula KanPOS.",
+    "installHintWindows": "KanPOS ditutup sebentar, kemas kini dipasang, kemudian aplikasi dibuka semula.",
+    "install": "Pasang",
+    "restartNow": "Mula semula sekarang",
+    "notNow": "Nanti",
+    "permissionTitle": "Benarkan KanPOS memasang kemas kini",
+    "permissionBody": "Android meminta kebenaran sekali sahaja. Pada skrin seterusnya, hidupkan \"Benarkan daripada sumber ini\", kemudian kembali ke KanPOS.",
+    "openSettings": "Buka Tetapan",
+    "mandatoryTitle": "Sila kemas kini dahulu",
+    "mandatoryBody": "Versi ini tidak lagi selamat digunakan. Kemas kini sekarang supaya data dan penyegerakan kekal selamat.",
+    "mandatoryBadge": "Wajib",
+    "mandatoryButton": "Kemas kini sekarang · {{size}}",
+    "installedVersion": "Versi dipasang {{version}}",
+    "needHelp": "Perlu bantuan? Chat WhatsApp",
+    "toastReadyTitle": "Kemas kini sedia",
+    "toastReadyBody": "Akan dipasang apabila KanPOS ditutup.",
+    "rowTitle": "Versi aplikasi",
+    "rowUpToDate": "Terkini",
+    "rowAvailable": "Ada kemas kini",
+    "rowReady": "Sedia dipasang",
+    "rowAvailableTitle": "Versi {{version}} tersedia",
+    "rowReadyTitle": "Kemas kini sudah dimuat turun",
+    "rowDownloading": "Memuat turun {{percent}}%",
+    "checkTitle": "Semak kemas kini",
+    "checkedAgo": "Terakhir disemak {{time}}",
+    "neverChecked": "Belum pernah disemak",
+    "check": "Semak",
+    "checking": "Menyemak…",
+    "update": "Kemas kini",
+    "errors": {
+      "checkFailed": "Tidak dapat menyemak kemas kini. Periksa sambungan internet.",
+      "downloadFailed": "Muat turun gagal. Periksa sambungan dan cuba lagi.",
+      "checksum": "Fail kemas kini rosak. Sila muat turun semula.",
+      "fileMissing": "Fail kemas kini tidak ditemui. Sila muat turun semula."
     }
   }
 }

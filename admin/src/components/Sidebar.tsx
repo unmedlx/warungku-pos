@@ -4,7 +4,7 @@ import type { Admin } from '@/lib/types';
 import { Avatar, Badge, Button } from './Common';
 import { cn } from '@/lib/cn';
 
-export type Halaman = 'ringkasan' | 'pengguna' | 'transaksi' | 'paket' | 'audit';
+export type Halaman = 'ringkasan' | 'pengguna' | 'transaksi' | 'paket' | 'rilis' | 'audit';
 
 function Ikon({ d }: { d: ReactNode }) {
   return (
@@ -66,6 +66,16 @@ const MENU_KELOLA: { id: Halaman; label: string; ikon: ReactNode }[] = [
       <>
         <path d="M21 8 12 3 3 8l9 5 9-5Z" />
         <path d="M3 12l9 5 9-5M3 16l9 5 9-5" />
+      </>
+    ),
+  },
+  {
+    id: 'rilis',
+    label: 'Rilis aplikasi',
+    ikon: (
+      <>
+        <path d="M12 3v12M7 10l5 5 5-5" />
+        <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
       </>
     ),
   },

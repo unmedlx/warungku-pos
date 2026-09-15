@@ -4,8 +4,8 @@ import type { MenuItemConstructorOptions } from 'electron';
 import { app, MenuItem } from 'electron';
 import electronIsDev from 'electron-is-dev';
 import unhandled from 'electron-unhandled';
-import { autoUpdater } from 'electron-updater';
 
+import { setupUpdater } from './updater';
 import { ElectronCapacitorApp, setupContentSecurityPolicy, setupReloadWatcher } from './setup';
 
 // Graceful handling of unhandled errors.
@@ -45,8 +45,11 @@ if (electronIsDev) {
   setupContentSecurityPolicy(myCapacitorApp.getCustomURLScheme());
   // Initialize our app, build windows, and load content.
   await myCapacitorApp.init();
-  // Check for updates if we are in a packaged app.
-  autoUpdater.checkForUpdatesAndNotify();
+  // Update dari KanPOS Cloud — dipicu renderer lewat window.kanposUpdater.
+  setupUpdater(() => {
+    const win = myCapacitorApp.getMainWindow();
+    return win && !win.isDestroyed() ? win : null;
+  });
 })();
 
 // Handle when all of our windows are close (platforms have their own expectations).

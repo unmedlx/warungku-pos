@@ -10,7 +10,17 @@
  * Begitu domain dikonsolidasi, cukup ubah di berkas ini.
  */
 
+/**
+ * Alamat API KanPOS Cloud. Halaman /download mengambil versi terbaru dan link
+ * installer dari sini. Isi `VITE_API_BASE_URL` saat build produksi.
+ */
+export const API_BASE_URL = (
+  (import.meta.env.VITE_API_BASE_URL as string | undefined) || "http://localhost:3210"
+).replace(/\/+$/, "");
+
 export const TAUTAN = {
+  /** Halaman download installer Android & Windows (di luar Play Store). */
+  download: "/download",
   /** PWA — bisa langsung dipakai dari browser tanpa install. */
   aplikasiWeb: "https://www.kasirgratisan.com",
   /** Aplikasi Android (printer bluetooth paling lancar di sini). */

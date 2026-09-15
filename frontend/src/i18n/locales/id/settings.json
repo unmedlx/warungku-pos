@@ -1399,6 +1399,13 @@
         "removed": "{{name}} dihapus",
         "cleared": "Keranjang dikosongkan",
         "undo": "Batalkan"
+      },
+      "quota": {
+        "remaining": "Sisa {{remaining}}/{{limit}}",
+        "exhaustedTitle": "Jatah Keranjang Suara bulan ini habis",
+        "exhaustedBody": "Akun gratis bisa pakai Keranjang Suara {{limit}} kali per bulan. Jatahnya pulih tanggal 1. Mau pakai tanpa batas? Langganan aja, atau lanjut input barang manual dulu.",
+        "later": "Nanti saja",
+        "seePlans": "Lihat paket"
       }
     }
   },
@@ -1937,6 +1944,57 @@
       "pinMismatch": "PIN tidak sama. Coba lagi.",
       "createOwnerFailed": "Gagal membuat akun pemilik.",
       "activated": "Kasir bergantian aktif"
+    }
+  },
+  "appUpdate": {
+    "availableTitle": "Update tersedia",
+    "downloadingTitle": "Mengunduh update…",
+    "readyTitle": "Update siap dipasang",
+    "versionSize": "Versi {{version}} · {{size}}",
+    "versionOnly": "Versi {{version}}",
+    "whatsNew": "Yang baru",
+    "noChangelog": "Perbaikan kecil dan peningkatan performa.",
+    "dataSafe": "Data jualan kamu tetap aman. Versi sekarang {{version}}.",
+    "later": "Nanti saja",
+    "updateNow": "Update sekarang",
+    "cancel": "Batalkan",
+    "keepSelling": "Lanjut jualan",
+    "progress": "{{done}} dari {{total}}",
+    "downloadingHint": "Kasir tetap bisa dipakai. Kalau sinyal putus, unduhan dilanjutkan otomatis.",
+    "installHintAndroid": "Setelah menekan Pasang, Android menampilkan layar konfirmasi. Tekan Update, lalu buka lagi KanPOS.",
+    "installHintWindows": "KanPOS ditutup sebentar, update dipasang, lalu aplikasi dibuka lagi.",
+    "install": "Pasang",
+    "restartNow": "Mulai ulang sekarang",
+    "notNow": "Nanti",
+    "permissionTitle": "Izinkan KanPOS memasang update",
+    "permissionBody": "Android minta izin sekali. Di layar berikutnya, nyalakan \"Izinkan dari sumber ini\", lalu kembali ke KanPOS.",
+    "openSettings": "Buka Setelan",
+    "mandatoryTitle": "Update dulu, ya",
+    "mandatoryBody": "Versi ini sudah tidak bisa dipakai dengan aman. Update sebentar supaya data dan sinkron tetap aman.",
+    "mandatoryBadge": "Wajib",
+    "mandatoryButton": "Update sekarang · {{size}}",
+    "installedVersion": "Versi terpasang {{version}}",
+    "needHelp": "Butuh bantuan? Chat WhatsApp",
+    "toastReadyTitle": "Update siap",
+    "toastReadyBody": "Dipasang otomatis saat KanPOS ditutup.",
+    "rowTitle": "Versi aplikasi",
+    "rowUpToDate": "Terbaru",
+    "rowAvailable": "Update ada",
+    "rowReady": "Siap pasang",
+    "rowAvailableTitle": "Versi {{version}} tersedia",
+    "rowReadyTitle": "Update sudah diunduh",
+    "rowDownloading": "Mengunduh {{percent}}%",
+    "checkTitle": "Cek update",
+    "checkedAgo": "Terakhir dicek {{time}}",
+    "neverChecked": "Belum pernah dicek",
+    "check": "Cek",
+    "checking": "Mengecek…",
+    "update": "Update",
+    "errors": {
+      "checkFailed": "Tidak bisa mengecek update. Periksa koneksi internet.",
+      "downloadFailed": "Unduhan gagal. Periksa koneksi lalu coba lagi.",
+      "checksum": "File update rusak. Coba unduh lagi.",
+      "fileMissing": "File update tidak ditemukan. Unduh ulang, ya."
     }
   }
 }
