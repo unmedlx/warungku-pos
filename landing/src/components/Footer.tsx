@@ -83,7 +83,16 @@ export default function Footer() {
 
         <div className="mt-10 flex flex-wrap justify-between gap-3 border-t border-[#262626] pt-5 text-xs text-[#7c7c7c]">
           <span>© 2026 KanPOS</span>
-          <span>Indonesia · English · Malaysia</span>
+          {/* Ini soal bahasa aplikasi (`frontend/src/i18n/locales`), bukan daftar
+              negara — dulu terbaca ambigu. */}
+          <span className="flex items-center gap-1.5">
+            Tersedia dalam
+            {["Bahasa Indonesia", "English", "Bahasa Melayu"].map((b) => (
+              <span key={b} className="rounded-[5px] border border-[#333] px-2 py-0.5 text-[#a3a3a3]">
+                {b}
+              </span>
+            ))}
+          </span>
         </div>
       </div>
     </footer>

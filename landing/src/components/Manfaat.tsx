@@ -52,7 +52,7 @@ const manfaat: {
       "Diingatkan kalau stok mau habis",
       "Barang masuk dari supplier tercatat",
       "Stok opname buat cocokkan hitungan fisik",
-      "Isi daftar barang sekaligus dari Excel",
+      "Isi daftar barang dari Excel, foto rak, atau suara",
     ],
   },
   {

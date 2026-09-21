@@ -23,9 +23,6 @@ export const TAUTAN = {
   download: "/download",
   /** PWA — bisa langsung dipakai dari browser tanpa install. */
   aplikasiWeb: "https://www.kasirgratisan.com",
-  /** Aplikasi Android (printer bluetooth paling lancar di sini). */
-  playStore:
-    "https://play.google.com/store/apps/details?id=gus.kanpos.kodi",
   /** Dashboard pemilik: ringkasan semua toko, dibuka dari browser. */
   dashboard: "https://dashboard.kankitu.com",
   /** Etalase toko online yang dipublikasikan dari aplikasi. */
@@ -35,4 +32,26 @@ export const TAUTAN = {
   syarat: "https://freekasir.com/terms",
   privasi: "https://freekasir.com/privacy",
   laporKendala: "https://kasirgratisan.fider.io",
+} as const;
+
+/**
+ * Jatah bulanan fitur AI untuk pengguna gratis. HARUS sama dengan konfigurasi
+ * backend (`backend/src/config/index.ts` → `VISION_FREE_QUOTA` dan
+ * `VOICE_CART_FREE_QUOTA`), karena angka inilah yang benar-benar dipakai server
+ * saat menolak permintaan.
+ *
+ * Catatan penting soal `scan`: foto rak dan dikte produk berbagi SATU jatah yang
+ * sama, dan paket berbayar tidak menaikkannya — semua paket di
+ * `backend/prisma/seed.ts` masih `aiScanQuota: 0`, jadi yang dipakai selalu
+ * `VISION_FREE_QUOTA`. Kalau suatu saat paket diberi kuota sendiri, kalimat di
+ * `Harga.tsx` dan `Ai.tsx` ikut diubah.
+ *
+ * `kasirSuara` beda: berlangganan paket apa pun membuatnya tanpa batas
+ * (`voice-cart/service.ts` → `hasActiveSubscription`).
+ */
+export const KUOTA_AI = {
+  /** Foto rak + dikte produk, digabung. */
+  scan: 5,
+  /** Sesi keranjang suara per bulan. */
+  kasirSuara: 10,
 } as const;

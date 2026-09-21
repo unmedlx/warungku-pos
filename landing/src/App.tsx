@@ -3,6 +3,7 @@ import Hero from "./components/Hero";
 import Strip from "./components/Strip";
 import Masalah from "./components/Masalah";
 import Manfaat from "./components/Manfaat";
+import Ai from "./components/Ai";
 import Langkah from "./components/Langkah";
 import Usaha from "./components/Usaha";
 import Harga from "./components/Harga";
@@ -35,6 +36,7 @@ export default function App() {
         <Strip />
         <Masalah />
         <Manfaat />
+        <Ai />
         <Langkah />
         <Usaha />
         <Harga />

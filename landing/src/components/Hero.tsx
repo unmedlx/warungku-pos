@@ -1,10 +1,21 @@
-import { Check, Download } from "lucide-react";
+import { Check, Download, Globe, Monitor, Smartphone } from "lucide-react";
 import { WhatsAppIcon } from "./icons";
 import PhoneMockup from "./PhoneMockup";
 import { Badge, Tombol } from "./ui";
 import { TAUTAN } from "../tautan";
 
 const jaminan = ["Rp 0 selamanya", "Tanpa daftar akun", "Jalan tanpa sinyal"];
+
+/**
+ * Baris platform dipisah dari `jaminan` karena bentuknya beda: ikon + nama,
+ * bukan badge. Ini satu-satunya tempat di paruh atas halaman yang menyebut
+ * Windows, jadi jangan dihapus tanpa memindahkannya ke tempat lain.
+ */
+const platform = [
+  { icon: Smartphone, label: "Android" },
+  { icon: Monitor, label: "Windows" },
+  { icon: Globe, label: "Browser" },
+];
 
 export default function Hero() {
   return (
@@ -30,8 +41,9 @@ export default function Hero() {
           </h1>
 
           <p className="max-w-[32rem] text-base text-muted-foreground desktop:text-[17px]">
-            Catat jualan, hitung untung, atur stok. Semua dari HP kamu. Nggak perlu
-            daftar, nggak perlu internet.
+            Catat jualan, hitung untung, atur stok. Isi daftar barangnya tinggal foto
+            rak atau sebutin &mdash; nggak perlu ngetik satu-satu. Jalan di HP Android
+            atau laptop Windows, tanpa daftar, tanpa internet.
           </p>
 
           <div className="mb-3.5 mt-7 flex flex-col gap-2.5 desktop:flex-row">
@@ -56,6 +68,15 @@ export default function Hero() {
           <div className="mt-5 flex flex-wrap gap-2">
             {jaminan.map((j) => (
               <Badge key={j}>{j}</Badge>
+            ))}
+          </div>
+
+          <div className="mt-5 flex flex-wrap gap-4 text-[13px] text-muted-foreground">
+            {platform.map(({ icon: Icon, label }) => (
+              <span key={label} className="inline-flex items-center gap-1.5">
+                <Icon className="h-[15px] w-[15px]" strokeWidth={1.8} />
+                {label}
+              </span>
             ))}
           </div>
         </div>

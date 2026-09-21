@@ -1,11 +1,14 @@
-import { Banknote, Smartphone, UserRound, WifiOff } from "lucide-react";
+import { Banknote, MonitorSmartphone, UserRound, WifiOff } from "lucide-react";
 import { IkonKotak } from "./ui";
 
 const items = [
   { icon: Banknote, title: "Rp 0 selamanya", desc: "Bukan masa coba 14 hari" },
   { icon: WifiOff, title: "Sinyal hilang, tetap jalan", desc: "Kasir nggak ikut mati" },
-  { icon: UserRound, title: "Nggak perlu daftar akun", desc: "Akun Google cuma buat cloud" },
-  { icon: Smartphone, title: "HP, tablet, laptop", desc: "Ringan, HP lama pun kuat" },
+  { icon: UserRound, title: "Nggak perlu daftar akun", desc: "Akun Google cuma buat cloud & AI" },
+  // "HP lama pun kuat" pindah ke FAQ ("HP saya jadul, kuat nggak?") supaya slot
+  // ini bisa dipakai menyebut installer Windows, yang tadinya tidak muncul
+  // sama sekali di paruh atas halaman.
+  { icon: MonitorSmartphone, title: "Android & Windows", desc: "Atau langsung dari browser" },
 ];
 
 /** Empat janji utama, dipasang tepat di bawah hero sebelum orang menggulir jauh. */

@@ -1,5 +1,6 @@
+import { Check } from "lucide-react";
 import { DaftarCek, JudulSeksi, Kartu, Tombol } from "./ui";
-import { TAUTAN } from "../tautan";
+import { KUOTA_AI, TAUTAN } from "../tautan";
 
 const fiturGratis = [
   "Transaksi sepuasnya, barang sebanyak apa pun",
@@ -8,6 +9,8 @@ const fiturGratis = [
   "Catat utang pelanggan & pengeluaran",
   "Akun karyawan dengan PIN di HP itu sendiri",
   "Backup data ke file sendiri",
+  `Jatah AI tiap bulan: ${KUOTA_AI.scan}× foto/dikte produk, ${KUOTA_AI.kasirSuara} sesi kasir suara`,
+  "Android, Windows & browser",
 ];
 
 /**
@@ -104,6 +107,19 @@ export default function Harga() {
                   </div>
                 </div>
               ))}
+
+              {/* Berlangganan apa pun membuat kasir suara tanpa batas
+                  (`voice-cart/service.ts` → `hasActiveSubscription`), tapi TIDAK
+                  menaikkan jatah foto/dikte: semua paket di `seed.ts` masih
+                  `aiScanQuota: 0`. Dua-duanya disebut supaya tidak ada yang
+                  berlangganan karena mengira jatah fotonya ikut naik. */}
+              <p className="flex gap-2.5 border-t border-border bg-background px-5 py-3.5 text-[13.5px] desktop:px-6">
+                <Check className="mt-0.5 h-4 w-4 flex-none text-success-text" strokeWidth={2.5} />
+                <span>
+                  <b className="font-semibold">Semua paket:</b> kasir suara jadi tanpa
+                  batas. Jatah foto/dikte produk tetap {KUOTA_AI.scan}×/bulan.
+                </span>
+              </p>
             </Kartu>
 
             <p className="mt-4 px-1 text-sm text-muted-foreground">
