@@ -36,7 +36,7 @@ const OrderCard = React.forwardRef<HTMLDivElement, OrderCardProps>(
         <div className="flex flex-col gap-0.5 pr-20">
           <p className="truncate text-sm font-medium leading-snug text-foreground">{title}</p>
           <p className="truncate text-base font-semibold leading-tight tabular-nums text-foreground">{orderId}</p>
-          {meta && <p className="truncate text-[13px] text-muted-foreground">{meta}</p>}
+          {meta && <p className="truncate text-xsm text-muted-foreground">{meta}</p>}
         </div>
         {status && (
           <Badge variant={status.variant ?? 'default'} size="sm" className="absolute right-3 top-3">

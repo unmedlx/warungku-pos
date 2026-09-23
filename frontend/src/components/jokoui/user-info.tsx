@@ -26,13 +26,13 @@ const UserInfo = React.forwardRef<HTMLDivElement, UserInfoProps>(
         </div>
       )}
       <p className="text-base font-semibold leading-tight">{name}</p>
-      {subtitle && <p className="mt-0.5 text-[13px] text-muted-foreground">{subtitle}</p>}
+      {subtitle && <p className="mt-0.5 text-xsm text-muted-foreground">{subtitle}</p>}
       {stats && stats.length > 0 && (
         <div className="mt-4 flex border-t border-border pt-3">
           {stats.map((s, i) => (
             <div key={i} className={cn('min-w-0 flex-1', i > 0 && 'border-l border-border')}>
               <p className="truncate text-sm font-semibold tabular-nums">{s.value}</p>
-              <p className="mt-0.5 truncate text-[11px] font-medium text-muted-foreground">{s.label}</p>
+              <p className="mt-0.5 truncate text-2xs font-medium text-muted-foreground">{s.label}</p>
             </div>
           ))}
         </div>

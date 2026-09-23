@@ -1080,7 +1080,7 @@ export default function CloudOnlineStoreSettings() {
             <CardContent className="p-4 flex items-center justify-between gap-3">
               <div className="flex-1 space-y-0.5">
                 <p className="text-sm font-semibold">{t('cloudOnlineStore.visibility.title')}</p>
-                <p className="text-[11px] text-muted-foreground leading-snug">
+                <p className="text-2xs text-muted-foreground leading-snug">
                   {t('cloudOnlineStore.visibility.description')}
                 </p>
               </div>
@@ -1160,7 +1160,7 @@ export default function CloudOnlineStoreSettings() {
                     </Button>
                   )}
                 </div>
-                <p className="text-[11px] text-muted-foreground leading-snug text-center max-w-[200px]">
+                <p className="text-2xs text-muted-foreground leading-snug text-center max-w-[200px]">
                   {t('cloudOnlineStore.logo.requirements')}
                 </p>
               </div>
@@ -1293,7 +1293,7 @@ export default function CloudOnlineStoreSettings() {
 
                 <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-1">
-                    <Label htmlFor="latitude-input" className="text-[11px] text-muted-foreground">Latitude</Label>
+                    <Label htmlFor="latitude-input" className="text-2xs text-muted-foreground">Latitude</Label>
                     <Input
                       id="latitude-input"
                       type="number"
@@ -1303,7 +1303,7 @@ export default function CloudOnlineStoreSettings() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <Label htmlFor="longitude-input" className="text-[11px] text-muted-foreground">Longitude</Label>
+                    <Label htmlFor="longitude-input" className="text-2xs text-muted-foreground">Longitude</Label>
                     <Input
                       id="longitude-input"
                       type="number"
@@ -1316,7 +1316,7 @@ export default function CloudOnlineStoreSettings() {
 
                 {/* Map Container */}
                 <div ref={mapContainerRef} className="h-56 rounded-xl border relative z-10 w-full overflow-hidden" />
-                <p className="text-[11px] text-muted-foreground leading-snug">
+                <p className="text-2xs text-muted-foreground leading-snug">
                   {t('cloudOnlineStore.location.dragPin')}
                 </p>
 
@@ -1354,7 +1354,7 @@ export default function CloudOnlineStoreSettings() {
                         <div className="flex items-center justify-between">
                           <span className="text-xs font-semibold">{localizedDay}</span>
                           <div className="flex items-center gap-2">
-                            <span className="text-[11px] font-semibold text-muted-foreground uppercase">
+                            <span className="text-2xs font-semibold text-muted-foreground uppercase">
                               {isOpen ? t('cloudOnlineStore.operationalHours.open') : t('cloudOnlineStore.operationalHours.closed')}
                             </span>
                             <Switch
@@ -1397,7 +1397,7 @@ export default function CloudOnlineStoreSettings() {
                               variant="outline"
                               size="sm"
                               onClick={() => handleAddTimeSlot(day)}
-                              className="w-full h-8 text-[11px] gap-1"
+                              className="w-full h-8 text-2xs gap-1"
                             >
                               <Plus className="w-3 h-3" />
                               {t('cloudOnlineStore.operationalHours.addTimeSlot')}

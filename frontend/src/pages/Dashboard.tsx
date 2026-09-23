@@ -18,6 +18,7 @@ import {
   HandCoins,
   Users,
   LayoutGrid,
+  Package,
 } from '@/components/icons';
 import { Card, CardAction, CardContent, CardDescription, CardHeader } from '@/components/jokoui/card';
 import { Badge } from '@/components/jokoui/badge';
@@ -27,20 +28,17 @@ import { SectionTitle } from '@/components/jokoui/section-title';
 import { StatCard } from '@/components/jokoui/stat-card';
 import { TransactionItem } from '@/components/jokoui/transaction-item';
 import { UserGreeting } from '@/components/jokoui/user-greeting';
+import { ServiceTile, TileGrid, type TileTone } from '@/components/jokoui/service-tile';
+import { toneForRoute } from '@/lib/tones';
 import { AlertStrip } from '@/components/jokoui/alert-strip';
 import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '@/components/jokoui/item';
 import { Link, useNavigate } from 'react-router-dom';
 import { format, subDays, startOfDay, isSameDay, eachDayOfInterval, formatDistanceToNow } from 'date-fns';
 import { id, enUS, ms } from 'date-fns/locale';
 import type { Locale } from 'date-fns';
-import { shouldShowBackupReminder, exportBackupData } from '@/components/BackupReminder';
-import { NewsCard } from '@/components/jokoui/news-card';
 import WhatsNewModal from '@/components/WhatsNewModal';
 import { DailyPllCard } from '@/components/DailyPllCard';
-import { SetupChecklist } from '@/components/SetupChecklist';
-import { InstallBanner } from '@/components/InstallBanner';
-import { SessionExpiredBanner } from '@/components/SessionExpiredBanner';
-import { LinkAccountCard } from '@/components/LinkAccountCard';
+import { HomeInterrupt } from '@/components/home/HomeInterrupt';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { getUnseenFeatures } from '@/lib/whats-new';
 import { useAuth } from '@/hooks/use-auth';
@@ -65,20 +63,34 @@ interface WeeklyBar {
   total: number;
 }
 
-/** Grafik batang 7 hari yang hidup di dalam kartu angka utama (bukan kartu sendiri). */
+/**
+ * Grafik batang 7 hari yang hidup DI DALAM panel dompet, bukan di kartunya
+ * sendiri. Karena ia berdiri di atas bidang brand yang dicelup, batangnya
+ * digambar dari putih transparan dan hari ini dicetak putih penuh — palet
+ * `bg-muted`/`bg-primary` tidak akan terbaca sama sekali di sana.
+ *
+ * Ini data, bukan sparkline hiasan: tiap batang punya labelnya sendiri dan
+ * tingginya proporsional terhadap hari tertinggi dalam pekan itu.
+ */
 function WeeklyBars({ data, today, max, emptyTitle }: { data: WeeklyBar[]; today: Date; max: number; emptyTitle: string }) {
   if (data.every((d) => d.total === 0)) {
-    return <EmptyState icon={BarChart3} title={emptyTitle} className="h-24 py-0" />;
+    /* Keadaan kosong tidak memesan tinggi grafik: toko baru akan melihat
+       panel ini sepanjang hari pertamanya, dan lubang setinggi grafik di
+       tengah objek utama layar terbaca seperti ada yang gagal dimuat. */
+    return <p className="text-2xs font-medium text-primary-dim">{emptyTitle}</p>;
   }
   return (
     <div>
-      <div className="flex h-20 items-end gap-1.5">
+      <div className="flex h-14 items-end gap-1.5">
         {data.map((d, i) => {
           const isToday = isSameDay(d.day, today);
           return (
             <div
               key={i}
-              className={cn('flex-1 rounded-t transition-all duration-500', isToday ? 'bg-primary' : 'bg-muted')}
+              className={cn(
+                'flex-1 rounded-t-sm transition-[height] duration-500 motion-reduce:transition-none',
+                isToday ? 'bg-primary-foreground' : 'bg-white/30',
+              )}
               style={{ height: `${Math.max((d.total / max) * 100, d.total > 0 ? 6 : 3)}%` }}
             />
           );
@@ -86,7 +98,7 @@ function WeeklyBars({ data, today, max, emptyTitle }: { data: WeeklyBar[]; today
       </div>
       <div className="mt-1.5 flex gap-1.5">
         {data.map((d, i) => (
-          <span key={i} className="flex-1 text-center text-[11px] text-muted-foreground">
+          <span key={i} className="flex-1 text-center text-3xs font-semibold text-primary-dim">
             {d.label}
           </span>
         ))}
@@ -99,7 +111,6 @@ export default function Dashboard() {
   const { can } = useAuth();
   const { t, i18n } = useTranslation('dashboard');
   const navigate = useNavigate();
-  const [backupDismissed, setBackupDismissed] = useState(false);
   const [whatsNewOpen, setWhatsNewOpen] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
@@ -204,9 +215,6 @@ export default function Dashboard() {
   const avgTransaction = txCount > 0 ? totalSales / txCount : 0;
   const salesTrend = yesterdaySales > 0 ? ((totalSales - yesterdaySales) / yesterdaySales) * 100 : 0;
 
-  const showBackup =
-    !backupDismissed && storeSettings && shouldShowBackupReminder(storeSettings.lastBackupAt) && can('manage_backup');
-
   const maxDailySales = Math.max(...weeklyChartData.map((d) => d.total), 1);
 
   const statCards = [
@@ -247,18 +255,28 @@ export default function Dashboard() {
 
   const [salesStat, ...secondaryStats] = statCards;
 
-  const quickActions: { to: string; icon: typeof ShoppingCart; label: string; color: string; perm?: PermissionKey | PermissionKey[] }[] = [
-    { to: '/stock-in', icon: ArrowDownToLine, label: t('quickActions.stockIn'), color: 'bg-primary/10 text-primary', perm: 'manage_stock_inout' },
-    { to: '/stock-out', icon: ArrowUpFromLine, label: t('quickActions.stockOut'), color: 'bg-primary/10 text-primary', perm: 'manage_stock_inout' },
-    { to: '/expenses', icon: HandCoins, label: t('quickActions.expenses'), color: 'bg-primary/10 text-primary', perm: ['view_expenses', 'manage_expenses'] },
-    { to: '/history', icon: Receipt, label: t('quickActions.history'), color: 'bg-primary/10 text-primary' },
-    { to: '/customers', icon: Users, label: t('quickActions.customers'), color: 'bg-primary/10 text-primary' },
+  /**
+   * Kisi menu. Sebelumnya empat akses cepat berdiri sejajar dengan tombol
+   * "Semua" yang membuka sheet — artinya tiga dari delapan tujuan yang
+   * dipakai sehari-hari selalu berada satu ketukan lebih jauh, dan tidak
+   * ada yang bisa dihafal posisinya.
+   *
+   * Sekarang seluruh menu tampil sekaligus sebagai kisi ubin berwarna.
+   * Warnanya datang dari `lib/tones`, bukan ditulis di sini, supaya satu
+   * urusan memegang warna yang sama di ubin ini, pita kategori kasir, dan
+   * ikon daftar transaksi.
+   */
+  const menuTiles: { to: string; icon: typeof ShoppingCart; label: string; tone: TileTone; count?: number; perm?: PermissionKey | PermissionKey[] }[] = [
+    { to: '/cashier', icon: ShoppingCart, label: t('quickActions.cashier'), tone: toneForRoute('/cashier'), perm: 'create_transaction' },
+    { to: '/products', icon: Package, label: t('quickActions.products'), tone: toneForRoute('/products'), perm: 'manage_products' },
+    { to: '/stock-in', icon: ArrowDownToLine, label: t('quickActions.stockIn'), tone: toneForRoute('/stock-in'), perm: 'manage_stock_inout' },
+    { to: '/stock-out', icon: ArrowUpFromLine, label: t('quickActions.stockOut'), tone: toneForRoute('/stock-out'), perm: 'manage_stock_inout' },
+    { to: '/debts', icon: HandCoins, label: t('quickActions.debts', { defaultValue: 'Kasbon' }), tone: toneForRoute('/debts') },
+    { to: '/expenses', icon: Wallet, label: t('quickActions.expenses'), tone: toneForRoute('/expenses'), perm: ['view_expenses', 'manage_expenses'] },
+    { to: '/reports', icon: BarChart3, label: t('quickActions.reports'), tone: toneForRoute('/reports'), perm: 'view_reports' },
+    { to: '/customers', icon: Users, label: t('quickActions.customers'), tone: toneForRoute('/customers') },
   ];
-  const visibleActions = quickActions.filter((a) => !a.perm || (Array.isArray(a.perm) ? a.perm.some(can) : can(a.perm)));
-  const mainActionRoutes = ['/stock-in', '/stock-out', '/history'];
-  const mainActions = visibleActions.filter((a) => mainActionRoutes.includes(a.to));
-  const moreActions = visibleActions.filter((a) => !mainActionRoutes.includes(a.to));
-  const topCount = mainActions.length + (moreActions.length > 0 ? 1 : 0);
+  const visibleTiles = menuTiles.filter((a) => !a.perm || (Array.isArray(a.perm) ? a.perm.some(can) : can(a.perm)));
 
   const formatTxDate = (date: Date) => {
     const d = new Date(date);
@@ -283,7 +301,10 @@ export default function Dashboard() {
     <div className="pb-28 md:pb-32">
       <Sheet open={alertOpen} onOpenChange={setAlertOpen}>
         {/* Header polos: avatar toko + nama + sapaan, lonceng di kanan */}
-        <div className="sticky top-0 z-30 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/70 px-4 pt-2 pb-2 md:px-8">
+        {/* Latar pejal, bukan backdrop-blur: di WebView HP kelas bawah blur
+            dibayar setiap frame gulir, dan di bawah matahari ia menurunkan
+            kontras baris yang paling sering dibaca di app ini. */}
+        <div className="sticky top-0 z-30 bg-background px-4 pb-2 pt-2 md:px-8">
           <UserGreeting
             avatarPosition="leading"
             greeting={greeting}
@@ -298,7 +319,15 @@ export default function Dashboard() {
                   />
                 ) : storeSettings?.storeName ? (
                   <span className="text-sm font-semibold leading-none">
-                    {storeSettings.storeName.slice(0, 2).toUpperCase()}
+                    {/* Inisial kata, bukan dua huruf pertama: "Warung Bu
+                        Siti" harus terbaca WB, bukan WA. */}
+                    {storeSettings.storeName
+                      .split(/\s+/)
+                      .filter(Boolean)
+                      .slice(0, 2)
+                      .map((w) => w[0])
+                      .join('')
+                      .toUpperCase()}
                   </span>
                 ) : (
                   <Store className="h-5 w-5" />
@@ -314,7 +343,10 @@ export default function Dashboard() {
                       variant="warning"
                       size="sm"
                       shape="pill"
-                      className="absolute -right-1.5 -top-1.5 h-[18px] min-w-[18px] px-1 text-[11px]"
+                      /* Di dalam tombol, bukan digantung di luarnya: header
+                         ini lengket di puncak halaman dan apa pun yang
+                         menjorok ke atas terpotong saat digulir. */
+                      className="absolute right-0.5 top-0.5 h-4.5 min-w-4.5 px-1 text-3xs"
                     >
                       {alertCount}
                     </Badge>
@@ -370,16 +402,14 @@ export default function Dashboard() {
       </Sheet>
 
       <div className="space-y-3 px-4 pt-1 md:px-8">
-        {/* Sesi cloud mati tidak menutup kasir — cuma banner, lalu jalan terus */}
-        <SessionExpiredBanner />
+        {/* Panel uang memimpin layar, apa pun keadaan tokonya.
+            Sebelumnya `HomeInterrupt` berdiri di atasnya, dan pada toko baru
+            kartu "Siapkan toko" memakan hampir separuh viewport pertama —
+            sehingga janji layar ini ("buka app, langsung tahu berapa hari
+            ini") gagal justru di hari-hari pertama, ketika pemiliknya paling
+            sering membuka app. Ajakan itu tetap tampil, hanya tidak lagi
+            menggeser objek utama layar ke bawah lipatan.
 
-        {/* Onboarding lanjutan — menggantikan slide tutorial yang dulu ada di wizard */}
-        <SetupChecklist />
-
-        {/* Ajakan menghubungkan akun untuk toko yang masih "tanpa akun" */}
-        <LinkAccountCard />
-
-        {/* Angka utama satu Card besar dengan grafik 7 hari di dalamnya:
             P&L untuk pemilik, ringkasan penjualan untuk staf. */}
         {can('view_reports') ? (
           <DailyPllCard onViewReport={() => navigate('/reports')} chart={weeklyChart} />
@@ -397,7 +427,7 @@ export default function Dashboard() {
                         : t('chart.todayLabel', { defaultValue: 'Hari ini' })}
                     </Badge>
                   </CardAction>
-                  <p className="col-start-1 break-words text-[28px] font-semibold leading-[1.1] tracking-tight tabular-nums">{salesStat.value}</p>
+                  <p className="col-start-1 break-words text-metric font-semibold leading-[1.1] tracking-tight tabular-nums">{salesStat.value}</p>
                   <p className="col-start-1 text-xs text-muted-foreground">
                     {t('stats.transactions', { count: txCount, defaultValue: `${txCount} transaksi` })}
                     {' · '}
@@ -417,6 +447,15 @@ export default function Dashboard() {
             </>
           )
         )}
+
+        {/* Paling banyak satu ajakan, dipilih berdasarkan prioritas di
+            `lib/home-interrupts`. */}
+        <HomeInterrupt
+          lastBackupAt={storeSettings?.lastBackupAt}
+          canBackup={can('manage_backup')}
+          settingsLoaded={!!storeSettings}
+          dateLocale={dateLocale}
+        />
 
         {/* Kejadian yang bikin rugi diam-diam: stok menipis & bill yang belum
             ditutup. Sebelumnya hanya ada di balik ikon lonceng — sesuatu yang
@@ -444,73 +483,25 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Ajakan pasang PWA — muncul setelah transaksi pertama, bukan di onboarding */}
-        <InstallBanner />
-
-        {/* Backup reminder — menghidupkan kembali flag `showBackup` yang dulu mati. */}
-        {showBackup && (
-          <NewsCard
-            title={t('backupReminder.title', { ns: 'settings' })}
-            description={
-              storeSettings?.lastBackupAt
-                ? t('backupReminder.lastBackup', {
-                    ns: 'settings',
-                    time: formatDistanceToNow(new Date(storeSettings.lastBackupAt), { addSuffix: true, locale: dateLocale }),
-                  })
-                : t('backupReminder.neverBackedUp', { ns: 'settings' })
-            }
-            ctaLabel={t('backupReminder.backupNow', { ns: 'settings' })}
-            onCtaClick={() => { void exportBackupData(); }}
-            onDismiss={() => setBackupDismissed(true)}
-          />
-        )}
-
-        {/* Akses cepat: grid Item kotak, tanpa Card pembungkus */}
-        {topCount > 0 && (
+        {/* Menu: kisi ubin berwarna. Warna adalah sistem pengenal, bukan
+            hiasan — lihat `lib/tones`. */}
+        {visibleTiles.length > 0 && (
           <div className="pt-1">
             <SectionTitle title={t('quickActions.title')} />
-            <div className={cn('grid gap-2', topCount === 4 ? 'grid-cols-4' : topCount === 3 ? 'grid-cols-3' : topCount === 2 ? 'grid-cols-2' : 'grid-cols-1')}>
-              {mainActions.map(({ to, icon: Icon, label }) => (
-                <Item key={to} asChild interactive className="flex-col gap-1.5 px-1 py-2.5 text-center">
-                  <Link to={to}>
-                    <ItemMedia tone="primary"><Icon /></ItemMedia>
-                    <span className="line-clamp-2 text-[11.5px] font-medium leading-tight text-foreground">{label}</span>
-                  </Link>
-                </Item>
+            <TileGrid>
+              {visibleTiles.map((tile) => (
+                <ServiceTile
+                  key={tile.to}
+                  to={tile.to}
+                  icon={tile.icon}
+                  label={tile.label}
+                  tone={tile.tone}
+                  count={tile.to === '/cashier' ? undefined : tile.count}
+                />
               ))}
-              {moreActions.length > 0 && (
-                <Item asChild interactive className="flex-col gap-1.5 px-1 py-2.5 text-center">
-                  <button type="button" onClick={() => setMoreOpen(true)}>
-                    <ItemMedia tone="muted"><LayoutGrid /></ItemMedia>
-                    <span className="line-clamp-2 text-[11.5px] font-medium leading-tight text-foreground">{t('quickActions.all', { defaultValue: 'Semua' })}</span>
-                  </button>
-                </Item>
-              )}
-            </div>
+            </TileGrid>
           </div>
         )}
-
-        {/* Sheet "Lainnya": daftar Item flat */}
-        <Sheet open={moreOpen} onOpenChange={setMoreOpen}>
-          <SheetContent side="bottom" className="rounded-t-2xl">
-            <SheetHeader>
-              <SheetTitle>{t('quickActions.title')}</SheetTitle>
-            </SheetHeader>
-            <div className="-mx-4 py-2 divide-y divide-border">
-              {moreActions.map(({ to, icon: Icon, label }) => (
-                <Item key={to} asChild variant="flat" interactive>
-                  <Link to={to} onClick={() => setMoreOpen(false)}>
-                    <ItemMedia tone="primary"><Icon /></ItemMedia>
-                    <ItemContent>
-                      <ItemTitle>{label}</ItemTitle>
-                    </ItemContent>
-                    <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
-                  </Link>
-                </Item>
-              ))}
-            </div>
-          </SheetContent>
-        </Sheet>
 
         {/* Transaksi terakhir: satu Card berisi baris-baris terpisah garis */}
         <div className="pt-1">

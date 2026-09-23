@@ -662,8 +662,8 @@
       "totalSales": "Total Penjualan"
     },
     "empty": {
-      "noDateFilter": "Belum ada transaksi",
-      "withDateFilter": "Tidak ada transaksi di rentang tanggal ini"
+      "noDateFilter": "Transaksi yang kamu catat di Kasir akan muncul di sini.",
+      "withDateFilter": "Coba ubah rentang tanggalnya, atau hapus filternya."
     },
     "groupHeader_zero": "{{date}} · {{count}} transaksi",
     "groupHeader_one": "{{date}} · {{count}} transaksi",

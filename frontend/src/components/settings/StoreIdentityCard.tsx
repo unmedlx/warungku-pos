@@ -38,7 +38,7 @@ export function StoreIdentityCard({ name, address, logo, chips, onEdit }: StoreI
       </Avatar>
       <div className="min-w-0 flex-1">
         <p className="truncate text-base font-semibold leading-tight">{name}</p>
-        <p className="mt-0.5 truncate text-[13px] text-muted-foreground">{address}</p>
+        <p className="mt-0.5 truncate text-xsm text-muted-foreground">{address}</p>
         {chips.length > 0 && (
           <div className="mt-2 flex flex-wrap gap-1">
             {chips.map(c => (

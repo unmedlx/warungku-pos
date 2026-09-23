@@ -13,7 +13,7 @@ function Ikon({ icon: Icon, tone }: { icon: typeof Info; tone: 'gray' | 'primary
     tone === 'primary' ? 'bg-primary/10 text-primary' : tone === 'success' ? 'bg-success/10 text-success-text' : TONE_CLASS.gray;
   return (
     <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${kelas}`}>
-      <Icon className="h-[18px] w-[18px]" />
+      <Icon className="size-4.5" />
     </div>
   );
 }

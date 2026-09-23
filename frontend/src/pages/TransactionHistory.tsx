@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { format, startOfDay, endOfDay } from 'date-fns';
 import { id as idLocale, enUS, ms } from 'date-fns/locale';
 import type { Locale } from 'date-fns';
-import { Search, Receipt as ReceiptIcon, ChevronRight, ShoppingBag, CalendarIcon, X, Trash2, ShoppingCart, UserCircle2 } from '@/components/icons';
+import { Search, Receipt as ReceiptIcon, ChevronRight, CalendarIcon, X, Trash2, ShoppingCart, UserCircle2 } from '@/components/icons';
 import { Card, CardContent } from '@/components/jokoui/card';
 import { Input } from '@/components/jokoui/input';
 import { Button } from '@/components/jokoui/button';
@@ -377,7 +377,11 @@ export default function TransactionHistory() {
       {dateKeys.length === 0 ? (
         !showOpenSection ? (
           <EmptyState
-            icon={ShoppingBag}
+            /* `ShoppingBag` di registry ikon app ini dipetakan ke SVG
+               percent/discount, jadi layar "belum ada transaksi" mencetak
+               lambang persen. `Receipt` adalah objek yang memang dibicarakan
+               layar ini. */
+            icon={ReceiptIcon}
             title={t('transactionHistory.empty.title', { defaultValue: hasDateFilter ? 'Tidak ada transaksi di rentang ini' : 'Belum ada transaksi' })}
             description={hasDateFilter ? t('transactionHistory.empty.withDateFilter') : t('transactionHistory.empty.noDateFilter')}
           />

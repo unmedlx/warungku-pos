@@ -3,20 +3,28 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 
 /**
- * Card — port `registry/react/components/card.tsx` milik Shark UI:
- * `rounded-xl border shadow-xs/5 bg-card`, padding lewat `--space`.
+ * Card — permukaan dasar dunia visual "Dibagi Per Peran".
  *
- * Shark memakai `py-(--space)` di root dan `px-(--space)` di tiap bagian.
- * Di sini bagian-bagian itu memakai `p-4`/`px-4` biasa supaya pemanggil lama
- * yang menulis `<CardContent className="p-3">` tetap berjalan; `--space`
- * default Shark (24px) diturunkan ke 16px karena kanvas 375px.
+ * Satu tingkat elevasi, dan hanya SATU cara memisahkan permukaan dari
+ * ground-nya: terang memakai bayangan, gelap memakai garis. Tidak pernah
+ * dua-duanya sekaligus — garis 1px plus bayangan 24px adalah tanda paling
+ * jelas bahwa kartunya dirakit, bukan dirancang, dan di mode gelap bayangan
+ * itu memang tidak terbaca sama sekali.
+ *
+ * Padding tetap `p-4`/`px-4` supaya pemanggil lama yang menulis
+ * `<CardContent className="p-3">` tidak ikut bergeser.
  */
 const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
       data-slot="card"
-      className={cn('rounded-xl border border-border bg-card text-card-foreground shadow-xs', className)}
+      className={cn(
+        'rounded-xl bg-card text-card-foreground',
+        'border border-transparent shadow-lift',
+        'dark:border-border dark:shadow-none',
+        className,
+      )}
       {...props}
     />
   ),
@@ -59,7 +67,7 @@ const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDi
 );
 CardContent.displayName = 'CardContent';
 
-/** Footer Shark: `bg-muted/48 border-t rounded-b-xl`. */
+/** Footer: permukaan cekung, dipisah garis tipis dari isi kartunya. */
 const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
     <div

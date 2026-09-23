@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { Link } from 'react-router-dom';
 import { Check, ChevronRight, ListChecks, X } from '@/components/icons';
@@ -9,12 +8,32 @@ import { Card, CardContent } from '@/components/jokoui/card';
 import { Button } from '@/components/jokoui/button';
 import { ItemMedia } from '@/components/jokoui/item';
 import { cn } from '@/lib/utils';
+import { DISMISS_KEYS, useDismissed } from '@/lib/home-interrupts';
 
-const DISMISS_KEY = 'kanpos_setup_checklist_dismissed_v1';
+const DISMISS_KEY = DISMISS_KEYS.setup;
 
-/** Sekali ditutup, kartu tidak muncul lagi di device ini. */
-function isDismissed(): boolean {
-  return localStorage.getItem(DISMISS_KEY) === '1';
+/**
+ * Progres setup toko. Dipakai `useSetupChecklistVisible` dan komponennya,
+ * jadi syaratnya cuma ditulis sekali.
+ */
+function useSetupStats() {
+  return useLiveQuery(async () => {
+    const [products, transactions, settings] = await Promise.all([
+      db.products.where('isDeleted').equals(0).count(),
+      db.transactions.where('status').equals('completed').count(),
+      db.storeSettings.toCollection().first(),
+    ]);
+    const done = [true, products > 0, transactions > 0, !!(settings?.lastBackupAt || settings?.lastCloudBackupAt)];
+    return { done, doneCount: done.filter(Boolean).length, total: done.length };
+  }, []);
+}
+
+/** Layak tampil bila belum ditutup dan masih ada langkah yang belum selesai. */
+export function useSetupChecklistVisible(): boolean {
+  const [dismissed] = useDismissed(DISMISS_KEY);
+  const stats = useSetupStats();
+  if (dismissed || !stats) return false;
+  return stats.doneCount < stats.total;
 }
 
 /**
@@ -27,38 +46,21 @@ function isDismissed(): boolean {
  */
 export function SetupChecklist() {
   const { t } = useTranslation('dashboard');
-  const [dismissed, setDismissed] = useState(isDismissed);
-
-  const stats = useLiveQuery(async () => {
-    const [products, transactions, settings] = await Promise.all([
-      db.products.where('isDeleted').equals(0).count(),
-      db.transactions.where('status').equals('completed').count(),
-      db.storeSettings.toCollection().first(),
-    ]);
-    return {
-      hasProduct: products > 0,
-      hasTransaction: transactions > 0,
-      hasBackup: !!(settings?.lastBackupAt || settings?.lastCloudBackupAt),
-    };
-  }, []);
+  const [dismissed, handleDismiss] = useDismissed(DISMISS_KEY);
+  const stats = useSetupStats();
 
   if (dismissed || !stats) return null;
 
   const items = [
-    { key: 'store', done: true, to: null },
-    { key: 'product', done: stats.hasProduct, to: '/products' },
-    { key: 'transaction', done: stats.hasTransaction, to: '/cashier' },
-    { key: 'backup', done: stats.hasBackup, to: '/settings/backup' },
+    { key: 'store', done: stats.done[0], to: null },
+    { key: 'product', done: stats.done[1], to: '/products' },
+    { key: 'transaction', done: stats.done[2], to: '/cashier' },
+    { key: 'backup', done: stats.done[3], to: '/settings/backup' },
   ] as const;
 
-  const doneCount = items.filter(i => i.done).length;
+  const doneCount = stats.doneCount;
   // Tugas beres — kartu sudah selesai tugasnya juga.
   if (doneCount === items.length) return null;
-
-  const handleDismiss = () => {
-    localStorage.setItem(DISMISS_KEY, '1');
-    setDismissed(true);
-  };
 
   return (
     <Card>
@@ -67,7 +69,7 @@ export function SetupChecklist() {
         <ItemMedia tone="primary"><ListChecks /></ItemMedia>
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium">{t('setup.title')}</p>
-          <p className="mt-0.5 text-[13px] text-muted-foreground">
+          <p className="mt-0.5 text-xsm text-muted-foreground">
             {t('setup.progress', { done: doneCount, total: items.length })}
           </p>
         </div>
@@ -96,7 +98,7 @@ export function SetupChecklist() {
             >
               <span
                 className={cn(
-                  'flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full border transition-colors',
+                  'flex size-5.5 shrink-0 items-center justify-center rounded-full border transition-colors',
                   item.done ? 'border-success bg-success' : 'border-input',
                 )}
               >
@@ -104,7 +106,7 @@ export function SetupChecklist() {
               </span>
               <span
                 className={cn(
-                  'flex-1 text-[13px] font-medium',
+                  'flex-1 text-xsm font-medium',
                   item.done && 'text-muted-foreground line-through decoration-muted-foreground/40',
                 )}
               >

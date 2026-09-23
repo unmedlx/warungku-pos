@@ -77,7 +77,7 @@ export function CartItems({
               {/* Penanda asal-suara. Kalau ada yang keliru di keranjang, baris
                   inilah yang paling layak dicurigai lebih dulu. */}
               {item.fromVoice && (
-                <span className="mr-1.5 rounded bg-accent px-1.5 py-px text-[9px] font-bold uppercase tracking-wide text-primary align-middle">
+                <span className="mr-1.5 rounded bg-accent px-1.5 py-px text-3xs font-bold uppercase tracking-wide text-primary align-middle">
                   {t('cashier.voice.tag')}
                 </span>
               )}

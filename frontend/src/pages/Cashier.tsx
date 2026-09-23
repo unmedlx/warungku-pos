@@ -14,10 +14,19 @@ import { Input } from '@/components/jokoui/input';
 import { Badge } from '@/components/jokoui/badge';
 import { Switch } from '@/components/jokoui/switch';
 import { PageHeader } from '@/components/jokoui/page-header';
+import {
+  MoneyPanel,
+  MoneyPanelAmount,
+  MoneyPanelFooter,
+  MoneyPanelLabel,
+} from '@/components/jokoui/money-panel';
+import { ActionBar, ActionButton } from '@/components/jokoui/action-bar';
+import { toneForId, toneForName, TONE_SURFACE } from '@/lib/tones';
 import { EmptyState } from '@/components/jokoui/empty-state';
 import { Item, ItemMedia, ItemContent, ItemTitle, ItemDescription, ItemActions } from '@/components/jokoui/item';
 import { DataList, DataListRow } from '@/components/jokoui/data-list';
 import { SegmentGroup } from '@/components/jokoui/segment-group';
+import { CategoryChip, CategoryStrip } from '@/components/jokoui/category-chip';
 import { Label } from '@/components/jokoui/label';
 import { NumPad, QuickCashRow } from '@/components/jokoui/numpad';
 import { QtyStepper } from '@/components/jokoui/qty-stepper';
@@ -929,36 +938,74 @@ export default function Kasir() {
   }
 
   return (
-    <div className="px-4 pt-6 pb-4 h-[calc(100vh-4rem)]">
-      <div className="flex flex-col md:flex-row gap-0 md:gap-4 h-full">
-        <div className="flex-1 min-w-0 flex flex-col overflow-hidden">
-          <PageHeader
-            title={
-              <>
-                {t('cashier.title')}
-                {editingTxId && (
-                  <Badge variant="secondary" className="text-xs font-normal ml-2 align-middle">
-                    {t('cashier.editingBill')}
-                  </Badge>
-                )}
-              </>
-            }
-          >
-            {/* Tombol open bill dengan badge jumlah di pojok */}
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setOpenBillsOpen(true)}
-              aria-label={`${t('cashier.openBill')}${openBillsCount > 0 ? ` (${openBillsCount})` : ''}`}
-            >
-              <ClipboardList />
-              {openBillsCount > 0 && (
-                <Badge variant="warning" size="sm" pill className="absolute -right-1.5 -top-1.5 h-[18px] min-w-[18px] px-1 text-[11px] tabular-nums">
-                  {openBillsCount}
+    // Tinggi dihitung sendiri karena grid produk & panel keranjang punya
+    // scroll masing-masing. `dvh` (bukan `vh`) supaya toolbar browser mobile
+    // yang muncul-hilang tidak memotong bagian bawah grid; safe area & tinggi
+    // BottomNav diambil dari variabel di index.css, bukan angka tebakan.
+    <div className="flex h-[calc(100dvh-var(--app-nav-h)-var(--app-safe-top)-var(--app-safe-bottom))] flex-col">
+      {/* === Tata bahasa dompet ===
+          Total berjalan adalah OBJEK layar ini, bukan keterangan yang muncul
+          belakangan. Sebelumnya ia bersembunyi di bar mengambang yang hanya
+          lahir setelah keranjang terisi — artinya sepanjang pemilik memilih
+          barang, angka yang paling ingin ia lihat justru tidak ada. Sekarang
+          ia berdiri di puncak layar sejak ketukan pertama, dicelup penuh
+          warna brand, dan tidak pernah tergulir keluar. */}
+      <MoneyPanel variant="screen" className="shrink-0 md:rounded-none">
+        <PageHeader
+          tone="dipped"
+          className="mb-2"
+          title={
+            <>
+              {t('cashier.title')}
+              {editingTxId && (
+                <Badge variant="secondary" className="ml-2 align-middle text-xs font-normal">
+                  {t('cashier.editingBill')}
                 </Badge>
               )}
-            </Button>
-          </PageHeader>
+            </>
+          }
+          subtitle={storeSettings?.storeName || undefined}
+          onBack={() => navigate('/')}
+        >
+          <Button
+            variant="on-brand"
+            size="icon-sm"
+            onClick={() => setOpenBillsOpen(true)}
+            aria-label={`${t('cashier.openBill')}${openBillsCount > 0 ? ` (${openBillsCount})` : ''}`}
+          >
+            <ClipboardList />
+            {openBillsCount > 0 && (
+              <Badge variant="warning" size="sm" pill className="absolute -right-1.5 -top-1.5 h-4.5 min-w-4.5 px-1 text-2xs tabular-nums">
+                {openBillsCount}
+              </Badge>
+            )}
+          </Button>
+        </PageHeader>
+
+        <MoneyPanelLabel>{t('cashier.totalLabel', { defaultValue: 'Total belanja' })}</MoneyPanelLabel>
+        <MoneyPanelAmount value={total} alwaysVisible />
+
+        <MoneyPanelFooter>
+          <span className="min-w-0 truncate">
+            <b className="font-bold text-primary-foreground">
+              {t('cashier.cart.title', { count: cartCount })}
+            </b>
+          </span>
+          {cartCount > 0 && (
+            <button
+              type="button"
+              onClick={() => setCartOpen(true)}
+              className="inline-flex shrink-0 items-center gap-0.5 rounded-sm font-bold text-primary-foreground outline-none focus-visible:ring-[3px] focus-visible:ring-primary-foreground/50 md:hidden"
+            >
+              {t('cashier.cart.view', { defaultValue: 'Lihat keranjang' })}
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          )}
+        </MoneyPanelFooter>
+      </MoneyPanel>
+
+      <div className="flex min-h-0 flex-1 flex-col gap-0 px-4 pt-3 md:flex-row md:gap-4">
+        <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
 
           {/* Grosir: pelanggan dipilih di awal, bukan di akhir — limit kasbonnya
               perlu terlihat sebelum transaksi dimulai, bukan sesudah. */}
@@ -1006,8 +1053,11 @@ export default function Kasir() {
                 {!voiceQuota.quota.unlimited && (
                   <span
                     className={cn(
-                      'absolute -right-1.5 -top-1.5 min-w-[18px] rounded-full px-1 text-[10px] font-semibold leading-[18px] tabular-nums',
-                      voiceQuota.quota.remaining > 0 ? 'bg-muted text-muted-foreground' : 'bg-warning text-white',
+                      /* Di DALAM tombol, bukan digantung di luarnya: baris
+                         ini berdiri di puncak wadah yang menggulir, jadi apa
+                         pun yang menjorok ke atas akan terpotong. */
+                      'absolute right-0.5 top-0.5 min-w-4.5 rounded-full px-1 text-3xs font-bold leading-[18px] tabular-nums',
+                      voiceQuota.quota.remaining > 0 ? 'bg-secondary text-muted-foreground' : 'bg-warning text-warning-foreground',
                     )}
                     title={t('cashier.voice.quota.remaining', { remaining: voiceQuota.quota.remaining, limit: voiceQuota.quota.limit })}
                   >
@@ -1028,14 +1078,14 @@ export default function Kasir() {
               tanpa tahu kenapa dan tanpa tahu harus berbuat apa. */}
           {voice.error && !voicePageOpen && (
             <div className="mb-3 flex items-start gap-2 rounded-xl border border-warning/40 bg-warning/10 px-3 py-2">
-              <p className="flex-1 text-[11.5px] leading-relaxed text-warning-text">
+              <p className="flex-1 text-2xs leading-relaxed text-warning-text">
                 {t(voice.denied ? 'cashier.voice.denied' : `cashier.voice.error.${voice.error}`)}
               </p>
               {!voice.denied && (
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-7 shrink-0 gap-1 text-[11px]"
+                  className="h-7 shrink-0 gap-1 text-2xs"
                   onClick={openVoicePage}
                 >
                   <Mic className="h-3 w-3" />
@@ -1045,17 +1095,34 @@ export default function Kasir() {
             </div>
           )}
 
-          {/* Filter kategori: chip aktif berlatar input, bukan pil biru */}
-          <SegmentGroup
-            layout="scroll"
-            className="mb-3"
-            value={filterCategory}
-            onValueChange={setFilterCategory}
-            items={[
-              { value: 'all', label: t('cashier.categoryAll') },
-              ...(categories ?? []).map(c => ({ value: c.id!.toString(), label: `${c.icon ?? ''} ${c.name}`.trim() })),
-            ]}
-          />
+          {/* Pita kategori. Titik warna di kiri label adalah jembatan sistem
+              pengenal: warna yang sama muncul di thumbnail produk dan ubin
+              menu Beranda, jadi kategori bisa dikenali sebelum sempat
+              dibaca. Chip aktif dicelup brand penuh — di layar yang dipakai
+              ratusan kali sehari, status terpilih harus terbaca dari sudut
+              mata, bukan dari pil abu di atas bidang abu.
+
+              Emoji `c.icon` sengaja tidak ikut ke label: posisi itu milik
+              titik warna, dan ikon yang diketik user tidak punya bobot,
+              ukuran, atau kontras yang bisa dijamin. */}
+          <CategoryStrip className="mb-3">
+            <CategoryChip
+              active={filterCategory === 'all'}
+              onClick={() => setFilterCategory('all')}
+            >
+              {t('cashier.categoryAll')}
+            </CategoryChip>
+            {(categories ?? []).map(c => (
+              <CategoryChip
+                key={c.id}
+                tone={toneForId(c.id)}
+                active={filterCategory === c.id!.toString()}
+                onClick={() => setFilterCategory(c.id!.toString())}
+              >
+                {c.name}
+              </CategoryChip>
+            ))}
+          </CategoryStrip>
 
           {/* Restoran masuk lewat meja, bukan lewat menu: sebelum ada yang
               dipesan, yang perlu dijawab adalah "meja mana", bukan "menu apa". */}
@@ -1068,7 +1135,7 @@ export default function Kasir() {
                 emptyLabel={t('cashier.tables.empty')}
                 requestedLabel={t('cashier.tables.requested')}
               />
-              <div className="mt-3 flex flex-wrap gap-3 text-[11px] text-muted-foreground">
+              <div className="mt-3 flex flex-wrap gap-3 text-2xs text-muted-foreground">
                 <span className="flex items-center gap-1.5"><i className="h-2.5 w-2.5 rounded-sm border border-border bg-card" />{t('cashier.tables.empty')}</span>
                 <span className="flex items-center gap-1.5"><i className="h-2.5 w-2.5 rounded-sm bg-primary" />{t('cashier.tables.busy')}</span>
                 <span className="flex items-center gap-1.5"><i className="h-2.5 w-2.5 rounded-sm bg-warning" />{t('cashier.tables.requested')}</span>
@@ -1097,14 +1164,24 @@ export default function Kasir() {
                       className={cn('active:scale-[0.99]', isStockManaged(p) && p.stock <= 0 && 'opacity-60')}
                     >
                       <button type="button" onClick={() => addToCart(p)}>
-                        <ItemMedia tone={p.photo ? 'muted' : 'primary'} className="relative overflow-visible">
+                        {/* Warna kategori yang sama dengan cabang kisi di
+                            layar ini — satu layar tidak boleh menjalankan
+                            dua tata bahasa warna. */}
+                        <ItemMedia
+                          className={cn(
+                            'relative overflow-visible',
+                            !p.photo && TONE_SURFACE[p.categoryId != null ? toneForId(p.categoryId) : toneForName(p.name)],
+                          )}
+                        >
                           {p.photo ? (
                             <img src={p.photo} alt="" className="rounded-xl" />
                           ) : (
-                            <PackageIcon />
+                            <span className="text-xsm font-extrabold tracking-[-0.02em]">
+                              {p.name.slice(0, 2).toUpperCase()}
+                            </span>
                           )}
                           {inCartQty > 0 && (
-                            <Badge size="sm" pill className="absolute -right-1.5 -top-1.5 h-[18px] min-w-[18px] px-1 text-[11px] tabular-nums">
+                            <Badge size="sm" pill className="absolute -right-1.5 -top-1.5 h-4.5 min-w-4.5 px-1 text-2xs tabular-nums">
                               {inCartQty}
                             </Badge>
                           )}
@@ -1124,44 +1201,72 @@ export default function Kasir() {
                 })}
               </div>
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
+              /* Tiga kolom di HP, bukan dua: sel yang lebih rapat membuat
+                 sembilan barang muat dalam satu layar, dan di warung urutan
+                 barang laris dihafal berdasarkan posisinya. Barang tanpa
+                 foto memakai inisial di atas tint kategorinya — warna yang
+                 sama dengan ubin menu dan pita kategori — supaya kisinya
+                 tetap bisa dipindai tanpa satu pun foto produk, yang memang
+                 keadaan sebagian besar warung. */
+              <div className="grid grid-cols-3 gap-2 md:grid-cols-4 lg:grid-cols-5">
                 {filtered.map(p => {
                   const inCartQty = cart.find(c => c.product.id === p.id)?.qty ?? 0;
                   const managed = isStockManaged(p);
                   const outOfStock = managed && p.stock <= 0;
                   const lowStock = managed && !outOfStock && p.stock <= 5;
+                  // ID kategori, bukan hash nama: ID-nya berurut sehingga enam
+                  // kategori pertama dijamin berbeda warna. Hash nama hanya
+                  // dipakai untuk barang yang belum berkategori.
+                  const tone = p.categoryId != null ? toneForId(p.categoryId) : toneForName(p.name);
                   return (
-                    // Kartu produk: area gambar + badge stok di pojok, body ringkas
-                    <Card key={p.id} className={cn('overflow-hidden text-left transition-transform active:scale-[0.98] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/30', outOfStock && 'opacity-60')}>
-                      <button type="button" onClick={() => addToCart(p)} className="block w-full text-left">
-                        <div className="relative flex h-24 items-center justify-center bg-muted text-muted-foreground">
+                    <Card
+                      key={p.id}
+                      className={cn(
+                        'relative text-left transition-transform active:scale-[0.975]',
+                        'motion-reduce:transition-none motion-reduce:active:scale-100',
+                        outOfStock && 'opacity-60',
+                      )}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => addToCart(p)}
+                        disabled={outOfStock}
+                        className="block w-full rounded-xl p-2 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/40 disabled:cursor-not-allowed"
+                      >
+                        <div className={cn('relative flex h-16 items-center justify-center overflow-hidden rounded-md', !p.photo && TONE_SURFACE[tone])}>
                           {p.photo ? (
                             <img src={p.photo} alt="" className="h-full w-full object-cover" />
                           ) : (
-                            <PackageIcon className="h-6 w-6" />
+                            <span className="text-heading font-extrabold tracking-[-0.02em]">
+                              {p.name.slice(0, 2).toUpperCase()}
+                            </span>
                           )}
-                          {managed && (
-                            <Badge
-                              size="sm"
-                              variant={outOfStock ? 'destructive' : lowStock ? 'warning' : 'success'}
-                              className="absolute right-1.5 top-1.5 tabular-nums"
-                            >
-                              {outOfStock ? t('summary.outOfStock', { ns: 'products', defaultValue: 'Habis' }) : p.stock}
-                            </Badge>
-                          )}
+                          {/* Badge jumlah duduk DI DALAM thumbnail. Digantung
+                              di luar kartu, kolom ketiga terpotong tepi layar:
+                              kolom itu berdiri tepat di batas padding halaman,
+                              jadi tidak ada ruang untuk digantungi. */}
                           {inCartQty > 0 && (
-                            <Badge size="sm" pill className="absolute left-1.5 top-1.5 tabular-nums">
+                            <span className="absolute right-1 top-1 min-w-[1.4rem] rounded-full bg-primary px-1.5 text-center text-2xs font-extrabold leading-[1.25rem] tabular-nums text-primary-foreground">
                               {inCartQty}
-                            </Badge>
+                            </span>
                           )}
                         </div>
-                        <div className="p-2.5">
-                          <p className="truncate text-[13px] font-medium">{p.name}</p>
-                          <p className="text-sm font-semibold tabular-nums">{rp(p.price)}</p>
-                          <p className="text-xs text-muted-foreground tabular-nums">
-                            {managed ? t('cashier.productCard.stock', { stock: p.stock, unit: p.unit }) : t('cashier.productCard.alwaysAvailable')}
-                          </p>
-                        </div>
+                        <p className="mt-1.5 line-clamp-2 min-h-[2.1rem] text-2xs font-semibold leading-tight tracking-[-0.01em]">
+                          {p.name}
+                        </p>
+                        <p className="mt-0.5 text-xsm font-bold tabular-nums">{rp(p.price)}</p>
+                        <p
+                          className={cn(
+                            'text-2xs tabular-nums',
+                            outOfStock ? 'font-bold text-destructive-text' : lowStock ? 'font-semibold text-warning-text' : 'font-medium text-faint-foreground',
+                          )}
+                        >
+                          {managed
+                            ? outOfStock
+                              ? t('summary.outOfStock', { ns: 'products', defaultValue: 'Habis' })
+                              : t('cashier.productCard.stock', { stock: p.stock, unit: p.unit })
+                            : t('cashier.productCard.alwaysAvailable')}
+                        </p>
                       </button>
                     </Card>
                   );
@@ -1240,46 +1345,38 @@ export default function Kasir() {
         </Card>
       </div>{/* end flex row */}
 
-      {/* Bar keranjang mengambang di atas bottom nav: total + ringkasan item,
-          tombol Bayar. Menekan bagian kiri membuka isi keranjang. */}
-      {cartCount > 0 && (
-        <div
-          className="md:hidden fixed left-0 right-0 z-40 px-4 pb-3"
-          style={{ bottom: 'calc(4.5rem + env(safe-area-inset-bottom, 0px))' }}
-        >
-          {/* Di grosir, jual tempo itu normal — bukan pengecualian. Menyembunyikannya
-              sebagai opsi kecil membuat pemilik mencatat di buku terpisah dan
-              datanya hilang dari aplikasi. */}
-          {showTempoAction && (
-            <Button
-              variant="outline"
-              size="lg"
-              className="mb-2 w-full bg-popover shadow-lg"
-              onClick={() => openCheckout(true)}
-            >
-              <Clock />
-              {t('cashier.checkout.payLater')}
-            </Button>
-          )}
-          <div className="flex items-center gap-2.5 rounded-xl border border-border bg-popover p-2.5 pl-3.5 shadow-lg">
-            <button
-              type="button"
-              onClick={() => setCartOpen(true)}
-              className="min-w-0 flex-1 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/30 rounded-md"
-              aria-label={t('cashier.cart.title', { count: cartCount })}
-            >
-              <span className="block text-base font-semibold tabular-nums">{rp(total)}</span>
-              <span className="block truncate text-xs text-muted-foreground">
-                {cartCount} item · {cart.map(item => `${item.product.name} ×${item.qty}`).join(', ')}
-              </span>
-            </button>
-            <Button size="lg" onClick={() => openCheckout(false)}>
-              {showTempoAction ? t('cashier.checkout.payFull') : t('cashier.buttons.pay')}
-              <ChevronRight />
-            </Button>
-          </div>
-        </div>
-      )}
+      {/* === Baris aksi di garis jempol ===
+          Pasangan dari panel dompet di puncak layar. Ia tidak lagi
+          mengambang di atas konten: bar mengambang menutupi baris produk
+          paling bawah persis saat keranjang penuh, yaitu saat daftar itu
+          paling panjang. Sekarang ia duduk di dasar layar sebagai baris
+          tebal penuh lebar, dan kisi produk berhenti tepat di atasnya.
+
+          Nominal ikut di tombol karena itu yang dikonfirmasi orang sesaat
+          sebelum menerima uang — angka di puncak layar dipakai untuk
+          memantau, angka di tombol dipakai untuk memutuskan. */}
+      {/* Dirender sejak keranjang masih kosong, dalam keadaan nonaktif.
+          Memunculkannya baru setelah ada isi adalah pola chrome-yang-muncul
+          yang sama, yang sudah ditolak untuk total di puncak layar: tata
+          letaknya melompat tepat saat barang pertama masuk, dan kisi produk
+          kehilangan dasar yang tetap. */}
+      <ActionBar className="md:hidden">
+          {/* Di grosir, jual tempo itu normal — bukan pengecualian.
+              Menyembunyikannya sebagai opsi kecil membuat pemilik mencatat
+              di buku terpisah dan datanya hilang dari aplikasi. */}
+        {showTempoAction && cartCount > 0 && (
+          <Button variant="outline" size="lg" className="mb-2 w-full" onClick={() => openCheckout(true)}>
+            <Clock />
+            {t('cashier.checkout.payLater')}
+          </Button>
+        )}
+        <ActionButton
+          onClick={() => openCheckout(false)}
+          disabled={cartCount === 0}
+          label={showTempoAction ? t('cashier.checkout.payFull') : t('cashier.buttons.pay')}
+          amount={cartCount > 0 ? rp(total) : undefined}
+        />
+      </ActionBar>
 
       <AlertDialog open={voiceUpsellOpen} onOpenChange={setVoiceUpsellOpen}>
         <AlertDialogContent>
@@ -1408,7 +1505,7 @@ export default function Kasir() {
                   emptyLabel={t('cashier.tables.empty')}
                   requestedLabel={t('cashier.tables.requested')}
                 />
-                <div className="mt-2.5 flex flex-wrap gap-3 text-[11px] text-muted-foreground">
+                <div className="mt-2.5 flex flex-wrap gap-3 text-2xs text-muted-foreground">
                   <span className="flex items-center gap-1.5"><i className="h-2.5 w-2.5 rounded-sm border border-border bg-card" />{t('cashier.tables.empty')}</span>
                   <span className="flex items-center gap-1.5"><i className="h-2.5 w-2.5 rounded-sm bg-primary" />{t('cashier.tables.busy')}</span>
                   <span className="flex items-center gap-1.5"><i className="h-2.5 w-2.5 rounded-sm bg-warning" />{t('cashier.tables.requested')}</span>
@@ -1592,7 +1689,7 @@ export default function Kasir() {
                       aria-checked={active}
                       onClick={() => setPaymentMethodId(pm.id!.toString())}
                       className={cn(
-                        'h-9 rounded-lg border px-3 text-[13px] font-medium shadow-xs transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/30',
+                        'h-9 rounded-lg border px-3 text-xsm font-medium shadow-xs transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/30',
                         active ? 'border-foreground bg-accent text-foreground' : 'border-input bg-transparent text-muted-foreground hover:text-foreground dark:bg-input/30',
                       )}
                     >
@@ -1744,13 +1841,13 @@ export default function Kasir() {
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={() => setTempDiscountType('nominal')}
-                  className={cn('h-9 rounded-lg border px-3 text-[13px] font-medium shadow-xs transition-colors', tempDiscountType === 'nominal' ? 'border-foreground bg-accent text-foreground' : 'border-input bg-transparent text-muted-foreground hover:text-foreground')}
+                  className={cn('h-9 rounded-lg border px-3 text-xsm font-medium shadow-xs transition-colors', tempDiscountType === 'nominal' ? 'border-foreground bg-accent text-foreground' : 'border-input bg-transparent text-muted-foreground hover:text-foreground')}
                 >
                   {t('cashier.discountDialog.type.nominal', { symbol: currencySymbol })}
                 </button>
                 <button
                   onClick={() => setTempDiscountType('percentage')}
-                  className={cn('h-9 rounded-lg border px-3 text-[13px] font-medium shadow-xs transition-colors', tempDiscountType === 'percentage' ? 'border-foreground bg-accent text-foreground' : 'border-input bg-transparent text-muted-foreground hover:text-foreground')}
+                  className={cn('h-9 rounded-lg border px-3 text-xsm font-medium shadow-xs transition-colors', tempDiscountType === 'percentage' ? 'border-foreground bg-accent text-foreground' : 'border-input bg-transparent text-muted-foreground hover:text-foreground')}
                 >
                   {t('cashier.discountDialog.type.percentage')}
                 </button>
@@ -1830,13 +1927,13 @@ export default function Kasir() {
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       onClick={() => setItemDiscountType('nominal')}
-                      className={cn('h-9 rounded-lg border px-3 text-[13px] font-medium shadow-xs transition-colors', itemDiscountType === 'nominal' ? 'border-foreground bg-accent text-foreground' : 'border-input bg-transparent text-muted-foreground hover:text-foreground')}
+                      className={cn('h-9 rounded-lg border px-3 text-xsm font-medium shadow-xs transition-colors', itemDiscountType === 'nominal' ? 'border-foreground bg-accent text-foreground' : 'border-input bg-transparent text-muted-foreground hover:text-foreground')}
                     >
                       {t('cashier.itemDiscountDialog.type.nominal', { symbol: currencySymbol })}
                     </button>
                     <button
                       onClick={() => setItemDiscountType('percentage')}
-                      className={cn('h-9 rounded-lg border px-3 text-[13px] font-medium shadow-xs transition-colors', itemDiscountType === 'percentage' ? 'border-foreground bg-accent text-foreground' : 'border-input bg-transparent text-muted-foreground hover:text-foreground')}
+                      className={cn('h-9 rounded-lg border px-3 text-xsm font-medium shadow-xs transition-colors', itemDiscountType === 'percentage' ? 'border-foreground bg-accent text-foreground' : 'border-input bg-transparent text-muted-foreground hover:text-foreground')}
                     >
                       {t('cashier.itemDiscountDialog.type.percentage')}
                     </button>

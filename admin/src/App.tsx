@@ -5,6 +5,7 @@ import {
   archivePlan,
   createPlan,
   fetchAdminPlans,
+  fetchAdmins,
   fetchAudit,
   fetchGrowth,
   fetchOverview,
@@ -14,7 +15,9 @@ import {
   fetchUsers,
   loginWithGoogle,
   grantSubscription,
+  promoteAdmin,
   reconcilePayment,
+  revokeAdmin,
   setUnauthorizedHandler,
   suspendUser,
   updatePlan,
@@ -22,6 +25,7 @@ import {
 import { clearSession, getSession } from '@/lib/auth';
 import type {
   Admin,
+  AdminAccount,
   AdminPlan,
   AuditList,
   Growth,
@@ -34,13 +38,16 @@ import type {
   UserDetail,
   UserFilter,
   UserList,
+  UserRow,
   PlanInput,
 } from '@/lib/types';
 import { formatWaktu } from '@/lib/format';
 import { useTheme } from '@/hooks/use-theme';
+import { useSidebar } from '@/hooks/use-sidebar';
 import { Login } from '@/components/Login';
-import { Sidebar, type Halaman } from '@/components/Sidebar';
+import { GRUP_DARI, LABEL, Sidebar, type Halaman } from '@/components/Sidebar';
 import { OverviewSection } from '@/components/Overview';
+import { QueueSection } from '@/components/Queue';
 import { UsersSection } from '@/components/Users';
 import { UserDetailSection } from '@/components/UserDetail';
 import { PaymentsSection } from '@/components/Payments';
@@ -48,25 +55,37 @@ import { GrowthSection } from '@/components/GrowthChart';
 import { AuditSection } from '@/components/Audit';
 import { PlansSection } from '@/components/Plans';
 import { ReleasesSection } from '@/components/Releases';
+import { AdminsSection } from '@/components/Admins';
 import { Button, ErrorBox, PageHeader, SearchInput } from '@/components/Common';
 import { Topbar } from '@/components/Topbar';
+import { BottomNav } from '@/components/BottomNav';
+import { cn } from '@/lib/cn';
 
 const JUDUL: Record<Halaman, { judul: string; sub: string }> = {
-  ringkasan: { judul: 'Ringkasan platform', sub: 'Angka lintas seluruh pengguna' },
+  ringkasan: { judul: 'Ringkasan', sub: 'Angka lintas seluruh pengguna' },
+  antrean: {
+    judul: 'Antrean kerja',
+    sub: 'Semua yang menunggu tindakan admin, dikumpulkan di satu tempat',
+  },
   pengguna: { judul: 'Pengguna', sub: 'Cari, saring, dan telusuri satu akun' },
-  transaksi: { judul: 'Transaksi', sub: 'Pembayaran Tripay dan rekonsiliasinya' },
+  pembayaran: { judul: 'Pembayaran', sub: 'Transaksi Tripay dan rekonsiliasinya' },
   paket: { judul: 'Paket & harga', sub: 'Yang bisa dibeli pelanggan' },
   rilis: { judul: 'Rilis aplikasi', sub: 'Installer Android dan Windows di luar Play Store' },
   audit: { judul: 'Audit log', sub: 'Jejak setiap tindakan admin' },
+  admin: { judul: 'Kelola admin', sub: 'Siapa yang boleh masuk ke panel ini' },
 };
 
 export default function App() {
   const { theme, toggle: gantiTema } = useTheme();
+  const { ciut: sidebarCiut, toggle: toggleSidebar } = useSidebar();
   const [admin, setAdmin] = useState<Admin | null>(() => getSession()?.admin ?? null);
   const [errorMasuk, setErrorMasuk] = useState<string | null>(null);
   const [sedangMasuk, setSedangMasuk] = useState(false);
 
   const [halaman, setHalaman] = useState<Halaman>('ringkasan');
+  // Drawer sidebar di layar sempit. Tidak dipakai di md ke atas, di sana
+  // sidebar-nya memang selalu tampil.
+  const [menuTerbuka, setMenuTerbuka] = useState(false);
   // Terpisah dari `q`: kotak cari di topbar baru mengirim kata kuncinya saat
   // di-submit, jadi mengetik di sana tidak memicu permintaan tiap huruf.
   const [cariTopbar, setCariTopbar] = useState('');
@@ -97,6 +116,12 @@ export default function App() {
     hasil: ReconcileResult;
   } | null>(null);
 
+  // Antrean kerja dirakit dari tiga sumber yang sudah ada, bukan endpoint baru.
+  const [antreanBayar, setAntreanBayar] = useState<TransactionRow[] | null>(null);
+  const [antreanHabis, setAntreanHabis] = useState<UserRow[] | null>(null);
+  const [antreanKuota, setAntreanKuota] = useState<UserRow[] | null>(null);
+  const [memuatAntrean, setMemuatAntrean] = useState(false);
+
   const [memuatPaket, setMemuatPaket] = useState(false);
   const [tampilkanArsip, setTampilkanArsip] = useState(false);
   const [memprosesPaket, setMemprosesPaket] = useState(false);
@@ -104,6 +129,13 @@ export default function App() {
   const [audit, setAudit] = useState<AuditList | null>(null);
   const [memuatAudit, setMemuatAudit] = useState(false);
   const [halamanAudit, setHalamanAudit] = useState(1);
+
+  const [admins, setAdmins] = useState<AdminAccount[] | null>(null);
+  const [memuatAdmins, setMemuatAdmins] = useState(false);
+  const [memprosesAdmin, setMemprosesAdmin] = useState(false);
+  const [dialogAdmin, setDialogAdmin] = useState(false);
+
+  const superadmin = admin?.role === 'SUPERADMIN';
 
   const keluar = useCallback(() => {
     clearSession();
@@ -117,6 +149,10 @@ export default function App() {
     setDaftarPaket(null);
     setUserTerpilih(null);
     setTransaksi(null);
+    setAdmins(null);
+    setAntreanBayar(null);
+    setAntreanHabis(null);
+    setAntreanKuota(null);
   }, []);
 
   useEffect(() => {
@@ -161,6 +197,26 @@ export default function App() {
     }
   }, []);
 
+  // Antrean kerja
+  const muatAntrean = useCallback(async () => {
+    setMemuatAntrean(true);
+    setError(null);
+    try {
+      const [bayar, habis, kuota] = await Promise.all([
+        fetchTransactions({ filter: 'attention', page: 1 }),
+        fetchUsers({ filter: 'expiring', page: 1 }),
+        fetchUsers({ filter: 'near_quota', page: 1 }),
+      ]);
+      setAntreanBayar(bayar.transactions);
+      setAntreanHabis(habis.users);
+      setAntreanKuota(kuota.users);
+    } catch (err) {
+      setError(pesan(err));
+    } finally {
+      setMemuatAntrean(false);
+    }
+  }, []);
+
   // Pengguna
   const muatUsers = useCallback(async () => {
     setMemuatUsers(true);
@@ -184,7 +240,7 @@ export default function App() {
     }
   }, []);
 
-  // Transaksi
+  // Pembayaran
   const muatTransaksi = useCallback(async () => {
     setMemuatTransaksi(true);
     setError(null);
@@ -225,10 +281,28 @@ export default function App() {
     }
   }, [halamanAudit]);
 
+  // Kelola admin
+  const muatAdmins = useCallback(async () => {
+    setMemuatAdmins(true);
+    setError(null);
+    try {
+      setAdmins((await fetchAdmins()).admins);
+    } catch (err) {
+      setError(pesan(err));
+    } finally {
+      setMemuatAdmins(false);
+    }
+  }, []);
+
   useEffect(() => {
     if (!admin) return;
     void muatRingkasan();
   }, [admin, muatRingkasan]);
+
+  useEffect(() => {
+    if (!admin || halaman !== 'antrean') return;
+    void muatAntrean();
+  }, [admin, halaman, muatAntrean]);
 
   useEffect(() => {
     if (!admin || halaman !== 'pengguna' || userTerpilih) return;
@@ -249,7 +323,7 @@ export default function App() {
   }, [admin, userTerpilih, daftarPaket]);
 
   useEffect(() => {
-    if (!admin || halaman !== 'transaksi') return;
+    if (!admin || halaman !== 'pembayaran') return;
     void muatTransaksi();
   }, [admin, halaman, muatTransaksi]);
 
@@ -263,9 +337,23 @@ export default function App() {
     void muatAudit();
   }, [admin, halaman, muatAudit]);
 
+  useEffect(() => {
+    if (!admin || halaman !== 'admin' || !superadmin) return;
+    void muatAdmins();
+  }, [admin, halaman, superadmin, muatAdmins]);
+
+  // Pindah halaman selalu menutup drawer; kalau tidak, di layar sempit halaman
+  // barunya tertutup menu yang masih terbuka.
+  const pindah = useCallback((h: Halaman) => {
+    setHalaman(h);
+    setUserTerpilih(null);
+    setMenuTerbuka(false);
+  }, []);
+
   const bukaPengguna = (id: string) => {
     setHalaman('pengguna');
     setUserTerpilih(id);
+    setMenuTerbuka(false);
   };
 
   const gantiFilterUser = (f: UserFilter) => {
@@ -298,6 +386,8 @@ export default function App() {
       // Langganan aktif dan sebaran paket ikut berubah.
       void muatRingkasan();
       setAudit(null);
+      // Pengguna ini mungkin barusan ada di antrean "segera habis".
+      setAntreanHabis(null);
     } catch (err) {
       setError(pesan(err));
     } finally {
@@ -341,7 +431,9 @@ export default function App() {
     try {
       const hasil = await reconcilePayment(t.id);
       setHasilRekonsiliasi({ transaksi: t, hasil });
-      await muatTransaksi();
+      // Dua daftar menampilkan transaksi yang sama; keduanya harus ikut segar.
+      if (halaman === 'pembayaran') await muatTransaksi();
+      if (halaman === 'antrean') await muatAntrean();
       // Rekonsiliasi selalu tercatat, jadi audit yang tersimpan sudah basi.
       setAudit(null);
       if (hasil.changed) void muatRingkasan();
@@ -350,30 +442,102 @@ export default function App() {
     }
   };
 
+  const angkatAdmin = async (body: {
+    email: string;
+    role: 'ADMIN' | 'SUPERADMIN';
+    reason: string;
+  }) => {
+    setMemprosesAdmin(true);
+    setError(null);
+    try {
+      await promoteAdmin(body);
+      setDialogAdmin(false);
+      await muatAdmins();
+      setAudit(null);
+    } catch (err) {
+      setError(pesan(err));
+    } finally {
+      setMemprosesAdmin(false);
+    }
+  };
+
+  const cabutAdmin = async (id: string, alasan: string) => {
+    setMemprosesAdmin(true);
+    setError(null);
+    try {
+      await revokeAdmin(id, alasan);
+      await muatAdmins();
+      setAudit(null);
+    } catch (err) {
+      setError(pesan(err));
+    } finally {
+      setMemprosesAdmin(false);
+    }
+  };
+
   if (!admin) {
-    return <Login onCredential={masuk} onGoogleError={setErrorMasuk} error={errorMasuk} memuat={sedangMasuk} />;
+    return (
+      <Login
+        onCredential={masuk}
+        onGoogleError={setErrorMasuk}
+        error={errorMasuk}
+        memuat={sedangMasuk}
+      />
+    );
   }
 
   const judul = userTerpilih
     ? { judul: 'Detail pengguna', sub: 'Riwayat, langganan, dan pemakaian satu akun' }
     : JUDUL[halaman];
 
-  const jejak = userTerpilih ? ['Pengguna', judul.judul] : [judul.judul];
+  // Breadcrumb mengikuti pengelompokan di sidebar: "Admin › Pelanggan ›
+  // Pengguna". Tanpa nama grupnya, jejak halaman tidak memberi tahu apa pun
+  // yang belum tertulis di judul halaman.
+  const grup = GRUP_DARI[halaman];
+  const jejak = [
+    ...(grup ? [grup] : []),
+    ...(userTerpilih ? [LABEL.pengguna, detail?.name ?? 'Detail pengguna'] : [judul.judul]),
+  ];
+
+  const totalAntrean = overview
+    ? overview.queue.stuckPayments +
+      overview.queue.expiringSubscriptions +
+      overview.queue.nearQuota
+    : 0;
+
+  const sidebar = (
+    <Sidebar
+      aktif={halaman}
+      onPilih={pindah}
+      admin={admin}
+      perluDitangani={totalAntrean}
+      onKeluar={keluar}
+      ciut={sidebarCiut}
+      onCiut={toggleSidebar}
+    />
+  );
 
   return (
-    <div className="grid min-h-screen grid-cols-1 md:grid-cols-[theme(spacing.sidebar)_1fr]">
-      <div className="hidden md:block">
-        <Sidebar
-          aktif={halaman}
-          onPilih={(h) => {
-            setHalaman(h);
-            setUserTerpilih(null);
+    <div
+      className={cn(
+        'grid min-h-screen grid-cols-1',
+        sidebarCiut ? 'md:grid-cols-[64px_1fr]' : 'md:grid-cols-[theme(spacing.sidebar)_1fr]',
+      )}
+    >
+      <div className="hidden md:block">{sidebar}</div>
+
+      {/* Drawer layar sempit. Sidebar-nya komponen yang sama, hanya dibungkus
+          latar gelap dan dipasang di atas isi halaman. */}
+      {menuTerbuka && (
+        <div
+          className="fixed inset-0 z-50 flex bg-black/40 md:hidden"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setMenuTerbuka(false);
           }}
-          admin={admin}
-          perluDitangani={overview?.queue.stuckPayments ?? 0}
-          onKeluar={keluar}
-        />
-      </div>
+        >
+          <div className="w-[248px] max-w-[80vw] shadow-lg">{sidebar}</div>
+        </div>
+      )}
 
       <div className="min-w-0">
         <Topbar
@@ -381,12 +545,13 @@ export default function App() {
           theme={theme}
           onGantiTema={gantiTema}
           onKeluar={keluar}
+          onBukaMenu={() => setMenuTerbuka(true)}
           admin={admin}
           cari={
             /* Kotak carinya bukan hiasan: submit-nya melempar kata kunci ke
                halaman Pengguna, jadi pencarian bisa dimulai dari mana saja. */
             <form
-              className="hidden w-full max-w-[300px] md:block"
+              className="hidden w-full max-w-[280px] md:block"
               onSubmit={(e) => {
                 e.preventDefault();
                 setQ(cariTopbar);
@@ -405,7 +570,7 @@ export default function App() {
           }
         />
 
-        <main className="max-w-[1240px] p-4 pb-16 md:p-6">
+        <main className="max-w-[1240px] p-4 pb-24 md:p-6 md:pb-16">
           <PageHeader
             title={judul.judul}
             subtitle={
@@ -431,6 +596,18 @@ export default function App() {
                 Muat ulang
               </Button>
             )}
+
+            {halaman === 'antrean' && (
+              <Button size="sm" onClick={() => void muatAntrean()}>
+                Segarkan
+              </Button>
+            )}
+
+            {halaman === 'admin' && superadmin && (
+              <Button variant="primary" size="sm" onClick={() => setDialogAdmin(true)}>
+                Angkat admin
+              </Button>
+            )}
           </PageHeader>
 
           {error && halaman === 'ringkasan' && !overview && (
@@ -442,18 +619,26 @@ export default function App() {
               <OverviewSection
                 data={overview}
                 paket={paket}
-                onBukaTransaksi={() => {
-                  setFilterBayar('attention');
-                  setHalaman('transaksi');
-                }}
-                onBukaPengguna={(f) => {
-                  gantiFilterUser(f);
-                  setUserTerpilih(null);
-                  setHalaman('pengguna');
-                }}
+                growth={growth}
+                onBukaAntrean={() => setHalaman('antrean')}
+                onBukaPaket={() => setHalaman('paket')}
               />
               <GrowthSection data={growth} />
             </div>
+          )}
+
+          {halaman === 'antrean' && (
+            <QueueSection
+              pembayaran={antreanBayar}
+              segeraHabis={antreanHabis}
+              kuotaPenuh={antreanKuota}
+              memuat={memuatAntrean}
+              error={error}
+              sedangRekonsiliasi={sedangRekonsiliasi}
+              onRekonsiliasi={rekonsiliasi}
+              onBukaPengguna={bukaPengguna}
+              onMuatUlang={() => void muatAntrean()}
+            />
           )}
 
           {halaman === 'pengguna' &&
@@ -486,7 +671,7 @@ export default function App() {
               />
             ))}
 
-          {halaman === 'transaksi' && (
+          {halaman === 'pembayaran' && (
             <PaymentsSection
               data={transaksi}
               memuat={memuatTransaksi}
@@ -539,8 +724,33 @@ export default function App() {
               onMuatUlang={() => void muatAudit()}
             />
           )}
+
+          {halaman === 'admin' &&
+            (superadmin ? (
+              <AdminsSection
+                data={admins}
+                memuat={memuatAdmins}
+                error={error}
+                saya={admin}
+                memproses={memprosesAdmin}
+                onUndang={(body) => void angkatAdmin(body)}
+                onCabut={(id, alasan) => void cabutAdmin(id, alasan)}
+                onMuatUlang={() => void muatAdmins()}
+                bukaDialog={dialogAdmin}
+                onTutupDialog={() => setDialogAdmin(false)}
+              />
+            ) : (
+              <ErrorBox message="Hanya superadmin yang boleh mengelola admin." />
+            ))}
         </main>
       </div>
+
+      <BottomNav
+        aktif={halaman}
+        onPilih={pindah}
+        onLainnya={() => setMenuTerbuka(true)}
+        perluDitangani={totalAntrean}
+      />
     </div>
   );
 }

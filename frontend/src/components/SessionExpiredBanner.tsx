@@ -20,6 +20,16 @@ import { GoogleMark } from '@/components/GoogleMark';
  * kedaluwarsa), yang muncul cuma banner ini — kasir dan seluruh menu tetap
  * jalan dari data lokal, dan transaksi menumpuk sampai user masuk lagi.
  */
+
+/**
+ * Satu-satunya interupsi Beranda yang tidak bisa ditutup: selama sesinya
+ * mati, transaksi tidak bisa naik ke cloud. Karena itu prioritasnya
+ * tertinggi di `HOME_INTERRUPTS`.
+ */
+export function useSessionExpiredVisible(): boolean {
+  const { sessionExpired } = useCloudAuth();
+  return sessionExpired;
+}
 export function SessionExpiredBanner() {
   const { t } = useTranslation('dashboard');
   const { sessionExpired, login } = useCloudAuth();

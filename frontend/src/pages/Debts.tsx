@@ -13,6 +13,12 @@ import { Badge } from '@/components/jokoui/badge';
 import { Button } from '@/components/jokoui/button';
 import { Card, CardContent } from '@/components/jokoui/card';
 import { StatCard } from '@/components/jokoui/stat-card';
+import {
+  MoneyPanel,
+  MoneyPanelAmount,
+  MoneyPanelFooter,
+  MoneyPanelLabel,
+} from '@/components/jokoui/money-panel';
 import { SegmentGroup } from '@/components/jokoui/segment-group';
 import { SectionTitle } from '@/components/jokoui/section-title';
 import { Item, ItemMedia, ItemContent, ItemTitle, ItemDescription, ItemGroup } from '@/components/jokoui/item';
@@ -188,32 +194,44 @@ export default function DebtsPage() {
       <PageHeader icon={CreditCard} title={t('debts.title')} onBack={() => navigate(-1)} />
       <HubTabs />
 
-      {/* Total piutang + tiga keranjang urgensi: yang menentukan tindakan hari ini
-          adalah berapa yang sudah telat, bukan total piutangnya. */}
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-xs font-medium text-muted-foreground">{t('debts.summary.totalReceivable')}</p>
-            {buckets.overdue.length > 0 && (
-              <Badge variant="destructive" size="sm">
-                {t('debts.summary.overdueCount', { count: buckets.overdue.length })}
-              </Badge>
-            )}
-          </div>
-          <p className="mt-1 text-[28px] font-semibold leading-tight tracking-tight tabular-nums">
-            {rp(totalReceivable)}
-          </p>
-          <p className="mt-0.5 text-xs text-muted-foreground">
-            {t('debts.summary.activeDebts')}: {activeDebts.length}
-          </p>
-        </CardContent>
-      </Card>
+      {/* Piutang adalah uang, jadi ia memakai tata bahasa dompet: satu
+          bidang brand yang dicelup, nominalnya sebagai objek, dan tiga
+          keranjang urgensi di kakinya — bukan satu kartu ditambah tiga
+          kartu stat terpisah yang memecah satu urusan jadi empat permukaan.
+          Yang menentukan tindakan hari ini adalah berapa yang sudah telat,
+          bukan total piutangnya, jadi keranjang itu tinggal di objek yang
+          sama dengan totalnya. */}
+      <MoneyPanel variant="card">
+        <div className="flex items-start justify-between gap-2">
+          <MoneyPanelLabel>{t('debts.summary.totalReceivable')}</MoneyPanelLabel>
+          {buckets.overdue.length > 0 && (
+            <Badge variant="destructive" size="sm" className="shrink-0 border-0">
+              {t('debts.summary.overdueCount', { count: buckets.overdue.length })}
+            </Badge>
+          )}
+        </div>
+        <MoneyPanelAmount value={totalReceivable} />
+        <p className="mt-1 text-2xs font-medium text-primary-dim">
+          {t('debts.summary.activeDebts')}: {activeDebts.length}
+        </p>
 
-      <div className="grid grid-cols-3 gap-2">
-        <StatCard size="sm" label={t('debts.urgency.overdue')} value={rp(buckets.totals.overdue)} valueClassName="text-destructive-text" className={cn(buckets.overdue.length > 0 && 'border-destructive/30 bg-destructive/5')} />
-        <StatCard size="sm" label={t('debts.urgency.dueSoon')} value={rp(buckets.totals.dueSoon)} valueClassName="text-warning-text" className={cn(buckets.dueSoon.length > 0 && 'border-warning/30 bg-warning/5')} />
-        <StatCard size="sm" label={t('debts.urgency.safe')} value={rp(buckets.totals.safe)} valueClassName="text-success-text" />
-      </div>
+        <MoneyPanelFooter className="justify-start divide-x divide-white/20">
+          {[
+            { key: 'overdue', label: t('debts.urgency.overdue'), value: buckets.totals.overdue },
+            { key: 'dueSoon', label: t('debts.urgency.dueSoon'), value: buckets.totals.dueSoon },
+            { key: 'safe', label: t('debts.urgency.safe'), value: buckets.totals.safe },
+          ].map((bucket, i) => (
+            <div key={bucket.key} className={cn('min-w-0 flex-1', i === 0 ? 'pr-3' : 'px-3 last:pr-0')}>
+              <span className="block truncate text-3xs font-semibold uppercase tracking-[0.04em] text-primary-dim">
+                {bucket.label}
+              </span>
+              <span className="mt-0.5 block truncate text-xsm font-bold tabular-nums text-primary-foreground">
+                {rp(bucket.value)}
+              </span>
+            </div>
+          ))}
+        </MoneyPanelFooter>
+      </MoneyPanel>
 
       <div className="relative">
         <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -308,7 +326,7 @@ export default function DebtsPage() {
                   <div>
                     <SectionTitle title={t('debts.detail.paymentHistory')} />
                     {debtPayments.length === 0 ? (
-                      <p className="py-4 text-center text-[13px] text-muted-foreground">{t('debts.detail.noInstallments')}</p>
+                      <p className="py-4 text-center text-xsm text-muted-foreground">{t('debts.detail.noInstallments')}</p>
                     ) : (
                       <Card className="divide-y divide-border overflow-hidden">
                         {debtPayments.map((payment) => (

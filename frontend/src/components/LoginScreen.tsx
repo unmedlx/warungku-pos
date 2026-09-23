@@ -60,7 +60,7 @@ export default function LoginScreen() {
               <Store className="w-7 h-7" />
             )}
           </div>
-          <h1 className="text-[22px] font-semibold tracking-tight">{storeSettings?.storeName || t('loginScreen.storeFallback')}</h1>
+          <h1 className="text-title font-semibold tracking-tight">{storeSettings?.storeName || t('loginScreen.storeFallback')}</h1>
           <p className="text-sm text-muted-foreground mt-1">{t('loginScreen.continuePrompt')}</p>
         </div>
 

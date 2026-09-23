@@ -243,7 +243,7 @@ export default function CloudMembersSettings() {
             <CardContent className="p-4 flex items-center gap-3">
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold">{t('cloudMembers.join.title')}</p>
-                <p className="text-[11px] text-muted-foreground">{t('cloudMembers.join.desc')}</p>
+                <p className="text-2xs text-muted-foreground">{t('cloudMembers.join.desc')}</p>
               </div>
               <Button variant="outline" size="sm" className="h-8 text-xs shrink-0" onClick={() => setJoinOpen(true)}>
                 {t('cloudMembers.join.button')}
@@ -263,7 +263,7 @@ export default function CloudMembersSettings() {
                 <div className="flex items-center justify-between gap-2">
                   <div className="min-w-0">
                     <p className="text-sm font-semibold">{t('cloudMembers.list.title')}</p>
-                    <p className="text-[11px] text-muted-foreground">
+                    <p className="text-2xs text-muted-foreground">
                       {maxMembers == null
                         ? t('cloudMembers.list.countUnlimited', { count: members.length })
                         : t('cloudMembers.list.count', { used: terpakai, max: maxMembers })}
@@ -294,7 +294,7 @@ export default function CloudMembersSettings() {
                 </div>
 
                 {atLimit && bisaKelola && (
-                  <p className="text-[11px] text-warning-text">{t('cloudMembers.atLimit')}</p>
+                  <p className="text-2xs text-warning-text">{t('cloudMembers.atLimit')}</p>
                 )}
 
                 {loading ? (
@@ -315,7 +315,7 @@ export default function CloudMembersSettings() {
                               {t(`cloudMembers.role.${m.role}`)}
                             </Badge>
                           </div>
-                          <p className="truncate text-[13px] text-muted-foreground">{m.email}</p>
+                          <p className="truncate text-xsm text-muted-foreground">{m.email}</p>
                         </div>
                         {bisaKelola && m.role !== 'OWNER' && (
                           <Button
@@ -346,7 +346,7 @@ export default function CloudMembersSettings() {
                               {t('cloudMembers.pending')}
                             </Badge>
                           </div>
-                          <p className="font-mono text-[11px] text-muted-foreground">{i.code}</p>
+                          <p className="font-mono text-2xs text-muted-foreground">{i.code}</p>
                         </div>
                         <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => salinKode(i.code)} title={t('cloudMembers.copyCode')}>
                           <Copy className="h-3.5 w-3.5" />
@@ -369,12 +369,12 @@ export default function CloudMembersSettings() {
                 )}
 
                 {myRole != null && myRole !== 'OWNER' && (
-                  <p className="rounded-lg bg-muted/60 p-2 text-[11px] leading-relaxed text-muted-foreground">
+                  <p className="rounded-lg bg-muted/60 p-2 text-2xs leading-relaxed text-muted-foreground">
                     {t('cloudMembers.replicaNotice')}
                   </p>
                 )}
 
-                <p className="text-[11px] leading-relaxed text-muted-foreground">
+                <p className="text-2xs leading-relaxed text-muted-foreground">
                   {t('cloudMembers.footnote')}
                 </p>
               </CardContent>
@@ -396,7 +396,7 @@ export default function CloudMembersSettings() {
           <div className="mt-1 space-y-4">
             <div className="rounded-xl border border-soft bg-muted/50 py-4 text-center">
               <p className="font-mono text-2xl font-semibold tracking-[0.25em]">{newInvite?.code}</p>
-              <p className="mt-1.5 text-[11px] text-muted-foreground">
+              <p className="mt-1.5 text-2xs text-muted-foreground">
                 {t('cloudMembers.inviteResult.validity')}
               </p>
             </div>
@@ -439,7 +439,7 @@ export default function CloudMembersSettings() {
                 placeholder="karyawan@gmail.com"
                 
               />
-              <p className="text-[11px] text-muted-foreground">
+              <p className="text-2xs text-muted-foreground">
                 {t('cloudMembers.inviteDialog.emailHint')}
               </p>
             </div>
@@ -459,7 +459,7 @@ export default function CloudMembersSettings() {
                   </Button>
                 ))}
               </div>
-              <p className="text-[11px] text-muted-foreground">
+              <p className="text-2xs text-muted-foreground">
                 {t(`cloudMembers.roleHint.${inviteRole}`)}
               </p>
             </div>

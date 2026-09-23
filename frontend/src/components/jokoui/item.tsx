@@ -63,7 +63,7 @@ const ItemMedia = React.forwardRef<HTMLDivElement, ItemMediaProps>(
         'flex shrink-0 items-center justify-center overflow-hidden rounded-xl',
         size === 'sm' ? 'h-9 w-9' : size === 'lg' ? 'h-12 w-12' : 'h-10 w-10',
         '[&_img]:h-full [&_img]:w-full [&_img]:object-cover',
-        '[&_svg]:h-[18px] [&_svg]:w-[18px]',
+        '[&_svg]:h-4.5 [&_svg]:w-4.5',
         MEDIA_TONE[tone],
         className,
       )}
@@ -89,7 +89,7 @@ ItemTitle.displayName = 'ItemTitle';
 
 const ItemDescription = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} data-slot="item-description" className={cn('line-clamp-1 text-[13px] leading-snug text-muted-foreground', className)} {...props} />
+    <div ref={ref} data-slot="item-description" className={cn('line-clamp-1 text-xsm leading-snug text-muted-foreground', className)} {...props} />
   ),
 );
 ItemDescription.displayName = 'ItemDescription';

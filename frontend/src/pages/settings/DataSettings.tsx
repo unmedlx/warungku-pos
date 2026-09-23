@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 
 const RowIcon = ({ icon: Icon }: { icon: typeof Download }) => (
   <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${TONE_CLASS.red}`}>
-    <Icon className="h-[18px] w-[18px]" />
+    <Icon className="size-4.5" />
   </div>
 );
 

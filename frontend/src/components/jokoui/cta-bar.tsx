@@ -35,7 +35,7 @@ const CtaBar = React.forwardRef<HTMLDivElement & HTMLButtonElement, CtaBarProps>
             ? tone === 'success'
               ? 'bg-success text-white shadow-sm'
               : 'bg-primary text-primary-foreground shadow-primary'
-            : 'border border-border bg-popover text-foreground shadow-lg',
+            : 'bg-popover text-foreground border border-transparent shadow-lift dark:border-border dark:shadow-none',
           className,
         )}
       >

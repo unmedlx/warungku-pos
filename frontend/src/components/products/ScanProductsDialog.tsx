@@ -287,7 +287,7 @@ export default function ScanProductsDialog({ open, onClose, onSaved }: Props) {
             <div className="space-y-3 py-14 text-center">
               <Loader2 className="mx-auto h-10 w-10 animate-spin text-primary" />
               <p className="text-sm font-medium">{t('scan.processingTitle')}</p>
-              <p className="text-[13px] leading-relaxed text-muted-foreground">
+              <p className="text-xsm leading-relaxed text-muted-foreground">
                 {t('scan.processingDesc')}
               </p>
               <Button variant="ghost" size="sm" onClick={cancelScan} className="mt-2">

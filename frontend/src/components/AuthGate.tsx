@@ -370,7 +370,7 @@ function SetPinScreen({ t, user, storeName, role, onDone }: any) {
           <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-primary">
             <Lock className="h-7 w-7" />
           </span>
-          <h2 className="pt-1 text-[22px] font-semibold tracking-tight">
+          <h2 className="pt-1 text-title font-semibold tracking-tight">
             {stage === 'set' ? t('pin.title') : t('pin.confirmTitle')}
           </h2>
           <p className="mx-auto max-w-[19rem] text-sm leading-relaxed text-muted-foreground">
@@ -482,7 +482,7 @@ function WelcomeScreen({ t, busy, native, activeLang, onChangeLang, onNativeLogi
           <Store className="h-8 w-8" />
         </div>
         <div className="space-y-2">
-          <h1 className="text-[22px] font-semibold tracking-tight">KanPOS</h1>
+          <h1 className="text-title font-semibold tracking-tight">KanPOS</h1>
           <p className="mx-auto max-w-[16rem] text-sm leading-relaxed text-muted-foreground">
             {t('welcome.tagline')}
           </p>
@@ -506,7 +506,7 @@ function WelcomeScreen({ t, busy, native, activeLang, onChangeLang, onNativeLogi
                   )}
                 >
                   <span className="text-lg leading-none">{flag}</span>
-                  <span className={cn('text-[11px] font-medium leading-none', active ? 'text-primary' : 'text-muted-foreground')}>
+                  <span className={cn('text-2xs font-medium leading-none', active ? 'text-primary' : 'text-muted-foreground')}>
                     {label}
                   </span>
                 </button>
@@ -543,7 +543,7 @@ function WelcomeScreen({ t, busy, native, activeLang, onChangeLang, onNativeLogi
           </Button>
         </div>
 
-        <p className="pt-1 text-center text-[11px] leading-relaxed text-muted-foreground">
+        <p className="pt-1 text-center text-2xs leading-relaxed text-muted-foreground">
           {t('tnc.prefix')}{' '}
           <a href="https://freekasir.com/terms" target="_blank" rel="noopener noreferrer" className="font-medium text-primary underline underline-offset-2">
             {t('tnc.terms')}
@@ -608,7 +608,7 @@ function StorePicker({ t, data, selectedId, onSelect, onOpen, onCreateNew, onSwi
   return (
     <div className="flex min-h-0 flex-1 animate-in flex-col fade-in duration-300">
       <div className="space-y-1.5 px-4 pb-3 pt-4">
-        <h2 className="text-[22px] font-semibold tracking-tight">{t('auth.pickerTitle')}</h2>
+        <h2 className="text-title font-semibold tracking-tight">{t('auth.pickerTitle')}</h2>
         <p className="text-sm leading-relaxed text-muted-foreground">{t('auth.pickerSubtitle')}</p>
       </div>
 
@@ -689,13 +689,13 @@ function JoinScreen({ t, code, onCode, joining, user, isLoggedIn, busy, native, 
           <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-primary">
             <Users className="h-7 w-7" />
           </span>
-          <h2 className="pt-2 text-[22px] font-semibold tracking-tight">{t('join.title')}</h2>
+          <h2 className="pt-2 text-title font-semibold tracking-tight">{t('join.title')}</h2>
           <p className="text-sm leading-relaxed text-muted-foreground">{t('join.desc')}</p>
         </div>
 
         {!isLoggedIn ? (
           <Card className="space-y-3 p-4">
-            <p className="text-[13px] leading-relaxed text-muted-foreground">{t('join.loginFirst')}</p>
+            <p className="text-xsm leading-relaxed text-muted-foreground">{t('join.loginFirst')}</p>
             <GoogleButton t={t} busy={busy} native={native} onNativeLogin={onNativeLogin} onGoogleCredential={onGoogleCredential} />
           </Card>
         ) : (
@@ -758,7 +758,7 @@ function HydrationScreen({ t, step, storeName }: { t: any; step: HydrationStep; 
       </span>
 
       <div className="space-y-2">
-        <h2 className="text-[22px] font-semibold tracking-tight">{t('auth.hydrTitle', { name: storeName })}</h2>
+        <h2 className="text-title font-semibold tracking-tight">{t('auth.hydrTitle', { name: storeName })}</h2>
         <p className="mx-auto max-w-[15rem] text-sm leading-relaxed text-muted-foreground">
           {t('auth.hydrSubtitle')}
         </p>
@@ -781,7 +781,7 @@ function HydrationScreen({ t, step, storeName }: { t: any; step: HydrationStep; 
             </span>
             <span
               className={cn(
-                'flex-1 text-[13px]',
+                'flex-1 text-xsm',
                 i <= activeIndex ? 'font-medium' : 'text-muted-foreground',
               )}
             >

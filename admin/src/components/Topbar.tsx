@@ -2,13 +2,54 @@ import type { ReactNode } from 'react';
 import type { Admin } from '@/lib/types';
 import type { Theme } from '@/hooks/use-theme';
 import { Avatar, Badge, Button } from './Common';
+import { BASE_URL } from '@/lib/api';
 
 /**
- * Bilah atas: jejak halaman di kiri, pencarian global dan sakelar tema di
- * kanan. Tingginya dikunci ke token `topbar` (56px) supaya sebaris dengan blok
- * merek di sidebar, dan latarnya semi-transparan agar isi halaman terlihat
- * lewat saat digulir.
+ * Bilah atas: jejak halaman di kiri, pencarian global, penanda lingkungan, dan
+ * sakelar tema di kanan. Tingginya dikunci ke token `topbar` (56px) supaya
+ * sebaris dengan blok merek di sidebar, dan latarnya semi-transparan agar isi
+ * halaman terlihat lewat saat digulir.
  */
+
+/**
+ * Penanda lingkungan. Panel ini bisa diarahkan ke API mana saja lewat
+ * `VITE_API_BASE_URL`, dan tindakan di sini menyentuh uang pelanggan — jadi
+ * "sedang menatap produksi atau bukan" harus terbaca tanpa membuka devtools.
+ */
+function PenandaLingkungan() {
+  const lokal = /localhost|127\.0\.0\.1|:\d{4,5}$/.test(BASE_URL) && !/^https:/.test(BASE_URL);
+  return (
+    <Badge
+      variant={lokal ? 'warning' : 'success'}
+      size="sm"
+      title={BASE_URL}
+      className="hidden lg:inline-flex"
+    >
+      <span
+        aria-hidden="true"
+        className={`h-1.5 w-1.5 rounded-full ${lokal ? 'bg-warning' : 'bg-success'}`}
+      />
+      {lokal ? 'Lokal' : 'Produksi'}
+    </Badge>
+  );
+}
+
+function IkonMenu() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="h-4 w-4"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      aria-hidden="true"
+    >
+      <path d="M4 7h16M4 12h16M4 17h16" />
+    </svg>
+  );
+}
+
 export function Topbar({
   jejak,
   cari,
@@ -16,6 +57,7 @@ export function Topbar({
   onGantiTema,
   admin,
   onKeluar,
+  onBukaMenu,
 }: {
   jejak: string[];
   cari?: ReactNode;
@@ -23,15 +65,27 @@ export function Topbar({
   onGantiTema: () => void;
   admin: Admin;
   onKeluar: () => void;
+  /** Membuka drawer sidebar di layar sempit. */
+  onBukaMenu?: () => void;
 }) {
   return (
     <header className="sticky top-0 z-30 flex h-topbar items-center gap-3 border-b border-border bg-background/85 px-4 backdrop-blur md:px-6">
-      {/* Merek hanya muncul di layar sempit, saat sidebar disembunyikan. */}
-      <span className="flex items-center gap-2 md:hidden">
-        <span className="text-sm font-semibold">KanPOS</span>
-        <Badge variant="destructive" size="sm">
-          ADMIN
-        </Badge>
+      {onBukaMenu && (
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          className="-ml-1 md:hidden"
+          onClick={onBukaMenu}
+          title="Buka menu"
+          aria-label="Buka menu"
+        >
+          <IkonMenu />
+        </Button>
+      )}
+
+      {/* Di layar sempit breadcrumb tidak muat; yang ditampilkan judul halamannya saja. */}
+      <span className="min-w-0 truncate text-sm font-semibold md:hidden">
+        {jejak[jejak.length - 1]}
       </span>
 
       <nav
@@ -50,6 +104,7 @@ export function Topbar({
       </nav>
 
       <div className="ml-auto flex items-center gap-2">
+        <PenandaLingkungan />
         {cari}
 
         <Button

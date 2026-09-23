@@ -1,5 +1,6 @@
 import { clearSession, getToken, setSession, type Session } from './auth';
 import type {
+  AdminAccount,
   AdminPlan,
   AppRelease,
   ReleaseInput,
@@ -146,6 +147,20 @@ export const fetchAudit = (params: { page?: number; limit?: number }) =>
 
 export const reconcilePayment = (id: string) =>
   request<ReconcileResult>(`/api/admin/payments/${id}/reconcile`, { method: 'POST' });
+
+/* ── Kelola admin (superadmin saja) ─────────────────────────── */
+
+export const fetchAdmins = () => request<{ admins: AdminAccount[] }>('/api/admin/admins');
+
+/** Mengangkat akun yang **sudah pernah masuk** ke KanPOS jadi admin. */
+export const promoteAdmin = (body: {
+  email: string;
+  role: 'ADMIN' | 'SUPERADMIN';
+  reason: string;
+}) => request<{ message: string }>('/api/admin/admins', { method: 'POST', body });
+
+export const revokeAdmin = (id: string, reason: string) =>
+  request<{ message: string }>(`/api/admin/admins/${id}`, { method: 'DELETE', body: { reason } });
 
 export const fetchReleases = () => request<{ releases: AppRelease[] }>('/api/admin/releases');
 

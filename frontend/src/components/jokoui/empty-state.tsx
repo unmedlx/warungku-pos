@@ -26,7 +26,7 @@ const EmptyState = React.forwardRef<HTMLDivElement, EmptyStateProps>(
         </div>
       )}
       <h3 className="text-sm font-medium">{title}</h3>
-      {description && <p className="mt-1 max-w-xs text-[13px] text-muted-foreground">{description}</p>}
+      {description && <p className="mt-1 max-w-xs text-xsm text-muted-foreground">{description}</p>}
       {action && <div className="mt-4">{action}</div>}
     </div>
   ),

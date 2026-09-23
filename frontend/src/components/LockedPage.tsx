@@ -34,7 +34,7 @@ export default function LockedPage({ title, permissionLabel }: LockedPageProps) 
 
   return (
     <div className="px-4 pt-6 pb-4 space-y-4">
-      <h1 className="text-[22px] font-semibold tracking-tight flex items-center gap-2">
+      <h1 className="text-title font-semibold tracking-tight flex items-center gap-2">
         <Lock className="w-5 h-5 text-muted-foreground" />
         {title}
       </h1>

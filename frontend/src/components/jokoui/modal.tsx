@@ -10,8 +10,11 @@ interface ModalProps {
 }
 
 function Modal({ open, onClose, children, className }: ModalProps) {
+  const panelRef = React.useRef<HTMLDivElement>(null);
+
   React.useEffect(() => {
     if (!open) return;
+    panelRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose?.();
     };
@@ -27,10 +30,21 @@ function Modal({ open, onClose, children, className }: ModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center">
-      <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px] animate-fade-in" onClick={onClose} />
       <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-black/30 backdrop-blur-[2px] animate-fade-in"
+        onClick={onClose}
+      />
+      {/* `tabIndex={-1}` + autofokus: tanpa ini pembaca layar tetap berada di
+          halaman di belakang scrim, dan Escape baru bekerja setelah pengguna
+          menyentuh sesuatu di dalam panel. */}
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        tabIndex={-1}
         className={cn(
-          "relative z-10 w-full max-w-lg translate-y-0 rounded-t-3xl bg-card p-5 pt-3 shadow-lg transition-transform duration-300 sm:rounded-xl sm:pt-5 animate-scale-in",
+          "relative z-10 w-full max-w-lg translate-y-0 rounded-t-3xl bg-card p-5 pt-3 outline-none border border-transparent shadow-lift dark:border-border dark:shadow-none transition-transform duration-300 sm:rounded-xl sm:pt-5 animate-scale-in",
           className,
         )}
       >
@@ -46,7 +60,7 @@ const ModalHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElemen
 );
 
 const ModalTitle = ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-  <h3 className={cn("text-base font-semibold leading-6", className)} {...props} />
+  <h3 className={cn("text-heading font-semibold leading-snug tracking-tight", className)} {...props} />
 );
 
 const ModalDescription = ({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => (

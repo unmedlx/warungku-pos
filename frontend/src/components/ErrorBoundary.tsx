@@ -144,7 +144,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     }
 
     return (
-      <div className="flex min-h-screen items-center justify-center bg-muted px-4 py-8">
+      <div className="flex min-h-dvh items-center justify-center bg-muted px-4 py-8">
         <div className="w-full max-w-lg space-y-4">
           <Alert variant="destructive">
             <AlertTriangle className="h-4 w-4" />

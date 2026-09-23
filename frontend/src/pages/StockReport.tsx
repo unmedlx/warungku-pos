@@ -105,6 +105,7 @@ export default function StockReport() {
     return t(`stockReport.reasons.${keyMap[reason] ?? 'other'}`, reason);
   };
 
+  const hasMovement = chartData.some((d) => d.stockIn > 0 || d.stockOut > 0);
   const stockInLabel = t('stockReport.movementChart.in');
   const stockOutLabel = t('stockReport.movementChart.out');
 
@@ -145,19 +146,40 @@ export default function StockReport() {
       <Card>
         <CardContent className="p-4">
           <SectionTitle title={t('stockReport.movementChart.title')} />
-          <ResponsiveContainer width="100%" height={180}>
-            <BarChart data={chartData}>
-              <XAxis dataKey="date" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
-              <YAxis hide />
-              <Tooltip
-                formatter={(v: number, name: string) => [v, name === 'stockIn' ? stockInLabel : stockOutLabel]}
-                contentStyle={{ fontSize: 12, borderRadius: 8 }}
-                labelStyle={{ fontSize: 10 }}
-              />
-              <Bar dataKey="stockIn" fill="hsl(142, 71%, 45%)" radius={[2, 2, 0, 0]} name={stockInLabel} />
-              <Bar dataKey="stockOut" fill="hsl(0, 84%, 60%)" radius={[2, 2, 0, 0]} name={stockOutLabel} />
-            </BarChart>
-          </ResponsiveContainer>
+          {hasMovement ? (
+            <ResponsiveContainer width="100%" height={180}>
+              <BarChart data={chartData}>
+                <XAxis dataKey="date" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                <YAxis hide />
+                <Tooltip
+                  formatter={(v: number, name: string) => [v, name === 'stockIn' ? stockInLabel : stockOutLabel]}
+                  contentStyle={{
+                    fontSize: 12,
+                    borderRadius: 12,
+                    background: 'hsl(var(--popover))',
+                    color: 'hsl(var(--popover-foreground))',
+                    border: '1px solid hsl(var(--border))',
+                  }}
+                  labelStyle={{ fontSize: 10, color: 'hsl(var(--muted-foreground))' }}
+                  cursor={{ fill: 'hsl(var(--accent))' }}
+                />
+                {/* Warna diambil dari token, bukan ditulis mati. Sebelumnya
+                    dua batang ini memakai hijau dan merah versi lama yang
+                    tidak ikut mode gelap maupun tema aksen. */}
+                <Bar dataKey="stockIn" fill="hsl(var(--success))" radius={[3, 3, 0, 0]} name={stockInLabel} />
+                <Bar dataKey="stockOut" fill="hsl(var(--destructive))" radius={[3, 3, 0, 0]} name={stockOutLabel} />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            /* Tanpa ini, kartu ini memesan 180px kosong dan terbaca seperti
+               grafik yang gagal dimuat — bukan seperti toko yang memang
+               belum mencatat pergerakan stok. */
+            <p className="py-6 text-center text-xsm text-muted-foreground">
+              {t('stockReport.movementChart.empty', {
+                defaultValue: 'Belum ada pergerakan stok di rentang ini.',
+              })}
+            </p>
+          )}
         </CardContent>
       </Card>
 

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { Download, X } from '@/components/icons';
 import { useTranslation } from 'react-i18next';
@@ -8,8 +7,22 @@ import { Button } from '@/components/jokoui/button';
 import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '@/components/jokoui/item';
 import { usePWAInstall } from '@/hooks/use-pwa-install';
 import { isNativePlatform } from '@/lib/printer';
+import { DISMISS_KEYS, useDismissed } from '@/lib/home-interrupts';
 
-const DISMISS_KEY = 'kanpos_install_banner_dismissed_v1';
+const DISMISS_KEY = DISMISS_KEYS.install;
+
+/** Layak tampil bila aplikasi memang bisa dipasang dan user sudah pernah jualan. */
+export function useInstallBannerVisible(): boolean {
+  const { canInstall, isInstalled, isIOS } = usePWAInstall();
+  const [dismissed] = useDismissed(DISMISS_KEY);
+  const hasSold = useLiveQuery(
+    async () => (await db.transactions.where('status').equals('completed').count()) > 0,
+    [],
+    false,
+  );
+  if (isNativePlatform() || isInstalled || dismissed || !hasSold) return false;
+  return canInstall || isIOS;
+}
 
 /**
  * Ajakan pasang PWA di beranda.
@@ -21,7 +34,7 @@ const DISMISS_KEY = 'kanpos_install_banner_dismissed_v1';
 export function InstallBanner() {
   const { t } = useTranslation('dashboard');
   const { canInstall, isInstalled, isIOS, install } = usePWAInstall();
-  const [dismissed, setDismissed] = useState(() => localStorage.getItem(DISMISS_KEY) === '1');
+  const [dismissed, handleDismiss] = useDismissed(DISMISS_KEY);
 
   const hasSold = useLiveQuery(
     async () => (await db.transactions.where('status').equals('completed').count()) > 0,
@@ -31,11 +44,6 @@ export function InstallBanner() {
 
   if (isNativePlatform() || isInstalled || dismissed || !hasSold) return null;
   if (!canInstall && !isIOS) return null;
-
-  const handleDismiss = () => {
-    localStorage.setItem(DISMISS_KEY, '1');
-    setDismissed(true);
-  };
 
   const handleInstall = async () => {
     // iOS tidak punya `beforeinstallprompt`; satu-satunya jalur adalah menu Share.

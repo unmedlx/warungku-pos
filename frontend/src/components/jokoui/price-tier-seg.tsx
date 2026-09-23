@@ -38,7 +38,7 @@ export function PriceTierSeg({ tiers, value, onChange, qty, baseLabel, className
             onClick={() => onChange(tier.name)}
             title={eligible ? undefined : `Berlaku mulai ${tier.minQty}`}
             className={cn(
-              'flex h-6 flex-1 items-center justify-center rounded-md px-2 text-[11px] font-medium transition-colors',
+              'flex h-6 flex-1 items-center justify-center rounded-md px-2 text-2xs font-medium transition-colors',
               active
                 ? 'bg-background text-foreground shadow-xs'
                 : eligible

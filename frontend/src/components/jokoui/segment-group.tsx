@@ -3,10 +3,15 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 
 /**
- * Segment Group — port `registry/react/components/segment-group.tsx` Shark:
- * deretan chip `rounded-lg h-8 px-3 text-[13px] font-medium`, item aktif
- * berlatar `bg-input`, bukan pil biru solid. Dipakai untuk filter kategori
- * di Kasir dan filter status di Riwayat.
+ * Segment Group — deretan chip penyaring.
+ *
+ * Item aktif dicelup brand, bukan diberi latar `bg-input`. Pil abu di atas
+ * bidang abu adalah persis perlakuan netral yang membuat app ini terbaca
+ * generik, dan ia dipakai di layar-layar bertata-bahasa dompet (periode di
+ * Laporan, status di Kasbon, filter di Riwayat) di mana status terpilih
+ * justru harus terbaca dari sudut mata.
+ *
+ * Tingginya 36px, bukan 32px: chip ini disentuh jempol di HP murah.
  */
 interface SegmentGroupProps<T extends string> {
   items: { value: T; label: React.ReactNode }[];
@@ -43,9 +48,12 @@ function SegmentGroup<T extends string>({ items, value, onValueChange, layout = 
             data-state={active ? 'checked' : 'unchecked'}
             onClick={() => onValueChange(item.value)}
             className={cn(
-              'inline-flex h-8 shrink-0 cursor-pointer items-center justify-center whitespace-nowrap rounded-lg border border-transparent px-3 text-[13px] font-medium transition-colors',
-              'outline-none focus-visible:border-primary focus-visible:ring-[3px] focus-visible:ring-ring/30',
-              active ? 'bg-input text-foreground' : 'text-muted-foreground hover:text-foreground',
+              'inline-flex h-9 shrink-0 cursor-pointer items-center justify-center whitespace-nowrap rounded-lg px-3.5 text-xsm font-semibold tracking-[-0.01em] transition-colors',
+              'outline-none focus-visible:ring-[3px] focus-visible:ring-ring/40',
+              'motion-reduce:transition-none',
+              active
+                ? 'bg-primary text-primary-foreground'
+                : 'text-muted-foreground hover:bg-accent hover:text-foreground',
               layout === 'full' && 'flex-1',
             )}
           >

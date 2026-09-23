@@ -346,7 +346,7 @@ export default function SpeechProductsDialog({ open, onClose, onSaved }: Props) 
               </p>
               <div className="rounded-xl bg-muted/50 p-3 text-left max-w-sm mx-auto">
                 <p className="text-xs font-medium text-muted-foreground">{t('speech.deniedHowTitle')}</p>
-                <ul className="text-[11px] text-muted-foreground leading-relaxed list-disc ml-4 mt-1.5 space-y-0.5">
+                <ul className="text-2xs text-muted-foreground leading-relaxed list-disc ml-4 mt-1.5 space-y-0.5">
                   <li>{t('speech.deniedStep1')}</li>
                   <li>{t('speech.deniedStep2')}</li>
                 </ul>
@@ -504,7 +504,7 @@ export default function SpeechProductsDialog({ open, onClose, onSaved }: Props) 
                   {(Array.isArray(examples) ? examples : []).map((ex) => (
                     <p
                       key={ex}
-                      className="rounded-xl bg-background/80 border border-primary/15 px-3 py-2 text-[12px] leading-relaxed"
+                      className="rounded-xl bg-background/80 border border-primary/15 px-3 py-2 text-xsm leading-relaxed"
                     >
                       “{ex}”
                     </p>
@@ -550,7 +550,7 @@ export default function SpeechProductsDialog({ open, onClose, onSaved }: Props) 
 
 function SectionHead({ label, count }: { label: string; count: number }) {
   return (
-    <p className="flex justify-between px-0.5 pt-1 text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+    <p className="flex justify-between px-0.5 pt-1 text-3xs font-bold uppercase tracking-[0.14em] text-muted-foreground">
       <span>{label}</span>
       <span>{count}</span>
     </p>
@@ -570,7 +570,7 @@ function BuildingCard({ row }: { row: DraftRow }) {
 
   return (
     <div className="rounded-2xl border-[1.5px] border-dashed border-primary/40 bg-card p-3">
-      <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-primary">
+      <p className="flex items-center gap-1.5 text-3xs font-bold uppercase tracking-[0.12em] text-primary">
         <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
         {t('speech.live.building')}
       </p>
@@ -584,10 +584,10 @@ function BuildingCard({ row }: { row: DraftRow }) {
               value ? 'border-primary/30 bg-accent/60' : 'border-border bg-muted/30',
             )}
           >
-            <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">
+            <p className="text-3xs font-semibold uppercase tracking-wider text-muted-foreground">
               {t(`speech.live.${key}`)}
             </p>
-            <p className={cn('text-[12.5px] font-bold', !value && 'font-medium text-muted-foreground/60')}>
+            <p className={cn('text-xsm font-bold', !value && 'font-medium text-muted-foreground/60')}>
               {key === 'stock' ? value || '—' : money(value)}
             </p>
           </div>
@@ -641,14 +641,14 @@ function DraftCard({ row, onRemove, onAlternative, onKeep, onMargin, onEdit }: D
             <Check className="h-3.5 w-3.5 text-success" />
           )}
         </span>
-        <p className="min-w-0 flex-1 truncate text-[13px] font-semibold">{row.name}</p>
+        <p className="min-w-0 flex-1 truncate text-xsm font-semibold">{row.name}</p>
         {row.matchedProductId && (
-          <span className="rounded bg-accent px-1.5 py-px text-[9px] font-bold uppercase text-primary">
+          <span className="rounded bg-accent px-1.5 py-px text-3xs font-bold uppercase text-primary">
             {t('speech.live.update')}
           </span>
         )}
         {row.key.startsWith('ai-') && (
-          <span className="rounded bg-primary/10 px-1.5 py-px text-[9px] font-bold uppercase text-primary">AI</span>
+          <span className="rounded bg-primary/10 px-1.5 py-px text-3xs font-bold uppercase text-primary">AI</span>
         )}
         <button
           type="button"
@@ -660,7 +660,7 @@ function DraftCard({ row, onRemove, onAlternative, onKeep, onMargin, onEdit }: D
         </button>
       </div>
 
-      <div className="ml-8 mt-1 flex flex-wrap gap-x-3 text-[11px] text-muted-foreground">
+      <div className="ml-8 mt-1 flex flex-wrap gap-x-3 text-2xs text-muted-foreground">
         <span>
           {t('speech.live.price')} <b className="font-semibold text-foreground">{money(row.price)}</b>
         </span>
@@ -676,7 +676,7 @@ function DraftCard({ row, onRemove, onAlternative, onKeep, onMargin, onEdit }: D
 
       {pending && (
         <div className="ml-8 mt-2 space-y-1.5">
-          <p className="text-[11.5px] font-semibold">
+          <p className="text-2xs font-semibold">
             {noPrice ? t('speech.live.askPrice') : t('speech.live.askNumber')}
             {row.note && <span className="ml-1 font-normal italic text-muted-foreground">{row.note}</span>}
           </p>
@@ -724,7 +724,7 @@ function Chip({
       type="button"
       onClick={onClick}
       className={cn(
-        'rounded-xl border px-2.5 py-1.5 text-[11.5px] font-semibold',
+        'rounded-xl border px-2.5 py-1.5 text-2xs font-semibold',
         primary ? 'border-primary text-primary bg-background' : 'border-border bg-background',
         dim && 'border-transparent bg-transparent font-medium text-muted-foreground',
       )}

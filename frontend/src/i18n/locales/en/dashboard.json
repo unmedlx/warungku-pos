@@ -40,7 +40,7 @@
     "description": "{{count}} bill(s) awaiting payment"
   },
   "quickActions": {
-    "title": "Quick Access",
+    "title": "Menu",
     "all": "More",
     "cashier": "Cashier",
     "products": "Products",
@@ -50,7 +50,8 @@
     "customers": "Customers",
     "supplier": "Supplier",
     "stockIn": "Stock In",
-    "stockOut": "Stock Out"
+    "stockOut": "Stock Out",
+    "debts": "Debts"
   },
   "recentTransactions": {
     "title": "Recent Transactions",

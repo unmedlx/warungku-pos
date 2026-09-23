@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KanPOS — Dibagi Per Peran</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   KanPOS — dunia visual "Dibagi Per Peran"
+   Patokan craft: super-app konsumen Indonesia (Gojek/GoPay).
+   Tata bahasanya yang diambil, bukan warnanya: biru brand
+   #3554C1 tetap yang dikunci.
+
+   Dua tata bahasa, satu sistem:
+     dompet  — kasir, pembayaran, laporan   (bidang dicelup penuh)
+     ubin    — beranda, menu, stok, setting (kisi layanan berwarna)
+   Yang mengikat keduanya: satu skala sudut, satu tipografi,
+   SATU tingkat elevasi.
+   ============================================================ */
+
+:root {
+  /* — inti — */
+  --brand:        #3554C1;   /* dikunci user */
+  --brand-deep:   #1B2C6B;
+  --brand-press:  #2A44A3;
+  --brand-text:   #3554C1;   /* brand saat ia jadi teks/ikon di atas ground */
+  --on-brand:     #FFFFFF;   /* 6.6:1 di atas bidang brand */
+  --on-brand-dim: #D3DCF8;   /* teks sekunder DI ATAS biru — ditint dari hue-nya, bukan abu (4.8:1) */
+
+  --ground:  #F5F7FB;
+  --surface: #FFFFFF;
+  --sunken:  #EEF1F7;
+  --line:    #E3E8F1;
+  --line-strong: #CFD7E6;
+
+  --ink:       #0F1422;
+  --ink-muted: #59637A;
+  --ink-faint: #666E82;   /* 46% L — 4.60:1 di atas ground; 48% hanya lolos di kartu */
+
+  /* — sistem pengenal kategori: dipegang konsisten di seluruh app — */
+  /* `--cat-N`  = warna isi pada permukaan solid (titik, batang, isian)
+     `--cat-N-on`= warna tinta DI ATAS tint-nya; digelapkan supaya ikon dan
+                   teks di dalam ubin tetap lolos 3:1 di bawah matahari.  */
+  --cat-1: #3554C1;  --cat-1-bg: #E8EDFB;  --cat-1-on: #2A44A3;
+  --cat-2: #12B76A;  --cat-2-bg: #E3F7ED;  --cat-2-on: #067647;
+  --cat-3: #F79009;  --cat-3-bg: #FDF0DC;  --cat-3-on: #B54708;
+  --cat-4: #F04438;  --cat-4-bg: #FDE7E5;  --cat-4-on: #B42318;
+  --cat-5: #7A5AF8;  --cat-5-bg: #EEEAFE;  --cat-5-on: #5925DC;
+  --cat-6: #06AED4;  --cat-6-bg: #DEF4F9;  --cat-6-on: #0E7090;
+
+  --pos: #067647;
+  --neg: #B42318;
+  --neg-solid: #D92D20;   /* isian yang memikul teks putih kecil */
+
+  /* — satu skala sudut — */
+  --r-tile:    16px;
+  --r-card:    14px;
+  --r-control: 12px;
+  --r-chip:    999px;
+
+  /* — SATU tingkat elevasi, dan hanya SATU cara memisahkan permukaan. —
+     Terang memisah dengan bayangan (offset + blur lembut, bukan halo);
+     gelap memisah dengan garis, karena bayangan tidak terbaca di sana.
+     Keduanya tidak pernah dipakai bersamaan. */
+  --card-edge: transparent;
+  --lift: 0 1px 2px rgba(15,20,34,.05), 0 10px 24px -14px rgba(15,20,34,.22);
+  --lift-brand: 0 2px 4px rgba(27,44,107,.18), 0 14px 28px -16px rgba(27,44,107,.55);
+
+  --ease: cubic-bezier(.22,1,.36,1);
+}
+
+[data-theme="dark"] {
+  /* Bidang brand TIDAK diterangkan di mode gelap: mengangkatnya justru
+     menurunkan kontras teks di atasnya (putih 4.9:1 vs 6.6:1). Biru yang
+     dikunci dipakai apa adanya; yang diangkat hanya versi teksnya. */
+  --brand:        #3554C1;
+  --brand-deep:   #101935;
+  --brand-press:  #2A44A3;
+  --brand-text:   #9DB1F7;
+  --on-brand:     #FFFFFF;
+  --on-brand-dim: #D3DCF8;
+
+  --ground:  #0A0E18;
+  --surface: #141A29;
+  --sunken:  #1B2233;
+  --line:    #242C40;
+  --line-strong: #323C55;
+
+  --ink:       #EDF1F8;
+  --ink-muted: #98A2B8;
+  --ink-faint: #8A93A8;
+
+  --cat-1: #7D95EE;  --cat-1-bg: #1B2542;  --cat-1-on: #A9BAF5;
+  --cat-2: #3DD68C;  --cat-2-bg: #10291F;  --cat-2-on: #6CE9A6;
+  --cat-3: #FDB022;  --cat-3-bg: #2C2110;  --cat-3-on: #FEC84B;
+  --cat-4: #F97066;  --cat-4-bg: #2E1614;  --cat-4-on: #FDA29B;
+  --cat-5: #A48AFB;  --cat-5-bg: #211A3D;  --cat-5-on: #BDB4FE;
+  --cat-6: #22CCEE;  --cat-6-bg: #10272E;  --cat-6-on: #67E3F9;
+
+  --pos: #6CE9A6;
+  --neg: #FDA29B;
+  --neg-solid: #D92D20;
+
+  /* gelap memisah dengan garis, bukan bayangan */
+  --card-edge: var(--line);
+  --lift: none;
+  --lift-brand: none;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: 'Hanken Grotesk', system-ui, sans-serif;
+  background: var(--ground);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* — permukaan yang digambar browser, bukan kita — */
+::selection { background: color-mix(in srgb, var(--brand) 24%, transparent); color: var(--ink); }
+:root { caret-color: var(--brand); accent-color: var(--brand); scrollbar-color: var(--line-strong) transparent; scrollbar-width: thin; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--line-strong); border: 2px solid transparent; background-clip: content-box; border-radius: 999px; }
+:focus-visible { outline: 2px solid var(--brand-text); outline-offset: 2px; border-radius: 4px; }
+
+/* angka uang: tabular di mana pun nominal berdampingan */
+.num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; letter-spacing: -.02em; }
+
+/* ============ kerangka peraga ============ */
+.stage {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 48px 24px 96px;
+}
+.stage-head { max-width: 680px; margin-bottom: 40px; }
+.stage-head h1 { font-size: clamp(28px, 4vw, 40px); font-weight: 800; letter-spacing: -.03em; margin: 0 0 14px; line-height: 1.08; }
+.stage-head p { margin: 0 0 10px; color: var(--ink-muted); font-size: 16px; line-height: 1.6; }
+.stage-head strong { color: var(--ink); font-weight: 600; }
+.stage-head .synthetic {
+  margin-top: 18px; padding: 12px 14px;
+  border-radius: var(--r-card);
+  background: var(--cat-3-bg);
+  border: 1px solid color-mix(in srgb, var(--cat-3) 32%, transparent);
+  color: var(--ink); font-size: 13.5px; line-height: 1.55;
+}
+.stage-head .synthetic b { font-weight: 700; }
+
+.screens { display: flex; flex-wrap: wrap; gap: 40px 32px; align-items: flex-start; }
+.screen-wrap { width: 390px; flex: 0 0 auto; }
+.screen-label { font-size: 13px; font-weight: 600; color: var(--ink-muted); margin-bottom: 10px; display: flex; align-items: baseline; gap: 8px; }
+.screen-label b { color: var(--ink); font-weight: 700; }
+.phone {
+  width: 390px; height: 844px;
+  background: var(--ground);
+  border: 1px solid var(--line-strong);
+  border-radius: 28px;
+  overflow: hidden;
+  position: relative;
+  display: flex; flex-direction: column;
+}
+.scroll { flex: 1; overflow-y: auto; overscroll-behavior: contain; }
+
+/* ============ NAV BAWAH — ikon terisi ============ */
+.nav {
+  flex: 0 0 auto;
+  display: flex; align-items: stretch;
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  padding-bottom: 6px;
+  position: relative; z-index: 5;
+}
+.nav a {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px; padding: 9px 2px 5px;
+  color: var(--ink-faint); text-decoration: none;
+  font-size: 11px; font-weight: 600; letter-spacing: -.01em;
+}
+.nav a.on { color: var(--brand-text); }
+.nav svg { width: 23px; height: 23px; }
+.nav .cashier-slot { color: var(--brand-text); }
+.nav .cashier-btn {
+  margin-top: -22px;
+  width: 50px; height: 50px;
+  border-radius: 17px;
+  background: var(--brand);
+  color: var(--on-brand);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--lift-brand);
+  border: 3px solid var(--surface);
+}
+.nav .cashier-btn svg { width: 24px; height: 24px; }
+
+/* ============ TATA BAHASA DOMPET ============ */
+/* Bidang dicelup penuh. Nominal adalah objeknya, bukan keterangan. */
+.dip {
+  background: var(--brand);
+  color: var(--on-brand);
+  padding: 14px 18px 20px;
+  border-radius: 0 0 22px 22px;
+}
+.dip-top {
+  display: flex; align-items: center; gap: 10px;
+  min-height: 34px; margin-bottom: 14px;
+}
+.dip-top button {
+  width: 34px; height: 34px; flex: 0 0 auto;
+  border: 0; border-radius: 11px;
+  background: rgba(255,255,255,.14);
+  color: var(--on-brand);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.dip-top svg { width: 19px; height: 19px; }
+.dip-top .title { font-size: 15px; font-weight: 700; letter-spacing: -.01em; flex: 1; min-width: 0; }
+.dip-top .title small { display: block; font-size: 11.5px; font-weight: 500; color: var(--on-brand-dim); letter-spacing: 0; margin-top: 1px; }
+
+.dip-label { font-size: 12px; font-weight: 600; color: var(--on-brand-dim); letter-spacing: .01em; }
+
+/* satu-satunya objek besar di layar */
+.dip-amount {
+  display: flex; align-items: baseline; gap: 6px;
+  margin-top: 3px;
+}
+.dip-amount .rp { font-size: 19px; font-weight: 600; color: var(--on-brand-dim); }
+.dip-amount .val { font-size: 45px; font-weight: 800; line-height: 1.02; letter-spacing: -.035em; }
+
+.dip-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; margin-top: 14px;
+  padding-top: 13px;
+  border-top: 1px solid rgba(255,255,255,.16);
+}
+.dip-foot .meta { font-size: 12.5px; font-weight: 500; color: var(--on-brand-dim); }
+.dip-foot .meta b { color: var(--on-brand); font-weight: 700; }
+.dip-foot .link {
+  font-size: 12.5px; font-weight: 700; color: var(--on-brand);
+  display: inline-flex; align-items: center; gap: 3px;
+}
+.dip-foot .link svg { width: 14px; height: 14px; }
+
+/* baris aksi tebal — garis jempol */
+.actionbar {
+  flex: 0 0 auto;
+  padding: 10px 16px 10px;
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+}
+.action {
+  width: 100%;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+  height: 54px; padding: 0 20px;
+  border: 0; border-radius: var(--r-control);
+  background: var(--brand); color: var(--on-brand);
+  font-family: inherit; font-size: 16px; font-weight: 700; letter-spacing: -.01em;
+  box-shadow: var(--lift-brand);
+  cursor: pointer;
+  transition: transform .12s var(--ease), background .12s var(--ease);
+}
+.action:active { transform: scale(.985); background: var(--brand-press); }
+.action .amt { font-size: 18px; font-weight: 800; }
+.action:disabled { background: var(--sunken); color: var(--ink-faint); box-shadow: none; cursor: not-allowed; }
+
+/* ============ TATA BAHASA UBIN ============ */
+.pad { padding: 0 16px; }
+
+.sec-title {
+  font-size: 15.5px; font-weight: 700; letter-spacing: -.015em;
+  margin: 22px 0 11px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sec-title a { font-size: 12.5px; font-weight: 600; color: var(--brand-text); text-decoration: none; }
+
+.tiles {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 8px 6px;
+}
+.tile {
+  display: flex; flex-direction: column; align-items: center; gap: 7px;
+  padding: 12px 4px 11px;
+  border: 0; background: transparent;
+  border-radius: var(--r-tile);
+  color: var(--ink); text-decoration: none;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background .14s var(--ease);
+}
+.tile:active { background: var(--sunken); }
+.tile .glyph {
+  width: 48px; height: 48px; border-radius: var(--r-tile);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.tile .glyph svg { width: 25px; height: 25px; }
+.tile span { font-size: 11.5px; font-weight: 600; text-align: center; line-height: 1.25; letter-spacing: -.01em; }
+.tile .dot {
+  position: absolute; top: -3px; right: -3px;
+  min-width: 18px; height: 18px; padding: 0 5px;
+  border-radius: 999px; background: var(--neg-solid); color: #fff;
+  font-size: 11px; font-weight: 800; line-height: 18px; text-align: center;
+  border: 2px solid var(--ground);
+}
+.c1 .glyph { background: var(--cat-1-bg); color: var(--cat-1-on); }
+.c2 .glyph { background: var(--cat-2-bg); color: var(--cat-2-on); }
+.c3 .glyph { background: var(--cat-3-bg); color: var(--cat-3-on); }
+.c4 .glyph { background: var(--cat-4-bg); color: var(--cat-4-on); }
+.c5 .glyph { background: var(--cat-5-bg); color: var(--cat-5-on); }
+.c6 .glyph { background: var(--cat-6-bg); color: var(--cat-6-on); }
+
+/* ============ KARTU — satu tingkat elevasi ============ */
+.card {
+  background: var(--surface);
+  border-radius: var(--r-card);
+  box-shadow: var(--lift);
+}
+
+/* beranda: kepala toko */
+.home-head {
+  display: flex; align-items: center; gap: 11px;
+  padding: 14px 16px 12px;
+}
+.home-head .avatar {
+  width: 42px; height: 42px; border-radius: 14px; flex: 0 0 auto;
+  background: var(--brand); color: var(--on-brand);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 17px;
+}
+.home-head .who { flex: 1; min-width: 0; }
+.home-head .who b { display: block; font-size: 15.5px; font-weight: 700; letter-spacing: -.015em; }
+.home-head .who span { display: block; font-size: 12.5px; color: var(--ink-muted); font-weight: 500; margin-top: 1px; }
+.home-head .bell {
+  width: 40px; height: 40px; border-radius: var(--r-control); flex: 0 0 auto;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink-muted);
+  display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer;
+}
+.home-head .bell svg { width: 20px; height: 20px; }
+.home-head .bell i {
+  position: absolute; top: 9px; right: 10px;
+  width: 8px; height: 8px; border-radius: 999px; background: var(--neg-solid);
+  border: 2px solid var(--surface);
+}
+
+/* beranda: panel omzet — objek uang memakai tata bahasa dompet */
+.omzet {
+  margin: 2px 16px 0;
+  background: var(--brand);
+  color: var(--on-brand);
+  border-radius: 18px;
+  padding: 16px 18px 15px;
+  box-shadow: var(--lift-brand);
+}
+.omzet .row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.omzet .eye {
+  width: 30px; height: 30px; border-radius: 10px; border: 0; flex: 0 0 auto;
+  background: rgba(255,255,255,.14); color: var(--on-brand);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.omzet .eye svg { width: 17px; height: 17px; }
+.omzet .val { font-size: 34px; font-weight: 800; letter-spacing: -.035em; line-height: 1.05; margin-top: 2px; }
+.omzet .val .rp { font-size: 16px; font-weight: 600; color: var(--on-brand-dim); margin-right: 5px; }
+
+/* tren: bukan sparkline hiasan — 7 batang, hari ini ditandai */
+.trend { display: flex; align-items: flex-end; gap: 5px; height: 34px; margin-top: 14px; }
+.trend i { flex: 1; border-radius: 3px 3px 0 0; background: rgba(255,255,255,.28); display: block; }
+.trend i.now { background: var(--on-brand); }
+.trend-x { display: flex; gap: 5px; margin-top: 5px; }
+.trend-x span { flex: 1; text-align: center; font-size: 11px; font-weight: 600; color: var(--on-brand-dim); }
+
+.omzet .cmp {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 13px; padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,.16);
+  font-size: 12.5px; font-weight: 500; color: var(--on-brand-dim);
+}
+.omzet .cmp b { color: var(--on-brand); font-weight: 700; display: inline-flex; align-items: center; gap: 3px; }
+.omzet .cmp svg { width: 14px; height: 14px; }
+
+/* peringatan: garis tipis 1px + tint, bukan border-left tebal */
+.alert {
+  display: flex; align-items: center; gap: 10px;
+  margin: 14px 16px 0; padding: 11px 13px;
+  border-radius: var(--r-card);
+  background: var(--cat-3-bg); border: 1px solid color-mix(in srgb, var(--cat-3) 32%, transparent);
+  color: var(--ink);
+}
+.alert svg { width: 19px; height: 19px; color: var(--cat-3-on); flex: 0 0 auto; }
+.alert p { margin: 0; font-size: 12.8px; font-weight: 600; line-height: 1.35; flex: 1; }
+.alert p span { display: block; font-weight: 500; color: var(--ink-muted); font-size: 11.8px; margin-top: 1px; }
+.alert svg.chev { width: 17px; height: 17px; color: var(--ink-faint); }
+
+/* daftar transaksi */
+.list { overflow: hidden; }
+.row {
+  display: flex; align-items: center; gap: 11px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  text-decoration: none; color: inherit;
+}
+.row:last-child { border-bottom: 0; }
+.row .ic {
+  width: 38px; height: 38px; border-radius: 12px; flex: 0 0 auto;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--cat-2-bg); color: var(--cat-2-on);
+}
+.row .ic svg { width: 19px; height: 19px; }
+.row .ic.out { background: var(--cat-4-bg); color: var(--cat-4-on); }
+.row .txt { flex: 1; min-width: 0; }
+.row .txt b { display: block; font-size: 13.8px; font-weight: 600; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row .txt span { display: block; font-size: 11.8px; color: var(--ink-muted); font-weight: 500; margin-top: 1px; }
+.row .amt { font-size: 14.5px; font-weight: 700; flex: 0 0 auto; }
+.row .amt.pos { color: var(--pos); }
+.row .amt.neg { color: var(--neg); }
+
+/* ============ KASIR ============ */
+.search {
+  display: flex; gap: 8px; padding: 12px 16px 10px;
+  position: sticky; top: 0; z-index: 4;
+  background: var(--ground);
+}
+.search .field {
+  flex: 1; display: flex; align-items: center; gap: 8px;
+  height: 44px; padding: 0 13px;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-control);
+  color: var(--ink-faint); font-size: 14px; font-weight: 500;
+}
+.search .field svg { width: 19px; height: 19px; flex: 0 0 auto; }
+.search .scan {
+  width: 44px; height: 44px; flex: 0 0 auto;
+  border-radius: var(--r-control);
+  background: var(--surface); border: 1px solid var(--line);
+  color: var(--ink); display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.search .scan svg { width: 21px; height: 21px; }
+
+/* pita kategori — warna kategori adalah sistem pengenal */
+.strip {
+  display: flex; gap: 7px; padding: 2px 16px 12px;
+  overflow-x: auto; scrollbar-width: none;
+}
+.strip::-webkit-scrollbar { display: none; }
+.chip {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 34px; padding: 0 13px;
+  border-radius: var(--r-chip);
+  border: 1px solid var(--line); background: var(--surface);
+  font-family: inherit; font-size: 13px; font-weight: 600; color: var(--ink-muted);
+  letter-spacing: -.01em; cursor: pointer; white-space: nowrap;
+}
+.chip i { width: 7px; height: 7px; border-radius: 999px; display: block; }
+.chip.on { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
+.chip.on i { background: rgba(255,255,255,.75); }
+
+/* kisi produk 3 kolom */
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; padding: 0 16px 18px; }
+.prod {
+  position: relative;
+  background: var(--surface);
+  border-radius: var(--r-card); box-shadow: var(--lift);
+  padding: 9px 9px 10px;
+  text-align: left; font-family: inherit; color: inherit; cursor: pointer;
+  transition: transform .11s var(--ease);
+}
+.prod:active { transform: scale(.975); }
+.prod .thumb {
+  height: 62px; border-radius: 10px; margin-bottom: 8px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--cat-1-bg); color: var(--cat-1-on);
+  font-size: 21px; font-weight: 800; letter-spacing: -.02em;
+}
+.prod.k2 .thumb { background: var(--cat-2-bg); color: var(--cat-2-on); }
+.prod.k3 .thumb { background: var(--cat-3-bg); color: var(--cat-3-on); }
+.prod.k5 .thumb { background: var(--cat-5-bg); color: var(--cat-5-on); }
+.prod.k6 .thumb { background: var(--cat-6-bg); color: var(--cat-6-on); }
+.prod b { display: block; font-size: 12.3px; font-weight: 600; line-height: 1.3; letter-spacing: -.01em; min-height: 32px; }
+.prod .price { display: block; font-size: 13px; font-weight: 700; margin-top: 3px; }
+.prod .stock { display: block; font-size: 11.5px; font-weight: 500; color: var(--ink-faint); margin-top: 3px; }
+.prod .qty {
+  position: absolute; top: -6px; right: -6px;
+  min-width: 25px; height: 25px; padding: 0 7px;
+  border-radius: 999px; background: var(--brand); color: var(--on-brand);
+  font-size: 12.5px; font-weight: 800; line-height: 25px; text-align: center;
+  border: 2.5px solid var(--ground);
+  box-shadow: var(--lift-brand);
+}
+.prod.habis { opacity: .55; }
+.prod.habis .stock { color: var(--neg); font-weight: 700; }
+
+/* Mode gelap: bayangan tidak terbaca, jadi pemisahnya garis — dan hanya garis. */
+[data-theme="dark"] .card,
+[data-theme="dark"] .prod { border: 1px solid var(--line); }
+
+/* === peraga token === */
+.tokens { margin-top: 64px; padding-top: 40px; border-top: 1px solid var(--line); }
+.tokens h2 { font-size: 21px; font-weight: 700; letter-spacing: -.02em; margin: 0 0 6px; }
+.tokens > p { color: var(--ink-muted); font-size: 14.5px; margin: 0 0 24px; max-width: 620px; line-height: 1.6; }
+.swatches { display: flex; flex-wrap: wrap; gap: 12px; }
+.sw { width: 132px; }
+.sw .chipc { height: 62px; border-radius: var(--r-card); border: 1px solid var(--line); }
+.sw b { display: block; font-size: 12.5px; font-weight: 700; margin-top: 8px; }
+.sw span { display: block; font-size: 11.5px; color: var(--ink-muted); font-family: ui-monospace, monospace; margin-top: 1px; }
+
+.themer {
+  position: fixed; right: 20px; bottom: 20px; z-index: 50;
+  display: flex; align-items: center; gap: 8px;
+  height: 44px; padding: 0 17px;
+  border-radius: var(--r-chip); border: 0;
+  background: var(--surface); color: var(--ink);
+  font-family: inherit; font-size: 13.5px; font-weight: 700;
+  box-shadow: var(--lift); cursor: pointer;
+}
+.themer svg { width: 18px; height: 18px; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<g id="i-home"><path d="M3 10.2 12 3l9 7.2V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></g>
+<g id="i-box"><path d="M3 7.5 12 3l9 4.5V17L12 21.5 3 17z"/></g>
+<g id="i-note"><path d="M6 2h9l5 5v15H6z"/></g>
+<g id="i-grid"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></g>
+<g id="i-cart"><path d="M3 4h3l2.4 11.2a2 2 0 0 0 2 1.6h7.4a2 2 0 0 0 2-1.55L21.5 8H7"/><circle cx="10" cy="20" r="1.6"/><circle cx="18" cy="20" r="1.6"/></g>
+</defs></svg>
+
+<div class="stage">
+
+  <div class="stage-head">
+    <h1>Dibagi Per Peran</h1>
+    <p>Patokan craft-nya super-app konsumen Indonesia. Yang diambil <strong>tata bahasanya</strong>, bukan warnanya — biru brand <strong>#3554C1</strong> tetap yang dikunci.</p>
+    <p><strong>Kasir, pembayaran, dan laporan</strong> memakai tata bahasa dompet: bidang biru dicelup penuh, nominal sebagai objek utama, baris aksi tebal di garis jempol. <strong>Beranda, menu, stok, dan pengaturan</strong> memakai kisi ubin berwarna, di mana warna adalah sistem pengenal yang dipegang konsisten.</p>
+    <p>Yang mengikat keduanya jadi satu app: satu skala sudut, satu tipografi, dan <strong>satu tingkat elevasi</strong> — tidak ada dua bayangan yang bersaing di layar mana pun.</p>
+
+    <p class="synthetic"><b>Seluruh isi di layar-layar ini adalah data contoh.</b> Nama toko, nama barang, harga, jumlah stok, nomor transaksi, dan angka omzet semuanya dikarang untuk memperagakan tata letak pada kepadatan yang sebenarnya. Nama barangnya sengaja generik (“Mie Goreng Instan”, bukan merek nyata) supaya halaman ini tidak pernah terbaca sebagai klaim kemitraan atau data penjualan sungguhan, sambil tetap memakai panjang nama yang realistis di warung Indonesia — itulah yang diuji tata letaknya.</p>
+  </div>
+
+  <div class="screens">
+
+    <!-- ============ BERANDA ============ -->
+    <div class="screen-wrap">
+      <div class="screen-label"><b>Beranda</b> — tata bahasa ubin · data contoh</div>
+      <div class="phone">
+        <div class="scroll">
+
+          <div class="home-head">
+            <div class="avatar">WB</div>
+            <div class="who">
+              <b>Warung Bu Siti</b>
+              <span>Selamat pagi, Siti</span>
+            </div>
+            <button class="bell" aria-label="Notifikasi">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+              <i></i>
+            </button>
+          </div>
+
+          <div class="omzet">
+            <div class="row">
+              <div>
+                <div class="dip-label">Omzet hari ini</div>
+                <div class="val num"><span class="rp">Rp</span>1.847.500</div>
+              </div>
+              <button class="eye" aria-label="Sembunyikan nominal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+
+            <div class="trend" aria-hidden="true">
+              <i style="height:38%"></i><i style="height:54%"></i><i style="height:31%"></i>
+              <i style="height:67%"></i><i style="height:49%"></i><i style="height:72%"></i>
+              <i class="now" style="height:100%"></i>
+            </div>
+            <div class="trend-x"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span></div>
+
+            <div class="cmp">
+              <b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17 10 11l4 4 6-6"/><path d="M15 9h5v5"/></svg>18%</b>
+              dari kemarin · 34 transaksi
+            </div>
+          </div>
+
+          <div class="alert">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.8 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.8a2 2 0 0 0-3.4 0"/><path d="M12 9v4M12 17h.01"/></svg>
+            <p>6 barang stoknya menipis<span>Mie Goreng Instan tinggal 3, Teh Kemasan tinggal 2</span></p>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+          </div>
+
+          <div class="pad">
+            <div class="sec-title">Menu</div>
+            <div class="tiles">
+              <button class="tile c1"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2.5l2 11.5a2 2 0 0 0 2 1.6h8a2 2 0 0 0 2-1.6L21 8H6.5"/><circle cx="10" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg></span><span>Kasir</span></button>
+              <button class="tile c6"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z"/><path d="M3 7.5 12 12l9-4.5M12 12v9"/></svg></span><span>Produk</span></button>
+              <button class="tile c2"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M3 18h18"/></svg></span><span>Stok Masuk</span></button>
+              <button class="tile c4"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m7 8 5-5 5 5"/><path d="M3 18h18"/></svg></span><span>Stok Keluar</span></button>
+
+              <button class="tile c3"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9h20M2 9l2-4h16l2 4M4 9v10h16V9"/><path d="M9 14h6"/></svg><i class="dot">4</i></span><span>Kasbon</span></button>
+              <button class="tile c5"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v13H4z"/><path d="M4 10h16"/><path d="M9 15h6"/></svg></span><span>Pengeluaran</span></button>
+              <button class="tile c1"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V9M10 20V4M16 20v-7M22 20H2"/></svg></span><span>Laporan</span></button>
+              <button class="tile c2"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><span>Pelanggan</span></button>
+            </div>
+
+            <div class="sec-title">Transaksi terakhir <a href="#">Semua</a></div>
+            <div class="card list">
+              <a class="row" href="#">
+                <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v15H6z"/><path d="M10 12h6M10 16h4"/></svg></span>
+                <span class="txt"><b>#1042 · Tunai</b><span>5 barang · 09.42</span></span>
+                <span class="amt num pos">+87.000</span>
+              </a>
+              <a class="row" href="#">
+                <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v15H6z"/><path d="M10 12h6M10 16h4"/></svg></span>
+                <span class="txt"><b>#1041 · QRIS</b><span>2 barang · 09.31</span></span>
+                <span class="amt num pos">+24.500</span>
+              </a>
+              <a class="row" href="#">
+                <span class="ic out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v13H4z"/><path d="M4 10h16"/></svg></span>
+                <span class="txt"><b>Beli plastik</b><span>Pengeluaran · 08.55</span></span>
+                <span class="amt num neg">−35.000</span>
+              </a>
+              <a class="row" href="#">
+                <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v15H6z"/><path d="M10 12h6M10 16h4"/></svg></span>
+                <span class="txt"><b>#1040 · Tunai</b><span>11 barang · 08.20</span></span>
+                <span class="amt num pos">+212.000</span>
+              </a>
+            </div>
+            <div style="height:18px"></div>
+          </div>
+
+        </div>
+        <nav class="nav">
+          <a href="#" class="on"><svg viewBox="0 0 24 24" fill="currentColor"><use href="#i-home"/></svg>Beranda</a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="currentColor"><use href="#i-box"/></svg>Barang</a>
+          <a href="#" class="cashier-slot"><span class="cashier-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-cart"/></svg></span>Kasir</a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="currentColor"><use href="#i-note"/></svg>Catatan</a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="currentColor"><use href="#i-grid"/></svg>Saya</a>
+        </nav>
+      </div>
+    </div>
+
+    <!-- ============ KASIR ============ -->
+    <div class="screen-wrap">
+      <div class="screen-label"><b>Kasir</b> — tata bahasa dompet · first viewport · data contoh</div>
+      <div class="phone">
+        <div class="dip">
+          <div class="dip-top">
+            <button aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg></button>
+            <div class="title">Kasir<small>Warung Bu Siti</small></div>
+            <button aria-label="Simpan sebagai open bill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h11l3 3v15H5z"/><path d="M8 3v6h8V3M8 21v-7h8v7"/></svg></button>
+          </div>
+
+          <div class="dip-label">Total belanja</div>
+          <div class="dip-amount num"><span class="rp">Rp</span><span class="val">47.000</span></div>
+
+          <div class="dip-foot">
+            <span class="meta"><b>4 barang</b> · 6 pcs</span>
+            <span class="link">Lihat keranjang <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></span>
+          </div>
+        </div>
+
+        <div class="scroll">
+          <div class="search">
+            <div class="field">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+              Cari barang atau ketik kode
+            </div>
+            <button class="scan" aria-label="Pindai barcode">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V4h3M21 7V4h-3M3 17v3h3M21 17v3h-3"/><path d="M7 8v8M11 8v8M15 8v8M18 8v8"/></svg>
+            </button>
+          </div>
+
+          <div class="strip">
+            <button class="chip on"><i></i>Semua</button>
+            <button class="chip"><i style="background:var(--cat-2)"></i>Makanan</button>
+            <button class="chip"><i style="background:var(--cat-6)"></i>Minuman</button>
+            <button class="chip"><i style="background:var(--cat-3)"></i>Rokok</button>
+            <button class="chip"><i style="background:var(--cat-5)"></i>Sabun</button>
+          </div>
+
+          <div class="grid">
+            <button class="prod k2"><span class="qty num">2</span><span class="thumb">IG</span><b>Mie Goreng Instan</b><span class="price num">Rp 3.500</span><span class="stock">sisa 18</span></button>
+            <button class="prod k6"><span class="thumb">TP</span><b>Teh Kemasan 350ml</b><span class="price num">Rp 4.000</span><span class="stock">sisa 42</span></button>
+            <button class="prod k3"><span class="qty num">1</span><span class="thumb">SM</span><b>Rokok Filter 16</b><span class="price num">Rp 28.000</span><span class="stock">sisa 7</span></button>
+            <button class="prod k5"><span class="thumb">LF</span><b>Sabun Mandi Batang</b><span class="price num">Rp 5.500</span><span class="stock">sisa 23</span></button>
+            <button class="prod k2"><span class="qty num">3</span><span class="thumb">CH</span><b>Keripik Kentang 68g</b><span class="price num">Rp 11.000</span><span class="stock">sisa 9</span></button>
+            <button class="prod k6"><span class="thumb">AQ</span><b>Air Mineral 600ml</b><span class="price num">Rp 3.000</span><span class="stock">sisa 64</span></button>
+            <button class="prod k2 habis"><span class="thumb">BG</span><b>Beras Premium 5kg</b><span class="price num">Rp 68.000</span><span class="stock">habis</span></button>
+            <button class="prod k3"><span class="thumb">GG</span><b>Rokok Kretek 12</b><span class="price num">Rp 26.500</span><span class="stock">sisa 4</span></button>
+            <button class="prod k5"><span class="thumb">RJ</span><b>Deterjen Bubuk 800g</b><span class="price num">Rp 19.500</span><span class="stock">sisa 12</span></button>
+          </div>
+        </div>
+
+        <div class="actionbar">
+          <button class="action">
+            <span>Bayar</span>
+            <span class="amt num">Rp 47.000</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ KASIR GELAP ============ -->
+    <div class="screen-wrap" data-theme="dark">
+      <div class="screen-label" style="color:var(--ink-muted)"><b style="color:var(--ink)">Kasir</b> — mode gelap · data contoh</div>
+      <div class="phone">
+        <div class="dip">
+          <div class="dip-top">
+            <button aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg></button>
+            <div class="title">Kasir<small>Warung Bu Siti</small></div>
+            <button aria-label="Simpan sebagai open bill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h11l3 3v15H5z"/><path d="M8 3v6h8V3M8 21v-7h8v7"/></svg></button>
+          </div>
+          <div class="dip-label">Total belanja</div>
+          <div class="dip-amount num"><span class="rp">Rp</span><span class="val">47.000</span></div>
+          <div class="dip-foot">
+            <span class="meta"><b>4 barang</b> · 6 pcs</span>
+            <span class="link">Lihat keranjang <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></span>
+          </div>
+        </div>
+
+        <div class="scroll">
+          <div class="search">
+            <div class="field">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+              Cari barang atau ketik kode
+            </div>
+            <button class="scan" aria-label="Pindai barcode">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V4h3M21 7V4h-3M3 17v3h3M21 17v3h-3"/><path d="M7 8v8M11 8v8M15 8v8M18 8v8"/></svg>
+            </button>
+          </div>
+          <div class="strip">
+            <button class="chip on"><i></i>Semua</button>
+            <button class="chip"><i style="background:var(--cat-2)"></i>Makanan</button>
+            <button class="chip"><i style="background:var(--cat-6)"></i>Minuman</button>
+            <button class="chip"><i style="background:var(--cat-3)"></i>Rokok</button>
+            <button class="chip"><i style="background:var(--cat-5)"></i>Sabun</button>
+          </div>
+          <div class="grid">
+            <button class="prod k2"><span class="qty num">2</span><span class="thumb">IG</span><b>Mie Goreng Instan</b><span class="price num">Rp 3.500</span><span class="stock">sisa 18</span></button>
+            <button class="prod k6"><span class="thumb">TP</span><b>Teh Kemasan 350ml</b><span class="price num">Rp 4.000</span><span class="stock">sisa 42</span></button>
+            <button class="prod k3"><span class="qty num">1</span><span class="thumb">SM</span><b>Rokok Filter 16</b><span class="price num">Rp 28.000</span><span class="stock">sisa 7</span></button>
+            <button class="prod k5"><span class="thumb">LF</span><b>Sabun Mandi Batang</b><span class="price num">Rp 5.500</span><span class="stock">sisa 23</span></button>
+            <button class="prod k2"><span class="qty num">3</span><span class="thumb">CH</span><b>Keripik Kentang 68g</b><span class="price num">Rp 11.000</span><span class="stock">sisa 9</span></button>
+            <button class="prod k6"><span class="thumb">AQ</span><b>Air Mineral 600ml</b><span class="price num">Rp 3.000</span><span class="stock">sisa 64</span></button>
+            <button class="prod k2 habis"><span class="thumb">BG</span><b>Beras Premium 5kg</b><span class="price num">Rp 68.000</span><span class="stock">habis</span></button>
+            <button class="prod k3"><span class="thumb">GG</span><b>Rokok Kretek 12</b><span class="price num">Rp 26.500</span><span class="stock">sisa 4</span></button>
+            <button class="prod k5"><span class="thumb">RJ</span><b>Deterjen Bubuk 800g</b><span class="price num">Rp 19.500</span><span class="stock">sisa 12</span></button>
+          </div>
+        </div>
+
+        <div class="actionbar">
+          <button class="action"><span>Bayar</span><span class="amt num">Rp 47.000</span></button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="tokens">
+    <h2>Token</h2>
+    <p>Warna kategori bukan hiasan — ia sistem pengenal. Satu kategori memegang satu warna di ubin menu, pita kasir, thumbnail produk, dan ikon daftar, sehingga mata belajar sekali lalu memakainya di seluruh app.</p>
+    <div class="swatches">
+      <div class="sw"><div class="chipc" style="background:#3554C1"></div><b>Brand · dicelup</b><span>#3554C1</span></div>
+      <div class="sw"><div class="chipc" style="background:#1B2C6B"></div><b>Brand dalam</b><span>#1B2C6B</span></div>
+      <div class="sw"><div class="chipc" style="background:#12B76A"></div><b>Kategori 2</b><span>#12B76A</span></div>
+      <div class="sw"><div class="chipc" style="background:#F79009"></div><b>Kategori 3</b><span>#F79009</span></div>
+      <div class="sw"><div class="chipc" style="background:#F04438"></div><b>Kategori 4</b><span>#F04438</span></div>
+      <div class="sw"><div class="chipc" style="background:#7A5AF8"></div><b>Kategori 5</b><span>#7A5AF8</span></div>
+      <div class="sw"><div class="chipc" style="background:#06AED4"></div><b>Kategori 6</b><span>#06AED4</span></div>
+      <div class="sw"><div class="chipc" style="background:#F5F7FB"></div><b>Ground</b><span>#F5F7FB</span></div>
+    </div>
+  </div>
+
+</div>
+
+<button class="themer" id="themer">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9c-4.97 0-9-4.03-9-9"/></svg>
+  <span>Gelap</span>
+</button>
+
+<script>
+  const b = document.getElementById('themer');
+  b.addEventListener('click', () => {
+    const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
+    b.querySelector('span').textContent = dark ? 'Gelap' : 'Terang';
+  });
+</script>
+</body>
+</html>

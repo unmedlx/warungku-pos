@@ -6,7 +6,7 @@ import rateLimit from 'express-rate-limit';
 import { z } from 'zod';
 import { prisma } from '@/lib/db';
 import { buildPagination } from '@/lib/pagination';
-import { authenticateAdmin, requireAdmin } from '@/middleware/auth';
+import { authenticateAdmin, requireAdmin, requireSuperadmin } from '@/middleware/auth';
 import { recordAudit } from './audit';
 import { loginWithGoogle } from './auth.service';
 import { getGrowth, getOverview, getPlanBreakdown } from './metrics.service';
@@ -14,6 +14,7 @@ import { getUserDetail, listUsers, setSuspended, UserFilter } from './users.serv
 import { listTransactions, PaymentFilter, reconcile } from './payments.service';
 import { grantManual } from './subscriptions.service';
 import { createPlan, listPlans, setArchived, updatePlan } from './plans.service';
+import { listAdmins, revokeAdmin, setAdminRole } from './admins.service';
 import { config } from '@/config';
 import { BadRequestError } from '@/lib/error';
 import * as releases from '@/modules/releases/service';
@@ -414,3 +415,69 @@ adminRoutes.delete('/releases/:id', async (req: Request, res: Response, next: Ne
     next(err);
   }
 });
+
+/* ── Kelola admin ────────────────────────────────────────────── */
+
+/**
+ * Hanya superadmin. Membaca daftarnya pun dibatasi: daftar ini memberi tahu
+ * persis akun mana yang perlu diambil alih untuk menguasai panel, dan admin
+ * biasa tidak punya keperluan melihatnya.
+ */
+adminRoutes.get('/admins', requireSuperadmin, async (_req, res: Response, next) => {
+  try {
+    res.json(await listAdmins());
+  } catch (err) {
+    next(err);
+  }
+});
+
+adminRoutes.post(
+  '/admins',
+  requireSuperadmin,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { email, role, reason } = z
+        .object({
+          email: z.string().email(),
+          role: z.enum(['ADMIN', 'SUPERADMIN']),
+          reason: z.string().min(3),
+        })
+        .parse(req.body);
+
+      const hasil = await setAdminRole(email, role);
+      await recordAudit(req, {
+        action: 'admin.promote',
+        targetType: 'User',
+        targetId: hasil.user.id,
+        reason,
+        before: hasil.before,
+        after: { ...hasil.after, email: hasil.user.email },
+      });
+      res.json({ message: `${hasil.user.name} sekarang ${role}`, ...hasil });
+    } catch (err) {
+      next(err);
+    }
+  },
+);
+
+adminRoutes.delete(
+  '/admins/:id',
+  requireSuperadmin,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { reason } = z.object({ reason: z.string().min(3) }).parse(req.body);
+      const hasil = await revokeAdmin(req.params.id, req.user!.id);
+      await recordAudit(req, {
+        action: 'admin.demote',
+        targetType: 'User',
+        targetId: hasil.user.id,
+        reason,
+        before: hasil.before,
+        after: { ...hasil.after, email: hasil.user.email },
+      });
+      res.json({ message: `Hak admin ${hasil.user.name} dicabut`, ...hasil });
+    } catch (err) {
+      next(err);
+    }
+  },
+);

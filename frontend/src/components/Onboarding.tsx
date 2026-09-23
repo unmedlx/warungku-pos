@@ -352,7 +352,7 @@ export default function Onboarding({
                   <img src="/header-icon.png" alt="KanPOS" className="h-10 w-10 object-contain" />
                 </div>
                 <div className="space-y-2">
-                  <h1 className="text-[22px] font-semibold tracking-tight">KanPOS</h1>
+                  <h1 className="text-title font-semibold tracking-tight">KanPOS</h1>
                   <p className="mx-auto max-w-[16rem] text-sm leading-relaxed text-muted-foreground">
                     {t('welcome.tagline')}
                   </p>
@@ -376,7 +376,7 @@ export default function Onboarding({
                           )}
                         >
                           <span className="text-lg leading-none">{flag}</span>
-                          <span className={cn('text-[11px] font-medium leading-none', active ? 'text-primary' : 'text-muted-foreground')}>
+                          <span className={cn('text-2xs font-medium leading-none', active ? 'text-primary' : 'text-muted-foreground')}>
                             {label}
                           </span>
                         </button>
@@ -402,7 +402,7 @@ export default function Onboarding({
                   <Users />
                   {t('welcome.joinCta')}
                 </Button>
-                <p className="pt-1 text-center text-[11px] leading-relaxed text-muted-foreground">
+                <p className="pt-1 text-center text-2xs leading-relaxed text-muted-foreground">
                   {t('tnc.prefix')}{' '}
                   <a
                     href="https://freekasir.com/terms"
@@ -430,7 +430,7 @@ export default function Onboarding({
           {step === 1 && (
             <div key="business" className="flex min-h-0 flex-1 animate-in flex-col slide-in-from-right-4 fade-in duration-300">
               <div className="space-y-1.5 px-4 pb-3 pt-3">
-                <h2 className="text-[22px] font-semibold tracking-tight">{t('business.title')}</h2>
+                <h2 className="text-title font-semibold tracking-tight">{t('business.title')}</h2>
                 <p className="text-sm leading-relaxed text-muted-foreground">{t('business.subtitle')}</p>
               </div>
 
@@ -458,7 +458,7 @@ export default function Onboarding({
                             {BUSINESS_ICONS[type]}
                           </ItemMedia>
                           <ItemContent>
-                            <ItemTitle className="text-[13px] leading-tight">{typeLabel(type)}</ItemTitle>
+                            <ItemTitle className="text-xsm leading-tight">{typeLabel(type)}</ItemTitle>
                           </ItemContent>
                           {active && (
                             <ItemActions>
@@ -503,7 +503,7 @@ export default function Onboarding({
             <div key="store" className="flex min-h-0 flex-1 animate-in flex-col slide-in-from-right-4 fade-in duration-300">
               <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 pt-3">
                 <div className="space-y-1.5">
-                  <h2 className="text-[22px] font-semibold tracking-tight">{t('store.title')}</h2>
+                  <h2 className="text-title font-semibold tracking-tight">{t('store.title')}</h2>
                   <p className="text-sm leading-relaxed text-muted-foreground">{t('store.subtitle')}</p>
                 </div>
 
@@ -607,7 +607,7 @@ export default function Onboarding({
         <SheetContent side="bottom" className="max-h-[85vh] overflow-y-auto">
           <SheetHeader>
             <SheetTitle className="flex items-center gap-2">
-              <Users className="h-[18px] w-[18px] text-primary" />
+              <Users className="size-4.5 text-primary" />
               {t('join.title')}
             </SheetTitle>
             <p className="text-sm text-muted-foreground">{t('join.desc')}</p>
@@ -616,7 +616,7 @@ export default function Onboarding({
           <div className="space-y-3 py-4">
             {!cloudLoggedIn ? (
               <div className="space-y-3 py-1 text-center">
-                <p className="text-[13px] text-muted-foreground">{t('join.loginFirst')}</p>
+                <p className="text-xsm text-muted-foreground">{t('join.loginFirst')}</p>
                 <div className="flex justify-center">
                   {isNative ? (
                     <Button variant="outline" size="xl" className="w-full" disabled={cloudLoginBusy} isLoading={cloudLoginBusy} onClick={handleNativeCloudLogin}>
@@ -681,7 +681,7 @@ export default function Onboarding({
         <SheetContent side="bottom" className="max-h-[85vh] overflow-y-auto">
           <SheetHeader>
             <SheetTitle className="flex items-center gap-2">
-              <Upload className="h-[18px] w-[18px] text-primary" />
+              <Upload className="size-4.5 text-primary" />
               {t('restore.title')}
             </SheetTitle>
             <p className="text-sm text-muted-foreground">{t('restore.desc')}</p>
@@ -707,7 +707,7 @@ export default function Onboarding({
 
               {!cloudLoggedIn ? (
                 <div className="space-y-3 py-1 text-center">
-                  <p className="text-[13px] text-muted-foreground">{t('restore.cloudLogin')}</p>
+                  <p className="text-xsm text-muted-foreground">{t('restore.cloudLogin')}</p>
                   <div className="flex justify-center">
                     {isNative ? (
                       <Button variant="outline" size="xl" className="w-full" disabled={cloudLoginBusy} isLoading={cloudLoginBusy} onClick={handleNativeCloudLogin}>
@@ -753,7 +753,7 @@ export default function Onboarding({
                         <Loader2 className="h-5 w-5 animate-spin" />
                       </div>
                     ) : cloudBackups.length === 0 ? (
-                      <p className="py-6 text-center text-[13px] text-muted-foreground">{t('restore.noBackups')}</p>
+                      <p className="py-6 text-center text-xsm text-muted-foreground">{t('restore.noBackups')}</p>
                     ) : (
                       cloudBackups.map((b) => (
                         <Item key={b.id} asChild interactive>
@@ -813,12 +813,12 @@ function SuccessScreen({
         <Check className="h-8 w-8" />
       </div>
       <div className="space-y-2">
-        <h2 className="text-[22px] font-semibold tracking-tight">{t('success.title', { name: storeName })}</h2>
+        <h2 className="text-title font-semibold tracking-tight">{t('success.title', { name: storeName })}</h2>
         <p className="text-sm text-muted-foreground">{t('success.subtitle')}</p>
       </div>
       <div className="w-full max-w-[17rem] space-y-2">
         {lines.map(line => (
-          <div key={line} className="flex items-center gap-2.5 text-[13px] text-muted-foreground">
+          <div key={line} className="flex items-center gap-2.5 text-xsm text-muted-foreground">
             <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-success/10 text-success-text">
               <Check className="h-3 w-3" />
             </span>

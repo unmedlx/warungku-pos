@@ -21,7 +21,7 @@ const Toggle = React.forwardRef<React.ElementRef<typeof SwitchPrimitive.Root>, T
       ref={ref}
       data-slot="switch"
       className={cn(
-        'group/switch inline-flex h-[22px] w-[38px] shrink-0 cursor-pointer items-center rounded-full border border-transparent p-px',
+        'group/switch inline-flex h-5.5 w-[38px] shrink-0 cursor-pointer items-center rounded-full border border-transparent p-px',
         'transition-all outline-none',
         'focus-visible:border-primary focus-visible:ring-[3px] focus-visible:ring-ring/30',
         'data-[state=checked]:bg-primary data-[state=unchecked]:bg-input',

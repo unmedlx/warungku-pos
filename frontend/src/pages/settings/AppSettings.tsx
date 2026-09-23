@@ -18,7 +18,7 @@ import AppUpdateRows from '@/components/app-update/AppUpdateRows';
 
 const RowIcon = ({ icon: Icon }: { icon: typeof Globe }) => (
   <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${TONE_CLASS.gray}`}>
-    <Icon className="h-[18px] w-[18px]" />
+    <Icon className="size-4.5" />
   </div>
 );
 
@@ -98,7 +98,7 @@ export default function AppSettings() {
           <Card className="p-4">
             <div className="flex items-center gap-3">
               <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${TONE_CLASS.gray}`}>
-                <HardDrive className="h-[18px] w-[18px]" />
+                <HardDrive className="size-4.5" />
               </div>
               <p className="text-sm font-semibold tabular-nums">
                 {formatBytes(storageUsage.usage)} / {formatBytes(storageUsage.quota)}

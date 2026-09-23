@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Bell, CloudUpload, CreditCard, Megaphone } from '@/components/icons';
 import { Button } from '@/components/jokoui/button';
+import { Modal, ModalTitle, ModalDescription } from '@/components/jokoui/modal';
 import { useCloudAuth } from '@/hooks/use-cloud-auth';
 import { isPushSupported, getPermissionState, requestPushPermission, checkPushPermissionNative } from '@/lib/onesignal';
 import { isNativePlatform } from '@/lib/printer';
@@ -53,44 +54,33 @@ export default function PushPermissionModal() {
     setOpen(false);
   };
 
-  if (!open) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={dismiss}>
-      <div
-        className="w-full max-w-sm rounded-2xl border border-border bg-background p-5 shadow-lg space-y-4"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex flex-col items-center text-center space-y-2">
-          <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
-            <Bell className="w-5 h-5" />
-          </div>
-          <h2 className="text-base font-semibold">{t('pushPermission.title')}</h2>
-          <p className="text-[13px] text-muted-foreground leading-relaxed">
-            {t('pushPermission.description')}
-          </p>
+    <Modal open={open} onClose={dismiss} className="max-w-sm space-y-4">
+      <div className="flex flex-col items-center space-y-2 text-center">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+          <Bell className="h-5 w-5" />
         </div>
-
-        <div className="space-y-2.5">
-          <Benefit icon={<CloudUpload className="w-4 h-4" />} text={t('pushPermission.benefits.cloudBackup')} />
-          <Benefit icon={<CreditCard className="w-4 h-4" />} text={t('pushPermission.benefits.payment')} />
-          <Benefit icon={<Megaphone className="w-4 h-4" />} text={t('pushPermission.benefits.announcement')} />
-        </div>
-
-        <div className="space-y-2 pt-1">
-          <Button size="xl" className="w-full" onClick={enable}>
-            <Bell /> {t('pushPermission.enable')}
-          </Button>
-          <Button variant="ghost" className="w-full text-muted-foreground" onClick={dismiss}>
-            {t('pushPermission.later')}
-          </Button>
-        </div>
-
-        <p className="text-[11px] text-muted-foreground text-center">
-          {t('pushPermission.hint')}
-        </p>
+        <ModalTitle>{t('pushPermission.title')}</ModalTitle>
+        <ModalDescription className="leading-relaxed">{t('pushPermission.description')}</ModalDescription>
       </div>
-    </div>
+
+      <div className="space-y-2.5">
+        <Benefit icon={<CloudUpload className="h-4 w-4" />} text={t('pushPermission.benefits.cloudBackup')} />
+        <Benefit icon={<CreditCard className="h-4 w-4" />} text={t('pushPermission.benefits.payment')} />
+        <Benefit icon={<Megaphone className="h-4 w-4" />} text={t('pushPermission.benefits.announcement')} />
+      </div>
+
+      <div className="space-y-2 pt-1">
+        <Button size="xl" className="w-full" onClick={enable}>
+          <Bell /> {t('pushPermission.enable')}
+        </Button>
+        <Button variant="ghost" className="w-full text-muted-foreground" onClick={dismiss}>
+          {t('pushPermission.later')}
+        </Button>
+      </div>
+
+      <p className="text-center text-2xs text-muted-foreground">{t('pushPermission.hint')}</p>
+    </Modal>
   );
 }
 
@@ -100,7 +90,7 @@ function Benefit({ icon, text }: { icon: React.ReactNode; text: string }) {
       <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
         {icon}
       </div>
-      <p className="text-[13px] text-foreground leading-snug pt-1.5">{text}</p>
+      <p className="text-xsm text-foreground leading-snug pt-1.5">{text}</p>
     </div>
   );
 }

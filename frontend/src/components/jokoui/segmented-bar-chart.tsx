@@ -50,7 +50,7 @@ const SegmentedBarChart = React.forwardRef<HTMLDivElement, SegmentedBarChartProp
       <div ref={ref} className={cn("flex gap-3", className)}>
         {/* y-axis */}
         <div
-          className="flex shrink-0 flex-col justify-between pb-6 text-[11px] font-medium text-muted-foreground/70"
+          className="flex shrink-0 flex-col justify-between pb-6 text-2xs font-medium text-muted-foreground/70"
           style={{ height: height + 24 }}
           aria-hidden="true"
         >
@@ -94,7 +94,7 @@ const SegmentedBarChart = React.forwardRef<HTMLDivElement, SegmentedBarChartProp
                         />
                       ))}
                     </span>
-                    <span className="text-[11px] font-medium leading-none text-muted-foreground/70">
+                    <span className="text-2xs font-medium leading-none text-muted-foreground/70">
                       {d.label}
                     </span>
                   </Column>
@@ -156,7 +156,7 @@ function LineSeries({ data, max, height, active, onSelect }: LineSeriesProps) {
               key={i}
               {...(onSelect ? { type: "button" as const, onClick: () => onSelect(i) } : {})}
               style={{ width: step }}
-              className="pt-1.5 text-center text-[11px] font-medium leading-none text-muted-foreground/70"
+              className="pt-1.5 text-center text-2xs font-medium leading-none text-muted-foreground/70"
             >
               {d.label}
             </Label>

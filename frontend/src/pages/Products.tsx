@@ -13,6 +13,7 @@ import HubTabs from '@/components/layout/HubTabs';
 import { EmptyState } from '@/components/jokoui/empty-state';
 import { StatCard } from '@/components/jokoui/stat-card';
 import { Item, ItemMedia, ItemContent, ItemTitle, ItemDescription, ItemActions, ItemGroup } from '@/components/jokoui/item';
+import { toneForId, toneForName, TONE_SURFACE } from '@/lib/tones';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
@@ -626,7 +627,7 @@ export default function Produk() {
                 <DropdownMenuItem disabled className="gap-2.5">
                   <Mic className="w-4 h-4" />
                   {t('speech.button')}
-                  <span className="ml-auto rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold text-primary">
+                  <span className="ml-auto rounded-full bg-accent px-2 py-0.5 text-3xs font-semibold text-primary">
                     {t('speech.comingSoon')}
                   </span>
                 </DropdownMenuItem>
@@ -728,8 +729,19 @@ export default function Produk() {
         <ItemGroup>
           {filtered.map(p => (
             <Item key={p.id}>
-              <ItemMedia tone="muted">
-                {p.photo ? <img src={p.photo} alt={p.name} /> : <PackageIcon />}
+              {/* Media barang memakai warna kategorinya — sistem pengenal
+                  yang sama dengan ubin menu Beranda dan thumbnail Kasir.
+                  Sebagian besar warung tidak memfoto barangnya, jadi inisial
+                  di atas tint kategori adalah tampilan yang sebenarnya
+                  dilihat orang, bukan keadaan darurat. */}
+              <ItemMedia className={cn('overflow-hidden', !p.photo && TONE_SURFACE[p.categoryId != null ? toneForId(p.categoryId) : toneForName(p.name)])}>
+                {p.photo ? (
+                  <img src={p.photo} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  <span className="text-xsm font-extrabold tracking-[-0.02em]">
+                    {p.name.slice(0, 2).toUpperCase()}
+                  </span>
+                )}
               </ItemMedia>
               <ItemContent>
                 <ItemTitle>{p.name}</ItemTitle>
@@ -1163,7 +1175,7 @@ export default function Produk() {
                               ) : (
                                 <div className="space-y-1">
                                   {row.errors.map((err, i) => (
-                                    <span key={i} className="flex items-start gap-1 text-[11px] text-destructive-text leading-tight">
+                                    <span key={i} className="flex items-start gap-1 text-2xs text-destructive-text leading-tight">
                                       <XCircle className="w-3 h-3 shrink-0 mt-0.5" />
                                       {err}
                                     </span>

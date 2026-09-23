@@ -1,0 +1,903 @@
+<!doctype html>
+<html lang="id" data-theme="light" data-nav="full">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup — Admin KanPOS v2 (redesign & grouping menu)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* ───────────── Token Shark UI (sama dengan admin/src/index.css) ───────────── */
+:root{
+  --font-sans:'Hanken Grotesk',system-ui,-apple-system,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  --r-sm:4px; --r-md:6px; --r-lg:8px; --r-xl:12px; --r-2xl:16px;
+  --background:#fafafa; --foreground:#262626;
+  --card:#ffffff; --popover:#ffffff;
+  --secondary:#ebebeb; --muted:#f0f0f0; --muted-foreground:#5e5e5e;
+  --border:#e2e2e2; --input:#dbdbdb;
+  --primary:#3554C1; --primary-foreground:#eff4ff; --primary-soft:rgba(53,84,193,.10); --ring:#7a90dd;
+  --destructive:#ef4444; --destructive-text:#b91c1c; --destructive-soft:rgba(239,68,68,.10);
+  --info:#3b82f6; --info-text:#1d4ed8; --info-soft:rgba(59,130,246,.10);
+  --success:#10b981; --success-text:#047857; --success-soft:rgba(16,185,129,.10);
+  --warning:#f59e0b; --warning-text:#b45309; --warning-soft:rgba(245,158,11,.12);
+  --chart-1:#3554C1; --chart-2:#10b981; --chart-3:#f59e0b; --chart-4:#a3a3a3;
+  --shadow-xs:0 1px 2px 0 rgb(0 0 0 / .05);
+  --shadow-sm:0 1px 3px 0 rgb(0 0 0 / .05),0 1px 2px -1px rgb(0 0 0 / .05);
+  --shadow-lg:0 10px 15px -3px rgb(0 0 0 / .08),0 4px 6px -4px rgb(0 0 0 / .05);
+  --sidebar-w:236px; --sidebar-rail:64px; --topbar-h:56px;
+}
+html[data-theme="dark"]{
+  --background:#0a0a0a; --foreground:#f5f5f5;
+  --card:#111111; --popover:#141414;
+  --secondary:#1d1d1d; --muted:#1a1a1a; --muted-foreground:#9d9d9d;
+  --border:#272727; --input:#2c2c2c;
+  --primary:#5b78d6; --primary-foreground:#0a0f24; --primary-soft:rgba(91,120,214,.18); --ring:#4d68c9;
+  --destructive:#e04a44; --destructive-text:#f87171; --destructive-soft:rgba(224,74,68,.16);
+  --info-text:#60a5fa; --info-soft:rgba(59,130,246,.16);
+  --success-text:#34d399; --success-soft:rgba(16,185,129,.16);
+  --warning-text:#fbbf24; --warning-soft:rgba(245,158,11,.16);
+  --chart-4:#525252;
+  --shadow-lg:0 10px 15px -3px rgb(0 0 0 / .5),0 4px 6px -4px rgb(0 0 0 / .4);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:var(--font-sans);font-size:14px;line-height:1.45;color:var(--foreground);background:var(--background);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0}
+a{color:inherit;text-decoration:none}
+.mono{font-family:var(--font-mono);font-size:12px}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted-foreground)}
+.trunc{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ───────────── Bar review (bukan bagian aplikasi) ───────────── */
+.review{position:sticky;top:0;z-index:100;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 14px;background:#111;color:#eee;font-size:12px;border-bottom:1px solid #333}
+.review b{margin-right:6px;font-weight:600}
+.review button{padding:5px 10px;border-radius:6px;border:1px solid #3a3a3a;background:#1b1b1b;color:#ddd;font-size:12px}
+.review button.on{background:#3554C1;border-color:#3554C1;color:#fff}
+.review .sep{width:1px;height:18px;background:#3a3a3a;margin:0 6px}
+.review .hint{margin-left:auto;color:#888}
+
+/* ───────────── Panel catatan IA ───────────── */
+.ia{max-width:1240px;margin:22px auto;padding:0 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ia .kartu{background:var(--card);border:1px solid var(--border);border-radius:var(--r-xl);padding:18px 20px}
+.ia h3{margin:0 0 4px;font-size:15px;font-weight:600}
+.ia p{margin:0 0 12px;color:var(--muted-foreground);font-size:13px}
+.ia .tree{font-size:13px;line-height:1.7}
+.ia .tree .g{margin-top:8px;font-size:11px;font-weight:600;letter-spacing:.02em;color:var(--muted-foreground)}
+.ia .tree .g:first-child{margin-top:0}
+.ia .tree .i{padding-left:14px}
+.ia .tree .x{color:var(--destructive-text);text-decoration:line-through;opacity:.8}
+.ia .tree .n{color:var(--success-text)}
+.ia .tree .m{color:var(--muted-foreground)}
+.ia ul{margin:0;padding-left:18px;font-size:13px;line-height:1.6}
+.ia li{margin-bottom:4px}
+.ia .full{grid-column:1/-1}
+.ia .alasan{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.ia .alasan div{padding:12px 14px;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--background)}
+.ia .alasan strong{display:block;font-size:13px;font-weight:600;margin-bottom:4px}
+.ia .alasan span{font-size:12.5px;color:var(--muted-foreground)}
+
+/* ───────────── Frame aplikasi ───────────── */
+.frame{max-width:1360px;margin:0 auto 60px;border:1px solid var(--border);border-radius:var(--r-2xl);overflow:hidden;background:var(--background);box-shadow:var(--shadow-lg)}
+.app{display:grid;grid-template-columns:var(--sidebar-w) 1fr;min-height:820px}
+html[data-nav="rail"] .app{grid-template-columns:var(--sidebar-rail) 1fr}
+
+/* Sidebar */
+.side{display:flex;flex-direction:column;border-right:1px solid var(--border);background:var(--card);height:820px;position:sticky;top:0}
+.side .brand{display:flex;align-items:center;gap:10px;height:var(--topbar-h);padding:0 14px;border-bottom:1px solid var(--border)}
+.logo{width:28px;height:28px;border-radius:8px;background:var(--primary);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+.brand .t{min-width:0;flex:1}
+.brand .t b{display:block;font-size:14px;font-weight:600;line-height:1.15}
+.brand .t span{display:block;font-size:11px;color:var(--muted-foreground);line-height:1.2}
+.pill-admin{font-size:10px;font-weight:600;letter-spacing:.04em;padding:2px 6px;border-radius:5px;background:var(--destructive-soft);color:var(--destructive-text)}
+.side nav{flex:1;overflow:auto;padding:10px 10px 6px}
+.grp{padding:14px 8px 5px;font-size:11px;font-weight:600;letter-spacing:.03em;color:var(--muted-foreground);text-transform:none}
+.grp:first-child{padding-top:2px}
+.nav-i{display:flex;align-items:center;gap:10px;width:100%;padding:7px 8px;border-radius:var(--r-lg);font-size:13.5px;font-weight:500;color:var(--muted-foreground);text-align:left;position:relative}
+.nav-i:hover{background:var(--muted);color:var(--foreground)}
+.nav-i.on{background:var(--primary-soft);color:var(--primary)}
+.nav-i.on::before{content:"";position:absolute;left:-10px;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--primary)}
+.nav-i svg{width:18px;height:18px;flex:none}
+.nav-i .cnt{margin-left:auto;min-width:20px;height:20px;padding:0 6px;border-radius:999px;display:grid;place-items:center;font-size:11px;font-weight:600;background:var(--destructive-soft);color:var(--destructive-text)}
+.nav-i .soon{margin-left:auto;font-size:10.5px;padding:1px 6px;border:1px solid var(--border);border-radius:5px;color:var(--muted-foreground)}
+.nav-i.dis{opacity:.5;cursor:not-allowed}
+.nav-i.dis:hover{background:none;color:var(--muted-foreground)}
+.side .foot{border-top:1px solid var(--border);padding:10px}
+.me{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:var(--r-lg)}
+.me:hover{background:var(--muted)}
+.ava{width:30px;height:30px;border-radius:999px;background:var(--muted);color:var(--foreground);display:grid;place-items:center;font-size:12px;font-weight:600;flex:none}
+.ava.sq{border-radius:8px}
+.me .t{min-width:0;flex:1}
+.me .t b{display:block;font-size:13px;font-weight:500}
+.me .t span{display:block;font-size:11.5px;color:var(--muted-foreground)}
+.me svg{width:16px;height:16px;color:var(--muted-foreground)}
+.collapse{display:flex;align-items:center;gap:8px;width:100%;padding:6px 8px;margin-top:4px;border-radius:var(--r-lg);font-size:12px;color:var(--muted-foreground)}
+.collapse:hover{background:var(--muted)}
+.collapse svg{width:16px;height:16px}
+/* rail mode */
+html[data-nav="rail"] .side .brand{justify-content:center;padding:0}
+html[data-nav="rail"] .side .brand .t,html[data-nav="rail"] .side .brand .pill-admin,
+html[data-nav="rail"] .grp,html[data-nav="rail"] .nav-i .lbl,html[data-nav="rail"] .nav-i .soon,
+html[data-nav="rail"] .me .t,html[data-nav="rail"] .me svg,html[data-nav="rail"] .collapse span{display:none}
+html[data-nav="rail"] .nav-i{justify-content:center;padding:9px 0}
+html[data-nav="rail"] .nav-i .cnt{position:absolute;top:2px;right:6px;min-width:16px;height:16px;font-size:10px;padding:0 4px}
+html[data-nav="rail"] .grp+ .nav-i{margin-top:10px}
+html[data-nav="rail"] .me,html[data-nav="rail"] .collapse{justify-content:center}
+html[data-nav="rail"] .side nav{padding:10px 8px}
+
+/* Topbar */
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;height:var(--topbar-h);padding:0 22px;border-bottom:1px solid var(--border);background:color-mix(in srgb,var(--background) 85%,transparent);backdrop-filter:blur(8px)}
+.crumb{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted-foreground);min-width:0}
+.crumb b{font-weight:500;color:var(--foreground)}
+.crumb .sep{opacity:.6}
+.top .right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.search{display:flex;align-items:center;gap:8px;width:280px;height:34px;padding:0 10px;border:1px solid var(--input);border-radius:var(--r-lg);background:var(--card);color:var(--muted-foreground);font-size:13px}
+.search svg{width:15px;height:15px}
+.search kbd{margin-left:auto;font:inherit;font-size:11px;padding:1px 5px;border:1px solid var(--border);border-radius:4px;background:var(--muted)}
+.ibtn{width:34px;height:34px;border-radius:var(--r-lg);border:1px solid var(--input);background:var(--card);display:grid;place-items:center;color:var(--foreground)}
+.ibtn:hover{background:var(--muted)}
+.ibtn svg{width:16px;height:16px}
+.ibtn.ghost{border-color:transparent;background:transparent}
+.ibtn .dot{position:absolute}
+.env{font-size:11px;font-weight:500;padding:3px 8px;border-radius:6px;background:var(--success-soft);color:var(--success-text);display:flex;align-items:center;gap:5px}
+.env i{width:6px;height:6px;border-radius:50%;background:var(--success)}
+
+/* Halaman */
+main{padding:22px 24px 60px;max-width:1240px}
+.ph{display:flex;align-items:flex-start;gap:16px;margin-bottom:18px}
+.ph h1{margin:0;font-size:20px;font-weight:600;letter-spacing:-.01em;line-height:1.25}
+.ph p{margin:3px 0 0;font-size:13px;color:var(--muted-foreground)}
+.ph .act{margin-left:auto;display:flex;gap:8px;align-items:center}
+
+/* Tombol */
+.btn{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 12px;border-radius:var(--r-lg);font-size:13px;font-weight:500;border:1px solid transparent;white-space:nowrap}
+.btn svg{width:15px;height:15px}
+.btn.pri{background:var(--primary);color:var(--primary-foreground)}
+.btn.pri:hover{filter:brightness(1.06)}
+.btn.out{border-color:var(--input);background:var(--card)}
+.btn.out:hover{background:var(--muted)}
+.btn.ghost{color:var(--muted-foreground)}
+.btn.ghost:hover{background:var(--muted);color:var(--foreground)}
+.btn.sm{height:28px;padding:0 9px;font-size:12.5px}
+.btn.xs{height:24px;padding:0 7px;font-size:12px;border-radius:6px}
+.btn.danger{color:var(--destructive-text);border-color:var(--input);background:var(--card)}
+.btn.danger:hover{background:var(--destructive-soft)}
+
+/* Kartu */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-xl);box-shadow:var(--shadow-xs)}
+.card .hd{display:flex;align-items:center;gap:10px;padding:14px 16px 0}
+.card .hd h2{margin:0;font-size:14px;font-weight:600}
+.card .hd .sub{font-size:12px;color:var(--muted-foreground)}
+.card .hd .act{margin-left:auto;display:flex;gap:6px}
+.card .bd{padding:14px 16px}
+.card .bd.tight{padding:0}
+.grid{display:grid;gap:14px}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g21{grid-template-columns:2fr 1fr}
+.g12{grid-template-columns:1fr 2fr}
+.stack{display:grid;gap:14px}
+
+/* Stat */
+.stat{padding:14px 16px}
+.stat .l{font-size:12.5px;color:var(--muted-foreground);display:flex;align-items:center;gap:6px}
+.stat .l svg{width:14px;height:14px}
+.stat .v{margin-top:6px;font-size:24px;font-weight:600;letter-spacing:-.02em;line-height:1.1}
+.stat .d{margin-top:6px;font-size:12px;display:flex;align-items:center;gap:6px;color:var(--muted-foreground)}
+.stat .d b{font-weight:500}
+.up{color:var(--success-text)}.down{color:var(--destructive-text)}
+.spark{height:28px;margin-top:8px}
+.spark svg{width:100%;height:100%}
+
+/* Badge */
+.bdg{display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 7px;border-radius:6px;font-size:11.5px;font-weight:500;white-space:nowrap}
+.bdg.ok{background:var(--success-soft);color:var(--success-text)}
+.bdg.warn{background:var(--warning-soft);color:var(--warning-text)}
+.bdg.bad{background:var(--destructive-soft);color:var(--destructive-text)}
+.bdg.info{background:var(--info-soft);color:var(--info-text)}
+.bdg.pri{background:var(--primary-soft);color:var(--primary)}
+.bdg.gray{background:var(--muted);color:var(--muted-foreground)}
+.bdg.out{border:1px solid var(--border);color:var(--muted-foreground)}
+.bdg i{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+/* Antrean / list item */
+.q{display:flex;align-items:center;gap:12px;padding:11px 16px;border-top:1px solid var(--border)}
+.q:first-child{border-top:0}
+.q .ic{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;flex:none}
+.q .ic svg{width:16px;height:16px}
+.q .ic.bad{background:var(--destructive-soft);color:var(--destructive-text)}
+.q .ic.warn{background:var(--warning-soft);color:var(--warning-text)}
+.q .ic.info{background:var(--info-soft);color:var(--info-text)}
+.q .t{min-width:0;flex:1}
+.q .t b{display:block;font-size:13.5px;font-weight:500}
+.q .t span{display:block;font-size:12px;color:var(--muted-foreground)}
+.q .n{font-size:20px;font-weight:600;letter-spacing:-.02em}
+.q .n small{font-size:12px;font-weight:400;color:var(--muted-foreground);margin-left:4px}
+.q .go{color:var(--muted-foreground)}
+.q .go svg{width:16px;height:16px}
+
+/* Toolbar filter */
+.tb{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.tb .search{width:300px;height:32px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{height:28px;padding:0 10px;border-radius:var(--r-lg);border:1px solid var(--border);font-size:12.5px;font-weight:500;color:var(--muted-foreground);background:var(--card);display:inline-flex;align-items:center;gap:6px}
+.chip:hover{background:var(--muted);color:var(--foreground)}
+.chip.on{background:var(--foreground);color:var(--background);border-color:var(--foreground)}
+.chip .c{font-size:11px;padding:0 5px;border-radius:4px;background:rgba(127,127,127,.18)}
+.tb .right{margin-left:auto;display:flex;gap:6px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;background:var(--card)}
+.seg button{height:28px;padding:0 10px;font-size:12.5px;font-weight:500;color:var(--muted-foreground)}
+.seg button.on{background:var(--muted);color:var(--foreground)}
+
+/* Tabel */
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:11.5px;font-weight:500;color:var(--muted-foreground);padding:9px 16px;border-bottom:1px solid var(--border);background:var(--background);white-space:nowrap}
+td{padding:10px 16px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:color-mix(in srgb,var(--muted) 55%,transparent)}
+td.r,th.r{text-align:right}
+.u{display:flex;align-items:center;gap:10px;min-width:0}
+.u .t{min-width:0}
+.u .t b{display:block;font-weight:500;font-size:13px}
+.u .t span{display:block;font-size:12px;color:var(--muted-foreground)}
+.bar{height:5px;border-radius:99px;background:var(--muted);overflow:hidden;width:90px}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--primary)}
+.bar.warn i{background:var(--warning)}.bar.bad i{background:var(--destructive)}
+.qq{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted-foreground)}
+.foot-t{display:flex;align-items:center;gap:10px;padding:10px 16px;border-top:1px solid var(--border);font-size:12.5px;color:var(--muted-foreground)}
+.foot-t .pg{margin-left:auto;display:flex;gap:4px}
+.foot-t .pg button{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);font-size:12px;color:var(--muted-foreground);background:var(--card)}
+.foot-t .pg button.on{background:var(--foreground);color:var(--background);border-color:var(--foreground)}
+.rowact{display:flex;gap:4px;justify-content:flex-end;opacity:.0;transition:opacity .12s}
+tr:hover .rowact{opacity:1}
+
+/* Chart placeholder */
+.chart{height:220px;position:relative}
+.chart svg{width:100%;height:100%}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--muted-foreground)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+
+/* Tabs */
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--border);padding:0 16px}
+.tabs button{padding:10px 10px;font-size:13px;font-weight:500;color:var(--muted-foreground);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button.on{color:var(--foreground);border-color:var(--primary)}
+.tabs button .c{margin-left:5px;font-size:11px;padding:0 5px;border-radius:4px;background:var(--muted)}
+
+/* Definition list */
+.dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:13px}
+.dl dt{color:var(--muted-foreground)}.dl dd{margin:0;font-weight:500}
+
+/* Form */
+.f{display:grid;gap:12px}
+.f label{display:grid;gap:5px;font-size:12.5px;font-weight:500}
+.f label small{font-weight:400;color:var(--muted-foreground)}
+.f input,.f select,.f textarea{height:34px;padding:0 10px;border:1px solid var(--input);border-radius:var(--r-lg);background:var(--card);font-size:13px}
+.f textarea{height:auto;padding:8px 10px;min-height:70px;resize:vertical}
+.f .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.drop{border:1px dashed var(--input);border-radius:var(--r-lg);padding:18px;text-align:center;font-size:12.5px;color:var(--muted-foreground);background:var(--background)}
+.drop b{display:block;color:var(--foreground);font-weight:500;margin-bottom:2px}
+
+/* Panel samping (detail) */
+.side-panel{position:sticky;top:calc(var(--topbar-h) + 16px)}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--border);font-size:13px}
+.kv:first-child{border-top:0;padding-top:0}
+.kv span{color:var(--muted-foreground)}
+.kv b{font-weight:500;text-align:right}
+
+/* Timeline audit */
+.tl{position:relative}
+.tl .ev{display:grid;grid-template-columns:96px 22px 1fr;gap:0 10px;padding:9px 16px;border-top:1px solid var(--border);align-items:start;font-size:13px}
+.tl .ev:first-child{border-top:0}
+.tl .ev time{font-size:12px;color:var(--muted-foreground);padding-top:2px}
+.tl .ev .dotc{width:22px;padding-top:6px;display:grid;justify-items:center}
+.tl .ev .dotc i{width:8px;height:8px;border-radius:50%;background:var(--chart-4)}
+.tl .ev .dotc i.bad{background:var(--destructive)}.tl .ev .dotc i.ok{background:var(--success)}.tl .ev .dotc i.pri{background:var(--primary)}
+.tl .ev .m{color:var(--muted-foreground);font-size:12px;margin-top:2px}
+.tl .ev code{font-family:var(--font-mono);font-size:11.5px;background:var(--muted);padding:1px 5px;border-radius:4px}
+.day{padding:8px 16px;font-size:11.5px;font-weight:600;color:var(--muted-foreground);background:var(--background);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+
+/* Empty / alert */
+.alert{display:flex;gap:10px;padding:10px 12px;border-radius:var(--r-lg);font-size:13px;border:1px solid var(--border)}
+.alert.warn{background:var(--warning-soft);border-color:transparent;color:var(--warning-text)}
+.alert.info{background:var(--info-soft);border-color:transparent;color:var(--info-text)}
+.alert svg{width:16px;height:16px;flex:none;margin-top:1px}
+
+/* Screens */
+.scr{display:none}.scr.on{display:block}
+.plat{display:inline-flex;align-items:center;gap:6px;font-size:12.5px}
+.plat i{width:18px;height:18px;border-radius:5px;display:grid;place-items:center;font-size:10px;font-weight:700}
+.plat i.and{background:var(--success-soft);color:var(--success-text)}
+.plat i.win{background:var(--info-soft);color:var(--info-text)}
+
+/* Mobile frame */
+.mob{width:390px;margin:0 auto 60px;border:1px solid var(--border);border-radius:28px;overflow:hidden;background:var(--background);box-shadow:var(--shadow-lg);position:relative}
+.mob .top{padding:0 14px;height:52px}
+.mob main{padding:16px 16px 90px}
+.mob .g4,.mob .g3,.mob .g21,.mob .g12{grid-template-columns:1fr 1fr}
+.mob .stat .v{font-size:20px}
+.mob .drawer{position:absolute;inset:0;background:rgba(0,0,0,.35);display:flex}
+.mob .drawer .side{width:270px;height:100%;box-shadow:var(--shadow-lg)}
+.bottom{position:absolute;left:0;right:0;bottom:0;height:64px;border-top:1px solid var(--border);background:var(--card);display:grid;grid-template-columns:repeat(5,1fr);align-items:center}
+.bottom button{display:grid;justify-items:center;gap:3px;font-size:10.5px;color:var(--muted-foreground);position:relative}
+.bottom button svg{width:20px;height:20px}
+.bottom button.on{color:var(--primary)}
+.bottom button .cnt{position:absolute;top:-4px;right:calc(50% - 18px);min-width:16px;height:16px;border-radius:99px;background:var(--destructive);color:#fff;font-size:10px;font-weight:600;display:grid;place-items:center;padding:0 4px}
+.mobwrap{display:none;padding-top:20px}
+.mobwrap.on{display:block}
+</style>
+</head>
+<body>
+
+<div class="review">
+  <b>Layar</b>
+  <button data-s="ringkasan" class="on">Ringkasan</button>
+  <button data-s="antrean">Antrean kerja</button>
+  <button data-s="pengguna">Pengguna</button>
+  <button data-s="detail">Detail pengguna</button>
+  <button data-s="pembayaran">Pembayaran</button>
+  <button data-s="paket">Paket & harga</button>
+  <button data-s="rilis">Rilis aplikasi</button>
+  <button data-s="audit">Audit log</button>
+  <button data-s="admin">Kelola admin</button>
+  <button data-s="mobile">📱 Mobile</button>
+  <span class="sep"></span>
+  <button id="btTema">🌙 Gelap</button>
+  <button id="btNav">⇤ Rail</button>
+  <span class="hint">frontend/docs/admin-redesign-v2-mockup.html · 23 Sep 2026</span>
+</div>
+
+<!-- ─────────── Catatan IA ─────────── -->
+<section class="ia">
+  <div class="kartu">
+    <h3>Sidebar sekarang</h3>
+    <p>Dua grup: <em>Pantau</em> dan <em>Kelola</em>. Rancu karena pembagiannya berdasarkan "kata kerja", padahal satu halaman bisa dipantau sekaligus dikelola.</p>
+    <div class="tree">
+      <div class="g">PANTAU</div>
+      <div class="i">Ringkasan</div>
+      <div class="i">Pengguna</div>
+      <div class="i">Transaksi <span class="m">← ada badge "perlu ditangani", tapi ini grup Pantau</span></div>
+      <div class="g">KELOLA</div>
+      <div class="i">Paket & harga</div>
+      <div class="i">Rilis aplikasi</div>
+      <div class="i">Audit log <span class="m">← hanya dibaca, bukan dikelola</span></div>
+      <div class="i m">Kelola admin (segera)</div>
+    </div>
+  </div>
+  <div class="kartu">
+    <h3>Usulan sidebar v2</h3>
+    <p>Dikelompokkan berdasarkan <strong>objek yang diurus</strong>, bukan kata kerja. Dua item paling sering dibuka berdiri sendiri di atas.</p>
+    <div class="tree">
+      <div class="i" style="padding-left:0">Ringkasan</div>
+      <div class="i n" style="padding-left:0">Antrean kerja <span class="m">← baru: satu inbox untuk semua yang harus ditangani, badge pindah ke sini</span></div>
+      <div class="g">PELANGGAN</div>
+      <div class="i">Pengguna</div>
+      <div class="i">Pembayaran <span class="m">← ganti nama dari "Transaksi" (isinya memang Tripay)</span></div>
+      <div class="g">PRODUK</div>
+      <div class="i">Paket & harga</div>
+      <div class="i">Rilis aplikasi</div>
+      <div class="g">SISTEM</div>
+      <div class="i">Audit log</div>
+      <div class="i">Kelola admin <span class="m">(superadmin saja)</span></div>
+    </div>
+  </div>
+  <div class="kartu full">
+    <h3>Yang berubah di tampilan</h3>
+    <div class="alasan">
+      <div><strong>Sidebar bisa diciutkan ke rail 64px</strong><span>Ikon tetap, label hilang, badge jadi titik. Tabel jadi lebih lega di layar 13". Coba tombol "Rail" di bar atas.</span></div>
+      <div><strong>Antrean kerja jadi halaman sendiri</strong><span>Sekarang "Perlu ditangani" cuma kartu kecil di Ringkasan. Di v2, Ringkasan hanya menampilkan ringkasannya, dan halaman Antrean memuat daftarnya lengkap dengan tombol aksi per baris.</span></div>
+      <div><strong>Detail pengguna dua kolom</strong><span>Kolom kanan lengket: identitas, status, langganan, tombol aksi. Kolom kiri tab: Toko, Transaksi, Backup, Audit. Tidak perlu gulir jauh untuk "Beri langganan".</span></div>
+      <div><strong>Filter jadi chip dengan hitungan</strong><span>Chip "Segera habis (12)" langsung memberi tahu ada berapa, tanpa harus mengklik dulu.</span></div>
+      <div><strong>Aksi baris muncul saat hover</strong><span>Rekonsiliasi, buka pengguna, salin ref: ada di ujung kanan baris. Tidak perlu klik masuk detail dulu.</span></div>
+      <div><strong>Topbar lebih ringkas</strong><span>Breadcrumb, pencarian global (⌘K) yang mencari pengguna + ref Tripay sekaligus, indikator lingkungan (Produksi), tema, akun.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── Frame desktop ─────────── -->
+<div class="frame" id="desktop">
+<div class="app">
+
+  <aside class="side">
+    <div class="brand">
+      <div class="logo">K</div>
+      <div class="t"><b>KanPOS</b><span>Panel tim internal</span></div>
+      <span class="pill-admin">ADMIN</span>
+    </div>
+    <nav id="nav">
+      <button class="nav-i" data-s="ringkasan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg><span class="lbl">Ringkasan</span></button>
+      <button class="nav-i" data-s="antrean"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2 3h6l2-3h4"/><path d="M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/></svg><span class="lbl">Antrean kerja</span><span class="cnt">7</span></button>
+
+      <div class="grp">Pelanggan</div>
+      <button class="nav-i" data-s="pengguna"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M17 11.2a3 3 0 0 0 0-6M18 20a5.5 5.5 0 0 0-3-4.9"/></svg><span class="lbl">Pengguna</span></button>
+      <button class="nav-i" data-s="pembayaran"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg><span class="lbl">Pembayaran</span></button>
+
+      <div class="grp">Produk</div>
+      <button class="nav-i" data-s="paket"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 12l9 5 9-5M3 16l9 5 9-5"/></svg><span class="lbl">Paket & harga</span></button>
+      <button class="nav-i" data-s="rilis"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg><span class="lbl">Rilis aplikasi</span></button>
+
+      <div class="grp">Sistem</div>
+      <button class="nav-i" data-s="audit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><span class="lbl">Audit log</span></button>
+      <button class="nav-i" data-s="admin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6l8-3Z"/><path d="M9 12l2 2 4-4"/></svg><span class="lbl">Kelola admin</span></button>
+    </nav>
+    <div class="foot">
+      <div class="me">
+        <div class="ava">AL</div>
+        <div class="t"><b>Ahmad Latief</b><span>Superadmin</span></div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+      </div>
+      <button class="collapse" id="btNav2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M14 10l-2 2 2 2"/></svg><span>Ciutkan sidebar</span></button>
+    </div>
+  </aside>
+
+  <div>
+    <header class="top">
+      <div class="crumb" id="crumb"><span>Admin</span><span class="sep">›</span><b>Ringkasan</b></div>
+      <div class="right">
+        <span class="env"><i></i>Produksi</span>
+        <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Cari pengguna, toko, ref Tripay…<kbd>⌘K</kbd></div>
+        <button class="ibtn" id="btTema2" title="Mode gelap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
+        <div class="ava" style="width:32px;height:32px">AL</div>
+      </div>
+    </header>
+
+    <main>
+
+      <!-- ═══════ RINGKASAN ═══════ -->
+      <section class="scr on" id="s-ringkasan">
+        <div class="ph">
+          <div><h1>Ringkasan</h1><p>Angka lintas seluruh pengguna · per 23 Sep 2026, 09.41</p></div>
+          <div class="act">
+            <div class="seg"><button>7 hari</button><button class="on">30 hari</button><button>90 hari</button></div>
+            <button class="btn out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>Segarkan</button>
+          </div>
+        </div>
+
+        <div class="grid g4" style="margin-bottom:14px">
+          <div class="card stat"><div class="l">Pengguna terdaftar</div><div class="v num">1.284</div><div class="d"><b class="up">+42</b> 30 hari terakhir</div><div class="spark"><svg viewBox="0 0 100 28" preserveAspectRatio="none"><polyline fill="none" stroke="var(--chart-1)" stroke-width="1.5" points="0,22 10,20 20,21 30,17 40,16 50,14 60,13 70,10 80,9 90,6 100,4"/></svg></div></div>
+          <div class="card stat"><div class="l">Pengguna aktif (7 hari)</div><div class="v num">613</div><div class="d"><b>48%</b> dari terdaftar</div><div class="spark"><svg viewBox="0 0 100 28" preserveAspectRatio="none"><polyline fill="none" stroke="var(--chart-1)" stroke-width="1.5" points="0,14 10,15 20,12 30,13 40,10 50,12 60,9 70,10 80,8 90,9 100,7"/></svg></div></div>
+          <div class="card stat"><div class="l">Langganan aktif</div><div class="v num">207</div><div class="d"><b class="up">+9</b> bulan ini · <span class="bdg warn" style="height:18px">12 segera habis</span></div><div class="spark"><svg viewBox="0 0 100 28" preserveAspectRatio="none"><polyline fill="none" stroke="var(--chart-2)" stroke-width="1.5" points="0,20 10,19 20,18 30,18 40,16 50,15 60,13 70,12 80,11 90,9 100,8"/></svg></div></div>
+          <div class="card stat"><div class="l">Pendapatan bulan ini</div><div class="v num">Rp 18,4 jt</div><div class="d"><b class="up">+12%</b> vs Agustus</div><div class="spark"><svg viewBox="0 0 100 28" preserveAspectRatio="none"><polyline fill="none" stroke="var(--chart-2)" stroke-width="1.5" points="0,24 10,22 20,23 30,18 40,19 50,14 60,15 70,11 80,12 90,8 100,6"/></svg></div></div>
+        </div>
+
+        <div class="grid g21">
+          <div class="stack">
+            <div class="card">
+              <div class="hd"><h2>Pertumbuhan</h2><span class="sub">pendaftar baru & pendapatan per minggu</span>
+                <div class="act legend"><span><i style="background:var(--chart-1)"></i>Pendaftar</span><span><i style="background:var(--chart-2)"></i>Pendapatan</span></div></div>
+              <div class="bd"><div class="chart"><svg viewBox="0 0 600 220" preserveAspectRatio="none">
+                <g stroke="var(--border)" stroke-width="1"><line x1="0" y1="40" x2="600" y2="40"/><line x1="0" y1="90" x2="600" y2="90"/><line x1="0" y1="140" x2="600" y2="140"/><line x1="0" y1="190" x2="600" y2="190"/></g>
+                <g fill="var(--chart-1)" opacity=".9">
+                  <rect x="20" y="150" width="26" height="40" rx="3"/><rect x="66" y="140" width="26" height="50" rx="3"/><rect x="112" y="128" width="26" height="62" rx="3"/><rect x="158" y="146" width="26" height="44" rx="3"/><rect x="204" y="110" width="26" height="80" rx="3"/><rect x="250" y="118" width="26" height="72" rx="3"/><rect x="296" y="96" width="26" height="94" rx="3"/><rect x="342" y="104" width="26" height="86" rx="3"/><rect x="388" y="80" width="26" height="110" rx="3"/><rect x="434" y="92" width="26" height="98" rx="3"/><rect x="480" y="66" width="26" height="124" rx="3"/><rect x="526" y="58" width="26" height="132" rx="3"/>
+                </g>
+                <polyline fill="none" stroke="var(--chart-2)" stroke-width="2.5" stroke-linejoin="round" points="33,160 79,150 125,142 171,146 217,120 263,126 309,104 355,108 401,86 447,90 493,70 539,54"/>
+                <g fill="var(--chart-2)"><circle cx="539" cy="54" r="4"/></g>
+                <g fill="var(--muted-foreground)" font-size="11" font-family="Hanken Grotesk"><text x="26" y="210">Jul 1</text><text x="210" y="210">Ags 1</text><text x="394" y="210">Sep 1</text><text x="526" y="210">Sep 22</text></g>
+              </svg></div></div>
+            </div>
+
+            <div class="card">
+              <div class="hd"><h2>Sebaran paket</h2><span class="sub">langganan yang sedang berjalan</span><div class="act"><button class="btn ghost sm">Kelola paket →</button></div></div>
+              <div class="bd tight"><table>
+                <thead><tr><th>Paket</th><th>Kategori</th><th class="r">Harga</th><th class="r">Pemakai</th><th style="width:180px">Porsi</th></tr></thead>
+                <tbody>
+                  <tr><td><b style="font-weight:500">Sync 1 Tahun</b></td><td><span class="bdg pri">Sync</span></td><td class="r num">Rp 299.000</td><td class="r num">118</td><td><div class="qq"><div class="bar" style="width:120px"><i style="width:57%"></i></div>57%</div></td></tr>
+                  <tr><td><b style="font-weight:500">Sync 1 Bulan</b></td><td><span class="bdg pri">Sync</span></td><td class="r num">Rp 35.000</td><td class="r num">64</td><td><div class="qq"><div class="bar" style="width:120px"><i style="width:31%"></i></div>31%</div></td></tr>
+                  <tr><td><b style="font-weight:500">Storage +5 GB</b></td><td><span class="bdg info">Add-on</span></td><td class="r num">Rp 50.000</td><td class="r num">25</td><td><div class="qq"><div class="bar" style="width:120px"><i style="width:12%"></i></div>12%</div></td></tr>
+                  <tr><td><b style="font-weight:500">Gratis</b></td><td><span class="bdg gray">Free</span></td><td class="r num">—</td><td class="r num">1.077</td><td class="muted" style="font-size:12px">tidak dihitung</td></tr>
+                </tbody></table></div>
+            </div>
+          </div>
+
+          <div class="stack">
+            <div class="card">
+              <div class="hd"><h2>Antrean kerja</h2><div class="act"><button class="btn ghost sm" data-go="antrean">Buka semua →</button></div></div>
+              <div class="bd tight">
+                <div class="q"><div class="ic bad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg></div><div class="t"><b>Pembayaran nyangkut</b><span>PENDING lebih dari 2 jam</span></div><div class="n num">3</div><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></span></div>
+                <div class="q"><div class="ic warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div class="t"><b>Langganan segera habis</b><span>berakhir ≤ 7 hari</span></div><div class="n num">12</div><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></span></div>
+                <div class="q"><div class="ic info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16v12H4z"/><path d="M4 12h16"/></svg></div><div class="t"><b>Kuota hampir penuh</b><span>storage ≥ 90%</span></div><div class="n num">4</div><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></span></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="hd"><h2>Rilis terpasang</h2><div class="act"><button class="btn ghost sm" data-go="rilis">Rilis →</button></div></div>
+              <div class="bd" style="display:grid;gap:10px">
+                <div class="kv"><span class="plat"><i class="and">A</i>Android</span><b>2026.09.14.5 <span class="bdg ok" style="margin-left:6px">aktif</span></b></div>
+                <div class="kv"><span class="plat"><i class="win">W</i>Windows</span><b>2026.09.10.2 <span class="bdg ok" style="margin-left:6px">aktif</span></b></div>
+                <div class="kv"><span>Unduhan 7 hari</span><b class="num">231</b></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="hd"><h2>Aktivitas admin terakhir</h2><div class="act"><button class="btn ghost sm" data-go="audit">Audit →</button></div></div>
+              <div class="bd tight tl">
+                <div class="ev"><time>09.12</time><div class="dotc"><i class="pri"></i></div><div>Rina memberi <code>SYNC_TAHUNAN</code> ke Toko Berkah</div></div>
+                <div class="ev"><time>08.40</time><div class="dotc"><i class="ok"></i></div><div>Rekonsiliasi <code>T1234…8F</code> → PAID</div></div>
+                <div class="ev"><time>Kemarin</time><div class="dotc"><i class="bad"></i></div><div>Ahmad menangguhkan akun budi@…</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════ ANTREAN KERJA ═══════ -->
+      <section class="scr" id="s-antrean">
+        <div class="ph">
+          <div><h1>Antrean kerja</h1><p>Semua yang butuh tindakan admin, dikumpulkan di satu tempat. Kosongkan sampai nol.</p></div>
+          <div class="act"><button class="btn out">Segarkan</button></div>
+        </div>
+        <div class="card">
+          <div class="tabs">
+            <button class="on">Semua<span class="c">19</span></button>
+            <button>Pembayaran nyangkut<span class="c">3</span></button>
+            <button>Segera habis<span class="c">12</span></button>
+            <button>Kuota hampir penuh<span class="c">4</span></button>
+          </div>
+          <div class="bd tight"><table>
+            <thead><tr><th>Jenis</th><th>Pengguna</th><th>Detail</th><th>Sejak</th><th class="r">Aksi</th></tr></thead>
+            <tbody id="tAntrean"></tbody>
+          </table></div>
+          <div class="foot-t">Menampilkan 8 dari 19 <div class="pg"><button>‹</button><button class="on">1</button><button>2</button><button>3</button><button>›</button></div></div>
+        </div>
+      </section>
+
+      <!-- ═══════ PENGGUNA ═══════ -->
+      <section class="scr" id="s-pengguna">
+        <div class="ph">
+          <div><h1>Pengguna</h1><p>1.284 akun · cari, saring, lalu buka satu akun untuk detail dan tindakan</p></div>
+          <div class="act"><button class="btn out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Ekspor CSV</button></div>
+        </div>
+        <div class="card">
+          <div class="tb">
+            <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Cari nama, email, atau nama toko…</div>
+            <div class="chips">
+              <button class="chip on">Semua <span class="c">1.284</span></button>
+              <button class="chip">Berbayar <span class="c">207</span></button>
+              <button class="chip">Gratis <span class="c">1.077</span></button>
+              <button class="chip">Segera habis <span class="c">12</span></button>
+              <button class="chip">Kedaluwarsa <span class="c">38</span></button>
+              <button class="chip">Kuota penuh <span class="c">4</span></button>
+              <button class="chip">Ditangguhkan <span class="c">2</span></button>
+            </div>
+            <div class="right"><div class="seg"><button class="on">Aktivitas ↓</button><button>Terbaru</button><button>Nama</button></div></div>
+          </div>
+          <div class="bd tight"><table>
+            <thead><tr><th>Pengguna</th><th>Toko</th><th>Paket</th><th>Langganan</th><th>Storage</th><th>Aktivitas terakhir</th><th></th></tr></thead>
+            <tbody id="tUsers"></tbody>
+          </table></div>
+          <div class="foot-t">1–10 dari 1.284 <div class="pg"><button>‹</button><button class="on">1</button><button>2</button><button>3</button><button>…</button><button>129</button><button>›</button></div></div>
+        </div>
+      </section>
+
+      <!-- ═══════ DETAIL PENGGUNA ═══════ -->
+      <section class="scr" id="s-detail">
+        <div class="ph">
+          <div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <div class="ava sq" style="width:40px;height:40px;font-size:14px">SB</div>
+              <div><h1>Siti Berkah <span class="bdg ok" style="vertical-align:3px;margin-left:6px"><i></i>Aktif</span></h1><p>siti.berkah@gmail.com · daftar 12 Mar 2026 · terakhir aktif 2 jam lalu</p></div>
+            </div>
+          </div>
+          <div class="act">
+            <button class="btn out">Reset sesi</button>
+            <button class="btn danger">Tangguhkan</button>
+            <button class="btn pri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Beri langganan</button>
+          </div>
+        </div>
+
+        <div class="grid g21">
+          <div class="stack">
+            <div class="grid g3">
+              <div class="card stat"><div class="l">Total berbayar</div><div class="v num">Rp 648.000</div><div class="d">3 transaksi sukses</div></div>
+              <div class="card stat"><div class="l">Toko</div><div class="v num">2 <span class="muted" style="font-size:14px;font-weight:400">/ 3</span></div><div class="d">batas paket Sync 1 Tahun</div></div>
+              <div class="card stat"><div class="l">Storage</div><div class="v num">412 MB <span class="muted" style="font-size:14px;font-weight:400">/ 500</span></div><div class="d"><div class="bar warn" style="width:100%"><i style="width:82%"></i></div></div></div>
+            </div>
+            <div class="card">
+              <div class="tabs"><button class="on">Toko<span class="c">2</span></button><button>Transaksi<span class="c">4</span></button><button>Backup<span class="c">3</span></button><button>Jejak admin<span class="c">2</span></button></div>
+              <div class="bd tight"><table>
+                <thead><tr><th>Toko</th><th>Kasir</th><th>Transaksi (30 hari)</th><th>Terakhir sync</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td><div class="u"><div class="ava sq" style="width:28px;height:28px;font-size:11px">TB</div><div class="t"><b>Toko Berkah</b><span>Jl. Melati 12, Bandung</span></div></div></td><td class="num">3 orang</td><td class="num">1.240</td><td class="muted">12 mnt lalu</td><td class="r"><div class="rowact"><button class="btn xs out">Lihat</button></div></td></tr>
+                  <tr><td><div class="u"><div class="ava sq" style="width:28px;height:28px;font-size:11px">WB</div><div class="t"><b>Warung Berkah 2</b><span>Cimahi</span></div></div></td><td class="num">1 orang</td><td class="num">312</td><td class="muted">3 hari lalu</td><td class="r"><div class="rowact"><button class="btn xs out">Lihat</button></div></td></tr>
+                </tbody></table></div>
+            </div>
+            <div class="card">
+              <div class="hd"><h2>Riwayat transaksi</h2></div>
+              <div class="bd tight"><table>
+                <thead><tr><th>Tanggal</th><th>Paket</th><th>Ref Tripay</th><th class="r">Nominal</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr><td class="muted">14 Sep 2026</td><td>Sync 1 Tahun</td><td class="mono">T8821…4C</td><td class="r num">Rp 299.000</td><td><span class="bdg ok">PAID</span></td></tr>
+                  <tr><td class="muted">10 Sep 2026</td><td>Storage +5 GB</td><td class="mono">T8790…1A</td><td class="r num">Rp 50.000</td><td><span class="bdg ok">PAID</span></td></tr>
+                  <tr><td class="muted">02 Sep 2026</td><td>Sync 1 Tahun</td><td class="mono">T8702…9E</td><td class="r num">Rp 299.000</td><td><span class="bdg bad">EXPIRED</span></td></tr>
+                  <tr><td class="muted">14 Sep 2025</td><td>Sync 1 Tahun</td><td class="mono">T5123…0B</td><td class="r num">Rp 299.000</td><td><span class="bdg ok">PAID</span></td></tr>
+                </tbody></table></div>
+            </div>
+          </div>
+
+          <div class="side-panel stack">
+            <div class="card">
+              <div class="hd"><h2>Langganan</h2><div class="act"><span class="bdg ok"><i></i>Aktif</span></div></div>
+              <div class="bd">
+                <div class="kv"><span>Paket</span><b>Sync 1 Tahun</b></div>
+                <div class="kv"><span>Mulai</span><b>14 Sep 2026</b></div>
+                <div class="kv"><span>Berakhir</span><b>14 Sep 2027 <span class="muted" style="font-weight:400">· 356 hari</span></b></div>
+                <div class="kv"><span>Batas toko</span><b>3</b></div>
+                <div class="kv"><span>Kuota storage</span><b>500 MB</b></div>
+                <div class="kv"><span>Sumber</span><b>Tripay</b></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="hd"><h2>Backup</h2></div>
+              <div class="bd">
+                <div class="kv"><span>Terakhir</span><b>Hari ini, 03.00</b></div>
+                <div class="kv"><span>Ukuran</span><b>38 MB</b></div>
+                <div class="kv"><span>Tersimpan</span><b>3 salinan</b></div>
+              </div>
+            </div>
+            <div class="alert warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg><div>Storage 82%. Pengguna ini muncul di antrean "Kuota hampir penuh" bila menyentuh 90%.</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════ PEMBAYARAN ═══════ -->
+      <section class="scr" id="s-pembayaran">
+        <div class="ph">
+          <div><h1>Pembayaran</h1><p>Transaksi Tripay dan rekonsiliasinya. Status di sini adalah kebenaran; langganan mengikuti.</p></div>
+          <div class="act"><div class="seg"><button class="on">30 hari</button><button>90 hari</button><button>Semua</button></div><button class="btn out">Ekspor CSV</button></div>
+        </div>
+        <div class="grid g4" style="margin-bottom:14px">
+          <div class="card stat"><div class="l">Sukses (30 hari)</div><div class="v num">61</div><div class="d">Rp 18,4 jt</div></div>
+          <div class="card stat"><div class="l">Menunggu</div><div class="v num">5</div><div class="d"><span class="bdg bad" style="height:18px">3 nyangkut &gt; 2 jam</span></div></div>
+          <div class="card stat"><div class="l">Gagal / kedaluwarsa</div><div class="v num">14</div><div class="d">18% dari percobaan</div></div>
+          <div class="card stat"><div class="l">Rekonsiliasi manual</div><div class="v num">2</div><div class="d">bulan ini</div></div>
+        </div>
+        <div class="card">
+          <div class="tb">
+            <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Cari nama, email, atau ref Tripay…</div>
+            <div class="chips">
+              <button class="chip on">Perlu ditangani <span class="c">3</span></button>
+              <button class="chip">Semua <span class="c">80</span></button>
+              <button class="chip">Sukses <span class="c">61</span></button>
+              <button class="chip">Menunggu <span class="c">5</span></button>
+              <button class="chip">Gagal <span class="c">14</span></button>
+            </div>
+          </div>
+          <div class="bd tight"><table>
+            <thead><tr><th>Ref Tripay</th><th>Pengguna</th><th>Paket</th><th class="r">Nominal</th><th>Metode</th><th>Status</th><th>Dibuat</th><th class="r"></th></tr></thead>
+            <tbody id="tPay"></tbody>
+          </table></div>
+          <div class="foot-t">3 transaksi perlu ditangani</div>
+        </div>
+      </section>
+
+      <!-- ═══════ PAKET ═══════ -->
+      <section class="scr" id="s-paket">
+        <div class="ph">
+          <div><h1>Paket & harga</h1><p>Yang bisa dibeli pelanggan. Mengubah paket tidak menyentuh langganan yang sedang berjalan.</p></div>
+          <div class="act"><label class="chip" style="cursor:pointer"><input type="checkbox" style="margin:0"> Tampilkan arsip</label><button class="btn pri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Paket baru</button></div>
+        </div>
+        <div class="grid g12">
+          <div class="stack">
+            <div class="card">
+              <div class="hd"><h2>Kategori</h2></div>
+              <div class="bd tight">
+                <div class="q" style="padding:10px 16px"><div class="t"><b>Sync</b><span>langganan utama, ada masa aktif</span></div><span class="bdg gray">3</span></div>
+                <div class="q" style="padding:10px 16px"><div class="t"><b>Add-on</b><span>tambahan storage / toko</span></div><span class="bdg gray">2</span></div>
+                <div class="q" style="padding:10px 16px"><div class="t"><b>Diarsipkan</b><span>tidak bisa dibeli lagi</span></div><span class="bdg gray">1</span></div>
+              </div>
+            </div>
+            <div class="alert info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><div>Urutan di tabel = urutan yang dilihat pelanggan di halaman langganan. Seret baris untuk mengubahnya.</div></div>
+          </div>
+          <div class="card">
+            <div class="bd tight"><table>
+              <thead><tr><th style="width:28px"></th><th>Paket</th><th>Kategori</th><th class="r">Harga</th><th>Masa aktif</th><th>Kuota</th><th class="r">Pemakai</th><th></th></tr></thead>
+              <tbody>
+                <tr><td class="muted">⋮⋮</td><td><b style="font-weight:500">Sync 1 Tahun</b><div class="mono muted">SYNC_TAHUNAN</div></td><td><span class="bdg pri">Sync</span></td><td class="r num">Rp 299.000</td><td>365 hari</td><td class="muted">3 toko · 500 MB</td><td class="r num">118</td><td class="r"><div class="rowact"><button class="btn xs out">Ubah</button><button class="btn xs ghost">Arsipkan</button></div></td></tr>
+                <tr><td class="muted">⋮⋮</td><td><b style="font-weight:500">Sync 1 Bulan</b><div class="mono muted">SYNC_BULANAN</div></td><td><span class="bdg pri">Sync</span></td><td class="r num">Rp 35.000</td><td>30 hari</td><td class="muted">3 toko · 500 MB</td><td class="r num">64</td><td class="r"><div class="rowact"><button class="btn xs out">Ubah</button><button class="btn xs ghost">Arsipkan</button></div></td></tr>
+                <tr><td class="muted">⋮⋮</td><td><b style="font-weight:500">Sync 6 Bulan</b><div class="mono muted">SYNC_SEMESTER</div></td><td><span class="bdg pri">Sync</span></td><td class="r num">Rp 180.000</td><td>180 hari</td><td class="muted">3 toko · 500 MB</td><td class="r num">0</td><td class="r"><div class="rowact"><button class="btn xs out">Ubah</button><button class="btn xs ghost">Arsipkan</button></div></td></tr>
+                <tr><td class="muted">⋮⋮</td><td><b style="font-weight:500">Storage +5 GB</b><div class="mono muted">ADDON_STORAGE_5G</div></td><td><span class="bdg info">Add-on</span></td><td class="r num">Rp 50.000</td><td class="muted">ikut Sync</td><td class="muted">+5.120 MB</td><td class="r num">25</td><td class="r"><div class="rowact"><button class="btn xs out">Ubah</button><button class="btn xs ghost">Arsipkan</button></div></td></tr>
+                <tr><td class="muted">⋮⋮</td><td><b style="font-weight:500">Toko +2</b><div class="mono muted">ADDON_TOKO_2</div></td><td><span class="bdg info">Add-on</span></td><td class="r num">Rp 40.000</td><td class="muted">ikut Sync</td><td class="muted">+2 toko</td><td class="r num">9</td><td class="r"><div class="rowact"><button class="btn xs out">Ubah</button><button class="btn xs ghost">Arsipkan</button></div></td></tr>
+              </tbody></table></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════ RILIS ═══════ -->
+      <section class="scr" id="s-rilis">
+        <div class="ph">
+          <div><h1>Rilis aplikasi</h1><p>Installer Android dan Windows di luar Play Store. Versi aktif dipakai dialog update in-app dan halaman /download.</p></div>
+          <div class="act"><button class="btn pri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Unggah rilis</button></div>
+        </div>
+        <div class="grid g2" style="margin-bottom:14px">
+          <div class="card"><div class="bd" style="display:flex;gap:14px;align-items:center"><span class="plat"><i class="and" style="width:36px;height:36px;font-size:14px;border-radius:9px">A</i></span><div style="flex:1"><div class="muted" style="font-size:12px">Android · aktif</div><div style="font-size:18px;font-weight:600" class="num">2026.09.14.5 <span class="mono muted">code 145</span></div><div class="muted" style="font-size:12px">14 Sep 2026 · 48 MB · 187 unduhan</div></div><button class="btn out sm">Ganti</button></div></div>
+          <div class="card"><div class="bd" style="display:flex;gap:14px;align-items:center"><span class="plat"><i class="win" style="width:36px;height:36px;font-size:14px;border-radius:9px">W</i></span><div style="flex:1"><div class="muted" style="font-size:12px">Windows · aktif</div><div style="font-size:18px;font-weight:600" class="num">2026.09.10.2 <span class="mono muted">code 102</span></div><div class="muted" style="font-size:12px">10 Sep 2026 · 96 MB · 44 unduhan</div></div><button class="btn out sm">Ganti</button></div></div>
+        </div>
+        <div class="grid g21">
+          <div class="card">
+            <div class="hd"><h2>Riwayat rilis</h2><div class="act"><div class="seg"><button class="on">Semua</button><button>Android</button><button>Windows</button></div></div></div>
+            <div class="bd tight"><table>
+              <thead><tr><th>Versi</th><th>Platform</th><th>Status</th><th class="r">Unduhan</th><th>Diunggah</th><th></th></tr></thead>
+              <tbody>
+                <tr><td><b style="font-weight:500" class="num">2026.09.14.5</b><div class="muted" style="font-size:12px">Perbaikan cetak struk, laporan harian lebih cepat</div></td><td><span class="plat"><i class="and">A</i>Android</span></td><td><span class="bdg ok"><i></i>Aktif</span></td><td class="r num">187</td><td class="muted">14 Sep · Rina</td><td class="r"><div class="rowact"><button class="btn xs out">Catatan</button></div></td></tr>
+                <tr><td><b style="font-weight:500" class="num">2026.09.10.2</b><div class="muted" style="font-size:12px">Dukungan printer Bluetooth baru</div></td><td><span class="plat"><i class="win">W</i>Windows</span></td><td><span class="bdg ok"><i></i>Aktif</span></td><td class="r num">44</td><td class="muted">10 Sep · Ahmad</td><td class="r"><div class="rowact"><button class="btn xs out">Catatan</button></div></td></tr>
+                <tr><td><b style="font-weight:500" class="num">2026.09.02.1</b><div class="muted" style="font-size:12px">Kasir suara (beta)</div></td><td><span class="plat"><i class="and">A</i>Android</span></td><td><span class="bdg gray">Lama</span></td><td class="r num">402</td><td class="muted">2 Sep · Rina</td><td class="r"><div class="rowact"><button class="btn xs out">Aktifkan lagi</button><button class="btn xs ghost" style="color:var(--destructive-text)">Hapus</button></div></td></tr>
+                <tr><td><b style="font-weight:500" class="num">2026.08.20.3</b><div class="muted" style="font-size:12px">—</div></td><td><span class="plat"><i class="win">W</i>Windows</span></td><td><span class="bdg gray">Lama</span></td><td class="r num">120</td><td class="muted">20 Ags · Ahmad</td><td class="r"><div class="rowact"><button class="btn xs out">Aktifkan lagi</button><button class="btn xs ghost" style="color:var(--destructive-text)">Hapus</button></div></td></tr>
+              </tbody></table></div>
+          </div>
+          <div class="card">
+            <div class="hd"><h2>Unggah rilis</h2><span class="sub">langsung aktif setelah tersimpan</span></div>
+            <div class="bd f">
+              <label>Platform<div class="seg" style="width:max-content"><button class="on">Android (.apk)</button><button>Windows (.exe)</button></div></label>
+              <div class="row"><label>Nama versi<input placeholder="2026.09.23.1"><small>appVersion di version.json</small></label><label>versionCode<input placeholder="146"></label></div>
+              <label>File installer<div class="drop"><b>Seret .apk ke sini atau pilih file</b>maks 200 MB</div></label>
+              <label>Catatan rilis<textarea placeholder="- Perbaikan cetak struk&#10;- Laporan harian lebih cepat"></textarea><small>Ditampilkan ke pengguna di dialog update dan halaman download.</small></label>
+              <button class="btn pri" style="justify-content:center">Unggah & aktifkan</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════ AUDIT ═══════ -->
+      <section class="scr" id="s-audit">
+        <div class="ph">
+          <div><h1>Audit log</h1><p>Jejak setiap tindakan admin. Hanya bisa dibaca.</p></div>
+          <div class="act"><button class="btn out">Ekspor CSV</button></div>
+        </div>
+        <div class="card">
+          <div class="tb">
+            <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Cari target atau alasan…</div>
+            <div class="chips"><button class="chip on">Semua</button><button class="chip">Langganan</button><button class="chip">Pembayaran</button><button class="chip">Paket</button><button class="chip">Rilis</button><button class="chip">Akun</button></div>
+            <div class="right"><div class="seg"><button class="on">Semua admin</button><button>Ahmad</button><button>Rina</button></div></div>
+          </div>
+          <div class="bd tight tl">
+            <div class="day">Hari ini · 23 Sep 2026</div>
+            <div class="ev"><time>09.12</time><div class="dotc"><i class="pri"></i></div><div><b style="font-weight:500">Rina</b> memberi langganan <code>SYNC_TAHUNAN</code> ke <b style="font-weight:500">Siti Berkah</b> · 365 hari<div class="m">Alasan: kompensasi outage 20 Sep</div></div></div>
+            <div class="ev"><time>08.40</time><div class="dotc"><i class="ok"></i></div><div><b style="font-weight:500">Rina</b> rekonsiliasi <code>T8821…4C</code> · PENDING → PAID<div class="m">Alasan: callback Tripay tidak masuk</div></div></div>
+            <div class="ev"><time>07.55</time><div class="dotc"><i></i></div><div><b style="font-weight:500">Ahmad</b> mengubah paket <code>SYNC_BULANAN</code> · harga 30.000 → 35.000<div class="m">Alasan: penyesuaian harga Q4</div></div></div>
+            <div class="day">Kemarin · 22 Sep 2026</div>
+            <div class="ev"><time>16.20</time><div class="dotc"><i class="bad"></i></div><div><b style="font-weight:500">Ahmad</b> menangguhkan akun <b style="font-weight:500">budi.santoso@gmail.com</b><div class="m">Alasan: chargeback 2×</div></div></div>
+            <div class="ev"><time>11.03</time><div class="dotc"><i class="pri"></i></div><div><b style="font-weight:500">Rina</b> mengunggah rilis Android <code>2026.09.14.5</code></div></div>
+            <div class="ev"><time>10.48</time><div class="dotc"><i></i></div><div><b style="font-weight:500">Rina</b> mengarsipkan paket <code>SYNC_PROMO_AGS</code><div class="m">Alasan: promo berakhir</div></div></div>
+          </div>
+          <div class="foot-t">Menampilkan 6 dari 214 <div class="pg"><button>‹</button><button class="on">1</button><button>2</button><button>3</button><button>›</button></div></div>
+        </div>
+      </section>
+
+      <!-- ═══════ KELOLA ADMIN ═══════ -->
+      <section class="scr" id="s-admin">
+        <div class="ph">
+          <div><h1>Kelola admin</h1><p>Siapa yang bisa masuk ke panel ini. Hanya superadmin yang melihat halaman ini.</p></div>
+          <div class="act"><button class="btn pri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Undang admin</button></div>
+        </div>
+        <div class="grid g21">
+          <div class="card">
+            <div class="bd tight"><table>
+              <thead><tr><th>Admin</th><th>Peran</th><th>Terakhir masuk</th><th>Status</th><th></th></tr></thead>
+              <tbody>
+                <tr><td><div class="u"><div class="ava">AL</div><div class="t"><b>Ahmad Latief</b><span>ahmadlatiefm@gmail.com</span></div></div></td><td><span class="bdg bad">Superadmin</span></td><td class="muted">Sekarang</td><td><span class="bdg ok"><i></i>Aktif</span></td><td class="r"><span class="muted" style="font-size:12px">kamu</span></td></tr>
+                <tr><td><div class="u"><div class="ava">RN</div><div class="t"><b>Rina Nuraini</b><span>rina@kankitu.id</span></div></div></td><td><span class="bdg gray">Admin</span></td><td class="muted">Hari ini, 09.12</td><td><span class="bdg ok"><i></i>Aktif</span></td><td class="r"><div class="rowact"><button class="btn xs out">Ubah peran</button><button class="btn xs ghost" style="color:var(--destructive-text)">Cabut</button></div></td></tr>
+                <tr><td><div class="u"><div class="ava">DW</div><div class="t"><b>Dwi</b><span>dwi@kankitu.id</span></div></div></td><td><span class="bdg gray">Admin</span></td><td class="muted">—</td><td><span class="bdg warn">Undangan terkirim</span></td><td class="r"><div class="rowact"><button class="btn xs out">Kirim ulang</button><button class="btn xs ghost">Batalkan</button></div></td></tr>
+              </tbody></table></div>
+          </div>
+          <div class="card">
+            <div class="hd"><h2>Peran</h2></div>
+            <div class="bd" style="display:grid;gap:12px;font-size:13px">
+              <div><b style="font-weight:500">Superadmin</b><div class="muted">Semua hak admin + kelola admin, ubah paket, hapus rilis.</div></div>
+              <div><b style="font-weight:500">Admin</b><div class="muted">Lihat semua, beri langganan, rekonsiliasi, unggah rilis, tangguhkan akun.</div></div>
+              <div class="alert info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><div>Masuk selalu lewat Google. Undangan hanya mendaftarkan alamat email yang boleh masuk.</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+</div>
+
+<!-- ─────────── Frame mobile ─────────── -->
+<div class="mobwrap" id="mobwrap">
+  <p class="muted" style="text-align:center;font-size:13px;margin:0 0 12px">Layar sempit (&lt; 768px): sidebar jadi drawer dari tombol ☰, lima tujuan utama juga ada di bottom nav. Grup "Produk" dan "Sistem" hanya lewat drawer.</p>
+  <div class="mob">
+    <header class="top">
+      <button class="ibtn ghost" style="margin-left:-8px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <span style="font-weight:600;font-size:14px">Ringkasan</span>
+      <div class="right"><button class="ibtn ghost"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button><div class="ava" style="width:30px;height:30px">AL</div></div>
+    </header>
+    <main>
+      <div class="grid g4" style="margin-bottom:12px">
+        <div class="card stat"><div class="l">Terdaftar</div><div class="v num">1.284</div><div class="d"><b class="up">+42</b></div></div>
+        <div class="card stat"><div class="l">Langganan aktif</div><div class="v num">207</div><div class="d"><b class="up">+9</b></div></div>
+        <div class="card stat"><div class="l">Pendapatan</div><div class="v num">18,4 jt</div><div class="d"><b class="up">+12%</b></div></div>
+        <div class="card stat"><div class="l">Aktif 7 hari</div><div class="v num">613</div><div class="d">48%</div></div>
+      </div>
+      <div class="card">
+        <div class="hd"><h2>Antrean kerja</h2><div class="act"><span class="bdg bad">7</span></div></div>
+        <div class="bd tight">
+          <div class="q"><div class="ic bad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg></div><div class="t"><b>Pembayaran nyangkut</b><span>&gt; 2 jam</span></div><div class="n num">3</div></div>
+          <div class="q"><div class="ic warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div class="t"><b>Segera habis</b><span>≤ 7 hari</span></div><div class="n num">12</div></div>
+          <div class="q"><div class="ic info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16v12H4z"/><path d="M4 12h16"/></svg></div><div class="t"><b>Kuota hampir penuh</b><span>≥ 90%</span></div><div class="n num">4</div></div>
+        </div>
+      </div>
+    </main>
+    <div class="bottom">
+      <button class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Ringkasan</button>
+      <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2 3h6l2-3h4"/><path d="M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/></svg>Antrean<span class="cnt">7</span></button>
+      <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M17 11.2a3 3 0 0 0 0-6M18 20a5.5 5.5 0 0 0-3-4.9"/></svg>Pengguna</button>
+      <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Pembayaran</button>
+      <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>Lainnya</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CRUMB={ringkasan:['Ringkasan'],antrean:['Antrean kerja'],pengguna:['Pelanggan','Pengguna'],detail:['Pelanggan','Pengguna','Siti Berkah'],pembayaran:['Pelanggan','Pembayaran'],paket:['Produk','Paket & harga'],rilis:['Produk','Rilis aplikasi'],audit:['Sistem','Audit log'],admin:['Sistem','Kelola admin']};
+const NAVOF={detail:'pengguna'};
+function go(s){
+  const mobile=s==='mobile';
+  document.getElementById('desktop').style.display=mobile?'none':'';
+  document.getElementById('mobwrap').classList.toggle('on',mobile);
+  document.querySelectorAll('.review [data-s]').forEach(b=>b.classList.toggle('on',b.dataset.s===s));
+  if(mobile)return;
+  document.querySelectorAll('.scr').forEach(x=>x.classList.toggle('on',x.id==='s-'+s));
+  const n=NAVOF[s]||s;
+  document.querySelectorAll('#nav .nav-i').forEach(b=>b.classList.toggle('on',b.dataset.s===n));
+  const c=CRUMB[s];document.getElementById('crumb').innerHTML='<span>Admin</span>'+c.map((x,i)=>'<span class="sep">›</span>'+(i===c.length-1?'<b>'+x+'</b>':'<span>'+x+'</span>')).join('');
+  window.scrollTo({top:document.getElementById('desktop').offsetTop-60});
+}
+document.querySelectorAll('[data-s]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.s)));
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
+function tema(){const h=document.documentElement;const d=h.dataset.theme==='dark';h.dataset.theme=d?'light':'dark';document.getElementById('btTema').textContent=d?'🌙 Gelap':'☀️ Terang';}
+document.getElementById('btTema').onclick=tema;document.getElementById('btTema2').onclick=tema;
+function nav(){const h=document.documentElement;const r=h.dataset.nav==='rail';h.dataset.nav=r?'full':'rail';document.getElementById('btNav').textContent=r?'⇤ Rail':'⇥ Penuh';}
+document.getElementById('btNav').onclick=nav;document.getElementById('btNav2').onclick=nav;
+
+const ava=n=>'<div class="ava sq" style="width:30px;height:30px;font-size:11px">'+n.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase()+'</div>';
+const user=(n,e)=>'<div class="u">'+ava(n)+'<div class="t"><b>'+n+'</b><span>'+e+'</span></div></div>';
+const USERS=[
+ ['Siti Berkah','siti.berkah@gmail.com','Toko Berkah +1','Sync 1 Tahun','ok','356 hari',82,'2 jam lalu'],
+ ['Budi Santoso','budi.santoso@gmail.com','Warung Budi','Sync 1 Bulan','warn','3 hari',40,'Kemarin'],
+ ['Dewi Lestari','dewi.l@yahoo.com','Dapur Dewi','Sync 1 Tahun','ok','201 hari',93,'5 mnt lalu'],
+ ['Agus Pratama','agus.p@gmail.com','Agus Cell','Gratis','gray','—',12,'3 hari lalu'],
+ ['Nur Hidayah','nurhidayah@gmail.com','Toko Nur','Sync 1 Tahun','warn','6 hari',55,'1 jam lalu'],
+ ['Rudi Hartono','rudi.h@gmail.com','Bengkel Rudi','Gratis','gray','—',4,'2 minggu lalu'],
+ ['Maya Sari','maya.sari@gmail.com','Salon Maya','Sync 1 Bulan','bad','Kedaluwarsa 2 hari',61,'Hari ini'],
+ ['Hendra Wijaya','hendra.w@gmail.com','—','Gratis','gray','—',0,'1 bulan lalu'],
+ ['Lina Marlina','lina.m@gmail.com','Lina Bakery +2','Sync 1 Tahun','ok','120 hari',97,'30 mnt lalu'],
+ ['Yusuf Ibrahim','yusuf.i@gmail.com','Yusuf Mart','Sync 1 Tahun','bad','Ditangguhkan',30,'—'],
+];
+const LBL={ok:'Aktif',warn:'Segera habis',bad:'',gray:'Gratis'};
+document.getElementById('tUsers').innerHTML=USERS.map(([n,e,t,p,s,d,q,a])=>{
+  const bq=q>=90?'bad':q>=75?'warn':'';
+  const lang=s==='gray'?'<span class="muted">—</span>':'<span class="bdg '+s+'">'+(s==='bad'?d:LBL[s])+'</span>'+(s!=='bad'?' <span class="muted" style="font-size:12px">'+d+'</span>':'');
+  return '<tr><td>'+user(n,e)+'</td><td>'+t+'</td><td>'+(p==='Gratis'?'<span class="muted">Gratis</span>':p)+'</td><td>'+lang+'</td><td><div class="qq"><div class="bar '+bq+'"><i style="width:'+q+'%"></i></div>'+q+'%</div></td><td class="muted">'+a+'</td><td class="r"><div class="rowact"><button class="btn xs out" data-go="detail">Buka</button></div></td></tr>';
+}).join('');
+
+const PAY=[
+ ['T8831…7D','Budi Santoso','budi.santoso@gmail.com','Sync 1 Bulan','Rp 35.000','QRIS','PENDING','bad','3 jam lalu',true],
+ ['T8829…2B','Nur Hidayah','nurhidayah@gmail.com','Sync 1 Tahun','Rp 299.000','VA BCA','PENDING','bad','5 jam lalu',true],
+ ['T8815…9A','Maya Sari','maya.sari@gmail.com','Sync 1 Bulan','Rp 35.000','QRIS','PENDING','bad','Kemarin',true],
+ ['T8821…4C','Siti Berkah','siti.berkah@gmail.com','Sync 1 Tahun','Rp 299.000','QRIS','PAID','ok','14 Sep',false],
+ ['T8790…1A','Siti Berkah','siti.berkah@gmail.com','Storage +5 GB','Rp 50.000','VA Mandiri','PAID','ok','10 Sep',false],
+ ['T8702…9E','Siti Berkah','siti.berkah@gmail.com','Sync 1 Tahun','Rp 299.000','QRIS','EXPIRED','gray','2 Sep',false],
+];
+document.getElementById('tPay').innerHTML=PAY.map(([r,n,e,p,a,m,s,c,t,att])=>'<tr'+(att?' style="background:color-mix(in srgb,var(--destructive-soft) 40%,transparent)"':'')+'><td class="mono">'+r+'</td><td>'+user(n,e)+'</td><td>'+p+'</td><td class="r num">'+a+'</td><td class="muted">'+m+'</td><td><span class="bdg '+c+'">'+s+'</span>'+(att?' <span class="muted" style="font-size:12px">nyangkut</span>':'')+'</td><td class="muted">'+t+'</td><td class="r"><div class="rowact">'+(att?'<button class="btn xs pri">Rekonsiliasi</button>':'')+'<button class="btn xs out" data-go="detail">Pengguna</button></div></td></tr>').join('');
+
+const Q=[
+ ['bad','Pembayaran nyangkut','Budi Santoso','budi.santoso@gmail.com','<span class="mono">T8831…7D</span> · QRIS · Rp 35.000 · PENDING','3 jam','<button class="btn xs pri">Rekonsiliasi</button>'],
+ ['bad','Pembayaran nyangkut','Nur Hidayah','nurhidayah@gmail.com','<span class="mono">T8829…2B</span> · VA BCA · Rp 299.000 · PENDING','5 jam','<button class="btn xs pri">Rekonsiliasi</button>'],
+ ['bad','Pembayaran nyangkut','Maya Sari','maya.sari@gmail.com','<span class="mono">T8815…9A</span> · QRIS · Rp 35.000 · PENDING','1 hari','<button class="btn xs pri">Rekonsiliasi</button>'],
+ ['warn','Segera habis','Budi Santoso','budi.santoso@gmail.com','Sync 1 Bulan berakhir <b style="font-weight:500">26 Sep</b> · ada pembayaran nyangkut','3 hari lagi','<button class="btn xs out">Beri langganan</button>'],
+ ['warn','Segera habis','Nur Hidayah','nurhidayah@gmail.com','Sync 1 Tahun berakhir <b style="font-weight:500">29 Sep</b>','6 hari lagi','<button class="btn xs out">Beri langganan</button>'],
+ ['warn','Segera habis','Toko Jaya','tokojaya@gmail.com','Sync 1 Bulan berakhir <b style="font-weight:500">30 Sep</b>','7 hari lagi','<button class="btn xs out">Beri langganan</button>'],
+ ['info','Kuota hampir penuh','Lina Marlina','lina.m@gmail.com','485 / 500 MB · <span class="bdg bad" style="height:18px">97%</span>','2 hari','<button class="btn xs out">Tawarkan add-on</button>'],
+ ['info','Kuota hampir penuh','Dewi Lestari','dewi.l@yahoo.com','465 / 500 MB · <span class="bdg bad" style="height:18px">93%</span>','5 hari','<button class="btn xs out">Tawarkan add-on</button>'],
+];
+document.getElementById('tAntrean').innerHTML=Q.map(([c,j,n,e,d,t,a])=>'<tr><td><span class="bdg '+c+'"><i></i>'+j+'</span></td><td>'+user(n,e)+'</td><td>'+d+'</td><td class="muted">'+t+'</td><td class="r"><div style="display:flex;gap:4px;justify-content:flex-end">'+a+'<button class="btn xs ghost" data-go="detail">Buka</button></div></td></tr>').join('');
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
+</script>
+</body>
+</html>

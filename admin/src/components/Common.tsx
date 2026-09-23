@@ -147,16 +147,20 @@ export function Badge({
   size = 'default',
   pill,
   className,
+  title,
   children,
 }: {
   variant?: BadgeVariant;
   size?: 'default' | 'sm';
   pill?: boolean;
   className?: string;
+  /** Penjelasan saat teksnya terlalu pendek untuk berdiri sendiri. */
+  title?: string;
   children: ReactNode;
 }) {
   return (
     <span
+      title={title}
       className={cn(
         'inline-flex items-center gap-1 whitespace-nowrap border font-medium',
         pill ? 'rounded-full' : 'rounded-md',
@@ -669,6 +673,84 @@ export function FilterGroup<T extends string>({
           </button>
         );
       })}
+    </div>
+  );
+}
+
+/* ══════════════════════════ Tab ══════════════════════════ */
+
+/**
+ * Tab bergaris bawah, untuk memilah isi satu kartu (Antrean kerja, Detail
+ * pengguna). Beda peran dengan `FilterGroup`: yang itu menyaring satu daftar
+ * dan mengubah permintaan ke backend, yang ini berpindah antar isi yang
+ * semuanya sudah ada di tangan.
+ */
+export function Tabs<T extends string>({
+  items,
+  value,
+  onChange,
+  className,
+}: {
+  items: { id: T; label: string; count?: number }[];
+  value: T;
+  onChange: (v: T) => void;
+  className?: string;
+}) {
+  return (
+    <div
+      role="tablist"
+      className={cn('flex gap-1 overflow-x-auto border-b border-border px-2', className)}
+    >
+      {items.map((t) => {
+        const aktif = t.id === value;
+        return (
+          <button
+            key={t.id}
+            role="tab"
+            type="button"
+            aria-selected={aktif}
+            onClick={() => onChange(t.id)}
+            className={cn(
+              // -mb-px menutup garis bawah kontainer supaya garis tab aktif
+              // menempel, bukan mengambang satu piksel di atasnya.
+              '-mb-px flex items-center gap-1.5 whitespace-nowrap border-b-2 px-2.5 py-2.5 text-[13px] font-medium transition-colors',
+              aktif
+                ? 'border-primary text-foreground'
+                : 'border-transparent text-muted-foreground hover:text-foreground',
+            )}
+          >
+            {t.label}
+            {t.count !== undefined && (
+              <span
+                className={cn(
+                  'rounded px-1.5 text-[11px] tabular-nums',
+                  aktif ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground',
+                )}
+              >
+                {t.count}
+              </span>
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ══════════════════════════ Aksi per baris ══════════════════════════ */
+
+/**
+ * Tombol di ujung kanan baris tabel. Di layar lebar baru muncul saat barisnya
+ * disorot — deretan tombol di tiap baris membuat tabel sulit dibaca. Di layar
+ * sentuh tidak ada hover, jadi di bawah md tombolnya selalu tampak.
+ *
+ * `group-focus-within` penting: tanpa itu tombolnya tidak pernah terlihat saat
+ * dijangkau lewat Tab, walau sebenarnya sudah menerima fokus.
+ */
+export function AksiBaris({ children }: { children: ReactNode }) {
+  return (
+    <div className="flex justify-end gap-1.5 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
+      {children}
     </div>
   );
 }

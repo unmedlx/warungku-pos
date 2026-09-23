@@ -13,7 +13,13 @@ import { Input } from '@/components/jokoui/input';
 import { Button } from '@/components/jokoui/button';
 import { PageHeader } from '@/components/jokoui/page-header';
 import HubTabs from '@/components/layout/HubTabs';
-import { StatCard } from '@/components/jokoui/stat-card';
+import { cn } from '@/lib/utils';
+import {
+  MoneyPanel,
+  MoneyPanelAmount,
+  MoneyPanelFooter,
+  MoneyPanelLabel,
+} from '@/components/jokoui/money-panel';
 import { EmptyState } from '@/components/jokoui/empty-state';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import { format, subDays, startOfDay, endOfDay } from 'date-fns';
@@ -291,7 +297,52 @@ export default function Laporan() {
         </Card>
       )}
 
-      {/* Laba rugi */}
+      {/* === Tata bahasa dompet ===
+          Laba bersih adalah jawaban yang dicari orang saat membuka layar
+          ini; rincian di bawahnya adalah pembuktiannya. Sebelumnya jawaban
+          itu duduk di baris terakhir sebuah daftar, di bawah lipatan, dan
+          tiga kartu stat di bawahnya mengulang angka yang sama dengan
+          bobot yang sama — sehingga tidak ada satu pun yang memimpin.
+
+          Sekarang jawabannya berdiri lebih dulu sebagai satu bidang yang
+          dicelup, dengan tiga angka pendamping di kakinya, dan rincian
+          laba rugi tetap utuh persis di bawahnya sebagai pembuktian. */}
+      <MoneyPanel variant="card">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <MoneyPanelLabel>{t('pl.netProfit')}</MoneyPanelLabel>
+            <MoneyPanelAmount value={netProfit} />
+          </div>
+          <Badge
+            variant={netProfit >= 0 ? 'success' : 'destructive'}
+            shape="pill"
+            className="shrink-0 border-0 bg-white/15 text-primary-foreground"
+          >
+            {netProfit >= 0 ? <TrendingUp /> : <TrendingDown />}
+            {netMarginPercent.toFixed(1)}%
+          </Badge>
+        </div>
+        <p className="mt-1 text-2xs font-medium text-primary-dim">{rangeLabel}</p>
+
+        <MoneyPanelFooter className="justify-start divide-x divide-white/20">
+          {[
+            { key: 'tx', label: t('summary.transactions'), value: String(txCount) },
+            { key: 'sales', label: t('summary.sales'), value: rp(totalSales) },
+            { key: 'profit', label: t('summary.profit'), value: rp(totalProfit) },
+          ].map((f, i) => (
+            <div key={f.key} className={cn('min-w-0 flex-1', i === 0 ? 'pr-3' : 'px-3 last:pr-0')}>
+              <span className="block truncate text-3xs font-semibold uppercase tracking-[0.04em] text-primary-dim">
+                {f.label}
+              </span>
+              <span className="mt-0.5 block truncate text-xsm font-bold tabular-nums text-primary-foreground">
+                {f.value}
+              </span>
+            </div>
+          ))}
+        </MoneyPanelFooter>
+      </MoneyPanel>
+
+      {/* Rincian laba rugi — pembuktian dari angka di panel atas. */}
       <Card>
         <CardHeader className="grid-cols-[1fr_auto] pb-2">
           <CardTitle className="text-sm">{t(period === 'daily' ? 'pl.daily' : 'pl.title')}</CardTitle>
@@ -339,12 +390,6 @@ export default function Laporan() {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-3 gap-2">
-        <StatCard label={t('summary.transactions')} value={txCount} />
-        <StatCard label={t('summary.sales')} value={rp(totalSales)} />
-        <StatCard label={t('summary.profit')} value={rp(totalProfit)} valueClassName={totalProfit < 0 ? 'text-destructive-text' : undefined} />
-      </div>
-
       {/* Metode pembayaran + tombol cetak laporan penutupan */}
       <Card>
         <CardHeader className="pb-2">
@@ -363,7 +408,7 @@ export default function Laporan() {
               {paymentBreakdown.map(method => (
                 <OverviewRow
                   key={method.name}
-                  icon={<CreditCard className="h-[18px] w-[18px]" />}
+                  icon={<CreditCard className="size-4.5" />}
                   label={
                     <span>
                       {method.name}

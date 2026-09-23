@@ -13,6 +13,12 @@ import { Textarea } from '@/components/jokoui/textarea';
 import { PageHeader } from '@/components/jokoui/page-header';
 import HubTabs from '@/components/layout/HubTabs';
 import { StatCard } from '@/components/jokoui/stat-card';
+import {
+  MoneyPanel,
+  MoneyPanelAmount,
+  MoneyPanelFooter,
+  MoneyPanelLabel,
+} from '@/components/jokoui/money-panel';
 import { EmptyState } from '@/components/jokoui/empty-state';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -266,12 +272,16 @@ export default function ExpensesPage() {
       {/* Filter rentang */}
       <SegmentGroup<RangePreset> layout="scroll" value={range} onValueChange={setRange} items={rangeItems} />
 
-      <StatCard
-        label={t('expenses.summary.totalExpenses', { range: rangeKeyToLabel(range) })}
-        value={rp(totalAmount)}
-        sub={t('expenses.summary.count', { count: filtered.length })}
-        valueClassName="text-[28px] tracking-tight"
-      />
+      {/* Pengeluaran adalah uang: tata bahasa dompet, bukan kartu stat. */}
+      <MoneyPanel variant="card">
+        <MoneyPanelLabel>
+          {t('expenses.summary.totalExpenses', { range: rangeKeyToLabel(range) })}
+        </MoneyPanelLabel>
+        <MoneyPanelAmount value={totalAmount} />
+        <p className="mt-1 text-2xs font-medium text-primary-dim">
+          {t('expenses.summary.count', { count: filtered.length })}
+        </p>
+      </MoneyPanel>
 
       {/* Filter kategori */}
       <div className="flex items-center gap-2">

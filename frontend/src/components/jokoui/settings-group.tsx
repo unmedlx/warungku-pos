@@ -56,7 +56,7 @@ const SettingsItem = React.forwardRef<HTMLButtonElement | HTMLDivElement, Settin
         {icon && <div className="shrink-0 [&>div]:h-10 [&>div]:w-10 [&>div]:rounded-xl">{icon}</div>}
         <div className="min-w-0 flex-1">
           <p className="truncate font-medium leading-snug">{label}</p>
-          {description && <p className="mt-0.5 truncate text-[13px] leading-snug text-muted-foreground">{description}</p>}
+          {description && <p className="mt-0.5 truncate text-xsm leading-snug text-muted-foreground">{description}</p>}
         </div>
         {trailing && <div className="flex shrink-0 items-center gap-2 text-muted-foreground">{trailing}</div>}
         {children}

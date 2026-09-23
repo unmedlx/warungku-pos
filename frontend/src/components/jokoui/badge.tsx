@@ -33,7 +33,7 @@ const badgeVariants = cva(
       },
       size: {
         sm: 'h-5 min-w-5 px-1',
-        default: 'h-[22px] min-w-[22px] px-1.5',
+        default: 'h-5.5 min-w-5.5 px-1.5',
         lg: 'h-[26px] min-w-[26px] px-2 text-sm',
       },
       pill: {

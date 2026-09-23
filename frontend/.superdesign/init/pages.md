@@ -1,0 +1,2199 @@
+<!-- Superdesign init — generated for `frontend` -->
+
+# Pages — `frontend`
+
+Component dependency trees (local imports only, recursive).
+
+## Cashier.tsx
+Entry: `src/pages/Cashier.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/Receipt.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/button.tsx
+    - src/lib/utils.ts
+  - src/components/ui/dialog.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/printer.ts
+    - src/lib/db.ts  _(seen above)_
+  - src/lib/file-utils.ts
+  - src/hooks/use-cloud-auth.tsx
+    - src/lib/cloud-api.ts
+    - src/lib/cloud-auth.ts
+    - src/lib/onesignal.ts
+      - src/lib/printer.ts  _(seen above)_
+    - src/lib/google-auth.ts
+    - src/lib/printer.ts  _(seen above)_
+- src/components/KitchenTicket.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/ui/dialog.tsx  _(seen above)_
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/printer.ts  _(seen above)_
+  - src/lib/file-utils.ts  _(seen above)_
+- src/components/BarcodeScanner.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/ui/dialog.tsx  _(seen above)_
+- src/components/cashier/VoiceCartPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/voice/VoiceRibbon.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/components/jokoui/button.tsx  _(seen above)_
+  - src/hooks/use-cart-dictation.ts
+    - src/lib/db.ts  _(seen above)_
+    - src/lib/speech-recognition.ts
+    - src/hooks/use-live-dictation.ts
+      - src/lib/speech-recognition.ts  _(seen above)_
+    - src/lib/spoken-cart.ts
+      - src/lib/db.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/lib/voice-cart-quota.ts
+    - src/lib/cloud-api.ts  _(seen above)_
+  - src/components/cashier/CartPanel.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/db.ts  _(seen above)_
+    - src/lib/price-tiers.ts
+      - src/lib/db.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+    - src/components/jokoui/button.tsx  _(seen above)_
+    - src/components/jokoui/input.tsx
+      - src/lib/utils.ts  _(seen above)_
+    - src/components/jokoui/item.tsx
+      - src/lib/utils.ts  _(seen above)_
+    - src/components/jokoui/data-list.tsx
+      - src/lib/utils.ts  _(seen above)_
+    - src/components/CustomerPicker.tsx
+      - src/components/icons/index.ts  _(seen above)_
+      - src/lib/db.ts  _(seen above)_
+      - src/components/jokoui/input.tsx  _(seen above)_
+      - src/lib/analytics.ts
+      - src/lib/utils.ts  _(seen above)_
+- src/hooks/use-cart-dictation.ts  _(seen above)_
+- src/hooks/use-voice-cart-quota.ts
+  - src/hooks/use-cloud-auth.tsx  _(seen above)_
+  - src/lib/voice-cart-quota.ts  _(seen above)_
+- src/components/jokoui/card.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/button.tsx  _(seen above)_
+- src/components/jokoui/input.tsx  _(seen above)_
+- src/components/jokoui/badge.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/switch.tsx
+  - src/components/jokoui/toggle.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/components/jokoui/empty-state.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/item.tsx  _(seen above)_
+- src/components/jokoui/data-list.tsx  _(seen above)_
+- src/components/jokoui/segment-group.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/label.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/numpad.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/qty-stepper.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/lib/price-tiers.ts  _(seen above)_
+- src/components/jokoui/price-tier-seg.tsx
+  - src/lib/price-tiers.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/table-grid.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/lib/tables.ts
+  - src/lib/db.ts  _(seen above)_
+  - src/components/jokoui/table-grid.tsx  _(seen above)_
+- src/components/jokoui/money-display.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/hooks/use-business-mode.ts
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/business-mode.ts  _(seen above)_
+- src/components/ui/sheet.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/dialog.tsx  _(seen above)_
+- src/components/ui/select.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/alert-dialog.tsx
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/ui/button.tsx
+    - src/components/jokoui/button.tsx  _(seen above)_
+- src/lib/utils.ts  _(seen above)_
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/lib/analytics.ts  _(seen above)_
+- src/components/CustomerPicker.tsx  _(seen above)_
+- src/components/cashier/CartPanel.tsx  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+- src/lib/transaction-busy.ts
+
+## Customers.tsx
+Entry: `src/pages/Customers.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/item.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/stat-card.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/card.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/section-title.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/input.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/label.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/badge.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/textarea.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/components/jokoui/empty-state.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/dialog.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/alert-dialog.tsx
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/ui/button.tsx
+    - src/components/jokoui/button.tsx  _(seen above)_
+- src/lib/analytics.ts
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+
+## Dashboard.tsx
+Entry: `src/pages/Dashboard.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/card.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/badge.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/empty-state.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/section-title.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/stat-card.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+- src/components/jokoui/transaction-item.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/user-greeting.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/alert-strip.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/alert.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/item.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/BackupReminder.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/alert.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/backup.ts
+    - src/lib/db.ts  _(seen above)_
+- src/components/jokoui/news-card.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/alert.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/components/WhatsNewModal.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/ui/dialog.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/lib/whats-new.ts
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/db.ts  _(seen above)_
+- src/components/DailyPllCard.tsx
+  - src/hooks/use-daily-pll.ts
+    - src/lib/db.ts  _(seen above)_
+    - src/lib/pll.ts
+      - src/lib/db.ts  _(seen above)_
+  - src/lib/db.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/badge.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/stat-card.tsx  _(seen above)_
+  - src/components/jokoui/data-list.tsx
+    - src/lib/utils.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/money-display.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+- src/components/SetupChecklist.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/db.ts  _(seen above)_
+  - src/components/jokoui/progress.tsx
+    - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/item.tsx  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/InstallBanner.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/db.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/item.tsx  _(seen above)_
+  - src/hooks/use-pwa-install.ts
+  - src/lib/printer.ts
+    - src/lib/db.ts  _(seen above)_
+- src/components/SessionExpiredBanner.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/db.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/alert.tsx  _(seen above)_
+  - src/hooks/use-cloud-auth.tsx
+    - src/lib/cloud-api.ts
+    - src/lib/cloud-auth.ts
+    - src/lib/onesignal.ts
+      - src/lib/printer.ts  _(seen above)_
+    - src/lib/google-auth.ts
+    - src/lib/printer.ts  _(seen above)_
+  - src/lib/google-auth.ts  _(seen above)_
+  - src/lib/printer.ts  _(seen above)_
+  - src/components/GoogleMark.tsx
+- src/components/LinkAccountCard.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/db.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/item.tsx  _(seen above)_
+  - src/hooks/use-cloud-auth.tsx  _(seen above)_
+  - src/lib/google-auth.ts  _(seen above)_
+  - src/lib/printer.ts  _(seen above)_
+  - src/lib/store-hydration.ts
+    - src/lib/db.ts  _(seen above)_
+    - src/lib/members.ts
+      - src/lib/db.ts  _(seen above)_
+      - src/lib/cloud-api.ts  _(seen above)_
+    - src/lib/sync.ts
+      - src/lib/db.ts  _(seen above)_
+      - src/lib/cloud-api.ts  _(seen above)_
+      - src/lib/members.ts  _(seen above)_
+    - src/lib/whats-new.ts  _(seen above)_
+    - src/lib/cloud-api.ts  _(seen above)_
+  - src/components/GoogleMark.tsx  _(seen above)_
+- src/components/ui/sheet.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/lib/whats-new.ts  _(seen above)_
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/lib/utils.ts  _(seen above)_
+
+## Debts.tsx
+Entry: `src/pages/Debts.tsx`
+Dependencies:
+
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx
+    - src/lib/utils.ts
+  - src/components/jokoui/button.tsx
+    - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/empty-state.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+- src/components/jokoui/badge.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/button.tsx  _(seen above)_
+- src/components/jokoui/card.tsx  _(seen above)_
+- src/components/jokoui/stat-card.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+- src/components/jokoui/segment-group.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/section-title.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/item.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/data-list.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/components/layout/HubTabs.tsx
+  - src/hooks/use-auth.tsx  _(seen above)_
+  - src/lib/nav-groups.ts
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/db.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/whatsapp-action.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/lib/debt-urgency.ts
+  - src/lib/db.ts  _(seen above)_
+- src/components/jokoui/empty-state.tsx  _(seen above)_
+- src/components/ui/dialog.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/input.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/label.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/select.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/sheet.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/textarea.tsx
+  - src/lib/utils.ts  _(seen above)_
+
+## Expenses.tsx
+Entry: `src/pages/Expenses.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/card.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/segment-group.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/item.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/alert.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/input.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/label.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/textarea.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/components/layout/HubTabs.tsx
+  - src/hooks/use-auth.tsx
+    - src/lib/db.ts  _(seen above)_
+    - src/lib/auth.ts
+      - src/lib/db.ts  _(seen above)_
+  - src/lib/nav-groups.ts
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/db.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/stat-card.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+- src/components/jokoui/empty-state.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/select.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/dialog.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/alert-dialog.tsx
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/ui/button.tsx
+    - src/components/jokoui/button.tsx  _(seen above)_
+- src/hooks/use-auth.tsx  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+
+## Index.tsx
+Entry: `src/pages/Index.tsx`
+Dependencies:
+
+_(no local imports)_
+
+## NotFound.tsx
+Entry: `src/pages/NotFound.tsx`
+Dependencies:
+
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/empty-state.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+
+## Products.tsx
+Entry: `src/pages/Products.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/lib/price-tiers.ts
+  - src/lib/db.ts  _(seen above)_
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/input.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/label.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/switch.tsx
+  - src/components/jokoui/toggle.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/textarea.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/components/layout/HubTabs.tsx
+  - src/hooks/use-auth.tsx
+    - src/lib/db.ts  _(seen above)_
+    - src/lib/auth.ts
+      - src/lib/db.ts  _(seen above)_
+  - src/lib/nav-groups.ts
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/db.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/empty-state.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/stat-card.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/card.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/item.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/select.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/dialog.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/alert-dialog.tsx
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/ui/button.tsx
+    - src/components/jokoui/button.tsx  _(seen above)_
+- src/components/ui/dropdown-menu.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/alert.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/badge.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/lib/utils.ts  _(seen above)_
+- src/lib/image-utils.ts
+- src/lib/analytics.ts
+- src/hooks/use-auth.tsx  _(seen above)_
+- src/components/BarcodeScanner.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/ui/dialog.tsx  _(seen above)_
+- src/components/products/ScanProductsDialog.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/ui/dialog.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx  _(seen above)_
+  - src/components/jokoui/alert.tsx  _(seen above)_
+  - src/lib/db.ts  _(seen above)_
+  - src/components/products/ProductDraftReview.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/components/ui/select.tsx  _(seen above)_
+    - src/components/jokoui/button.tsx  _(seen above)_
+    - src/components/jokoui/input.tsx  _(seen above)_
+    - src/components/jokoui/label.tsx  _(seen above)_
+    - src/components/jokoui/badge.tsx  _(seen above)_
+    - src/components/jokoui/checkbox.tsx
+      - src/components/icons/index.ts  _(seen above)_
+      - src/lib/utils.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+    - src/lib/db.ts  _(seen above)_
+    - src/lib/product-draft.ts
+      - src/lib/db.ts  _(seen above)_
+  - src/lib/product-draft.ts  _(seen above)_
+  - src/lib/image-utils.ts  _(seen above)_
+  - src/lib/analytics.ts  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+  - src/hooks/use-cloud-auth.tsx
+    - src/lib/cloud-api.ts
+    - src/lib/cloud-auth.ts
+    - src/lib/onesignal.ts
+      - src/lib/printer.ts
+        - src/lib/db.ts  _(seen above)_
+    - src/lib/google-auth.ts
+    - src/lib/printer.ts  _(seen above)_
+  - src/lib/vision-api.ts
+    - src/lib/cloud-api.ts  _(seen above)_
+- src/components/products/SpeechProductsDialog.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/ui/dialog.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/voice/VoiceRibbon.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/components/jokoui/button.tsx  _(seen above)_
+  - src/lib/db.ts  _(seen above)_
+  - src/components/products/ProductDraftReview.tsx  _(seen above)_
+  - src/lib/product-draft.ts  _(seen above)_
+  - src/hooks/use-audio-recorder.ts
+  - src/hooks/use-product-dictation.ts
+    - src/hooks/use-live-dictation.ts
+      - src/lib/speech-recognition.ts
+    - src/lib/product-draft.ts  _(seen above)_
+    - src/lib/spoken-product.ts
+      - src/lib/spoken-cart.ts
+        - src/lib/db.ts  _(seen above)_
+      - src/lib/vision-api.ts  _(seen above)_
+    - src/lib/vision-api.ts  _(seen above)_
+  - src/hooks/use-business-mode.ts
+    - src/lib/db.ts  _(seen above)_
+    - src/lib/business-mode.ts  _(seen above)_
+  - src/lib/analytics.ts  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+  - src/hooks/use-cloud-auth.tsx  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/lib/vision-api.ts  _(seen above)_
+- src/components/jokoui/table.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/lib/file-utils.ts
+
+## Reports.tsx
+Entry: `src/pages/Reports.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/card.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/badge.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/data-list.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/overview-row.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/tabs.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/switch.tsx
+  - src/components/jokoui/toggle.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/label.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/input.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/components/layout/HubTabs.tsx
+  - src/hooks/use-auth.tsx
+    - src/lib/db.ts  _(seen above)_
+    - src/lib/auth.ts
+      - src/lib/db.ts  _(seen above)_
+  - src/lib/nav-groups.ts
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/db.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/stat-card.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+- src/components/jokoui/empty-state.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/hooks/use-auth.tsx  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+- src/components/reports/ExportReportDialog.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/ui/dialog.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/input.tsx  _(seen above)_
+  - src/components/jokoui/label.tsx  _(seen above)_
+  - src/lib/export-report.ts
+    - src/lib/db.ts  _(seen above)_
+- src/components/UserTypeModal.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/input.tsx  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/lib/user-type.ts
+    - src/lib/db.ts  _(seen above)_
+- src/lib/user-type.ts  _(seen above)_
+- src/lib/printer.ts
+  - src/lib/db.ts  _(seen above)_
+- src/components/reports/DailyReportReceipt.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/ui/dialog.tsx  _(seen above)_
+  - src/lib/printer.ts  _(seen above)_
+  - src/lib/file-utils.ts
+  - src/hooks/use-cloud-auth.tsx
+    - src/lib/cloud-api.ts
+    - src/lib/cloud-auth.ts
+    - src/lib/onesignal.ts
+      - src/lib/printer.ts  _(seen above)_
+    - src/lib/google-auth.ts
+    - src/lib/printer.ts  _(seen above)_
+- src/components/reports/TransactionOverview.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/segmented-bar-chart.tsx
+    - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/overview-row.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+
+## Settings.tsx
+Entry: `src/pages/Settings.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts
+  - src/components/jokoui/button.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/settings-group.tsx
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/card.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/help-section.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/components/jokoui/input.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/switch.tsx
+  - src/components/jokoui/toggle.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/button.tsx  _(seen above)_
+- src/components/jokoui/card.tsx  _(seen above)_
+- src/components/jokoui/section-title.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/settings/SettingsTile.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/item.tsx
+    - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/badge.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/settings/StatusStrip.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/alert.tsx
+    - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/badge.tsx  _(seen above)_
+- src/components/settings/StoreIdentityCard.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/avatar.tsx
+    - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/badge.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+- src/components/settings/StoreProfileDialog.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/input.tsx  _(seen above)_
+  - src/components/jokoui/label.tsx
+    - src/lib/utils.ts  _(seen above)_
+  - src/components/ui/dialog.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+  - src/lib/image-utils.ts
+- src/components/settings/MultiUserDialogs.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/ui/alert-dialog.tsx
+    - src/lib/utils.ts  _(seen above)_
+    - src/components/ui/button.tsx
+      - src/components/jokoui/button.tsx  _(seen above)_
+- src/lib/settings-catalog.ts
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+  - src/components/settings/SettingsTile.tsx  _(seen above)_
+- src/hooks/use-cloud-status.ts
+  - src/lib/db.ts  _(seen above)_
+  - src/hooks/use-cloud-auth.tsx
+    - src/lib/cloud-api.ts
+    - src/lib/cloud-auth.ts
+    - src/lib/onesignal.ts
+      - src/lib/printer.ts
+        - src/lib/db.ts  _(seen above)_
+    - src/lib/google-auth.ts
+    - src/lib/printer.ts  _(seen above)_
+  - src/components/settings/StatusStrip.tsx  _(seen above)_
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/auth.ts  _(seen above)_
+- src/lib/app-version.ts
+  - version.json
+
+## StockIn.tsx
+Entry: `src/pages/StockIn.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/item.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/badge.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/input.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/label.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/components/layout/HubTabs.tsx
+  - src/hooks/use-auth.tsx
+    - src/lib/db.ts  _(seen above)_
+    - src/lib/auth.ts
+      - src/lib/db.ts  _(seen above)_
+  - src/lib/nav-groups.ts
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/db.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/empty-state.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/dialog.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/alert-dialog.tsx
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/ui/button.tsx
+    - src/components/jokoui/button.tsx  _(seen above)_
+- src/hooks/use-auth.tsx  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx
+    - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+- src/components/ProductPicker.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/input.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/lib/db.ts  _(seen above)_
+  - src/components/BarcodeScanner.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/components/jokoui/button.tsx  _(seen above)_
+    - src/components/ui/dialog.tsx  _(seen above)_
+- src/components/SearchableSelect.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/input.tsx  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/NumberInput.tsx
+  - src/components/jokoui/input.tsx  _(seen above)_
+
+## StockOut.tsx
+Entry: `src/pages/StockOut.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/item.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/badge.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/input.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/label.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/components/layout/HubTabs.tsx
+  - src/hooks/use-auth.tsx
+    - src/lib/db.ts  _(seen above)_
+    - src/lib/auth.ts
+      - src/lib/db.ts  _(seen above)_
+  - src/lib/nav-groups.ts
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/db.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/empty-state.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/select.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/dialog.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/hooks/use-auth.tsx  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx
+    - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+- src/components/ProductPicker.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/input.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/lib/db.ts  _(seen above)_
+  - src/components/BarcodeScanner.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/components/jokoui/button.tsx  _(seen above)_
+    - src/components/ui/dialog.tsx  _(seen above)_
+- src/components/NumberInput.tsx
+  - src/components/jokoui/input.tsx  _(seen above)_
+
+## StockReport.tsx
+Entry: `src/pages/StockReport.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/card.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/section-title.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/data-list.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/tabs.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/layout/HubTabs.tsx
+  - src/hooks/use-auth.tsx
+    - src/lib/db.ts  _(seen above)_
+    - src/lib/auth.ts
+      - src/lib/db.ts  _(seen above)_
+  - src/lib/nav-groups.ts
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/db.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/stat-card.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+- src/hooks/use-auth.tsx  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+
+## Supplier.tsx
+Entry: `src/pages/Supplier.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/item.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/input.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/label.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/textarea.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/components/jokoui/empty-state.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/dialog.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/alert-dialog.tsx
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/ui/button.tsx
+    - src/components/jokoui/button.tsx  _(seen above)_
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx
+    - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+
+## TransactionHistory.tsx
+Entry: `src/pages/TransactionHistory.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/card.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/input.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/badge.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/components/layout/HubTabs.tsx
+  - src/hooks/use-auth.tsx
+    - src/lib/db.ts  _(seen above)_
+    - src/lib/auth.ts
+      - src/lib/db.ts  _(seen above)_
+  - src/lib/nav-groups.ts
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/db.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/empty-state.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/stat-card.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+- src/components/jokoui/segment-group.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/item.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/data-list.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/section-title.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/sheet.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/alert-dialog.tsx
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/ui/button.tsx
+    - src/components/jokoui/button.tsx  _(seen above)_
+- src/components/jokoui/checkbox.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/popover.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/calendar.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/ui/button.tsx  _(seen above)_
+- src/components/ui/select.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/lib/utils.ts  _(seen above)_
+- src/components/Receipt.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/ui/dialog.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/printer.ts
+    - src/lib/db.ts  _(seen above)_
+  - src/lib/file-utils.ts
+  - src/hooks/use-cloud-auth.tsx
+    - src/lib/cloud-api.ts
+    - src/lib/cloud-auth.ts
+    - src/lib/onesignal.ts
+      - src/lib/printer.ts  _(seen above)_
+    - src/lib/google-auth.ts
+    - src/lib/printer.ts  _(seen above)_
+- src/hooks/use-auth.tsx  _(seen above)_
+
+## Users.tsx
+Entry: `src/pages/Users.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/card.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/item.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/empty-state.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/alert.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/input.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/label.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/badge.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/switch.tsx
+  - src/components/jokoui/toggle.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/components/ui/dialog.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/alert-dialog.tsx
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/ui/button.tsx
+    - src/components/jokoui/button.tsx  _(seen above)_
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/lib/auth.ts  _(seen above)_
+- src/lib/members.ts
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/cloud-api.ts
+
+## AppSettings.tsx
+Entry: `src/pages/settings/AppSettings.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts
+  - src/components/jokoui/button.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/settings-group.tsx
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/card.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/settings/SettingsTile.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/item.tsx
+    - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/badge.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/badge.tsx  _(seen above)_
+- src/components/jokoui/card.tsx  _(seen above)_
+- src/components/jokoui/section-title.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/LanguageSwitcher.tsx
+  - src/components/ui/select.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+  - src/i18n/index.ts
+    - src/i18n/locales/id/common.json
+    - src/i18n/locales/id/onboarding.json
+    - src/i18n/locales/id/dashboard.json
+    - src/i18n/locales/id/reports.json
+    - src/i18n/locales/id/products.json
+    - src/i18n/locales/id/settings.json
+    - src/i18n/locales/en/common.json
+    - src/i18n/locales/en/onboarding.json
+    - src/i18n/locales/en/dashboard.json
+    - src/i18n/locales/en/reports.json
+    - src/i18n/locales/en/products.json
+    - src/i18n/locales/en/settings.json
+    - src/i18n/locales/ms/common.json
+    - src/i18n/locales/ms/onboarding.json
+    - src/i18n/locales/ms/dashboard.json
+    - src/i18n/locales/ms/reports.json
+    - src/i18n/locales/ms/products.json
+    - src/i18n/locales/ms/settings.json
+- src/components/WhatsNewModal.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/ui/dialog.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/lib/whats-new.ts
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/db.ts  _(seen above)_
+- src/lib/whats-new.ts  _(seen above)_
+- src/lib/app-version.ts
+  - version.json
+- src/components/app-update/AppUpdateRows.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/settings-group.tsx  _(seen above)_
+  - src/components/jokoui/badge.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/settings/SettingsTile.tsx  _(seen above)_
+  - src/lib/app-version.ts  _(seen above)_
+  - src/lib/app-updater/store.ts
+    - version.json  _(seen above)_
+    - src/lib/cloud-api.ts
+    - src/lib/transaction-busy.ts
+    - src/lib/app-updater/platform.ts
+  - src/components/app-update/AppUpdateHost.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/components/jokoui/modal.tsx
+      - src/lib/utils.ts  _(seen above)_
+    - src/components/jokoui/button.tsx  _(seen above)_
+    - src/components/jokoui/badge.tsx  _(seen above)_
+    - src/components/jokoui/progress.tsx
+      - src/lib/utils.ts  _(seen above)_
+    - src/lib/app-version.ts  _(seen above)_
+    - src/lib/app-updater/store.ts  _(seen above)_
+    - src/lib/app-updater/platform.ts  _(seen above)_
+
+## BackupRestoreSettings.tsx
+Entry: `src/pages/settings/BackupRestoreSettings.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/card.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/components/BackupReminder.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/alert.tsx
+    - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/backup.ts
+    - src/lib/db.ts  _(seen above)_
+- src/lib/backup.ts  _(seen above)_
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+
+## CloudAutoBackupSettings.tsx
+Entry: `src/pages/settings/CloudAutoBackupSettings.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/card.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/input.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/label.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/alert.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/select.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+- src/hooks/use-cloud-auth.tsx
+  - src/lib/cloud-api.ts
+  - src/lib/cloud-auth.ts
+  - src/lib/onesignal.ts
+    - src/lib/printer.ts
+      - src/lib/db.ts  _(seen above)_
+  - src/lib/google-auth.ts
+  - src/lib/printer.ts  _(seen above)_
+
+## CloudBackupSettings.tsx
+Entry: `src/pages/settings/CloudBackupSettings.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/card.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/badge.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/components/ui/dialog.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+- src/lib/printer.ts
+  - src/lib/db.ts  _(seen above)_
+- src/lib/google-auth.ts
+- src/hooks/use-cloud-auth.tsx
+  - src/lib/cloud-api.ts
+  - src/lib/cloud-auth.ts
+  - src/lib/onesignal.ts
+    - src/lib/printer.ts  _(seen above)_
+  - src/lib/google-auth.ts  _(seen above)_
+  - src/lib/printer.ts  _(seen above)_
+- src/lib/cloud-api.ts  _(seen above)_
+- src/lib/backup.ts
+  - src/lib/db.ts  _(seen above)_
+
+## CloudHistorySettings.tsx
+Entry: `src/pages/settings/CloudHistorySettings.tsx`
+Dependencies:
+
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/card.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/badge.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/alert.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/empty-state.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/item.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts
+    - src/lib/business-mode.ts
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+- src/hooks/use-cloud-auth.tsx
+  - src/lib/cloud-api.ts
+  - src/lib/cloud-auth.ts
+  - src/lib/onesignal.ts
+    - src/lib/printer.ts
+      - src/lib/db.ts  _(seen above)_
+  - src/lib/google-auth.ts
+  - src/lib/printer.ts  _(seen above)_
+- src/lib/cloud-api.ts  _(seen above)_
+
+## CloudMembersSettings.tsx
+Entry: `src/pages/settings/CloudMembersSettings.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/card.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/input.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/label.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/badge.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/components/ui/dialog.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/hooks/use-cloud-auth.tsx
+  - src/lib/cloud-api.ts
+  - src/lib/cloud-auth.ts
+  - src/lib/onesignal.ts
+    - src/lib/printer.ts
+      - src/lib/db.ts  _(seen above)_
+  - src/lib/google-auth.ts
+  - src/lib/printer.ts  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+- src/lib/cloud-api.ts  _(seen above)_
+- src/lib/members.ts
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/cloud-api.ts  _(seen above)_
+- src/lib/sync.ts
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/cloud-api.ts  _(seen above)_
+  - src/lib/members.ts  _(seen above)_
+
+## CloudOnlineStoreSettings.tsx
+Entry: `src/pages/settings/CloudOnlineStoreSettings.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/card.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/components/jokoui/input.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/label.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/switch.tsx
+  - src/components/jokoui/toggle.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/ui/popover.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/dialog.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/command.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/ui/dialog.tsx  _(seen above)_
+- src/lib/utils.ts  _(seen above)_
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+- src/hooks/use-cloud-auth.tsx
+  - src/lib/cloud-api.ts
+  - src/lib/cloud-auth.ts
+  - src/lib/onesignal.ts
+    - src/lib/printer.ts
+      - src/lib/db.ts  _(seen above)_
+  - src/lib/google-auth.ts
+  - src/lib/printer.ts  _(seen above)_
+- src/lib/cloud-api.ts  _(seen above)_
+
+## CloudRestoreSettings.tsx
+Entry: `src/pages/settings/CloudRestoreSettings.tsx`
+Dependencies:
+
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/card.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/alert.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/empty-state.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/item.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/components/ui/dialog.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts
+    - src/lib/business-mode.ts
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+- src/hooks/use-cloud-auth.tsx
+  - src/lib/cloud-api.ts
+  - src/lib/cloud-auth.ts
+  - src/lib/onesignal.ts
+    - src/lib/printer.ts
+      - src/lib/db.ts  _(seen above)_
+  - src/lib/google-auth.ts
+  - src/lib/printer.ts  _(seen above)_
+- src/lib/cloud-api.ts  _(seen above)_
+- src/lib/backup.ts
+  - src/lib/db.ts  _(seen above)_
+
+## CloudStoreSettings.tsx
+Entry: `src/pages/settings/CloudStoreSettings.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/card.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/badge.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/alert.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/empty-state.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/section-title.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/item.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/components/jokoui/input.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/lib/utils.ts  _(seen above)_
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+- src/hooks/use-cloud-auth.tsx
+  - src/lib/cloud-api.ts
+  - src/lib/cloud-auth.ts
+  - src/lib/onesignal.ts
+    - src/lib/printer.ts
+      - src/lib/db.ts  _(seen above)_
+  - src/lib/google-auth.ts
+  - src/lib/printer.ts  _(seen above)_
+- src/lib/cloud-api.ts  _(seen above)_
+
+## DataSettings.tsx
+Entry: `src/pages/settings/DataSettings.tsx`
+Dependencies:
+
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts
+  - src/components/jokoui/button.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/settings-group.tsx
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/card.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/settings/SettingsTile.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/item.tsx
+    - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/badge.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/settings/StatusStrip.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/alert.tsx
+    - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/badge.tsx  _(seen above)_
+- src/hooks/use-cloud-status.ts
+  - src/lib/db.ts
+    - src/lib/business-mode.ts
+  - src/hooks/use-cloud-auth.tsx
+    - src/lib/cloud-api.ts
+    - src/lib/cloud-auth.ts
+    - src/lib/onesignal.ts
+      - src/lib/printer.ts
+        - src/lib/db.ts  _(seen above)_
+    - src/lib/google-auth.ts
+    - src/lib/printer.ts  _(seen above)_
+  - src/components/settings/StatusStrip.tsx  _(seen above)_
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+
+## DisplaySettings.tsx
+Entry: `src/pages/settings/DisplaySettings.tsx`
+Dependencies:
+
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts
+  - src/components/jokoui/button.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/settings-group.tsx
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/card.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/card.tsx  _(seen above)_
+- src/components/jokoui/button.tsx  _(seen above)_
+- src/components/ui/select.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/settings/SettingsTile.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/item.tsx
+    - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/badge.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts
+    - src/lib/business-mode.ts
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/lib/printer.ts
+  - src/lib/db.ts  _(seen above)_
+
+## EmployeeSettings.tsx
+Entry: `src/pages/settings/EmployeeSettings.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts
+  - src/components/jokoui/button.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/settings-group.tsx
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/card.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/button.tsx  _(seen above)_
+- src/components/jokoui/alert.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/settings/SettingsTile.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/item.tsx
+    - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/badge.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/settings/MultiUserDialogs.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/ui/alert-dialog.tsx
+    - src/lib/utils.ts  _(seen above)_
+    - src/components/ui/button.tsx
+      - src/components/jokoui/button.tsx  _(seen above)_
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+
+## ExpenseCategoriesSettings.tsx
+Entry: `src/pages/settings/ExpenseCategoriesSettings.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/card.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/input.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/label.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/empty-state.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/item.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/dialog.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/lib/utils.ts  _(seen above)_
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+
+## IssueReport.tsx
+Entry: `src/pages/settings/IssueReport.tsx`
+Dependencies:
+
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/card.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/components/jokoui/textarea.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/label.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/alert.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/lib/app-version.ts
+  - version.json
+- src/components/ui/alert-dialog.tsx
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/ui/button.tsx
+    - src/components/jokoui/button.tsx  _(seen above)_
+
+## MultiUserActivate.tsx
+Entry: `src/pages/settings/MultiUserActivate.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts
+  - src/components/jokoui/button.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/button.tsx  _(seen above)_
+- src/components/jokoui/input.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/label.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/alert.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/item.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/GoogleMark.tsx
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx
+    - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+  - src/hooks/use-auth.tsx
+    - src/lib/db.ts  _(seen above)_
+    - src/lib/auth.ts
+      - src/lib/db.ts  _(seen above)_
+- src/lib/utils.ts  _(seen above)_
+- src/hooks/use-auth.tsx  _(seen above)_
+- src/hooks/use-cloud-auth.tsx
+  - src/lib/cloud-api.ts
+  - src/lib/cloud-auth.ts
+  - src/lib/onesignal.ts
+    - src/lib/printer.ts
+      - src/lib/db.ts  _(seen above)_
+  - src/lib/google-auth.ts
+  - src/lib/printer.ts  _(seen above)_
+- src/lib/auth.ts  _(seen above)_
+- src/lib/members.ts
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/cloud-api.ts  _(seen above)_
+- src/lib/google-auth.ts  _(seen above)_
+- src/lib/printer.ts  _(seen above)_
+
+## PartnerSettings.tsx
+Entry: `src/pages/settings/PartnerSettings.tsx`
+Dependencies:
+
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts
+  - src/components/jokoui/button.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/settings-group.tsx
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/card.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/settings/SettingsTile.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/item.tsx
+    - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/badge.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts
+    - src/lib/business-mode.ts
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+
+## PaymentMethodsSettings.tsx
+Entry: `src/pages/settings/PaymentMethodsSettings.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/card.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/input.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/label.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/empty-state.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/segment-group.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/item.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/dialog.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+
+## ProductCategoriesSettings.tsx
+Entry: `src/pages/settings/ProductCategoriesSettings.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/card.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/input.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/label.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/empty-state.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/item.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/dialog.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/lib/utils.ts  _(seen above)_
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+
+## ReceiptSettings.tsx
+Entry: `src/pages/settings/ReceiptSettings.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/card.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/input.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/label.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/switch.tsx
+  - src/components/jokoui/toggle.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/section-title.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/settings-group.tsx
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/hooks/use-cloud-auth.tsx
+  - src/lib/cloud-api.ts
+  - src/lib/cloud-auth.ts
+  - src/lib/onesignal.ts
+    - src/lib/printer.ts
+      - src/lib/db.ts  _(seen above)_
+  - src/lib/google-auth.ts
+  - src/lib/printer.ts  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+
+## StockOpname.tsx
+Entry: `src/pages/settings/StockOpname.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/card.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/input.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/label.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+- src/components/ui/dialog.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/lib/file-utils.ts
+
+## StoreSettings.tsx
+Entry: `src/pages/settings/StoreSettings.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts
+  - src/components/jokoui/button.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/settings-group.tsx
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/card.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/input.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/switch.tsx
+  - src/components/jokoui/toggle.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/ui/select.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/lib/business-mode.ts  _(seen above)_
+- src/components/settings/SettingsTile.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/item.tsx
+    - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/badge.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/settings/StoreProfileDialog.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/input.tsx  _(seen above)_
+  - src/components/jokoui/label.tsx
+    - src/lib/utils.ts  _(seen above)_
+  - src/components/ui/dialog.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+  - src/lib/image-utils.ts
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+
+## ThemeSettings.tsx
+Entry: `src/pages/settings/ThemeSettings.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/card.tsx
+  - src/lib/utils.ts
+- src/components/ThemeColorPicker.tsx
+  - src/hooks/use-theme-color.ts
+    - src/lib/db.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/icons/index.ts  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx
+    - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/tabs.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/hooks/use-theme-color.ts  _(seen above)_
+- src/hooks/use-auth.tsx
+  - src/lib/db.ts  _(seen above)_
+  - src/lib/auth.ts
+    - src/lib/db.ts  _(seen above)_
+- src/components/LockedPage.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/components/jokoui/card.tsx  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_
+  - src/components/jokoui/empty-state.tsx
+    - src/components/icons/index.ts  _(seen above)_
+    - src/lib/utils.ts  _(seen above)_
+  - src/hooks/use-auth.tsx  _(seen above)_
+
+## UnitsSettings.tsx
+Entry: `src/pages/settings/UnitsSettings.tsx`
+Dependencies:
+
+- src/lib/db.ts
+  - src/lib/business-mode.ts
+- src/components/icons/index.ts
+  - src/components/icons/createIcon.tsx
+- src/components/jokoui/card.tsx
+  - src/lib/utils.ts
+- src/components/jokoui/button.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/input.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/label.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/empty-state.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/jokoui/item.tsx
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/dialog.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+- src/components/ui/alert-dialog.tsx
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/ui/button.tsx
+    - src/components/jokoui/button.tsx  _(seen above)_
+- src/components/jokoui/page-header.tsx
+  - src/components/icons/index.ts  _(seen above)_
+  - src/lib/utils.ts  _(seen above)_
+  - src/components/jokoui/button.tsx  _(seen above)_

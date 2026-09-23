@@ -25,11 +25,11 @@ const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
     const isSm = size === 'sm';
     return (
       <Card ref={ref} className={cn('min-w-0', isSm ? 'p-3' : 'p-3.5', className)}>
-        <p className={cn('truncate font-medium text-muted-foreground', isSm ? 'text-[11px]' : 'text-xs')}>{label}</p>
+        <p className={cn('truncate font-medium text-muted-foreground', isSm ? 'text-2xs' : 'text-xs')}>{label}</p>
         <p className={cn('mt-1 break-words font-semibold leading-tight tracking-tight tabular-nums', isSm ? 'text-base' : 'text-lg', valueClassName)}>
           {value}
         </p>
-        {sub && <p className={cn('mt-0.5 truncate text-muted-foreground', isSm ? 'text-[11px]' : 'text-xs')}>{sub}</p>}
+        {sub && <p className={cn('mt-0.5 truncate text-muted-foreground', isSm ? 'text-2xs' : 'text-xs')}>{sub}</p>}
       </Card>
     );
   },

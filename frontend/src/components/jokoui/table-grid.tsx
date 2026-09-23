@@ -71,15 +71,15 @@ export function TableGrid({
             <span className="text-xl font-semibold tabular-nums">{table.number}</span>
             {busy ? (
               <>
-                <span className="text-[11px] font-medium tabular-nums opacity-90">
+                <span className="text-2xs font-medium tabular-nums opacity-90">
                   {requested ? requestedLabel : formatMoney(table.occupied!.total)}
                 </span>
-                <span className={cn('text-[11px] tabular-nums', stale ? 'font-semibold text-warning-text' : 'opacity-75')}>
+                <span className={cn('text-2xs tabular-nums', stale ? 'font-semibold text-warning-text' : 'opacity-75')}>
                   {table.occupied!.minutes} mnt
                 </span>
               </>
             ) : (
-              <span className="text-[11px] text-muted-foreground">{emptyLabel}</span>
+              <span className="text-2xs text-muted-foreground">{emptyLabel}</span>
             )}
           </button>
         );

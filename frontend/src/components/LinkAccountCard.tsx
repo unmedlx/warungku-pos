@@ -14,8 +14,26 @@ import { nativeGoogleSignIn } from '@/lib/google-auth';
 import { isNativePlatform } from '@/lib/printer';
 import { linkLocalStoreToCloud } from '@/lib/store-hydration';
 import { GoogleMark } from '@/components/GoogleMark';
+import { DISMISS_KEYS, useDismissed } from '@/lib/home-interrupts';
 
-const DISMISS_KEY = 'kanpos_link_account_dismissed_v1';
+const DISMISS_KEY = DISMISS_KEYS['link-account'];
+
+/** Sudah pernah menyelesaikan transaksi — sebelum itu belum ada yang layak diamankan. */
+function useHasSold(): boolean {
+  return useLiveQuery(
+    async () => (await db.transactions.where('status').equals('completed').count()) > 0,
+    [],
+    false,
+  );
+}
+
+/** Layak tampil bila sudah jualan tapi datanya masih lokal saja. */
+export function useLinkAccountVisible(): boolean {
+  const { isLoggedIn, sessionExpired, restoringSession } = useCloudAuth();
+  const [dismissed] = useDismissed(DISMISS_KEY);
+  const hasSold = useHasSold();
+  return !restoringSession && !isLoggedIn && !sessionExpired && !dismissed && hasSold;
+}
 
 /**
  * Ajakan menghubungkan akun Google untuk user yang memilih "Lanjut tanpa akun"
@@ -30,22 +48,12 @@ export function LinkAccountCard() {
   const { t } = useTranslation('dashboard');
   const navigate = useNavigate();
   const { isLoggedIn, sessionExpired, restoringSession, login } = useCloudAuth();
-  const [dismissed, setDismissed] = useState(() => localStorage.getItem(DISMISS_KEY) === '1');
+  const [dismissed, handleDismiss] = useDismissed(DISMISS_KEY);
   const [busy, setBusy] = useState(false);
   const native = isNativePlatform();
-
-  const hasSold = useLiveQuery(
-    async () => (await db.transactions.where('status').equals('completed').count()) > 0,
-    [],
-    false,
-  );
+  const hasSold = useHasSold();
 
   if (restoringSession || isLoggedIn || sessionExpired || dismissed || !hasSold) return null;
-
-  const handleDismiss = () => {
-    localStorage.setItem(DISMISS_KEY, '1');
-    setDismissed(true);
-  };
 
   const handleToken = async (idToken: string) => {
     setBusy(true);
@@ -58,8 +66,7 @@ export function LinkAccountCard() {
             ? t('linkAccount.toast.linkedSynced', { name: hasil.store.name })
             : t('linkAccount.toast.linked', { name: hasil.store.name }),
         );
-        localStorage.setItem(DISMISS_KEY, '1');
-        setDismissed(true);
+        handleDismiss();
         return;
       }
       // Akunnya sudah punya toko di cloud, atau kuotanya penuh — dua-duanya
@@ -98,7 +105,7 @@ export function LinkAccountCard() {
         <ItemMedia tone="primary"><CloudUpload /></ItemMedia>
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium">{t('linkAccount.title')}</p>
-          <p className="mt-0.5 text-[13px] leading-snug text-muted-foreground">{t('linkAccount.desc')}</p>
+          <p className="mt-0.5 text-xsm leading-snug text-muted-foreground">{t('linkAccount.desc')}</p>
         </div>
       </div>
 
@@ -108,7 +115,7 @@ export function LinkAccountCard() {
             <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-success/10 text-success-text">
               <Check className="h-3 w-3" />
             </span>
-            <span className="text-[13px]">{b}</span>
+            <span className="text-xsm">{b}</span>
           </div>
         ))}
       </div>
@@ -116,12 +123,12 @@ export function LinkAccountCard() {
       <div className="mt-3">
         {native ? (
           <Button variant="outline" className="w-full" disabled={busy} onClick={handleNative}>
-            {busy ? <Loader2 className="h-[18px] w-[18px] animate-spin" /> : <GoogleMark />}
+            {busy ? <Loader2 className="size-4.5 animate-spin" /> : <GoogleMark />}
             {t('linkAccount.cta')}
           </Button>
         ) : busy ? (
           <Button className="w-full" disabled>
-            <Loader2 className="h-[18px] w-[18px] animate-spin" />
+            <Loader2 className="size-4.5 animate-spin" />
             {t('linkAccount.linking')}
           </Button>
         ) : (

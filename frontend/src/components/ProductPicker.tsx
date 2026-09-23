@@ -102,11 +102,11 @@ export default function ProductPicker({
       </div>
 
       {q && (
-        <div className="absolute left-0 right-0 top-full z-50 mt-1 max-h-60 divide-y divide-border overflow-y-auto rounded-xl border border-border bg-popover shadow-lg">
+        <div className="absolute left-0 right-0 top-full z-50 mt-1 max-h-60 divide-y divide-border overflow-y-auto rounded-xl bg-popover border border-transparent shadow-lift dark:border-border dark:shadow-none">
           {matches.length === 0 ? (
             <div className="flex flex-col items-center py-6 text-center">
               <span className="mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-muted-foreground"><PackageIcon className="h-5 w-5" /></span>
-              <p className="text-[13px] text-muted-foreground">{t('productPicker.notFound')}</p>
+              <p className="text-xsm text-muted-foreground">{t('productPicker.notFound')}</p>
             </div>
           ) : (
             matches.map(p => (

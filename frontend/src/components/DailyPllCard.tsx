@@ -2,29 +2,26 @@ import { useMemo, type ReactNode } from "react";
 import { useDailyPll } from "@/hooks/use-daily-pll";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/lib/db";
-import { Card, CardAction, CardContent, CardDescription, CardHeader } from "@/components/jokoui/card";
+import { Card, CardContent } from "@/components/jokoui/card";
 import { Badge } from "@/components/jokoui/badge";
-import { Button } from "@/components/jokoui/button";
-import { StatCard } from "@/components/jokoui/stat-card";
+import { SectionTitle } from "@/components/jokoui/section-title";
 import { DataList, DataListRow } from "@/components/jokoui/data-list";
+import {
+  MoneyPanel,
+  MoneyPanelAmount,
+  MoneyPanelFooter,
+  MoneyPanelLabel,
+} from "@/components/jokoui/money-panel";
 import { cn } from "@/lib/utils";
 import { format, startOfDay, endOfDay } from "date-fns";
 import { id, enUS, ms } from "date-fns/locale";
-import { TrendingUp, TrendingDown, Loader2 } from "@/components/icons";
-import { MoneyDisplay, MoneyVisibilityToggle } from "@/components/jokoui/money-display";
+import { TrendingUp, TrendingDown, Loader2, ChevronRight } from "@/components/icons";
+import { MoneyVisibilityToggle } from "@/components/jokoui/money-display";
 import { useTranslation } from "react-i18next";
 import type { Locale } from "date-fns";
 
 const LOCALES: Record<string, Locale> = { id, en: enUS, ms };
 const NUMBER_LOCALES: Record<string, string> = { id: "id-ID", en: "en-US", ms: "ms-MY" };
-const CURRENCY_SYMBOL: Record<string, string> = { id: "Rp", en: "Rp", ms: "Rp" };
-
-function formatCurrency(n: number, lang: string) {
-  const symbol = CURRENCY_SYMBOL[lang] ?? "Rp";
-  const locale = NUMBER_LOCALES[lang] ?? "id-ID";
-  return `${symbol} ${n.toLocaleString(locale)}`;
-}
-
 function formatCompact(n: number, lang: string) {
   const locale = NUMBER_LOCALES[lang] ?? "id-ID";
   return new Intl.NumberFormat(locale, { notation: "compact", maximumFractionDigits: 1 }).format(n);
@@ -84,104 +81,107 @@ export function DailyPllCard({ date: dateProp, onViewReport, chart }: DailyPllCa
     ? t("pll.profit", { defaultValue: "Untung" })
     : t("pll.loss", { defaultValue: "Rugi" });
 
+  /**
+   * Tiga angka pendamping di kaki panel. Sengaja BUKAN tiga kartu stat
+   * terpisah di bawah kartu utama: itu template "angka besar + stat
+   * pendukung" yang membuat setiap dashboard terlihat sama, dan ia memecah
+   * satu urusan uang menjadi empat permukaan. Di sini keempatnya satu objek
+   * — panel dompet yang sama — dipisah garis rambut dari putih transparan.
+   */
+  const subFigures = [
+    { key: "in", label: t("pll.in", { defaultValue: "Masuk" }), value: summary.revenue },
+    { key: "out", label: t("pll.out", { defaultValue: "Keluar" }), value: expensesToday ?? 0 },
+    { key: "debt", label: t("pll.debt", { defaultValue: "Kasbon" }), value: debtToday ?? 0 },
+  ];
+
   return (
-    <div className="space-y-2">
-      {/* Kartu utama: angka besar + badge margin + grafik 7 hari di kartu yang sama */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardDescription>{t("pll.title", { defaultValue: "Untung/Rugi Hari Ini" })}</CardDescription>
-          <CardAction>
-            <Badge variant={isPositive ? "success" : "destructive"} shape="pill">
-              {isPositive ? <TrendingUp /> : <TrendingDown />}
-              {summary.grossMarginPercent.toFixed(0)}%
-            </Badge>
-          </CardAction>
-
-          {/* Angka utama satu layar: dibaca sambil berdiri di bawah lampu terang.
-              Tombol mata menyamarkannya saat ada pembeli di depan meja. */}
-          <div className="col-start-1 flex items-center gap-1.5">
-            <MoneyDisplay
-              value={summary.grossProfit}
-              size="xl"
-              symbol={CURRENCY_SYMBOL[lang] ?? "Rp"}
-              locale={NUMBER_LOCALES[lang] ?? "id-ID"}
-              className={cn("break-words", isPositive ? "text-foreground" : "text-destructive-text")}
-            />
-            <MoneyVisibilityToggle />
-          </div>
-          <p className="col-start-1 text-xs text-muted-foreground">
-            {profitLabel} ·{" "}
-            {t("pll.subtitle", {
-              count: summary.transactionCount,
-              defaultValue: `{{count}} transaksi`,
-            })}
-            {" · "}
-            {format(date, "EEEE, d MMM", { locale: dateLocale })}
-          </p>
-        </CardHeader>
-
-        {(chart || summary.topProducts.length > 0 || onViewReport) && (
-          <CardContent className="space-y-3 pt-0">
-            {chart}
-
-            {summary.topProducts.length > 0 && (
-              <div>
-                <p className="mb-1 text-xs font-medium text-muted-foreground">
-                  {t("pll.topProducts", { defaultValue: "Produk terlaris" })}
-                </p>
-                <DataList>
-                  {summary.topProducts.slice(0, 3).map((p) => (
-                    <DataListRow
-                      key={p.productId}
-                      className="py-1.5"
-                      label={
-                        <span className="flex min-w-0 items-center gap-2">
-                          <Badge variant="primary" size="sm" className="shrink-0">{p.quantity}</Badge>
-                          <span className="truncate text-foreground">{p.name}</span>
-                        </span>
-                      }
-                      value={formatCompact(p.profit, lang)}
-                    />
-                  ))}
-                </DataList>
-              </div>
-            )}
-
-            {onViewReport && (
-              <Button
-                variant="outline"
+    <div className="space-y-3">
+      <MoneyPanel variant="card">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <MoneyPanelLabel>{t("pll.title", { defaultValue: "Untung/Rugi Hari Ini" })}</MoneyPanelLabel>
+              <Badge
+                variant={isPositive ? "success" : "destructive"}
+                shape="pill"
                 size="sm"
-                className="w-full"
-                onClick={onViewReport}
-                aria-label={t("pll.viewReport", { defaultValue: "Lihat laporan lengkap" })}
+                className="shrink-0 border-0 bg-white/15 text-primary-foreground"
               >
-                {t("pll.viewReport", { defaultValue: "Lihat laporan lengkap" })}
-              </Button>
-            )}
-          </CardContent>
-        )}
-      </Card>
+                {isPositive ? <TrendingUp /> : <TrendingDown />}
+                {summary.grossMarginPercent.toFixed(0)}%
+              </Badge>
+            </div>
+            {/* Angka utama satu layar: dibaca sambil berdiri, dari jarak
+                lengan. Tombol mata menyamarkannya saat ada pembeli di
+                depan meja. */}
+            <MoneyPanelAmount value={summary.grossProfit} locale={NUMBER_LOCALES[lang] ?? "id-ID"} />
+          </div>
+          <MoneyVisibilityToggle className="-mr-1 shrink-0 text-primary-dim hover:bg-white/15 hover:text-primary-foreground" />
+        </div>
 
-      {/* 3 stat kecil MASUK / KELUAR / KASBON di bawah kartu utama */}
-      <div className="grid grid-cols-3 gap-2">
-        <StatCard
-          size="sm"
-          label={t("pll.in", { defaultValue: "Masuk" })}
-          value={formatCompact(summary.revenue, lang)}
-          valueClassName="text-success-text"
-        />
-        <StatCard
-          size="sm"
-          label={t("pll.out", { defaultValue: "Keluar" })}
-          value={formatCompact(expensesToday ?? 0, lang)}
-          valueClassName="text-destructive-text"
-        />
-        <StatCard
-          size="sm"
-          label={t("pll.debt", { defaultValue: "Kasbon" })}
-          value={formatCompact(debtToday ?? 0, lang)}
-        />
-      </div>
+        <p className="mt-1.5 text-2xs font-medium text-primary-dim">
+          {profitLabel}
+          {" \u00b7 "}
+          {t("pll.subtitle", { count: summary.transactionCount, defaultValue: `{{count}} transaksi` })}
+          {" \u00b7 "}
+          {format(date, "EEEE, d MMM", { locale: dateLocale })}
+        </p>
+
+        {chart && <div className="mt-3.5">{chart}</div>}
+
+        <MoneyPanelFooter className="justify-start divide-x divide-white/20">
+          {subFigures.map((f, i) => (
+            <div key={f.key} className={cn("min-w-0 flex-1", i === 0 ? "pr-3" : "px-3 last:pr-0")}>
+              <span className="block truncate text-3xs font-semibold uppercase tracking-[0.04em] text-primary-dim">
+                {f.label}
+              </span>
+              <span className="mt-0.5 block truncate text-xsm font-bold tabular-nums text-primary-foreground">
+                {formatCompact(f.value, lang)}
+              </span>
+            </div>
+          ))}
+        </MoneyPanelFooter>
+
+        {onViewReport && (
+          <button
+            type="button"
+            onClick={onViewReport}
+            className="mt-3 inline-flex items-center gap-0.5 rounded-sm text-xsm font-bold text-primary-foreground outline-none focus-visible:ring-[3px] focus-visible:ring-primary-foreground/50"
+          >
+            {t("pll.viewReport", { defaultValue: "Lihat laporan lengkap" })}
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        )}
+
+
+      </MoneyPanel>
+
+      {/* Produk terlaris adalah daftar, bukan uang — jadi ia keluar dari
+          panel dompet dan memakai permukaan kartu biasa. */}
+      {summary.topProducts.length > 0 && (
+        <div>
+          <SectionTitle title={t("pll.topProducts", { defaultValue: "Produk terlaris" })} />
+          <Card>
+            <CardContent className="py-1">
+              <DataList>
+                {summary.topProducts.slice(0, 3).map((p) => (
+                  <DataListRow
+                    key={p.productId}
+                    className="py-2"
+                    label={
+                      <span className="flex min-w-0 items-center gap-2">
+                        <Badge variant="primary" size="sm" className="shrink-0">{p.quantity}</Badge>
+                        <span className="truncate text-foreground">{p.name}</span>
+                      </span>
+                    }
+                    value={formatCompact(p.profit, lang)}
+                  />
+                ))}
+              </DataList>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }

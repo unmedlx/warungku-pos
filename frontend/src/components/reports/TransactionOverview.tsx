@@ -164,7 +164,7 @@ export default function TransactionOverview({ months = 6, className }: Transacti
           {rows.map((row) => (
             <OverviewRow
               key={row.id}
-              icon={<row.icon className="h-[18px] w-[18px]" />}
+              icon={<row.icon className="size-4.5" />}
               iconClassName={row.className}
               label={row.name}
               progress={row.share}

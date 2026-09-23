@@ -1308,7 +1308,11 @@
     "emptyError": "Sila isi keterangan kendala terlebih dahulu."
   },
   "transactionHistory": {
-    "continueBill": "Teruskan"
+    "continueBill": "Teruskan",
+    "empty": {
+      "noDateFilter": "Transaksi yang anda rekod di Kaunter akan dipaparkan di sini.",
+      "withDateFilter": "Cuba ubah julat tarikh, atau kosongkan penapis."
+    }
   },
   "helpSection": {
     "title": "Perlukan bantuan?",

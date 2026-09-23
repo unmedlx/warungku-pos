@@ -62,7 +62,7 @@ export default function SearchableSelect({
       </button>
 
       {open && (
-        <div className="absolute left-0 right-0 top-full z-50 mt-1 rounded-xl border border-border bg-popover shadow-lg">
+        <div className="absolute left-0 right-0 top-full z-50 mt-1 rounded-xl bg-popover border border-transparent shadow-lift dark:border-border dark:shadow-none">
           <div className="relative p-2">
             <Search className="absolute left-[18px] top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
@@ -75,7 +75,7 @@ export default function SearchableSelect({
           </div>
           <div className="max-h-52 divide-y divide-border overflow-y-auto border-t border-border">
             {matches.length === 0 ? (
-              <p className="py-6 text-center text-[13px] text-muted-foreground">{t('searchableSelect.notFound')}</p>
+              <p className="py-6 text-center text-xsm text-muted-foreground">{t('searchableSelect.notFound')}</p>
             ) : (
               matches.map(o => (
                 <button

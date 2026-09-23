@@ -18,6 +18,12 @@ interface PageHeaderProps {
   inlineActions?: React.ReactNode;
   children?: React.ReactNode;
   className?: string;
+  /**
+   * `dipped` menempelkan header ke atas bidang brand yang dicelup — dipakai
+   * halaman bertata-bahasa dompet (kasir, pembayaran, laporan), di mana
+   * header dan nominal adalah satu objek, bukan dua lapis yang ditumpuk.
+   */
+  tone?: 'ground' | 'dipped';
 }
 
 /**
@@ -27,14 +33,16 @@ interface PageHeaderProps {
  * lebih mudah dipindai daripada judul di tengah pil.
  */
 const PageHeader = React.forwardRef<HTMLDivElement, PageHeaderProps>(
-  ({ title, subtitle, avatar, backTo, onBack, inlineActions, children, className }, ref) => {
+  ({ title, subtitle, avatar, backTo, onBack, inlineActions, children, className, tone = 'ground' }, ref) => {
+    const dipped = tone === 'dipped';
+    const backVariant = dipped ? 'on-brand' : 'ghost';
     const back =
       onBack ? (
-        <Button variant="ghost" size="icon" className="-ml-2 shrink-0" onClick={onBack} aria-label="Kembali">
+        <Button variant={backVariant} size="icon-sm" className="-ml-1 shrink-0" onClick={onBack} aria-label="Kembali">
           <ChevronLeft className="h-5 w-5" />
         </Button>
       ) : backTo ? (
-        <Button asChild variant="ghost" size="icon" className="-ml-2 shrink-0" aria-label="Kembali">
+        <Button asChild variant={backVariant} size="icon-sm" className="-ml-1 shrink-0" aria-label="Kembali">
           <Link to={backTo}>
             <ChevronLeft className="h-5 w-5" />
           </Link>
@@ -46,15 +54,27 @@ const PageHeader = React.forwardRef<HTMLDivElement, PageHeaderProps>(
         ref={ref}
         data-slot="page-header"
         className={cn(
-          'sticky top-0 z-30 -mx-4 mb-3 flex h-14 items-center gap-2.5 bg-background/90 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/80 md:-mx-8 md:px-8',
+          '-mx-4 flex items-center gap-2.5 px-4 md:-mx-8 md:px-8',
+          dipped
+            ? 'mb-3 min-h-[2.75rem] text-primary-foreground'
+            : /* Latar pejal, bukan backdrop-blur: di WebView HP kelas bawah
+                 blur dibayar setiap frame gulir, dan di bawah matahari ia
+                 menurunkan kontras judul yang paling sering dibaca. */
+              'sticky top-0 z-30 mb-3 h-14 bg-background',
           className,
         )}
       >
         {back}
         {avatar && <div className="shrink-0">{avatar}</div>}
         <div className="min-w-0 flex-1">
-          {title && <h1 className="truncate text-lg font-semibold leading-tight tracking-tight">{title}</h1>}
-          {subtitle && <p className="truncate text-xs leading-tight text-muted-foreground">{subtitle}</p>}
+          {title && (
+            <h1 className="truncate text-heading font-bold leading-tight tracking-[-0.02em]">{title}</h1>
+          )}
+          {subtitle && (
+            <p className={cn('truncate text-2xs leading-tight', dipped ? 'text-primary-dim' : 'text-muted-foreground')}>
+              {subtitle}
+            </p>
+          )}
         </div>
         {(inlineActions || children) && (
           <div className="flex shrink-0 items-center gap-1.5">

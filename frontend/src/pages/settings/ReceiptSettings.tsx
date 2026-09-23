@@ -110,7 +110,7 @@ export default function ReceiptSettings() {
       <div>
         <SectionTitle title="Preview Struk" />
         <Card className="border-dashed">
-          <CardContent className="space-y-4 p-6 font-mono text-[11px] text-foreground">
+          <CardContent className="space-y-4 p-6 font-mono text-2xs text-foreground">
 
             {/* Logo Preview */}
             {printLogo && storeSettings?.logo && (
@@ -151,7 +151,7 @@ export default function ReceiptSettings() {
 
             {/* Watermark preview */}
             {!(hideWatermark && isCloudActive) && (
-              <div className="space-y-0.5 border-t border-dotted border-border pt-2 text-center text-[11px] text-muted-foreground">
+              <div className="space-y-0.5 border-t border-dotted border-border pt-2 text-center text-2xs text-muted-foreground">
                 <p>Dicetak Dari Aplikasi</p>
                 <p className="font-semibold">KanPOS.com</p>
               </div>

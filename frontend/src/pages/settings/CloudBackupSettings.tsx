@@ -478,7 +478,7 @@ export default function CloudBackupSettings() {
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-semibold">{t('cloudBackup.banner.expiringTitle', { days: daysLeft })}</p>
-                <p className="text-[11px] text-muted-foreground leading-snug">{t('cloudBackup.banner.expiringDesc')}</p>
+                <p className="text-2xs text-muted-foreground leading-snug">{t('cloudBackup.banner.expiringDesc')}</p>
               </div>
             </div>
             <Button
@@ -558,7 +558,7 @@ export default function CloudBackupSettings() {
                   />
                 </ul>
                 {cheapestSyncPrice != null && (
-                  <p className="text-[11px] text-muted-foreground text-center pt-1">
+                  <p className="text-2xs text-muted-foreground text-center pt-1">
                     {t('cloudBackup.valueProp.priceNote', { price: rp(cheapestSyncPrice) })}
                   </p>
                 )}
@@ -571,7 +571,7 @@ export default function CloudBackupSettings() {
                 <Card id="cloud-plans">
                   <CardContent className="p-4 space-y-2">
                     <PlanList plans={syncPlans} busy={busy} currentPlanId={null} onSubscribe={handleSubscribe} rp={rp} t={t} />
-                    <p className="text-[11px] text-muted-foreground text-center pt-1">
+                    <p className="text-2xs text-muted-foreground text-center pt-1">
                       {t('cloudBackup.valueProp.stopAnytime')}
                     </p>
                   </CardContent>
@@ -652,7 +652,7 @@ export default function CloudBackupSettings() {
               <SectionTitle>{t('cloudBackup.sections.storage')}</SectionTitle>
               <Card>
                 <CardContent className="p-4 space-y-2">
-                  <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+                  <div className="flex items-center justify-between text-2xs text-muted-foreground">
                     <span className="font-semibold text-foreground text-sm">
                       {t('cloudBackup.storageCard.used', { used: fmtMb(usage.usedMb) })}
                     </span>
@@ -664,7 +664,7 @@ export default function CloudBackupSettings() {
                       style={{ width: `${Math.min(100, (usage.usedMb / usage.limitMb) * 100)}%` }}
                     />
                   </div>
-                  <p className="text-[11px] text-muted-foreground">
+                  <p className="text-2xs text-muted-foreground">
                     {t('cloudBackup.storageCard.stored', { count: backupCount })}
                   </p>
                 </CardContent>
@@ -689,7 +689,7 @@ export default function CloudBackupSettings() {
                     <p className="text-sm font-semibold truncate">
                       {t('cloudBackup.row.subscription.title', { name: subscription.plan.name })}
                     </p>
-                    <p className="text-[11px] text-muted-foreground truncate">
+                    <p className="text-2xs text-muted-foreground truncate">
                       {subscription.endDate
                         ? t('cloudBackup.row.subscription.until', {
                             date: format(new Date(subscription.endDate), 'dd MMM yyyy', { locale: dateLocale }),
@@ -731,7 +731,7 @@ export default function CloudBackupSettings() {
                 )}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold truncate">{googleUser?.email ?? t('cloudBackup.account.fallbackName')}</p>
-                  <p className="text-[11px] text-muted-foreground truncate">{t('cloudBackup.row.account.subtitle')}</p>
+                  <p className="text-2xs text-muted-foreground truncate">{t('cloudBackup.row.account.subtitle')}</p>
                 </div>
                 <Button variant="ghost" size="sm" className="h-8 gap-1 text-muted-foreground shrink-0" onClick={logout}>
                   <LogOut className="w-4 h-4" /> {t('cloudBackup.account.logout')}
@@ -760,7 +760,7 @@ export default function CloudBackupSettings() {
       )}
 
       {!isLoggedIn && (
-        <p className="text-center text-[11px] text-muted-foreground px-4">{t('cloudBackup.valueProp.privacy')}</p>
+        <p className="text-center text-2xs text-muted-foreground px-4">{t('cloudBackup.valueProp.privacy')}</p>
       )}
 
       <Dialog open={!!pendingTxId} onOpenChange={(o) => !o && closePaymentModal()}>
@@ -848,7 +848,7 @@ function StatusHero({
       <div className="space-y-1">
         <h2 className="text-base font-semibold leading-snug">{title}</h2>
         {description && (
-          <p className="text-[13px] leading-relaxed text-muted-foreground">
+          <p className="text-xsm leading-relaxed text-muted-foreground">
             {description}
           </p>
         )}
@@ -861,8 +861,8 @@ function StatusHero({
 function HeroMetric({ value, label }: { value: string; label: string }) {
   return (
     <div className="min-w-0 rounded-lg border border-border bg-muted/50 px-2 py-2">
-      <p className="truncate text-[13px] font-semibold">{value}</p>
-      <p className="truncate text-[11px] text-muted-foreground">{label}</p>
+      <p className="truncate text-xsm font-semibold">{value}</p>
+      <p className="truncate text-2xs text-muted-foreground">{label}</p>
     </div>
   );
 }
@@ -876,7 +876,7 @@ function Banner({ tone, icon, children }: { tone: 'warn' | 'bad' | 'info'; icon:
     info: 'border-info/30 bg-info/5 [&>span]:text-info',
   }[tone];
   return (
-    <div className={`flex gap-2 rounded-xl border px-3.5 py-3 text-[13px] leading-snug ${cls}`}>
+    <div className={`flex gap-2 rounded-xl border px-3.5 py-3 text-xsm leading-snug ${cls}`}>
       <span className="shrink-0 mt-0.5">{icon}</span>
       <div className="min-w-0">{children}</div>
     </div>
@@ -917,7 +917,7 @@ function MenuRow({ to, href, icon, title, subtitle, badge, badgeTone = 'neutral'
       <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${iconCls}`}>{icon}</div>
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-medium leading-snug">{title}</p>
-        <p className="truncate text-[13px] leading-snug text-muted-foreground">{subtitle}</p>
+        <p className="truncate text-xsm leading-snug text-muted-foreground">{subtitle}</p>
       </div>
       {badge && (
         <Badge variant={badgeVariant} size="sm" className="shrink-0">
@@ -995,14 +995,14 @@ function SetupChecklist({
         <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
           <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${(doneCount / steps.length) * 100}%` }} />
         </div>
-        <p className="text-[11px] text-muted-foreground">
+        <p className="text-2xs text-muted-foreground">
           {t('cloudBackup.setup.progress', { done: doneCount, total: steps.length })}
         </p>
         <div className="divide-y pt-1">
           {steps.map((step, i) => (
             <div key={step.title} className="flex gap-3 py-3 first:pt-1 last:pb-0">
               <div
-                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-[11px] font-medium ${
+                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-2xs font-medium ${
                   step.done
                     ? 'bg-success text-success-foreground'
                     : i === currentIndex
@@ -1013,8 +1013,8 @@ function SetupChecklist({
                 {step.done ? <CheckCircle2 className="w-3.5 h-3.5" /> : i + 1}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-[13px] font-semibold">{step.title}</p>
-                <p className="text-[11px] text-muted-foreground leading-snug truncate">{step.desc}</p>
+                <p className="text-xsm font-semibold">{step.title}</p>
+                <p className="text-2xs text-muted-foreground leading-snug truncate">{step.desc}</p>
                 {!step.done && i === currentIndex && step.action}
               </div>
             </div>
@@ -1058,9 +1058,9 @@ function PlanList({
             <div className="min-w-0">
               <p className="text-sm font-semibold">
                 {plan.name}
-                {isCurrent && <span className="ml-1.5 text-[11px] font-medium text-primary">{t('cloudBackup.subscription.activePlan')}</span>}
+                {isCurrent && <span className="ml-1.5 text-2xs font-medium text-primary">{t('cloudBackup.subscription.activePlan')}</span>}
               </p>
-              <p className="text-[11px] text-muted-foreground">
+              <p className="text-2xs text-muted-foreground">
                 {rp(plan.price)} {t('cloudBackup.hero.perMonth')}
                 {storeLimit != null && (
                   <>
@@ -1103,7 +1103,7 @@ function BenefitItem({ icon, title, desc }: { icon: React.ReactNode; title: stri
       </div>
       <div className="min-w-0">
         <p className="text-xs font-semibold">{title}</p>
-        <p className="text-[11px] text-muted-foreground leading-snug">{desc}</p>
+        <p className="text-2xs text-muted-foreground leading-snug">{desc}</p>
       </div>
     </li>
   );

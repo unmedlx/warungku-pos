@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import type { UserFilter, UserList, UserRow } from '@/lib/types';
 import { formatAngka, formatMb, formatSejak } from '@/lib/format';
 import {
+  AksiBaris,
   Badge,
+  Button,
   BilahKuota,
   Card,
   EmptyBox,
@@ -128,11 +130,12 @@ export function UsersSection({
                     <th className="text-right">Toko</th>
                     <th className="text-right">Storage</th>
                     <th className="text-right">Aktivitas terakhir</th>
+                    <th className="text-right">Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
                   {data.users.map((u) => (
-                    <tr key={u.id} onClick={() => onBuka(u.id)} className="klik">
+                    <tr key={u.id} onClick={() => onBuka(u.id)} className="klik group">
                       <td>
                         <IdentitasPengguna nama={u.name} email={u.email} />
                       </td>
@@ -161,6 +164,16 @@ export function UsersSection({
                       </td>
                       <td className="text-right text-[13px] text-muted-foreground">
                         {formatSejak(u.lastActivityAt)}
+                      </td>
+                      <td>
+                        {/* Seluruh barisnya memang sudah bisa diklik; tombol ini
+                            ada supaya jalan masuknya terlihat dan bisa dijangkau
+                            lewat keyboard, bukan hanya diketahui lewat coba-coba. */}
+                        <AksiBaris>
+                          <Button size="sm" onClick={() => onBuka(u.id)}>
+                            Buka
+                          </Button>
+                        </AksiBaris>
                       </td>
                     </tr>
                   ))}

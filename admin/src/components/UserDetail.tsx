@@ -3,6 +3,8 @@ import type { AdminPlan, UserDetail } from '@/lib/types';
 import { formatBytes, formatMb, formatRupiah, formatSejak, formatTanggal } from '@/lib/format';
 import {
   Alert,
+  StatCard,
+  Tabs,
   Avatar,
   Badge,
   Bar,
@@ -161,6 +163,7 @@ export function UserDetailSection({
 }) {
   const [dialog, setDialog] = useState(false);
   const [dialogGrant, setDialogGrant] = useState(false);
+  const [tab, setTab] = useState<'toko' | 'transaksi' | 'backup'>('toko');
 
   if (error) return <ErrorBox message={error} onRetry={onMuatUlang} />;
   if (!data) return <Skeleton className="h-96" />;
@@ -170,6 +173,11 @@ export function UserDetailSection({
   const sisaHari = langganan
     ? Math.ceil((new Date(langganan.endDate).getTime() - Date.now()) / 86_400_000)
     : null;
+
+  const totalBerbayar = data.transactions
+    .filter((t) => t.status === 'COMPLETED')
+    .reduce((s, t) => s + t.amount, 0);
+  const jumlahLunas = data.transactions.filter((t) => t.status === 'COMPLETED').length;
 
   // Peringatan langganan dan storage digabung jadi satu alert: keduanya sama-sama
   // berakhir di tiket support, dan dua strip terpisah membuat halaman ini berisik.
@@ -203,14 +211,19 @@ export function UserDetailSection({
             </div>
           </div>
         </div>
+        {/* Tindakan utama dikumpulkan di kepala halaman supaya tidak perlu
+            menggulir jauh untuk "Beri langganan" — dulu tombolnya hanya ada di
+            kaki kartu Langganan di kolom kanan. */}
         <div className="flex flex-wrap gap-2">
           <Button onClick={onKembali}>← Kembali</Button>
-          <Button onClick={() => setDialogGrant(true)}>Beri langganan</Button>
           <Button
             variant={data.suspended ? 'outline' : 'destructive'}
             onClick={() => setDialog(true)}
           >
             {data.suspended ? 'Aktifkan kembali' : 'Suspend akun'}
+          </Button>
+          <Button variant="primary" onClick={() => setDialogGrant(true)}>
+            {langganan ? 'Perpanjang manual' : 'Beri langganan'}
           </Button>
         </div>
       </div>
@@ -244,105 +257,135 @@ export function UserDetailSection({
         )
       )}
 
-      <div className="grid gap-4 lg:grid-cols-[1.55fr_1fr]">
+      <div className="grid gap-4 lg:grid-cols-[1.55fr_1fr] lg:items-start">
         <div className="flex flex-col gap-4">
-          <Card className="overflow-hidden">
-            <CardHead
-              title={`Toko (${data.stores.length})`}
-              hint={data.maxStores ? `maksimal ${data.maxStores} di paket ini` : undefined}
-            />
-            {data.stores.length === 0 ? (
-              <CardBody className="text-[13px] text-muted-foreground">Belum ada toko.</CardBody>
-            ) : (
-              <div className="divide-y divide-border">
-                {data.stores.map((s) => (
-                  <Item key={s.id}>
-                    <ItemMedia tone="primary">
-                      <IkonToko />
-                    </ItemMedia>
-                    <ItemContent
-                      title={<span className="block truncate">{s.name}</span>}
-                      desc={
-                        <>
-                          Sinkron terakhir {formatSejak(s.lastSyncAt)}
-                          {s.timezone ? ` · ${s.timezone}` : ''}
-                          {s.isPublic ? ' · publik' : ''}
-                        </>
-                      }
-                    />
-                  </Item>
-                ))}
-              </div>
-            )}
-            <div className="border-t border-border px-4 py-3 text-xs text-muted-foreground">
-              Panel menampilkan jejak pemakaian toko, bukan isi data penjualannya.
-            </div>
-          </Card>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <StatCard label="Total dibayar" value={formatRupiah(totalBerbayar)}>
+              <span>{jumlahLunas} transaksi lunas</span>
+            </StatCard>
+            <StatCard
+              label="Toko"
+              value={`${data.stores.length}${data.maxStores ? ` / ${data.maxStores}` : ''}`}
+            >
+              <span>{data.maxStores ? 'batas dari paket' : 'tanpa batas'}</span>
+            </StatCard>
+            <StatCard
+              label="Storage"
+              value={formatMb(data.storage.usedMb)}
+              title={`${data.storage.files} berkas`}
+            >
+              <span className={warnaKuota(rasio)}>
+                {data.storage.limitMb > 0
+                  ? `${Math.round(rasio * 100)}% dari ${formatMb(data.storage.limitMb)}`
+                  : 'tanpa batas'}
+              </span>
+            </StatCard>
+          </div>
 
+          {/* Tiga daftar ini dulu bertumpuk jadi tiga kartu; digabung ke tab
+              supaya kolom kanan yang lengket tetap sejajar dengan isi kiri
+              alih-alih menggantung di samping ruang kosong. */}
           <Card className="overflow-hidden">
-            <CardHead title="Riwayat transaksi" hint={`${data.transactions.length} terbaru`} />
-            {data.transactions.length === 0 ? (
-              <CardBody className="text-[13px] text-muted-foreground">
-                Belum ada transaksi.
-              </CardBody>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="tabel min-w-[520px]">
-                  <thead>
-                    <tr>
-                      <th>Tanggal</th>
-                      <th>Paket</th>
-                      <th>Ref</th>
-                      <th className="text-right">Nominal</th>
-                      <th className="text-right">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.transactions.map((t) => (
-                      <tr key={t.id}>
-                        <td className="whitespace-nowrap tabular-nums">
-                          {formatTanggal(t.createdAt)}
-                        </td>
-                        <td>{t.plan}</td>
-                        <td className="kode text-muted-foreground">{t.reference ?? '—'}</td>
-                        <td className="text-right font-medium tabular-nums">
-                          {formatRupiah(t.amount)}
-                        </td>
-                        <td className="text-right">{statusTransaksi(t.status)}</td>
-                      </tr>
+            <Tabs
+              value={tab}
+              onChange={setTab}
+              items={[
+                { id: 'toko', label: 'Toko', count: data.stores.length },
+                { id: 'transaksi', label: 'Transaksi', count: data.transactions.length },
+                { id: 'backup', label: 'Backup', count: data.backups.length },
+              ]}
+            />
+
+            {tab === 'toko' &&
+              (data.stores.length === 0 ? (
+                <CardBody className="text-[13px] text-muted-foreground">Belum ada toko.</CardBody>
+              ) : (
+                <>
+                  <div className="divide-y divide-border">
+                    {data.stores.map((s) => (
+                      <Item key={s.id}>
+                        <ItemMedia tone="primary">
+                          <IkonToko />
+                        </ItemMedia>
+                        <ItemContent
+                          title={<span className="block truncate">{s.name}</span>}
+                          desc={
+                            <>
+                              Sinkron terakhir {formatSejak(s.lastSyncAt)}
+                              {s.timezone ? ` · ${s.timezone}` : ''}
+                              {s.isPublic ? ' · publik' : ''}
+                            </>
+                          }
+                        />
+                      </Item>
                     ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </Card>
+                  </div>
+                  <div className="border-t border-border px-4 py-3 text-xs text-muted-foreground">
+                    Panel menampilkan jejak pemakaian toko, bukan isi data penjualannya.
+                  </div>
+                </>
+              ))}
 
-          <Card className="overflow-hidden">
-            <CardHead
-              title="Backup"
-              hint={`${data.storage.files} berkas · ${formatMb(data.storage.usedMb)}`}
-            />
-            {data.backups.length === 0 ? (
-              <CardBody className="text-[13px] text-muted-foreground">Belum ada backup.</CardBody>
-            ) : (
-              <div className="divide-y divide-border">
-                {data.backups.slice(0, 8).map((b) => (
-                  <Item key={b.id} className="py-2.5">
-                    <ItemContent
-                      title={<span className="block truncate">{b.fileName}</span>}
-                      desc={formatSejak(b.createdAt)}
-                    />
-                    <span className="flex-none text-[13px] font-medium tabular-nums">
-                      {formatBytes(b.fileSize)}
-                    </span>
-                  </Item>
-                ))}
-              </div>
-            )}
+            {tab === 'transaksi' &&
+              (data.transactions.length === 0 ? (
+                <CardBody className="text-[13px] text-muted-foreground">
+                  Belum ada transaksi.
+                </CardBody>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="tabel min-w-[520px]">
+                    <thead>
+                      <tr>
+                        <th>Tanggal</th>
+                        <th>Paket</th>
+                        <th>Ref</th>
+                        <th className="text-right">Nominal</th>
+                        <th className="text-right">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.transactions.map((t) => (
+                        <tr key={t.id}>
+                          <td className="whitespace-nowrap tabular-nums">
+                            {formatTanggal(t.createdAt)}
+                          </td>
+                          <td>{t.plan}</td>
+                          <td className="kode text-muted-foreground">{t.reference ?? '—'}</td>
+                          <td className="text-right font-medium tabular-nums">
+                            {formatRupiah(t.amount)}
+                          </td>
+                          <td className="text-right">{statusTransaksi(t.status)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ))}
+
+            {tab === 'backup' &&
+              (data.backups.length === 0 ? (
+                <CardBody className="text-[13px] text-muted-foreground">Belum ada backup.</CardBody>
+              ) : (
+                <div className="divide-y divide-border">
+                  {data.backups.slice(0, 10).map((b) => (
+                    <Item key={b.id} className="py-2.5">
+                      <ItemContent
+                        title={<span className="block truncate">{b.fileName}</span>}
+                        desc={formatSejak(b.createdAt)}
+                      />
+                      <span className="flex-none text-[13px] font-medium tabular-nums">
+                        {formatBytes(b.fileSize)}
+                      </span>
+                    </Item>
+                  ))}
+                </div>
+              ))}
           </Card>
         </div>
 
-        <div className="flex flex-col gap-4">
+        {/* Kolom kanan lengket: status langganan dan kuota adalah dua hal yang
+            terus dirujuk sambil membaca daftar di kiri. */}
+        <div className="flex flex-col gap-4 lg:sticky lg:top-[72px]">
           <Card>
             <CardHead title="Langganan" />
             <CardBody>
@@ -383,7 +426,7 @@ export function UserDetailSection({
           </Card>
 
           <Card>
-            <CardHead title="Storage" />
+            <CardHead title="Storage" hint={`${data.storage.files} berkas`} />
             <CardBody>
               <div className="flex items-center justify-between gap-3 text-[13px]">
                 <span className="text-muted-foreground">Terpakai</span>

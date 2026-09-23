@@ -40,15 +40,15 @@ function Changelog({ release, className }: { release: LatestRelease; className?:
   const baris = barisChangelog(release);
   return (
     <div className={`rounded-xl border border-border bg-background px-3.5 py-3 text-left ${className ?? ''}`}>
-      <div className="text-[13px] font-semibold">{t('appUpdate.whatsNew')}</div>
+      <div className="text-xsm font-semibold">{t('appUpdate.whatsNew')}</div>
       {baris.length > 0 ? (
-        <ul className="mt-1.5 grid list-disc gap-0.5 pl-[18px] text-[13px] text-muted-foreground">
+        <ul className="mt-1.5 grid list-disc gap-0.5 pl-[18px] text-xsm text-muted-foreground">
           {baris.slice(0, 6).map((b) => (
             <li key={b}>{b}</li>
           ))}
         </ul>
       ) : (
-        <p className="mt-1.5 text-[13px] text-muted-foreground">{t('appUpdate.noChangelog')}</p>
+        <p className="mt-1.5 text-xsm text-muted-foreground">{t('appUpdate.noChangelog')}</p>
       )}
     </div>
   );
@@ -71,7 +71,7 @@ function UpdateSheet() {
   if (!release || s.mandatory) return null;
 
   const persen = s.progress?.total ? Math.round((s.progress.downloaded / s.progress.total) * 100) : 0;
-  const galat = s.error && <p className="mt-3 text-[13px] text-destructive-text">{t(`appUpdate.errors.${s.error}`)}</p>;
+  const galat = s.error && <p className="mt-3 text-xsm text-destructive-text">{t(`appUpdate.errors.${s.error}`)}</p>;
 
   let isi: React.ReactNode;
   if (s.needsPermission) {
@@ -81,7 +81,7 @@ function UpdateSheet() {
           <IkonJudul tone="warning">
             <ShieldCheck className="h-6 w-6" />
           </IkonJudul>
-          <h3 className="text-[17px] font-semibold">{t('appUpdate.permissionTitle')}</h3>
+          <h3 className="text-heading font-semibold">{t('appUpdate.permissionTitle')}</h3>
         </div>
         <p className="mt-3 text-sm text-muted-foreground">{t('appUpdate.permissionBody')}</p>
         <ModalFooter className="grid grid-cols-[1fr_1.4fr] gap-2 sm:flex">
@@ -102,14 +102,14 @@ function UpdateSheet() {
             <Download className="h-6 w-6" />
           </IkonJudul>
           <div>
-            <h3 className="text-[17px] font-semibold">{t('appUpdate.downloadingTitle')}</h3>
-            <p className="text-[13px] tabular-nums text-muted-foreground">
+            <h3 className="text-heading font-semibold">{t('appUpdate.downloadingTitle')}</h3>
+            <p className="text-xsm tabular-nums text-muted-foreground">
               {t('appUpdate.versionOnly', { version: release.versionName })}
             </p>
           </div>
         </div>
         <Progress value={persen} className="mt-4 h-2" />
-        <div className="mt-2 flex justify-between text-[13px] tabular-nums">
+        <div className="mt-2 flex justify-between text-xsm tabular-nums">
           <span>
             {t('appUpdate.progress', {
               done: formatMb(s.progress?.downloaded ?? 0),
@@ -137,13 +137,13 @@ function UpdateSheet() {
             <CheckCircle2 className="h-6 w-6" />
           </IkonJudul>
           <div>
-            <h3 className="text-[17px] font-semibold">{t('appUpdate.readyTitle')}</h3>
-            <p className="text-[13px] tabular-nums text-muted-foreground">
+            <h3 className="text-heading font-semibold">{t('appUpdate.readyTitle')}</h3>
+            <p className="text-xsm tabular-nums text-muted-foreground">
               {t('appUpdate.versionOnly', { version: release.versionName })}
             </p>
           </div>
         </div>
-        <p className="mt-3 rounded-xl border border-border bg-background px-3.5 py-3 text-[13px] text-muted-foreground">
+        <p className="mt-3 rounded-xl border border-border bg-background px-3.5 py-3 text-xsm text-muted-foreground">
           {s.platform === 'windows' ? t('appUpdate.installHintWindows') : t('appUpdate.installHintAndroid')}
         </p>
         {galat}
@@ -165,8 +165,8 @@ function UpdateSheet() {
             <Download className="h-6 w-6" />
           </IkonJudul>
           <div>
-            <h3 className="text-[17px] font-semibold">{t('appUpdate.availableTitle')}</h3>
-            <p className="text-[13px] tabular-nums text-muted-foreground">
+            <h3 className="text-heading font-semibold">{t('appUpdate.availableTitle')}</h3>
+            <p className="text-xsm tabular-nums text-muted-foreground">
               {t('appUpdate.versionSize', { version: release.versionName, size: formatMb(release.fileSize) })}
             </p>
           </div>
@@ -217,19 +217,19 @@ function MandatoryUpdateScreen() {
         <span className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-2xl bg-warning/10 text-warning-text">
           <RefreshCw className="h-8 w-8" />
         </span>
-        <h2 id="judul-update-wajib" className="text-[21px] font-semibold tracking-tight">
+        <h2 id="judul-update-wajib" className="text-title font-semibold tracking-tight">
           {t('appUpdate.mandatoryTitle')}
         </h2>
         <p className="mt-2 text-sm text-muted-foreground">{t('appUpdate.mandatoryBody')}</p>
 
         <div className="mt-4 rounded-xl border border-border bg-background px-3.5 py-3 text-left">
           <div className="flex items-center justify-between">
-            <span className="text-[13px] font-semibold tabular-nums">
+            <span className="text-xsm font-semibold tabular-nums">
               {t('appUpdate.versionOnly', { version: release.versionName })}
             </span>
             <Badge variant="warning">{t('appUpdate.mandatoryBadge')}</Badge>
           </div>
-          <ul className="mt-1.5 grid list-disc gap-0.5 pl-[18px] text-[13px] text-muted-foreground">
+          <ul className="mt-1.5 grid list-disc gap-0.5 pl-[18px] text-xsm text-muted-foreground">
             {(barisChangelog(release).length ? barisChangelog(release) : [t('appUpdate.noChangelog')])
               .slice(0, 5)
               .map((b) => (
@@ -240,7 +240,7 @@ function MandatoryUpdateScreen() {
 
         {s.needsPermission ? (
           <>
-            <p className="mt-4 text-left text-[13px] text-muted-foreground">{t('appUpdate.permissionBody')}</p>
+            <p className="mt-4 text-left text-xsm text-muted-foreground">{t('appUpdate.permissionBody')}</p>
             <Button size="xl" className="mt-3 w-full" onClick={() => void openInstallPermission()}>
               {t('appUpdate.openSettings')}
             </Button>
@@ -248,7 +248,7 @@ function MandatoryUpdateScreen() {
         ) : s.status === 'downloading' ? (
           <div className="mt-5 text-left">
             <Progress value={persen} className="h-2" />
-            <div className="mt-2 flex justify-between text-[13px] tabular-nums">
+            <div className="mt-2 flex justify-between text-xsm tabular-nums">
               <span>
                 {t('appUpdate.progress', {
                   done: formatMb(s.progress?.downloaded ?? 0),
@@ -268,7 +268,7 @@ function MandatoryUpdateScreen() {
           </Button>
         )}
 
-        {s.error && <p className="mt-3 text-[13px] text-destructive-text">{t(`appUpdate.errors.${s.error}`)}</p>}
+        {s.error && <p className="mt-3 text-xsm text-destructive-text">{t(`appUpdate.errors.${s.error}`)}</p>}
 
         <Button
           variant="outline"

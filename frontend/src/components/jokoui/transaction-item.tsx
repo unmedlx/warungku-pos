@@ -33,11 +33,11 @@ const TransactionItem = React.forwardRef<HTMLDivElement, TransactionItemProps>(
       )}
     >
       <div className={cn('flex h-10 w-10 shrink-0 items-center justify-center rounded-xl', iconColor)}>
-        <Icon className="h-[18px] w-[18px]" />
+        <Icon className="size-4.5" />
       </div>
       <div className="min-w-0 flex-1">
         <p className="truncate font-medium leading-snug text-foreground">{title}</p>
-        {meta && <div className="mt-0.5 truncate text-[13px] leading-snug text-muted-foreground">{meta}</div>}
+        {meta && <div className="mt-0.5 truncate text-xsm leading-snug text-muted-foreground">{meta}</div>}
       </div>
       {amount && <p className={cn('shrink-0 font-semibold tabular-nums text-foreground', amountClassName)}>{amount}</p>}
       {children}

@@ -689,8 +689,8 @@
       "totalSales": "Total Sales"
     },
     "empty": {
-      "noDateFilter": "No transactions yet",
-      "withDateFilter": "No transactions in this date range"
+      "noDateFilter": "Sales you record in the Cashier will show up here.",
+      "withDateFilter": "Try a different date range, or clear the filter."
     },
     "groupHeader_zero": "{{date}} · {{count}} transactions",
     "groupHeader_one": "{{date}} · {{count}} transaction",

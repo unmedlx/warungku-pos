@@ -22,7 +22,7 @@ const BottomNav = React.forwardRef<HTMLElement, BottomNavProps>(
     <nav
       ref={ref}
       className={cn(
-        "fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-background/85 pb-[env(safe-area-inset-bottom)] backdrop-blur-sm",
+        "fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card pb-[env(safe-area-inset-bottom)]",
         className,
       )}
     >

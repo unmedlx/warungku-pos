@@ -91,7 +91,7 @@ export default function VoiceCartPage({
             {quota && !quota.unlimited && (
               <span
                 className={cn(
-                  'rounded-full px-2 py-0.5 text-[11px] tabular-nums',
+                  'rounded-full px-2 py-0.5 text-2xs tabular-nums',
                   quota.remaining > 0 ? 'bg-muted text-muted-foreground' : 'bg-warning/15 text-warning-text',
                 )}
               >
@@ -118,13 +118,13 @@ export default function VoiceCartPage({
             ) : (
               <div className="flex items-center gap-2 rounded-2xl bg-muted px-3.5 py-3">
                 <span className="h-2.5 w-2.5 rounded-full bg-muted-foreground/60" />
-                <span className="flex-1 text-[12px] text-muted-foreground">
+                <span className="flex-1 text-xsm text-muted-foreground">
                   {error
                     ? t(denied ? 'cashier.voice.denied' : `cashier.voice.error.${error}`)
                     : t('cashier.voice.page.micOff')}
                 </span>
                 {!denied && (
-                  <Button size="sm" variant="outline" className="h-7 gap-1 text-[11px]" disabled={starting} onClick={() => void dictation.start()}>
+                  <Button size="sm" variant="outline" className="h-7 gap-1 text-2xs" disabled={starting} onClick={() => void dictation.start()}>
                     <Mic className="h-3 w-3" />
                     {t(error ? 'cashier.voice.retry' : 'cashier.voice.page.resume')}
                   </Button>
@@ -156,10 +156,10 @@ export default function VoiceCartPage({
             {rows.length === 0 ? (
               <div className="px-5 py-10 text-center text-muted-foreground">
                 <ShoppingCart className="mx-auto mb-2 h-9 w-9 opacity-60" />
-                <p className="text-[12.5px]">{t('cashier.voice.page.empty')}</p>
+                <p className="text-xsm">{t('cashier.voice.page.empty')}</p>
                 <div className="mt-2 flex flex-wrap justify-center gap-1.5">
                   {(t('cashier.voice.page.examples', { returnObjects: true }) as string[]).map((ex) => (
-                    <span key={ex} className="rounded-lg border border-border bg-background px-2 py-1 text-[11.5px] text-foreground">
+                    <span key={ex} className="rounded-lg border border-border bg-background px-2 py-1 text-2xs text-foreground">
                       “{ex}”
                     </span>
                   ))}
@@ -177,7 +177,7 @@ export default function VoiceCartPage({
                     )}
                   >
                     {isNew && latest && (
-                      <span className="absolute left-10 top-1.5 z-10 rounded-md bg-success px-1.5 text-[9.5px] font-bold text-white tabular-nums">
+                      <span className="absolute left-10 top-1.5 z-10 rounded-md bg-success px-1.5 text-3xs font-bold text-white tabular-nums">
                         +{latest.qty}
                       </span>
                     )}
@@ -189,8 +189,8 @@ export default function VoiceCartPage({
                       )}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-[13px] font-semibold">{item.product.name}</p>
-                      <p className="text-[11px] text-muted-foreground tabular-nums">
+                      <p className="truncate text-xsm font-semibold">{item.product.name}</p>
+                      <p className="text-2xs text-muted-foreground tabular-nums">
                         {rp(unitPriceOf(item))} × {item.qty} = <b className="font-semibold text-foreground">{rp(subtotalOf(item))}</b>
                       </p>
                     </div>
@@ -203,7 +203,7 @@ export default function VoiceCartPage({
                       >
                         {item.qty === 1 ? <X className="h-3.5 w-3.5" /> : <Minus className="h-3.5 w-3.5" />}
                       </button>
-                      <span className="grid min-w-[28px] place-items-center text-[14px] font-bold tabular-nums">{item.qty}</span>
+                      <span className="grid min-w-[28px] place-items-center text-amount font-bold tabular-nums">{item.qty}</span>
                       <button
                         type="button"
                         aria-label={t('cashier.qty.increase')}
@@ -223,7 +223,7 @@ export default function VoiceCartPage({
         {/* Footer tetap: total, mikrofon, bayar */}
         <div className="border-t border-border bg-popover px-4 pt-2.5" style={{ paddingBottom: 'calc(0.875rem + env(safe-area-inset-bottom, 0px))' }}>
           <div className="mb-2 flex items-baseline justify-between">
-            <span className="text-[11.5px] text-muted-foreground">{t('cashier.voice.page.totalLabel', { count: qtyTotal })}</span>
+            <span className="text-2xs text-muted-foreground">{t('cashier.voice.page.totalLabel', { count: qtyTotal })}</span>
             <span className="text-lg font-bold tabular-nums">{rp(total)}</span>
           </div>
           <div className="flex gap-2">
@@ -251,15 +251,15 @@ export default function VoiceCartPage({
 function Stat({ label, value, warn = false }: { label: string; value: number; warn?: boolean }) {
   return (
     <div className={cn('rounded-xl border border-border bg-card px-2.5 py-2', warn && 'border-warning/50 bg-warning/10')}>
-      <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</p>
-      <p className={cn('mt-0.5 text-[15px] font-bold tabular-nums', warn && 'text-warning-text')}>{value}</p>
+      <p className="text-3xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p className={cn('mt-0.5 text-amount font-bold tabular-nums', warn && 'text-warning-text')}>{value}</p>
     </div>
   );
 }
 
 function SectionLabel({ label, count, warn = false }: { label: string; count: number; warn?: boolean }) {
   return (
-    <div className={cn('mx-1 mt-3.5 mb-2 flex items-center justify-between text-[10.5px] font-bold uppercase tracking-[0.12em]', warn ? 'text-warning-text' : 'text-muted-foreground')}>
+    <div className={cn('mx-1 mt-3.5 mb-2 flex items-center justify-between text-3xs font-bold uppercase tracking-[0.12em]', warn ? 'text-warning-text' : 'text-muted-foreground')}>
       {label}
       <span className={cn('rounded-md px-1.5 tracking-normal', warn ? 'bg-warning/15' : 'bg-muted')}>{count}</span>
     </div>
@@ -308,15 +308,15 @@ function IssueCard({
       t('cashier.voice.notInCatalog')
     );
 
-  const optBtn = 'rounded-xl border border-border bg-background px-2.5 py-1.5 text-[11.5px] font-semibold';
+  const optBtn = 'rounded-xl border border-border bg-background px-2.5 py-1.5 text-2xs font-semibold';
 
   return (
     <div className={cn('rounded-2xl border-[1.5px] bg-card p-2.5', tone)}>
       <div className="flex items-start gap-2">
         <span className="mt-0.5 shrink-0">{icon}</span>
         <div className="min-w-0 flex-1">
-          <p className="text-[12.5px] font-semibold">{title}</p>
-          <p className="mt-0.5 text-[10.5px] italic text-muted-foreground">“{chip.heard}”</p>
+          <p className="text-xsm font-semibold">{title}</p>
+          <p className="mt-0.5 text-3xs italic text-muted-foreground">“{chip.heard}”</p>
         </div>
         <button
           type="button"
@@ -340,7 +340,7 @@ function IssueCard({
             {t('cashier.voice.page.searchManual')}
           </button>
         )}
-        <button type="button" onClick={skip} className="rounded-xl px-2.5 py-1.5 text-[11.5px] text-muted-foreground">
+        <button type="button" onClick={skip} className="rounded-xl px-2.5 py-1.5 text-2xs text-muted-foreground">
           {t('cashier.voice.skip')}
         </button>
       </div>

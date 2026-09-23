@@ -73,7 +73,7 @@ export default function UserTypeModal({ open, onClose }: UserTypeModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="w-full max-w-sm rounded-2xl border border-border bg-background p-5 shadow-lg space-y-4">
+      <div className="w-full max-w-sm rounded-2xl bg-background p-5 space-y-4 border border-transparent shadow-lift dark:border-border dark:shadow-none">
         <div className="flex flex-col items-center text-center space-y-2">
           <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
             <Store className="w-5 h-5" />
@@ -81,7 +81,7 @@ export default function UserTypeModal({ open, onClose }: UserTypeModalProps) {
           <h2 className="text-base font-semibold leading-snug">
             {t('survey.title')}
           </h2>
-          <p className="text-[13px] text-muted-foreground">
+          <p className="text-xsm text-muted-foreground">
             {t('survey.description')}
           </p>
         </div>
@@ -97,7 +97,7 @@ export default function UserTypeModal({ open, onClose }: UserTypeModalProps) {
                 onClick={() => setSelected(value)}
                 aria-pressed={active}
                 className={cn(
-                  'flex items-center justify-between gap-2 rounded-lg border px-3 py-2.5 text-[13px] font-medium text-left transition-colors',
+                  'flex items-center justify-between gap-2 rounded-lg border px-3 py-2.5 text-xsm font-medium text-left transition-colors',
                   active ? 'border-primary bg-primary/5 text-foreground' : 'border-border hover:bg-muted',
                 )}
               >

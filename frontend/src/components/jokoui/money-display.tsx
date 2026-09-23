@@ -55,11 +55,16 @@ export function useMoneyVisibility() {
   return { hidden, toggle };
 }
 
+/**
+ * Skala nominal. Bobotnya sengaja berat dan naik seiring ukuran: uang di app
+ * ini dibaca sambil berdiri, di HP murah, kadang di bawah matahari. Angka
+ * yang disetel seperti teks biasa adalah angka yang harus didekatkan ke mata.
+ */
 const SIZE_CLASS = {
-  sm: 'text-[13px] font-semibold',
-  md: 'text-base font-semibold',
-  lg: 'text-xl font-semibold',
-  xl: 'text-[28px] leading-[1.1] font-semibold tracking-[-0.02em]',
+  sm: 'text-xsm font-semibold',
+  md: 'text-base font-bold tracking-[-0.01em]',
+  lg: 'text-amount font-bold tracking-[-0.02em]',
+  xl: 'text-metric leading-[1.05] font-extrabold tracking-[-0.035em]',
 } as const;
 
 const MASK = { sm: '•••', md: '••••', lg: '•••••', xl: '••••••' } as const;
@@ -102,7 +107,10 @@ export function MoneyDisplay({
 
   return (
     <span className={cn('tabular-nums whitespace-nowrap', SIZE_CLASS[size], className)}>
-      {symbol && <span className="mr-1 font-semibold opacity-70">{symbol}</span>}
+      {/* Prefiks "Rp" diredupkan lewat ukuran dan bobot, bukan opacity:
+          opacity mencampur warnanya dengan apa pun yang ada di belakangnya,
+          dan nominal ini juga berdiri di atas bidang brand yang dicelup. */}
+      {symbol && <span className="mr-1 text-[0.8em] font-semibold">{symbol}</span>}
       {text}
     </span>
   );
@@ -119,11 +127,13 @@ export function MoneyVisibilityToggle({ className }: { className?: string }) {
       aria-label={hidden ? 'Tampilkan nominal' : 'Sembunyikan nominal'}
       aria-pressed={hidden}
       className={cn(
-        'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground',
+        'flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors',
+        'hover:bg-accent hover:text-foreground motion-reduce:transition-none',
+        'outline-none focus-visible:ring-[3px] focus-visible:ring-ring/40',
         className,
       )}
     >
-      <Icon className="h-[18px] w-[18px]" />
+      <Icon className="size-4.5" />
     </button>
   );
 }

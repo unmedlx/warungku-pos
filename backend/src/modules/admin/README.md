@@ -54,8 +54,22 @@ pertama terbentuk kalau ingin menutup jalur itu sepenuhnya.
 | `GET /api/admin/payments?filter&q&page` | Transaksi; `filter=attention` = antrean kerja |
 | `POST /api/admin/payments/:id/reconcile` | Tanya ulang ke Tripay, selaraskan status lokal |
 | `GET /api/admin/audit?page&limit` | Jejak semua mutasi admin |
+| `GET /api/admin/admins` | Daftar admin — **superadmin saja** |
+| `POST /api/admin/admins` | `{ email, role, reason }` — angkat akun yang sudah ada |
+| `DELETE /api/admin/admins/:id` | `{ reason }` — turunkan perannya jadi `USER` |
 
 ## Keputusan yang perlu diketahui
+
+- **Admin bukan tabel tersendiri.** Ia `User` dengan `role` ADMIN/SUPERADMIN,
+  jadi `POST /admins` mengubah peran akun yang sudah ada dan tidak pernah
+  membuat pengguna baru — sama seperti login, yang juga menolak akun yang belum
+  ada. Orang yang mau diangkat harus sudah pernah masuk ke KanPOS lewat Google.
+  Dua pagar ada di `admins.service.ts`, bukan di route, supaya tidak bisa
+  dilewati lewat jalur lain: superadmin tidak bisa mencabut haknya sendiri, dan
+  superadmin terakhir tidak bisa dicabut. Email yang terdaftar di `ADMIN_EMAILS`
+  tetap dipulihkan jadi superadmin saat login, jadi mencabutnya dari panel tidak
+  bertahan sampai emailnya dihapus dari env — panel memberi tahu hal ini di
+  dialognya.
 
 - **Paket diarsipkan, tidak pernah dihapus.** `Plan` punya relasi
   `onDelete: Cascade` ke `Subscription` dan `PaymentTransaction`, jadi menghapus

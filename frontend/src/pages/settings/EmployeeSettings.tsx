@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 
 const RowIcon = ({ icon: Icon, tone = 'purple' as const }: { icon: typeof UsersIcon; tone?: 'purple' | 'gray' | 'blue' }) => (
   <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${TONE_CLASS[tone]}`}>
-    <Icon className="h-[18px] w-[18px]" />
+    <Icon className="size-4.5" />
   </div>
 );
 
@@ -71,7 +71,7 @@ export default function EmployeeSettings() {
               <RowIcon icon={UsersIcon} />
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium leading-snug">{t('employees.activate.title')}</p>
-                <p className="mt-0.5 text-[13px] leading-snug text-muted-foreground">
+                <p className="mt-0.5 text-xsm leading-snug text-muted-foreground">
                   {t('employees.activate.description')}
                 </p>
               </div>

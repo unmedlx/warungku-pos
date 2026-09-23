@@ -50,7 +50,10 @@ Avatar.displayName = 'Avatar';
 
 const AvatarImage = React.forwardRef<HTMLImageElement, React.ImgHTMLAttributes<HTMLImageElement>>(
   ({ className, ...props }, ref) => (
-    <img ref={ref} className={cn('aspect-square h-full w-full object-cover', className)} {...props} />
+    /* `alt` default kosong: avatar selalu berdiri tepat di sebelah nama
+       yang diwakilinya, jadi membacakannya dua kali justru menambah
+       kebisingan di screen reader. Pemanggil tetap boleh menimpanya. */
+    <img ref={ref} alt="" className={cn('aspect-square h-full w-full object-cover', className)} {...props} />
   ),
 );
 AvatarImage.displayName = 'AvatarImage';

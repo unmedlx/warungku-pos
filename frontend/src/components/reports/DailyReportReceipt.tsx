@@ -184,8 +184,8 @@ export default function DailyReportReceipt({ open, onClose, data }: DailyReportR
               <img src={data.storeSettings.logo} alt={t('dailyReceipt.logoAlt')} className="w-12 h-12 object-contain mx-auto mb-1" />
             )}
             <p className="font-semibold text-xs">{data.storeSettings?.storeName || t('dailyReceipt.storeFallback')}</p>
-            {data.storeSettings?.address && <p className="text-[11px]">{data.storeSettings.address}</p>}
-            {data.storeSettings?.phone && <p className="text-[11px]">{data.storeSettings.phone}</p>}
+            {data.storeSettings?.address && <p className="text-2xs">{data.storeSettings.address}</p>}
+            {data.storeSettings?.phone && <p className="text-2xs">{data.storeSettings.phone}</p>}
           </div>
 
           <div className="border-t border-dashed border-gray-400 my-2" />
@@ -199,7 +199,7 @@ export default function DailyReportReceipt({ open, onClose, data }: DailyReportR
           <div className="border-t border-dashed border-gray-400 my-2" />
 
           {/* Info */}
-          <div className="text-[11px] space-y-0.5">
+          <div className="text-2xs space-y-0.5">
             <p className="font-semibold">{t('dailyReceipt.period')}:</p>
             <p>{data.periodStr}</p>
             <div className="flex justify-between mt-2">
@@ -215,8 +215,8 @@ export default function DailyReportReceipt({ open, onClose, data }: DailyReportR
           <div className="border-t border-dashed border-gray-400 my-2" />
 
           {/* Sales Section */}
-          <p className="font-semibold text-[11px] mb-1">{t('dailyReceipt.sales')}</p>
-          <div className="space-y-0.5 text-[11px]">
+          <p className="font-semibold text-2xs mb-1">{t('dailyReceipt.sales')}</p>
+          <div className="space-y-0.5 text-2xs">
             <div className="flex justify-between">
               <span>{t('dailyReceipt.grossSales')}</span>
               <span>{rp(data.grossSales)}</span>
@@ -237,8 +237,8 @@ export default function DailyReportReceipt({ open, onClose, data }: DailyReportR
           {data.includeExpenses && data.expensesAmount !== undefined && data.expensesAmount > 0 && (
             <>
               <div className="border-t border-dashed border-gray-400 my-2" />
-              <p className="font-semibold text-[11px] mb-1">{t('dailyReceipt.expensesSection')}</p>
-              <div className="space-y-0.5 text-[11px]">
+              <p className="font-semibold text-2xs mb-1">{t('dailyReceipt.expensesSection')}</p>
+              <div className="space-y-0.5 text-2xs">
                 <div className="flex justify-between">
                   <span>{t('dailyReceipt.netSales')}</span>
                   <span>{rp(data.netSales)}</span>
@@ -258,8 +258,8 @@ export default function DailyReportReceipt({ open, onClose, data }: DailyReportR
           <div className="border-t border-dashed border-gray-400 my-2" />
 
           {/* Payments Section */}
-          <p className="font-semibold text-[11px] mb-1">{t('dailyReceipt.payment')}</p>
-          <div className="space-y-0.5 text-[11px]">
+          <p className="font-semibold text-2xs mb-1">{t('dailyReceipt.payment')}</p>
+          <div className="space-y-0.5 text-2xs">
             {data.paymentBreakdown.length === 0 ? (
               <p className="text-gray-500 italic">{t('dailyReceipt.noPayment')}</p>
             ) : (
@@ -275,8 +275,8 @@ export default function DailyReportReceipt({ open, onClose, data }: DailyReportR
           <div className="border-t border-dashed border-gray-400 my-2" />
 
           {/* Top Products Section */}
-          <p className="font-semibold text-[11px] mb-1">{t('dailyReceipt.topProducts')}</p>
-          <div className="space-y-1 text-[11px]">
+          <p className="font-semibold text-2xs mb-1">{t('dailyReceipt.topProducts')}</p>
+          <div className="space-y-1 text-2xs">
             {data.topProducts.length === 0 ? (
               <p className="text-gray-500 italic">{t('dailyReceipt.noSales')}</p>
             ) : (
@@ -292,14 +292,14 @@ export default function DailyReportReceipt({ open, onClose, data }: DailyReportR
           <div className="border-t border-dashed border-gray-400 my-2" />
 
           {/* Footer */}
-          <div className="text-center text-[11px] text-gray-500 space-y-0.5">
+          <div className="text-center text-2xs text-gray-500 space-y-0.5">
             <p>{t('dailyReceipt.endOfReport')}</p>
             {data.cashierName && <p>{t('dailyReceipt.printedBy')}: {data.cashierName}</p>}
           </div>
 
           {/* Watermark */}
           {!(data.storeSettings?.hideWatermark && isCloudActive) && (
-            <div className="text-center text-[11px] text-gray-400 mt-2 pt-1 border-t border-dotted border-gray-200 space-y-0.5">
+            <div className="text-center text-2xs text-gray-400 mt-2 pt-1 border-t border-dotted border-gray-200 space-y-0.5">
               <p>{t('settings:receipt.watermarkLine1')}</p>
               <p className="font-semibold">{t('settings:receipt.watermarkLine2')}</p>
             </div>

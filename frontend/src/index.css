@@ -1,4 +1,31 @@
-@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
+/* === Huruf tampilan, di-host sendiri ===
+   Dua alasan, dan keduanya soal produk, bukan selera:
+
+   1. App ini offline-first dan dipakai di warung yang sering tanpa sinyal.
+      Mengambil huruf dari fonts.googleapis.com berarti suara tampilan app
+      bergantung pada jaringan yang skenario pemakaiannya justru tidak
+      punya — dan cache runtime Workbox baru menolong SETELAH satu kali
+      berhasil online. Tampilan pertama di HP baru adalah tampilan yang
+      paling menentukan, dan itu persis yang paling mungkin gagal.
+
+   2. Permintaan lamanya hanya `wght@400;500;600;700`, sementara setiap
+      objek uang di app ini disetel 800. Bobot yang tidak pernah
+      dideklarasikan akan disintesis browser — huruf tebal palsu yang
+      menggelembung, dan itu tekstur yang terbaca murah dari jarak lengan.
+
+   Hanken Grotesk adalah variable font, jadi seluruh rentang 400–800 muat
+   dalam SATU file 34 KB; subsetnya `latin` saja karena app ini hanya
+   melayani id/en/ms. */
+@font-face {
+  font-family: 'Hanken Grotesk';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('/fonts/hanken-grotesk-var-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
 
 @tailwind base;
 @tailwind components;
@@ -6,150 +33,201 @@
 
 @layer base {
   :root {
-    /* === KanPOS — design token Shark UI (https://shark.vini.one) ===
-       Port dari `sharkui-inc/shark-ui/styles/globals.css`. Shark menulis
-       tokennya sebagai color-mix() di atas palet neutral Tailwind; di sini
-       hasil hitungnya ditulis sebagai HSL triplet supaya tetap cocok dengan
-       `hsl(var(--x))` di tailwind.config (Tailwind v3).
+    /* === KanPOS — dunia visual "Dibagi Per Peran" ===
+       Patokan craft: super-app konsumen Indonesia (Gojek/GoPay). Tata
+       bahasanya yang diambil, bukan warnanya — biru brand #3554C1 tetap
+       yang dikunci.
 
-       Dua penyimpangan yang disengaja:
-         1. `--primary` = biru brand KanPOS #3554C1, dipasang dengan pola
-            preset `.theme-*` Shark (override primary/primary-foreground/ring).
-         2. `--success/warning/destructive-foreground` = putih, bukan shade 700
-            seperti Shark, karena seluruh app memakainya sebagai teks di atas
-            fill solid. Shade 700 Shark tersedia sebagai `--*-text` dan
-            dipakai Badge/Alert (tint 10% + teks 700). */
+       Dua tata bahasa, satu sistem:
+         dompet — kasir, pembayaran, laporan   (bidang brand dicelup penuh)
+         ubin   — beranda, menu, stok, setting (kisi layanan berwarna)
 
-    --background: 0 0% 98%;              /* neutral-50  #fafafa */
-    --foreground: 0 0% 15%;              /* neutral-800 #262626 */
+       Yang mengikat keduanya jadi satu app: satu skala sudut, satu
+       tipografi, dan SATU tingkat elevasi. Terang memisahkan permukaan
+       dengan bayangan, gelap dengan garis — tidak pernah dua-duanya
+       sekaligus, karena garis + bayangan 24px adalah tanda paling jelas
+       bahwa kartunya dirakit, bukan dirancang.
 
-    --card: 0 0% 98%;                    /* = background; kartu dibedakan border */
-    --card-foreground: 0 0% 15%;
+       `--primary` masih boleh diganti user lewat pemilih aksen (9 warna),
+       jadi setiap turunannya dihitung oleh `applyThemeColor`, bukan
+       ditulis mati di sini. Nilai di bawah adalah default brand blue. */
 
-    --popover: 0 0% 98%;
-    --popover-foreground: 0 0% 15%;
+    --background: 220 43% 97%;           /* ground  #F5F7FB */
+    --foreground: 224 39% 10%;           /* ink     #0F1422 */
 
-    --primary: 227 57% 48%;              /* #3554C1 brand */
-    --primary-foreground: 220 100% 97%;  /* #eff4ff */
+    --card: 0 0% 100%;                   /* surface #FFFFFF */
+    --card-foreground: 224 39% 10%;
 
-    --secondary: 0 0% 92%;               /* neutral-950 6% di atas bg → #ebebeb */
-    --secondary-foreground: 0 0% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 39% 10%;
 
-    --muted: 0 0% 92%;
-    --muted-foreground: 0 0% 37%;        /* #5e5e5e */
+    --primary: 227 57% 48%;              /* #3554C1 brand — dikunci user */
+    --primary-foreground: 0 0% 100%;     /* 6.6:1 di atas bidang brand */
 
-    --accent: 0 0% 92%;                  /* hover/indikator tab — netral, bukan biru */
-    --accent-foreground: 0 0% 15%;
+    /* Brand saat ia jadi TEKS/ikon di atas ground, bukan bidang isian.
+       Di mode gelap ia harus diangkat: #3554C1 sebagai teks di atas
+       #141A29 tidak terbaca. Diperbarui oleh applyThemeColor. */
+    --primary-text: 227 57% 48%;
+    /* Teks sekunder DI ATAS bidang brand — ditint dari hue brand-nya
+       sendiri, bukan abu-abu. 4.8:1. */
+    --primary-dim: 225 73% 90%;
+    --primary-deep: 227 60% 26%;
+    --primary-press: 227 59% 40%;
 
-    --destructive: 0 84% 60%;            /* red-500 #ef4444 */
+    --secondary: 220 36% 95%;            /* sunken #EEF1F7 */
+    --secondary-foreground: 224 39% 10%;
+
+    --muted: 220 36% 95%;
+    --muted-foreground: 222 16% 41%;     /* #59637A — 4.9:1 di atas surface */
+    /* Tingkat ketiga untuk meta yang benar-benar sekunder. Tetap 4.6:1;
+       app ini dibaca di bawah matahari, bukan di ruang ber-AC. */
+    /* 46%, bukan 48%: pada 48% rasionya 4.28:1 di atas ground — lolos di
+       kartu tapi gagal di latar halaman, dan meta ini muncul di dua-duanya. */
+    --faint-foreground: 221 12% 46%;     /* #666E82 — 4.60:1 di ground */
+
+    --accent: 220 36% 95%;
+    --accent-foreground: 224 39% 10%;
+
+    --destructive: 4 74% 49%;            /* #D92D20 — isian yang memikul teks putih */
     --destructive-foreground: 0 0% 100%;
-    --destructive-text: 0 74% 42%;       /* red-700 #b91c1c */
+    --destructive-text: 4 76% 40%;       /* #B42318 */
 
-    --success: 160 84% 39%;              /* emerald-500 #10b981 */
+    --success: 152 82% 39%;              /* #12B76A */
     --success-foreground: 0 0% 100%;
-    --success-text: 163 94% 24%;         /* emerald-700 #047857 */
+    --success-text: 155 90% 24%;         /* #067647 */
 
-    --warning: 38 92% 50%;               /* amber-500 #f59e0b */
+    --warning: 34 94% 50%;               /* #F79009 */
     --warning-foreground: 0 0% 100%;
-    --warning-text: 26 90% 37%;          /* amber-700 #b45309 */
+    --warning-text: 22 92% 37%;          /* #B54708 */
 
-    --info: 217 91% 60%;                 /* blue-500 #3b82f6 */
+    --info: 191 94% 43%;                 /* #06AED4 */
     --info-foreground: 0 0% 100%;
-    --info-text: 224 76% 48%;            /* blue-700 #1d4ed8 */
+    --info-text: 195 82% 31%;            /* #0E7090 */
 
-    --border: 0 0% 87%;                  /* neutral-950 12% → #dddddd */
-    --input: 0 0% 86%;                   /* neutral-950 13% → #dbdbdb */
+    --border: 219 33% 92%;               /* #E3E8F1 */
+    --input: 219 32% 86%;                /* #CFD7E6 */
     --ring: 227 57% 48%;
 
-    /* Token warisan — dipetakan ke padanan Shark supaya kelas lama tetap koheren. */
-    --success-tint: 155 53% 93%;         /* success 10% di atas bg */
-    --destructive-tint: 0 84% 95%;
+    /* === Sistem pengenal kategori ===
+       Bukan hiasan: satu kategori memegang satu warna di ubin menu, pita
+       kasir, thumbnail produk, dan ikon daftar, sehingga mata belajar
+       sekali lalu memakainya di seluruh app.
+
+       `--cat-N`    = isian pada permukaan solid (titik, batang, badge)
+       `--cat-N-bg` = tint permukaannya
+       `--cat-N-on` = tinta DI ATAS tint itu; digelapkan supaya ikon dan
+                      teks di dalam ubin tetap lolos 3:1. */
+    --cat-1: 227 57% 48%;  --cat-1-bg: 224 70% 95%;  --cat-1-on: 227 59% 40%;
+    --cat-2: 152 82% 39%;  --cat-2-bg: 150 56% 93%;  --cat-2-on: 155 90% 24%;
+    --cat-3: 34 94% 50%;   --cat-3-bg: 36 89% 93%;   --cat-3-on: 22 92% 37%;
+    --cat-4: 4 86% 58%;    --cat-4-bg: 5 86% 95%;    --cat-4-on: 4 76% 40%;
+    --cat-5: 252 92% 66%;  --cat-5-bg: 252 91% 96%;  --cat-5-on: 257 72% 50%;
+    --cat-6: 191 94% 43%;  --cat-6-bg: 191 69% 92%;  --cat-6-on: 195 82% 31%;
+
+    /* Token warisan — dipetakan ke padanan baru supaya kelas lama koheren. */
+    --success-tint: 150 56% 93%;
+    --destructive-tint: 5 86% 95%;
     --warning-tint: 36 89% 93%;
-    --info-tint: 217 91% 95%;
-    --surface-alt: 0 0% 95%;             /* muted/48 — card footer */
-    --accent-strong: 227 55% 87%;
-    --border-tab: 0 0% 86%;
-    --border-soft: 0 0% 87%;
+    --info-tint: 191 69% 92%;
+    --surface-alt: 220 36% 95%;
+    --accent-strong: 224 70% 95%;
+    --border-tab: 219 33% 92%;
+    --border-soft: 219 33% 92%;
 
     --chart-1: 227 57% 48%;
-    --chart-2: 160 84% 39%;
-    --chart-3: 38 92% 50%;
-    --chart-4: 0 0% 64%;
-    --chart-5: 217 91% 60%;
+    --chart-2: 152 82% 39%;
+    --chart-3: 34 94% 50%;
+    --chart-4: 252 92% 66%;
+    --chart-5: 191 94% 43%;
 
-    --radius: 0.5rem;                    /* base Shark; skala di tailwind.config */
+    --radius: 0.75rem;                   /* kontrol 12px; skala di tailwind.config */
 
-    --sidebar-background: 0 0% 97%;
-    --sidebar-foreground: 0 0% 30%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 16% 41%;
     --sidebar-primary: 227 57% 48%;
-    --sidebar-primary-foreground: 220 100% 97%;
-    --sidebar-accent: 0 0% 92%;
-    --sidebar-accent-foreground: 0 0% 15%;
-    --sidebar-border: 0 0% 88%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 36% 95%;
+    --sidebar-accent-foreground: 224 39% 10%;
+    --sidebar-border: 219 33% 92%;
     --sidebar-ring: 227 57% 48%;
   }
 
   .dark {
-    --background: 0 0% 4%;               /* neutral-950 #0a0a0a */
-    --foreground: 0 0% 96%;              /* neutral-100 #f5f5f5 */
+    /* Bidang brand TIDAK diterangkan di mode gelap: mengangkatnya justru
+       menurunkan kontras teks di atasnya (putih 4.9:1 vs 6.6:1). Biru yang
+       dikunci dipakai apa adanya; yang diangkat hanya versi teksnya. */
+    --background: 223 41% 7%;            /* #0A0E18 */
+    --foreground: 218 44% 95%;           /* #EDF1F8 */
 
-    --card: 0 0% 6%;                     /* bg 98% + neutral-50 2% */
-    --card-foreground: 0 0% 96%;
+    --card: 223 34% 12%;                 /* #141A29 */
+    --card-foreground: 218 44% 95%;
 
-    --popover: 0 0% 8%;
-    --popover-foreground: 0 0% 96%;
+    --popover: 222 31% 15%;
+    --popover-foreground: 218 44% 95%;
 
     --primary: 227 57% 48%;
-    --primary-foreground: 220 100% 97%;
+    --primary-foreground: 0 0% 100%;
+    --primary-text: 227 85% 79%;         /* #9DB1F7 — 7.2:1 di atas surface */
+    --primary-dim: 225 73% 90%;
+    --primary-deep: 227 60% 26%;
+    --primary-press: 227 59% 40%;
 
-    --secondary: 0 0% 11%;               /* white 8% di atas bg */
-    --secondary-foreground: 0 0% 96%;
+    --secondary: 222 31% 15%;            /* #1B2233 */
+    --secondary-foreground: 218 44% 95%;
 
-    --muted: 0 0% 11%;
-    --muted-foreground: 0 0% 62%;        /* #9d9d9d */
+    --muted: 222 31% 15%;
+    --muted-foreground: 221 18% 66%;     /* #98A2B8 */
+    --faint-foreground: 222 15% 60%;     /* #8A93A8 */
 
-    --accent: 0 0% 11%;
-    --accent-foreground: 0 0% 96%;
+    --accent: 222 31% 15%;
+    --accent-foreground: 218 44% 95%;
 
-    --destructive: 2 72% 57%;            /* red-600 90% + neutral-50 */
+    --destructive: 4 74% 49%;
     --destructive-foreground: 0 0% 100%;
-    --destructive-text: 0 91% 71%;       /* red-400 */
+    --destructive-text: 4 96% 80%;       /* #FDA29B */
 
-    --success: 160 84% 39%;
+    --success: 152 82% 39%;
     --success-foreground: 0 0% 100%;
-    --success-text: 158 64% 52%;         /* emerald-400 */
+    --success-text: 148 74% 67%;         /* #6CE9A6 */
 
-    --warning: 38 92% 50%;
+    --warning: 34 94% 50%;
     --warning-foreground: 0 0% 100%;
-    --warning-text: 43 96% 56%;          /* amber-400 */
+    --warning-text: 42 99% 65%;          /* #FEC84B */
 
-    --info: 217 91% 60%;
+    --info: 191 94% 43%;
     --info-foreground: 0 0% 100%;
-    --info-text: 213 94% 68%;            /* blue-400 */
+    --info-text: 189 92% 69%;            /* #67E3F9 */
 
-    --border: 0 0% 15%;                  /* neutral-50 12% di atas bg */
-    --input: 0 0% 16%;
-    --ring: 227 57% 48%;
+    --border: 223 28% 20%;               /* #242C40 */
+    --input: 223 26% 26%;                /* #323C55 */
+    --ring: 227 85% 79%;
 
-    --success-tint: 158 47% 11%;
-    --destructive-tint: 0 40% 12%;
-    --warning-tint: 39 58% 10%;
-    --info-tint: 217 50% 12%;
-    --surface-alt: 0 0% 8%;
-    --accent-strong: 227 40% 30%;
-    --border-tab: 0 0% 16%;
-    --border-soft: 0 0% 15%;
+    --cat-1: 227 57% 48%;  --cat-1-bg: 225 42% 18%;  --cat-1-on: 227 85% 79%;
+    --cat-2: 152 82% 39%;  --cat-2-bg: 156 44% 11%;  --cat-2-on: 148 74% 67%;
+    --cat-3: 34 94% 50%;   --cat-3-bg: 36 47% 12%;   --cat-3-on: 42 99% 65%;
+    --cat-4: 4 86% 58%;    --cat-4-bg: 5 39% 13%;    --cat-4-on: 4 96% 80%;
+    --cat-5: 252 92% 66%;  --cat-5-bg: 252 40% 17%;  --cat-5-on: 247 97% 85%;
+    --cat-6: 191 94% 43%;  --cat-6-bg: 194 48% 12%;  --cat-6-on: 189 92% 69%;
 
-    --chart-4: 0 0% 45%;
+    --success-tint: 156 44% 11%;
+    --destructive-tint: 5 39% 13%;
+    --warning-tint: 36 47% 12%;
+    --info-tint: 194 48% 12%;
+    --surface-alt: 222 31% 15%;
+    --accent-strong: 225 42% 18%;
+    --border-tab: 223 28% 20%;
+    --border-soft: 223 28% 20%;
 
-    --sidebar-background: 0 0% 5%;
-    --sidebar-foreground: 0 0% 70%;
+    --chart-4: 252 92% 66%;
+
+    --sidebar-background: 223 34% 12%;
+    --sidebar-foreground: 221 18% 66%;
     --sidebar-primary: 227 57% 48%;
-    --sidebar-primary-foreground: 220 100% 97%;
-    --sidebar-accent: 0 0% 11%;
-    --sidebar-accent-foreground: 0 0% 96%;
-    --sidebar-border: 0 0% 14%;
-    --sidebar-ring: 227 57% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 222 31% 15%;
+    --sidebar-accent-foreground: 218 44% 95%;
+    --sidebar-border: 223 28% 20%;
+    --sidebar-ring: 227 85% 79%;
   }
 }
 
@@ -175,18 +253,104 @@
 
   /* PWA safe area + fluid root sizing for screen adaptation */
   html {
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    /* Chrome aplikasi, dideklarasikan sekali supaya halaman yang menghitung
+       tinggi sendiri (mis. Kasir) tidak menebak angkanya.
+       `--app-safe-top` dipakai sekaligus sebagai padding html di bawah, jadi
+       keduanya mustahil berbeda. */
+    --app-safe-top: env(safe-area-inset-top, 0px);
+    --app-safe-bottom: env(safe-area-inset-bottom, 0px);
+    --app-nav-h: 3.5rem; /* tinggi BottomNav di atas safe area */
+
+    padding: var(--app-safe-top) env(safe-area-inset-right) var(--app-safe-bottom) env(safe-area-inset-left);
     font-size: clamp(0.9375rem, calc(0.25rem + 3vw), 1.125rem);
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
   }
 
   html.is-native {
-    padding-top: max(env(safe-area-inset-top), 12px);
+    --app-safe-top: max(env(safe-area-inset-top, 0px), 12px);
   }
 
   html.is-native [data-sonner-toaster][data-y-position="top"] {
     top: max(env(safe-area-inset-top), 36px) !important;
+  }
+}
+
+@layer base {
+  /* === Permukaan yang digambar browser, bukan kita ===
+     Seleksi, caret, scrollbar, dan ring fokus default tidak berasal dari
+     design system mana pun. App ini juga dibungkus Electron di Windows, jadi
+     scrollbar desktop benar-benar terlihat dan ikut menentukan kesan jadi. */
+
+  ::selection {
+    background-color: hsl(var(--primary) / 0.22);
+    color: hsl(var(--foreground));
+  }
+
+  :root {
+    /* Caret & kontrol native (checkbox/radio/progress bawaan) ikut warna brand. */
+    caret-color: hsl(var(--primary));
+    accent-color: hsl(var(--primary));
+    /* Firefox */
+    scrollbar-color: hsl(var(--border)) transparent;
+    scrollbar-width: thin;
+  }
+
+  /* WebKit/Chromium — Electron dan Android WebView. Track transparan supaya
+     scrollbar melayang di atas surface apa pun tanpa menambah garis. */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border-radius: 9999px;
+    /* Border transparan = inset; thumb jadi 6px tanpa perlu ukuran kedua. */
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.55);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  /* Fokus keyboard yang lolos dari komponen ber-`focus-ring`: tautan, elemen
+     `tabIndex`, dan apa pun yang belum punya style sendiri. Tanpa ini Chromium
+     menggambar outline birunya sendiri di tengah palet ini. */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  a:where(:not([class*='no-underline'])) {
+    text-underline-offset: 0.2em;
+  }
+
+  /* Angka tabular di mana pun nominal dibaca berdampingan (daftar, total,
+     laporan) — `MoneyDisplay` sudah memakainya, ini menutup sisanya. */
+  th,
+  td {
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
@@ -200,17 +364,9 @@
     display: none;
   }
 
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70;
-  }
-
   .tabular {
     font-variant-numeric: tabular-nums;
     font-feature-settings: 'tnum';
-  }
-
-  .text-gradient-subtle {
-    @apply bg-clip-text text-transparent bg-gradient-to-br from-foreground to-muted-foreground;
   }
 
   /* Shark: ring fokus 3px ring/32 + border primary */
@@ -220,25 +376,16 @@
 }
 
 @layer components {
-  /* Card Shark: rounded-xl border shadow-xs/5 */
-  .surface {
-    @apply bg-card text-card-foreground border border-border rounded-xl shadow-xs;
-  }
-
+  /* Aturan yang sama dengan `Card`: terang memisah dengan bayangan, gelap
+     dengan garis, tidak pernah dua-duanya. Kelas ini masih dipakai di
+     BarcodeScanner, TransactionHistory, dan UnitsSettings — sebelumnya
+     ketiganya mengirim garis 1px DAN bayangan sekaligus, persis pasangan
+     yang doktrin kartunya sendiri larang. */
+  .surface,
   .surface-elevated {
-    @apply bg-card text-card-foreground border border-border rounded-xl shadow-lg;
-  }
-
-  .glass {
-    @apply backdrop-blur-xl bg-foreground/5 border border-border/60;
-  }
-
-  .gradient-brand {
-    @apply bg-gradient-to-br from-primary via-primary to-primary/85;
-  }
-
-  .gradient-brand-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70;
+    @apply bg-card text-card-foreground rounded-xl;
+    @apply border border-transparent shadow-lift;
+    @apply dark:border-border dark:shadow-none;
   }
 
   /* Item media Shark: size-10 rounded-xl; tint = primary 10% */

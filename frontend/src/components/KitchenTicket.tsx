@@ -173,29 +173,29 @@ export default function KitchenTicket({ open, onClose, transaction, items, store
           <div className="border-t border-dashed border-gray-400 my-2" />
 
           {/* Ticket info */}
-          <div className="flex justify-between text-[11px]">
+          <div className="flex justify-between text-2xs">
             <span>No: {transaction.receiptNumber}</span>
           </div>
-          <div className="flex justify-between text-[11px] mb-1">
+          <div className="flex justify-between text-2xs mb-1">
             <span>{format(new Date(transaction.date), 'dd/MM/yyyy HH:mm', { locale: dateLocale })}</span>
           </div>
           {cashierName && (
-            <div className="flex justify-between text-[11px]">
+            <div className="flex justify-between text-2xs">
               <span>{t('receipt.cashierLabel')}: {cashierName}</span>
             </div>
           )}
           {transaction.customerName && (
-            <div className="flex justify-between text-[11px]">
+            <div className="flex justify-between text-2xs">
               <span>{t('receipt.customerLabel')}: {transaction.customerName}</span>
             </div>
           )}
           {transaction.tableNumber && (
-            <div className="flex justify-between text-[11px]">
+            <div className="flex justify-between text-2xs">
               <span>{t('receipt.tableLabel')}: {transaction.tableNumber}</span>
             </div>
           )}
           {transaction.remarks && (
-            <div className="text-[11px]">
+            <div className="text-2xs">
               <span>{t('receipt.notesLabel')}: {transaction.remarks}</span>
             </div>
           )}
@@ -206,8 +206,8 @@ export default function KitchenTicket({ open, onClose, transaction, items, store
           {items.map((item, i) => (
             <div key={i} className="mb-2 flex justify-between items-start">
               <div className="flex-1 min-w-0 pr-2">
-                <p className="text-[11px] font-semibold leading-tight">{item.quantity} x {item.productName}</p>
-                {item.notes && <p className="text-[11px] text-gray-700 italic font-semibold mt-0.5">  * Catatan: {item.notes}</p>}
+                <p className="text-2xs font-semibold leading-tight">{item.quantity} x {item.productName}</p>
+                {item.notes && <p className="text-2xs text-gray-700 italic font-semibold mt-0.5">  * Catatan: {item.notes}</p>}
               </div>
               <div className="w-4 h-4 border border-black rounded-sm shrink-0 mt-0.5" />
             </div>

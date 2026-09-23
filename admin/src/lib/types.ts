@@ -180,6 +180,23 @@ export interface ReconcileResult {
   changed: boolean;
 }
 
+/**
+ * Admin = `User` berperan ADMIN/SUPERADMIN, bukan tabel tersendiri. `seeded`
+ * menandai email dari ADMIN_EMAILS: hak adminnya dipulihkan otomatis saat
+ * login, jadi mencabutnya dari panel tidak bertahan lama.
+ */
+export interface AdminAccount {
+  id: string;
+  name: string;
+  email: string;
+  picture: string | null;
+  role: 'ADMIN' | 'SUPERADMIN';
+  suspended: boolean;
+  seeded: boolean;
+  lastActionAt: string | null;
+  createdAt: string;
+}
+
 export type UserFilter =
   | 'all'
   | 'paid'

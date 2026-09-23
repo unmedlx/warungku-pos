@@ -76,7 +76,7 @@ const AlertDescription = React.forwardRef<HTMLDivElement, React.HTMLAttributes<H
     <div
       ref={ref}
       data-slot="alert-description"
-      className={cn('col-start-[var(--alert-col)] text-[13px] leading-snug text-muted-foreground', className)}
+      className={cn('col-start-[var(--alert-col)] text-xsm leading-snug text-muted-foreground', className)}
       {...props}
     />
   ),

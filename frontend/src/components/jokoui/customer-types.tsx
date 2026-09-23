@@ -49,7 +49,7 @@ const CustomerTypes = React.forwardRef<HTMLDivElement, CustomerTypesProps>(
             onClick={() => handle(s.key)}
             className={cn(
               "flex-1 min-w-0 truncate font-medium transition-all",
-              size === "sm" ? "h-5 rounded-[6px] text-[11px]" : "h-9 rounded-lg px-1 text-xs",
+              size === "sm" ? "h-5 rounded-[6px] text-2xs" : "h-9 rounded-lg px-1 text-xs",
               active === s.key ? segmentColor[s.color ?? "primary"] : "text-muted-foreground hover:text-foreground",
             )}
           >

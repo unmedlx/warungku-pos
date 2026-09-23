@@ -40,7 +40,7 @@
     "description": "{{count}} bill menunggu pembayaran"
   },
   "quickActions": {
-    "title": "Akses Cepat",
+    "title": "Menu",
     "all": "Lainnya",
     "cashier": "Kasir",
     "products": "Produk",
@@ -50,7 +50,8 @@
     "customers": "Pelanggan",
     "supplier": "Supplier",
     "stockIn": "Stok Masuk",
-    "stockOut": "Stok Keluar"
+    "stockOut": "Stok Keluar",
+    "debts": "Kasbon"
   },
   "recentTransactions": {
     "title": "Transaksi Terakhir",

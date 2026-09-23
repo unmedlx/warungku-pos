@@ -55,7 +55,7 @@ const OverviewRow = React.forwardRef<HTMLDivElement, OverviewRowProps>(
               title={deltaTitle}
               aria-label={deltaTitle ? `${deltaLabel} ${deltaTitle}` : undefined}
               className={cn(
-                'inline-flex h-5 items-center rounded-md border px-1 text-[11px] font-medium leading-none tabular-nums',
+                'inline-flex h-5 items-center rounded-md border px-1 text-2xs font-medium leading-none tabular-nums',
                 (delta ?? 0) >= 0 ? 'border-success/20 bg-success/10 text-success-text' : 'border-destructive-text/20 bg-destructive/10 text-destructive-text',
               )}
             >

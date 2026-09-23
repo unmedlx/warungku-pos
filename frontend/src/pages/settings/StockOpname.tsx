@@ -450,7 +450,7 @@ export default function StockOpnamePage() {
                 <CardTitle className="text-sm font-semibold">
                   Sesi Aktif ({format(new Date(activeOpname.date), 'dd MMMM yyyy HH:mm', { locale: dateLocale })})
                 </CardTitle>
-                <p className="text-[11px] text-muted-foreground mt-0.5">
+                <p className="text-2xs text-muted-foreground mt-0.5">
                   Lakukan pencocokan stok fisik produk di bawah ini.
                 </p>
               </div>
@@ -511,12 +511,12 @@ export default function StockOpnamePage() {
                     <CardContent className="p-3 flex items-center justify-between gap-3">
                       <div className="min-w-0 flex-1">
                         <p className="text-xs font-semibold truncate">{item.productName}</p>
-                        <p className="text-[11px] text-muted-foreground">SKU: {item.sku || '-'}</p>
+                        <p className="text-2xs text-muted-foreground">SKU: {item.sku || '-'}</p>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="text-[11px] bg-muted px-1.5 py-0.5 rounded text-muted-foreground">
+                          <span className="text-2xs bg-muted px-1.5 py-0.5 rounded text-muted-foreground">
                             {t('stockOpname.systemStockText')}: {item.systemStock} {item.unit}
                           </span>
-                          <span className={`text-[11px] font-semibold px-1.5 py-0.5 rounded ${diff > 0 ? 'bg-success/10 text-success-text' :
+                          <span className={`text-2xs font-semibold px-1.5 py-0.5 rounded ${diff > 0 ? 'bg-success/10 text-success-text' :
                             diff < 0 ? 'bg-destructive/10 text-destructive-text' : 'bg-zinc-100 text-zinc-500'
                             }`}>
                             {diff > 0 ? `+${diff}` : diff}
@@ -525,7 +525,7 @@ export default function StockOpnamePage() {
                       </div>
 
                       <div className="w-24 shrink-0 flex flex-col gap-1 items-end">
-                        <Label className="text-[11px] text-muted-foreground">{t('stockOpname.realStockText')}</Label>
+                        <Label className="text-2xs text-muted-foreground">{t('stockOpname.realStockText')}</Label>
                         <Input
                           type="number"
                           value={item.realStock}
@@ -578,9 +578,9 @@ export default function StockOpnamePage() {
                       <p className="text-xs font-semibold">
                         {format(new Date(opname.date), 'dd MMMM yyyy HH:mm', { locale: dateLocale })}
                       </p>
-                      {opname.notes && <p className="text-[11px] text-muted-foreground italic truncate max-w-[280px]">{opname.notes}</p>}
+                      {opname.notes && <p className="text-2xs text-muted-foreground italic truncate max-w-[280px]">{opname.notes}</p>}
                     </div>
-                    <span className={`rounded-md border px-1.5 py-0.5 text-[11px] font-medium ${opname.status === 'completed' ? 'border-success/20 bg-success/10 text-success-text' : 'border-warning/20 bg-warning/10 text-warning-text'
+                    <span className={`rounded-md border px-1.5 py-0.5 text-2xs font-medium ${opname.status === 'completed' ? 'border-success/20 bg-success/10 text-success-text' : 'border-warning/20 bg-warning/10 text-warning-text'
                       }`}>
                       {t(`stockOpname.status.${opname.status}`)}
                     </span>
@@ -629,7 +629,7 @@ export default function StockOpnamePage() {
             <DialogTitle className="text-sm font-semibold">
               Detail Stock Opname #{selectedHistory?.id}
             </DialogTitle>
-            <DialogDescription className="text-[11px] pt-1">
+            <DialogDescription className="text-2xs pt-1">
               Tanggal: {selectedHistory && format(new Date(selectedHistory.date), 'dd MMMM yyyy HH:mm', { locale: dateLocale })}
               {selectedHistory?.notes && <span className="block mt-1 italic">Catatan: {selectedHistory.notes}</span>}
             </DialogDescription>
@@ -642,12 +642,12 @@ export default function StockOpnamePage() {
                 <div key={item.id} className="p-2 border border-border/60 rounded-lg flex items-center justify-between text-xs">
                   <div className="min-w-0 flex-1">
                     <p className="font-semibold truncate">{item.productName}</p>
-                    <p className="text-[11px] text-muted-foreground">SKU: {item.sku || '-'}</p>
+                    <p className="text-2xs text-muted-foreground">SKU: {item.sku || '-'}</p>
                   </div>
                   <div className="text-right shrink-0 space-y-0.5 ml-2">
                     <p className="font-semibold">Fisik: {item.realStock} {item.unit}</p>
-                    <p className="text-[11px] text-muted-foreground">Sistem: {item.systemStock}</p>
-                    <span className={`text-[11px] font-semibold px-1.5 py-0.2 rounded inline-block ${diff > 0 ? 'bg-success/10 text-success-text' :
+                    <p className="text-2xs text-muted-foreground">Sistem: {item.systemStock}</p>
+                    <span className={`text-2xs font-semibold px-1.5 py-0.2 rounded inline-block ${diff > 0 ? 'bg-success/10 text-success-text' :
                       diff < 0 ? 'bg-destructive/10 text-destructive-text' : 'bg-zinc-100 text-zinc-500'
                       }`}>
                       {diff > 0 ? `+${diff}` : diff}

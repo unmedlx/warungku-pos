@@ -114,7 +114,7 @@ export default function CloudRestoreSettings() {
         </Alert>
       ) : (
         <>
-          <p className="text-[13px] leading-relaxed text-muted-foreground">{t('cloudRestore.description')}</p>
+          <p className="text-xsm leading-relaxed text-muted-foreground">{t('cloudRestore.description')}</p>
 
           {loading && items.length === 0 ? (
             <div className="flex items-center justify-center py-8 text-muted-foreground">

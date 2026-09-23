@@ -106,7 +106,7 @@ export default function Pengaturan() {
           interactive
           icon={
             <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${TONE_CLASS[entry.tone]}`}>
-              <Icon className="h-[18px] w-[18px]" />
+              <Icon className="size-4.5" />
             </div>
           }
           label={t(entry.labelKey)}
@@ -224,7 +224,7 @@ export default function Pengaturan() {
                   <SettingsItem
                     icon={
                       <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${TONE_CLASS.purple}`}>
-                        <ShieldCheck className="h-[18px] w-[18px]" />
+                        <ShieldCheck className="size-4.5" />
                       </div>
                     }
                     label={t('hub.quick.multiUser.label')}
@@ -245,7 +245,7 @@ export default function Pengaturan() {
                   <SettingsItem
                     icon={
                       <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${TONE_CLASS.green}`}>
-                        <HandCoins className="h-[18px] w-[18px]" />
+                        <HandCoins className="size-4.5" />
                       </div>
                     }
                     label={t('masterData.allowDebt.title')}

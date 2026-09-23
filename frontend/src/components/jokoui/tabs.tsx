@@ -5,14 +5,18 @@ import { cn } from '@/lib/utils';
 /**
  * Tabs — port `registry/react/components/tabs.tsx` milik Shark UI.
  *
- * Dua varian list:
- *  - `default`: list `rounded-lg`, tab aktif memakai latar `bg-accent`
- *    (Shark menggambar indikator bergeser; di sini latar dipasang langsung
- *    ke trigger aktif — tanpa animasi geser, hasil visual akhirnya sama).
- *  - `underline`: garis 2px `bg-primary` di bawah tab aktif.
+ * Tiga varian list:
+ *  - `default`: tab aktif dicelup brand.
+ *  - `underline`: garis 2px `bg-primary` di bawah tab aktif — dipakai untuk
+ *    navigasi antar halaman (Riwayat/Kasbon/Pengeluaran/Laporan), di mana
+ *    bidang penuh akan bersaing dengan judul halamannya.
+ *  - `pill`: track `bg-muted`, tab aktif dicelup brand — pemilih rentang
+ *    waktu di Laporan.
  *
- * Tambahan KanPOS: `variant="pill"` = list dengan latar `bg-muted p-0.5`,
- * tab aktif putih ber-shadow (pola pemilih rentang waktu di Laporan).
+ * Tab aktif tidak lagi berupa pil putih atau abu ber-shadow. Pil netral di
+ * atas bidang netral adalah perlakuan yang membuat app ini terbaca generik,
+ * dan pemilih ini hidup di layar-layar bertata-bahasa dompet di mana status
+ * terpilih harus terbaca dari sudut mata.
  */
 interface TabsContextValue {
   value: string;
@@ -84,12 +88,12 @@ interface TabsTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement>
 }
 
 const TRIGGER: Record<TabsVariant, { base: string; active: string }> = {
-  default: { base: 'rounded-lg', active: 'bg-accent text-foreground' },
+  default: { base: 'rounded-lg', active: 'bg-primary text-primary-foreground' },
   underline: {
     base: 'rounded-t-lg after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:rounded-full after:bg-transparent',
     active: 'text-foreground after:bg-primary',
   },
-  pill: { base: 'rounded-md h-8', active: 'bg-background text-foreground shadow-xs' },
+  pill: { base: 'rounded-md h-8', active: 'bg-primary text-primary-foreground' },
 };
 
 const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
@@ -108,11 +112,11 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
         onClick={() => onValueChange(value)}
         className={cn(
           'relative flex h-9 shrink-0 grow items-center justify-center gap-1.5 px-2.5',
-          'whitespace-nowrap text-sm font-medium',
+          'whitespace-nowrap text-sm font-semibold tracking-[-0.01em]',
           'border border-transparent cursor-pointer',
           'transition-[color,background-color,box-shadow]',
           'hover:text-foreground/70',
-          'outline-none focus-visible:border-primary focus-visible:ring-[3px] focus-visible:ring-ring/30',
+          'outline-none focus-visible:ring-[3px] focus-visible:ring-ring/40',
           'disabled:pointer-events-none disabled:opacity-60',
           '[&_svg]:pointer-events-none [&_svg]:-mx-0.5 [&_svg]:h-4 [&_svg]:w-4 [&_svg]:shrink-0',
           v.base,

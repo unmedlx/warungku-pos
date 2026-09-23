@@ -15,10 +15,10 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background px-6" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+    <div className="min-h-dvh flex flex-col items-center justify-center bg-background px-6" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
       <EmptyState
         icon={FileQuestion}
-        title={<span className="text-[22px] font-semibold tracking-tight">{t('notFound.title')}</span>}
+        title={<span className="text-title font-semibold tracking-tight">{t('notFound.title')}</span>}
         description={t('notFound.message')}
         action={
           <Button size="lg" onClick={() => navigate('/')}>

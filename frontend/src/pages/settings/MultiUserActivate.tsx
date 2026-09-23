@@ -155,7 +155,7 @@ export default function MultiUserActivate() {
 
       {stage === 'prereq' ? (
         <>
-          <p className="text-[13px] leading-relaxed text-muted-foreground">
+          <p className="text-xsm leading-relaxed text-muted-foreground">
             {t('multiUserActivate.intro')}
           </p>
 
@@ -201,7 +201,7 @@ export default function MultiUserActivate() {
               {!cloudBound && (
                 <Link
                   to="/settings/cloud-backup/stores"
-                  className="mt-1.5 inline-flex items-center gap-1 text-[13px] font-medium text-primary"
+                  className="mt-1.5 inline-flex items-center gap-1 text-xsm font-medium text-primary"
                 >
                   {t('multiUserActivate.prereq.storeCta')}
                   <ChevronRight className="h-3.5 w-3.5" />
@@ -221,7 +221,7 @@ export default function MultiUserActivate() {
               {!isSyncSubscribed && (
                 <Link
                   to="/settings/cloud-backup"
-                  className="mt-1.5 inline-flex items-center gap-1 text-[13px] font-medium text-primary"
+                  className="mt-1.5 inline-flex items-center gap-1 text-xsm font-medium text-primary"
                 >
                   {t('multiUserActivate.prereq.planCta')}
                   <ChevronRight className="h-3.5 w-3.5" />
@@ -248,7 +248,7 @@ export default function MultiUserActivate() {
               <Lock className="h-6 w-6" />
             </span>
             <h2 className="pt-1 text-xl font-semibold tracking-tight">{t('multiUserActivate.pin.title')}</h2>
-            <p className="mx-auto max-w-[19rem] text-[13px] leading-relaxed text-muted-foreground">
+            <p className="mx-auto max-w-[19rem] text-xsm leading-relaxed text-muted-foreground">
               {t('multiUserActivate.pin.subtitle')}
             </p>
           </div>

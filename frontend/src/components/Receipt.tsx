@@ -230,37 +230,37 @@ export default function Receipt({ open, onClose, transaction, items, storeSettin
               <img src={storeSettings.logo} alt={t('receipt.logoAlt')} className="w-16 h-16 object-contain mx-auto mb-1" />
             )}
             <p className="font-semibold text-sm">{storeName}</p>
-            {storeSettings?.address && <p className="text-[11px]">{storeSettings.address}</p>}
-            {storeSettings?.phone && <p className="text-[11px]">{storeSettings.phone}</p>}
+            {storeSettings?.address && <p className="text-2xs">{storeSettings.address}</p>}
+            {storeSettings?.phone && <p className="text-2xs">{storeSettings.phone}</p>}
           </div>
 
           <div className="border-t border-dashed border-gray-400 my-2" />
 
           {/* Receipt info */}
-          <div className="flex justify-between text-[11px]">
+          <div className="flex justify-between text-2xs">
             <span>{t('receipt.no')}: {transaction.receiptNumber}</span>
           </div>
-          <div className="flex justify-between text-[11px] mb-1">
+          <div className="flex justify-between text-2xs mb-1">
             <span>{format(new Date(transaction.date), 'dd/MM/yyyy HH:mm', { locale: dateLocale })}</span>
             <span>{paymentMethodName}</span>
           </div>
           {cashierName && (
-            <div className="flex justify-between text-[11px]">
+            <div className="flex justify-between text-2xs">
               <span>{t('receipt.cashierLabel')}: {cashierName}</span>
             </div>
           )}
           {transaction.customerName && (
-            <div className="flex justify-between text-[11px]">
+            <div className="flex justify-between text-2xs">
               <span>{t('receipt.customerLabel')}: {transaction.customerName}</span>
             </div>
           )}
           {transaction.tableNumber && (
-            <div className="flex justify-between text-[11px]">
+            <div className="flex justify-between text-2xs">
               <span>{t('receipt.tableLabel')}: {transaction.tableNumber}</span>
             </div>
           )}
           {transaction.remarks && (
-            <div className="text-[11px]">
+            <div className="text-2xs">
               <span>{t('receipt.notesLabel')}: {transaction.remarks}</span>
             </div>
           )}
@@ -270,14 +270,14 @@ export default function Receipt({ open, onClose, transaction, items, storeSettin
           {/* Items */}
           {items.map((item, i) => (
             <div key={i} className="mb-1">
-              <p className="text-[11px] font-medium">{item.productName}</p>
-              {item.notes && <p className="text-[11px] text-gray-500 italic">  {item.notes}</p>}
-              <div className="flex justify-between text-[11px]">
+              <p className="text-2xs font-medium">{item.productName}</p>
+              {item.notes && <p className="text-2xs text-gray-500 italic">  {item.notes}</p>}
+              <div className="flex justify-between text-2xs">
                 <span>{item.quantity} x {rp(item.price)}</span>
                 <span>{rp(item.subtotal)}</span>
               </div>
               {item.discountAmount > 0 && (
-                <div className="flex justify-between text-[11px] text-gray-500">
+                <div className="flex justify-between text-2xs text-gray-500">
                   <span>  {t('receipt.discountLabel')}</span>
                   <span>-{rp(item.discountAmount)}</span>
                 </div>
@@ -288,7 +288,7 @@ export default function Receipt({ open, onClose, transaction, items, storeSettin
           <div className="border-t border-dashed border-gray-400 my-2" />
 
           {/* Totals */}
-          <div className="space-y-0.5 text-[11px]">
+          <div className="space-y-0.5 text-2xs">
             <div className="flex justify-between">
               <span>{t('receipt.subtotal')}</span>
               <span>{rp(transaction.subtotal)}</span>
@@ -323,13 +323,13 @@ export default function Receipt({ open, onClose, transaction, items, storeSettin
           <div className="border-t border-dashed border-gray-400 my-2" />
 
           {/* Footer */}
-          <p className="text-center text-[11px] text-gray-500">
+          <p className="text-center text-2xs text-gray-500">
             {storeSettings?.receiptFooter || t('receipt.footerFallback')}
           </p>
 
           {/* Watermark */}
           {!(storeSettings?.hideWatermark && isCloudActive) && (
-            <div className="text-center text-[11px] text-gray-400 mt-2 pt-1 border-t border-dotted border-gray-200 space-y-0.5">
+            <div className="text-center text-2xs text-gray-400 mt-2 pt-1 border-t border-dotted border-gray-200 space-y-0.5">
               <p>{t('receipt.watermarkLine1')}</p>
               <p className="font-semibold">{t('receipt.watermarkLine2')}</p>
             </div>
@@ -341,19 +341,19 @@ export default function Receipt({ open, onClose, transaction, items, storeSettin
         <div className="mt-3 grid grid-cols-4 gap-1.5">
           <Button variant="outline" className="h-auto flex-col gap-1 px-1 py-2.5" onClick={handleDownload} disabled={generating}>
             <Download />
-            <span className="text-[11px]">{t('receipt.download')}</span>
+            <span className="text-2xs">{t('receipt.download')}</span>
           </Button>
           <Button variant="outline" className="h-auto flex-col gap-1 px-1 py-2.5" onClick={handleShare} disabled={generating}>
             <Share2 />
-            <span className="text-[11px]">{t('receipt.share')}</span>
+            <span className="text-2xs">{t('receipt.share')}</span>
           </Button>
           <Button variant="outline" className="h-auto flex-col gap-1 px-1 py-2.5" onClick={handleBluetoothPrint} disabled={generating}>
             <Printer />
-            <span className="text-[11px]">{t('receipt.print')}</span>
+            <span className="text-2xs">{t('receipt.print')}</span>
           </Button>
           <Button variant="outline" className="h-auto flex-col gap-1 px-1 py-2.5" onClick={handlePrintKitchenTicket} disabled={generating}>
             <Utensils className="text-warning-text" />
-            <span className="text-[11px]">{t('receipt.printKitchen')}</span>
+            <span className="text-2xs">{t('receipt.printKitchen')}</span>
           </Button>
         </div>
 
