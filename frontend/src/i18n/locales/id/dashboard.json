@@ -82,7 +82,8 @@
   "pll": {
     "in": "Masuk",
     "out": "Keluar",
-    "debt": "Kasbon"
+    "debt": "Kasbon",
+    "vsYesterday": "dari kemarin"
   },
   "sessionExpired": {
     "title": "Sesi cloud berakhir",

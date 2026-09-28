@@ -82,7 +82,8 @@
   "pll": {
     "in": "In",
     "out": "Out",
-    "debt": "Credit"
+    "debt": "Credit",
+    "vsYesterday": "vs yesterday"
   },
   "sessionExpired": {
     "title": "Cloud session ended",

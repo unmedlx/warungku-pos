@@ -72,16 +72,17 @@ interface WeeklyBar {
  * Ini data, bukan sparkline hiasan: tiap batang punya labelnya sendiri dan
  * tingginya proporsional terhadap hari tertinggi dalam pekan itu.
  */
-function WeeklyBars({ data, today, max, emptyTitle }: { data: WeeklyBar[]; today: Date; max: number; emptyTitle: string }) {
-  if (data.every((d) => d.total === 0)) {
-    /* Keadaan kosong tidak memesan tinggi grafik: toko baru akan melihat
-       panel ini sepanjang hari pertamanya, dan lubang setinggi grafik di
-       tengah objek utama layar terbaca seperti ada yang gagal dimuat. */
-    return <p className="text-2xs font-medium text-primary-dim">{emptyTitle}</p>;
-  }
+function WeeklyBars({ data, today, max }: { data: WeeklyBar[]; today: Date; max: number }) {
+  /* Rel ini SELALU digambar, termasuk saat ketujuh harinya nol.
+     Ia bagian dari bentuk panel dompet, bukan hiasan yang hadir kalau
+     kebetulan ada data: tujuh batang rata bawah yang berlabel hari membaca
+     "belum ada penjualan minggu ini", sementara menghilangkannya membuat
+     tinggi panel berubah-ubah setiap kali toko mencatat penjualan pertama. */
   return (
     <div>
-      <div className="flex h-14 items-end gap-1.5">
+      {/* 34px seperti mockup, bukan 56px: pada rel yang tinggi, tujuh batang
+          nol terbaca sebagai lubang, bukan sebagai minggu yang masih sepi. */}
+      <div className="flex h-9 items-end gap-1.5">
         {data.map((d, i) => {
           const isToday = isSameDay(d.day, today);
           return (
@@ -89,9 +90,9 @@ function WeeklyBars({ data, today, max, emptyTitle }: { data: WeeklyBar[]; today
               key={i}
               className={cn(
                 'flex-1 rounded-t-sm transition-[height] duration-500 motion-reduce:transition-none',
-                isToday ? 'bg-primary-foreground' : 'bg-white/30',
+                isToday && d.total > 0 ? 'bg-primary-foreground' : 'bg-white/30',
               )}
-              style={{ height: `${Math.max((d.total / max) * 100, d.total > 0 ? 6 : 3)}%` }}
+              style={{ height: `${max > 0 ? Math.max((d.total / max) * 100, d.total > 0 ? 6 : 3) : 3}%` }}
             />
           );
         })}
@@ -289,12 +290,7 @@ export default function Dashboard() {
   const greeting = getGreeting(hour, i18n.language);
 
   const weeklyChart = (
-    <WeeklyBars
-      data={weeklyChartData}
-      today={today}
-      max={maxDailySales}
-      emptyTitle={t('chart.noData', { defaultValue: 'Belum ada data penjualan' })}
-    />
+    <WeeklyBars data={weeklyChartData} today={today} max={maxDailySales} />
   );
 
   return (

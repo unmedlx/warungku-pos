@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KanPOS — Halaman Saya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Token sama dengan redesign-superapp-mockup.html */
+:root {
+  --brand:#3554C1; --brand-press:#2A44A3; --brand-text:#3554C1; --on-brand:#fff; --on-brand-dim:#D3DCF8;
+  --ground:#F5F7FB; --surface:#fff; --sunken:#EEF1F7; --line:#E3E8F1; --line-strong:#CFD7E6;
+  --ink:#0F1422; --ink-muted:#59637A; --ink-faint:#666E82;
+  --cat-1-bg:#E8EDFB; --cat-1-on:#2A44A3;
+  --cat-2:#12B76A; --cat-2-bg:#E3F7ED; --cat-2-on:#067647;
+  --cat-3:#F79009; --cat-3-bg:#FDF0DC; --cat-3-on:#B54708;
+  --cat-4-bg:#FDE7E5; --cat-4-on:#B42318;
+  --cat-5-bg:#EEEAFE; --cat-5-on:#5925DC;
+  --cat-6-bg:#DEF4F9; --cat-6-on:#0E7090;
+  --neg:#B42318; --pos:#067647;
+  --r-card:14px; --r-control:12px;
+  --lift:0 1px 2px rgba(15,20,34,.05),0 10px 24px -14px rgba(15,20,34,.22);
+}
+[data-theme="dark"] {
+  --brand-text:#9DB1F7; --ground:#0A0E18; --surface:#141A29; --sunken:#1B2233; --line:#242C40; --line-strong:#323C55;
+  --ink:#EDF1F8; --ink-muted:#98A2B8; --ink-faint:#8A93A8;
+  --cat-1-bg:#1B2542; --cat-1-on:#A9BAF5; --cat-2:#3DD68C; --cat-2-bg:#10291F; --cat-2-on:#6CE9A6;
+  --cat-3:#FDB022; --cat-3-bg:#2C2110; --cat-3-on:#FEC84B; --cat-4-bg:#2E1614; --cat-4-on:#FDA29B;
+  --cat-5-bg:#211A3D; --cat-5-on:#BDB4FE; --cat-6-bg:#10272E; --cat-6-on:#67E3F9;
+  --neg:#FDA29B; --pos:#6CE9A6; --lift:none;
+}
+* { box-sizing:border-box; }
+body { margin:0; font-family:'Hanken Grotesk',system-ui,sans-serif; background:var(--ground); color:var(--ink); -webkit-font-smoothing:antialiased; }
+.stage { max-width:1400px; margin:0 auto; padding:48px 24px 96px; }
+.head { max-width:720px; margin-bottom:36px; }
+.head h1 { font-size:clamp(28px,4vw,38px); font-weight:800; letter-spacing:-.03em; margin:0 0 12px; }
+.head p { color:var(--ink-muted); line-height:1.6; margin:0 0 10px; }
+.head strong { color:var(--ink); }
+.changes { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; margin:0 0 40px; }
+.changes div { background:var(--surface); border-radius:var(--r-card); box-shadow:var(--lift); padding:14px 16px; font-size:13.5px; line-height:1.5; color:var(--ink-muted); }
+[data-theme="dark"] .changes div { border:1px solid var(--line); }
+.changes b { display:block; color:var(--ink); font-size:14px; margin-bottom:3px; }
+
+.screens { display:flex; flex-wrap:wrap; gap:40px 32px; align-items:flex-start; }
+.wrap { width:390px; max-width:100%; }
+.label { font-size:13px; font-weight:600; color:var(--ink-muted); margin-bottom:10px; }
+.label b { color:var(--ink); }
+.phone { width:390px; max-width:100%; height:844px; background:var(--ground); border:1px solid var(--line-strong); border-radius:28px; overflow:hidden; display:flex; flex-direction:column; }
+.scroll { flex:1; overflow-y:auto; padding:0 16px 20px; }
+
+/* profil */
+.me { display:flex; align-items:center; gap:13px; padding:20px 2px 16px; }
+.avatar { width:56px; height:56px; border-radius:18px; background:var(--brand); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:20px; flex:0 0 auto; }
+.me .who { flex:1; min-width:0; }
+.me b { display:block; font-size:18px; font-weight:800; letter-spacing:-.02em; }
+.me span { display:block; font-size:13px; color:var(--ink-muted); font-weight:500; margin-top:2px; }
+.me .edit { height:34px; padding:0 13px; border-radius:999px; border:1px solid var(--line); background:var(--surface); color:var(--ink); font:600 12.5px 'Hanken Grotesk'; cursor:pointer; }
+.role { display:inline-block; margin-top:5px; font-size:11.5px; font-weight:700; padding:3px 10px; border-radius:999px; background:var(--cat-5-bg); color:var(--cat-5-on); }
+
+/* strip status — muncul hanya saat butuh tindakan */
+.notice { display:flex; align-items:center; gap:11px; padding:12px 13px; border-radius:var(--r-card); background:var(--cat-3-bg); border:1px solid color-mix(in srgb,var(--cat-3) 32%,transparent); margin-bottom:6px; }
+.notice svg { width:20px; height:20px; color:var(--cat-3-on); flex:0 0 auto; }
+.notice p { margin:0; flex:1; font-size:13px; font-weight:700; line-height:1.35; }
+.notice p span { display:block; font-weight:500; font-size:12px; color:var(--ink-muted); }
+.notice button { height:32px; padding:0 12px; border:0; border-radius:10px; background:var(--cat-3-on); color:#fff; font:700 12.5px 'Hanken Grotesk'; cursor:pointer; }
+
+/* grup daftar */
+.gt { font-size:12.5px; font-weight:700; color:var(--ink-faint); letter-spacing:.02em; margin:20px 4px 8px; }
+.group { background:var(--surface); border-radius:var(--r-card); box-shadow:var(--lift); overflow:hidden; }
+[data-theme="dark"] .group { border:1px solid var(--line); }
+.item { display:flex; align-items:center; gap:12px; padding:0 14px; min-height:54px; border-bottom:1px solid var(--line); color:inherit; text-decoration:none; }
+.item:last-child { border-bottom:0; }
+.item:active { background:var(--sunken); }
+.ic { width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex:0 0 auto; }
+.ic svg { width:18px; height:18px; }
+.t1 { background:var(--cat-1-bg); color:var(--cat-1-on); }
+.t2 { background:var(--cat-2-bg); color:var(--cat-2-on); }
+.t3 { background:var(--cat-3-bg); color:var(--cat-3-on); }
+.t4 { background:var(--cat-4-bg); color:var(--cat-4-on); }
+.t5 { background:var(--cat-5-bg); color:var(--cat-5-on); }
+.t6 { background:var(--cat-6-bg); color:var(--cat-6-on); }
+.item .lb { flex:1; min-width:0; font-size:14.5px; font-weight:600; letter-spacing:-.01em; padding:10px 0; }
+.item .lb small { display:block; font-size:12px; color:var(--ink-muted); font-weight:500; margin-top:1px; }
+.val { font-size:13px; color:var(--ink-muted); font-weight:500; white-space:nowrap; }
+.val.ok { color:var(--pos); font-weight:600; }
+.val.warn { color:var(--cat-3-on); font-weight:700; }
+.chev { width:16px; height:16px; color:var(--ink-faint); flex:0 0 auto; }
+.sw { width:42px; height:25px; border-radius:999px; background:var(--line-strong); position:relative; flex:0 0 auto; cursor:pointer; border:0; }
+.sw::after { content:""; position:absolute; top:3px; left:3px; width:19px; height:19px; border-radius:50%; background:#fff; transition:left .15s; box-shadow:0 1px 2px rgba(0,0,0,.2); }
+.sw.on { background:var(--brand); }
+.sw.on::after { left:20px; }
+
+.logout { width:100%; margin-top:20px; height:50px; border-radius:var(--r-card); border:1px solid var(--line); background:var(--surface); color:var(--neg); font:700 14.5px 'Hanken Grotesk'; display:flex; align-items:center; justify-content:center; gap:8px; cursor:pointer; }
+.logout svg { width:18px; height:18px; }
+.ver { text-align:center; font-size:12px; color:var(--ink-faint); margin-top:14px; }
+
+/* nav bawah */
+.nav { display:flex; background:var(--surface); border-top:1px solid var(--line); padding-bottom:6px; }
+.nav a { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; padding:9px 2px 5px; color:var(--ink-faint); text-decoration:none; font-size:11px; font-weight:600; }
+.nav a.on { color:var(--brand-text); }
+.nav svg { width:23px; height:23px; }
+.nav .kbtn { margin-top:-22px; width:50px; height:50px; border-radius:17px; background:var(--brand); color:#fff; display:flex; align-items:center; justify-content:center; border:3px solid var(--surface); }
+.nav .kbtn svg { width:24px; height:24px; }
+
+.themer { position:fixed; right:20px; bottom:20px; height:44px; padding:0 17px; border-radius:999px; border:0; background:var(--surface); color:var(--ink); font:700 13.5px 'Hanken Grotesk'; box-shadow:0 4px 16px rgba(0,0,0,.18); cursor:pointer; }
+@media (max-width:440px){ .stage{padding:28px 16px 80px;} .phone{height:auto;} }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></symbol>
+<symbol id="printer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><path d="M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2"/><path d="M6 14h12v7H6z"/></symbol>
+<symbol id="receipt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2h14v20l-3-2-2 2-2-2-2 2-2-2-3 2z"/><path d="M9 7h6M9 11h6M9 15h4"/></symbol>
+<symbol id="layout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></symbol>
+<symbol id="card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></symbol>
+<symbol id="coins" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="6"/><path d="M15.5 9.5a6 6 0 1 1-6 6"/></symbol>
+<symbol id="store" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9 5 4h14l2 5"/><path d="M3 9h18v2a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-6 0z"/><path d="M5 13v8h14v-8"/></symbol>
+<symbol id="tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12V3h9l9 9-9 9z"/><circle cx="7.5" cy="7.5" r="1.5"/></symbol>
+<symbol id="ruler" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17 17 3l4 4L7 21z"/><path d="m7 13 2 2M10 10l2 2M13 7l2 2"/></symbol>
+<symbol id="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6v3H9z"/><path d="M16 4h2a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h2"/><path d="m9 14 2 2 4-4"/></symbol>
+<symbol id="users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0"/><path d="M16 4a4 4 0 0 1 0 8M22 21a7 7 0 0 0-4-6.3"/></symbol>
+<symbol id="user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+<symbol id="truck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 5h13v11H1zM14 9h4l4 4v3h-8"/><circle cx="5.5" cy="18.5" r="2"/><circle cx="17.5" cy="18.5" r="2"/></symbol>
+<symbol id="cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H7a5 5 0 1 1 1-9.9A6 6 0 0 1 19.5 11 4 4 0 0 1 17.5 19"/></symbol>
+<symbol id="palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a10 10 0 1 1 10-10c0 3-2.5 4-4.5 4H15a2 2 0 0 0-1.5 3.3A2 2 0 0 1 12 22"/><circle cx="7.5" cy="11" r="1"/><circle cx="12" cy="7" r="1"/><circle cx="16.5" cy="11" r="1"/></symbol>
+<symbol id="globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></symbol>
+<symbol id="spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/></symbol>
+<symbol id="help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></symbol>
+<symbol id="logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+<symbol id="warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.8 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.8a2 2 0 0 0-3.4 0"/><path d="M12 9v4M12 17h.01"/></symbol>
+<symbol id="n-home" viewBox="0 0 24 24" fill="currentColor"><path d="M3 10.2 12 3l9 7.2V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+<symbol id="n-box" viewBox="0 0 24 24" fill="currentColor"><path d="M3 7.5 12 3l9 4.5V17L12 21.5 3 17z"/></symbol>
+<symbol id="n-note" viewBox="0 0 24 24" fill="currentColor"><path d="M6 2h9l5 5v15H6z"/></symbol>
+<symbol id="n-me" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4.5"/><path d="M3.5 21a8.5 8.5 0 0 1 17 0z"/></symbol>
+<symbol id="n-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h3l2.4 11.2a2 2 0 0 0 2 1.6h7.4a2 2 0 0 0 2-1.55L21.5 8H7"/><circle cx="10" cy="20" r="1.6"/><circle cx="18" cy="20" r="1.6"/></symbol>
+</defs></svg>
+
+<div class="stage">
+  <div class="head">
+    <h1>Halaman Saya — lebih ringkas</h1>
+    <p>Saat ini halaman Saya berisi <strong>pencarian, kartu toko, strip cloud, 6 kartu kategori, 2 saklar, kotak bantuan</strong>, lalu versi. Hampir semua kartu kategori cuma membuka halaman perantara, jadi untuk mengatur printer saja butuh dua ketukan plus menebak printer ada di kategori mana.</p>
+    <p>Usulannya: <strong>satu daftar yang langsung ke tujuan</strong>, dikelompokkan menurut pekerjaan pemilik toko, dengan keadaan sekarang ditampilkan di tiap baris (printer terhubung, bahasa, jumlah karyawan). Semua isi di bawah adalah data contoh.</p>
+  </div>
+
+  <div class="changes">
+    <div><b>Tidak ada halaman perantara</b>Tiap baris langsung membuka layar tujuannya. Enam kategori jadi 5 grup kecil yang terlihat sekaligus. Pencarian dihapus karena total barisnya sekarang cuma ±17.</div>
+    <div><b>Keadaan terlihat tanpa diklik</b>Nilai di kanan ("Terhubung", "Indonesia", "3 orang") menjawab pertanyaan sebelum pengguna mengetuk barisnya.</div>
+    <div><b>Yang terkunci disembunyikan</b>Kasir tidak lagi melihat kartu bergembok. Halamannya berisi apa yang boleh ia pakai saja, plus tombol Keluar yang jelas.</div>
+    <div><b>Peringatan hanya saat perlu</b>Strip cloud cuma muncul kalau cadangan terlambat, dengan tombol aksi langsung. Kalau aman, statusnya cukup tampil di baris "Cadangan data".</div>
+  </div>
+
+  <div class="screens">
+
+    <!-- ============ PEMILIK — normal ============ -->
+    <div class="wrap">
+      <div class="label"><b>Pemilik</b> — keadaan normal</div>
+      <div class="phone">
+        <div class="scroll">
+          <div class="me">
+            <div class="avatar">WB</div>
+            <div class="who"><b>Warung Bu Siti</b><span>Jl. Melati No. 12, Sleman</span></div>
+            <button class="edit">Ubah</button>
+          </div>
+
+          <div class="gt">JUALAN</div>
+          <div class="group">
+            <a class="item" href="#"><span class="ic t1"><svg><use href="#printer"/></svg></span><span class="lb">Printer struk</span><span class="val ok">Terhubung</span><svg class="chev"><use href="#chev"/></svg></a>
+            <a class="item" href="#"><span class="ic t1"><svg><use href="#receipt"/></svg></span><span class="lb">Isi struk<small>Logo, catatan kaki</small></span><svg class="chev"><use href="#chev"/></svg></a>
+            <a class="item" href="#"><span class="ic t1"><svg><use href="#card"/></svg></span><span class="lb">Metode pembayaran</span><span class="val">4 aktif</span><svg class="chev"><use href="#chev"/></svg></a>
+            <div class="item"><span class="ic t3"><svg><use href="#coins"/></svg></span><span class="lb">Boleh kasbon<small>Pelanggan bisa bayar nanti</small></span><button class="sw on" aria-label="Kasbon"></button></div>
+          </div>
+
+          <div class="gt">TOKO &amp; BARANG</div>
+          <div class="group">
+            <a class="item" href="#"><span class="ic t6"><svg><use href="#store"/></svg></span><span class="lb">Jenis usaha</span><span class="val">Warung</span><svg class="chev"><use href="#chev"/></svg></a>
+            <a class="item" href="#"><span class="ic t6"><svg><use href="#tag"/></svg></span><span class="lb">Kategori barang &amp; pengeluaran</span><svg class="chev"><use href="#chev"/></svg></a>
+            <a class="item" href="#"><span class="ic t6"><svg><use href="#ruler"/></svg></span><span class="lb">Satuan</span><svg class="chev"><use href="#chev"/></svg></a>
+            <a class="item" href="#"><span class="ic t6"><svg><use href="#check"/></svg></span><span class="lb">Cek stok (opname)</span><svg class="chev"><use href="#chev"/></svg></a>
+          </div>
+
+          <div class="gt">ORANG</div>
+          <div class="group">
+            <a class="item" href="#"><span class="ic t5"><svg><use href="#users"/></svg></span><span class="lb">Karyawan &amp; akses</span><span class="val">3 orang</span><svg class="chev"><use href="#chev"/></svg></a>
+            <a class="item" href="#"><span class="ic t2"><svg><use href="#user"/></svg></span><span class="lb">Pelanggan</span><svg class="chev"><use href="#chev"/></svg></a>
+            <a class="item" href="#"><span class="ic t2"><svg><use href="#truck"/></svg></span><span class="lb">Supplier</span><svg class="chev"><use href="#chev"/></svg></a>
+          </div>
+
+          <div class="gt">DATA</div>
+          <div class="group">
+            <a class="item" href="#"><span class="ic t4"><svg><use href="#cloud"/></svg></span><span class="lb">Cadangan data<small>Cloud · 5 menit lalu</small></span><span class="val ok">Aman</span><svg class="chev"><use href="#chev"/></svg></a>
+          </div>
+
+          <div class="gt">APLIKASI</div>
+          <div class="group">
+            <a class="item" href="#"><span class="ic t1"><svg><use href="#layout"/></svg></span><span class="lb">Tampilan kasir</span><span class="val">Kisi</span><svg class="chev"><use href="#chev"/></svg></a>
+            <a class="item" href="#"><span class="ic t3"><svg><use href="#palette"/></svg></span><span class="lb">Tema</span><span class="val">Terang</span><svg class="chev"><use href="#chev"/></svg></a>
+            <a class="item" href="#"><span class="ic t6"><svg><use href="#globe"/></svg></span><span class="lb">Bahasa</span><span class="val">Indonesia</span><svg class="chev"><use href="#chev"/></svg></a>
+            <a class="item" href="#"><span class="ic t5"><svg><use href="#spark"/></svg></span><span class="lb">Yang baru</span><svg class="chev"><use href="#chev"/></svg></a>
+            <a class="item" href="#"><span class="ic t2"><svg><use href="#help"/></svg></span><span class="lb">Bantuan &amp; lapor masalah</span><svg class="chev"><use href="#chev"/></svg></a>
+          </div>
+
+          <button class="logout"><svg><use href="#logout"/></svg>Keluar dari akun Siti</button>
+          <div class="ver">KanPOS v3.4.0</div>
+        </div>
+        <nav class="nav">
+          <a href="#"><svg><use href="#n-home"/></svg>Beranda</a>
+          <a href="#"><svg><use href="#n-box"/></svg>Barang</a>
+          <a href="#"><span class="kbtn"><svg><use href="#n-cart"/></svg></span>Kasir</a>
+          <a href="#"><svg><use href="#n-note"/></svg>Catatan</a>
+          <a href="#" class="on"><svg><use href="#n-me"/></svg>Saya</a>
+        </nav>
+      </div>
+    </div>
+
+    <!-- ============ PEMILIK — cadangan terlambat ============ -->
+    <div class="wrap">
+      <div class="label"><b>Pemilik</b> — cadangan terlambat, printer terputus</div>
+      <div class="phone">
+        <div class="scroll">
+          <div class="me">
+            <div class="avatar">WB</div>
+            <div class="who"><b>Warung Bu Siti</b><span>Jl. Melati No. 12, Sleman</span></div>
+            <button class="edit">Ubah</button>
+          </div>
+
+          <div class="notice">
+            <svg><use href="#warn"/></svg>
+            <p>Data belum dicadangkan 4 hari<span>Kalau HP hilang, transaksi sejak Kamis ikut hilang</span></p>
+            <button>Cadangkan</button>
+          </div>
+
+          <div class="gt">JUALAN</div>
+          <div class="group">
+            <a class="item" href="#"><span class="ic t1"><svg><use href="#printer"/></svg></span><span class="lb">Printer struk</span><span class="val warn">Terputus</span><svg class="chev"><use href="#chev"/></svg></a>
+            <a class="item" href="#"><span class="ic t1"><svg><use href="#receipt"/></svg></span><span class="lb">Isi struk<small>Logo, catatan kaki</small></span><svg class="chev"><use href="#chev"/></svg></a>
+            <a class="item" href="#"><span class="ic t1"><svg><use href="#card"/></svg></span><span class="lb">Metode pembayaran</span><span class="val">4 aktif</span><svg class="chev"><use href="#chev"/></svg></a>
+            <div class="item"><span class="ic t3"><svg><use href="#coins"/></svg></span><span class="lb">Boleh kasbon<small>Pelanggan bisa bayar nanti</small></span><button class="sw" aria-label="Kasbon"></button></div>
+          </div>
+
+          <div class="gt">TOKO &amp; BARANG</div>
+          <div class="group">
+            <a class="item" href="#"><span class="ic t6"><svg><use href="#store"/></svg></span><span class="lb">Jenis usaha</span><span class="val">Kafe · 8 meja</span><svg class="chev"><use href="#chev"/></svg></a>
+            <a class="item" href="#"><span class="ic t6"><svg><use href="#tag"/></svg></span><span class="lb">Kategori barang &amp; pengeluaran</span><svg class="chev"><use href="#chev"/></svg></a>
+            <a class="item" href="#"><span class="ic t6"><svg><use href="#ruler"/></svg></span><span class="lb">Satuan</span><svg class="chev"><use href="#chev"/></svg></a>
+          </div>
+
+          <div class="gt">DATA</div>
+          <div class="group">
+            <a class="item" href="#"><span class="ic t4"><svg><use href="#cloud"/></svg></span><span class="lb">Cadangan data<small>Terakhir Kamis, 24 Sep</small></span><span class="val warn">Terlambat</span><svg class="chev"><use href="#chev"/></svg></a>
+          </div>
+          <div class="ver" style="margin-top:22px">…grup Orang dan Aplikasi sama seperti layar pertama</div>
+        </div>
+        <nav class="nav">
+          <a href="#"><svg><use href="#n-home"/></svg>Beranda</a>
+          <a href="#"><svg><use href="#n-box"/></svg>Barang</a>
+          <a href="#"><span class="kbtn"><svg><use href="#n-cart"/></svg></span>Kasir</a>
+          <a href="#"><svg><use href="#n-note"/></svg>Catatan</a>
+          <a href="#" class="on"><svg><use href="#n-me"/></svg>Saya</a>
+        </nav>
+      </div>
+    </div>
+
+    <!-- ============ KASIR (karyawan) ============ -->
+    <div class="wrap">
+      <div class="label"><b>Karyawan (kasir)</b> — hanya yang boleh dipakai</div>
+      <div class="phone">
+        <div class="scroll">
+          <div class="me">
+            <div class="avatar" style="background:var(--cat-5-bg);color:var(--cat-5-on)">R</div>
+            <div class="who"><b>Rina</b><span>Warung Bu Siti</span><i class="role" style="font-style:normal">Kasir</i></div>
+          </div>
+
+          <div class="gt">JUALAN</div>
+          <div class="group">
+            <a class="item" href="#"><span class="ic t1"><svg><use href="#printer"/></svg></span><span class="lb">Printer struk</span><span class="val ok">Terhubung</span><svg class="chev"><use href="#chev"/></svg></a>
+          </div>
+
+          <div class="gt">APLIKASI</div>
+          <div class="group">
+            <a class="item" href="#"><span class="ic t1"><svg><use href="#layout"/></svg></span><span class="lb">Tampilan kasir</span><span class="val">Kisi</span><svg class="chev"><use href="#chev"/></svg></a>
+            <a class="item" href="#"><span class="ic t6"><svg><use href="#globe"/></svg></span><span class="lb">Bahasa</span><span class="val">Indonesia</span><svg class="chev"><use href="#chev"/></svg></a>
+            <a class="item" href="#"><span class="ic t5"><svg><use href="#spark"/></svg></span><span class="lb">Yang baru</span><svg class="chev"><use href="#chev"/></svg></a>
+            <a class="item" href="#"><span class="ic t2"><svg><use href="#help"/></svg></span><span class="lb">Bantuan &amp; lapor masalah</span><svg class="chev"><use href="#chev"/></svg></a>
+          </div>
+
+          <button class="logout"><svg><use href="#logout"/></svg>Keluar &amp; ganti kasir</button>
+          <div class="ver">KanPOS v3.4.0</div>
+        </div>
+        <nav class="nav">
+          <a href="#"><svg><use href="#n-home"/></svg>Beranda</a>
+          <a href="#"><svg><use href="#n-box"/></svg>Barang</a>
+          <a href="#"><span class="kbtn"><svg><use href="#n-cart"/></svg></span>Kasir</a>
+          <a href="#"><svg><use href="#n-note"/></svg>Catatan</a>
+          <a href="#" class="on"><svg><use href="#n-me"/></svg>Saya</a>
+        </nav>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<button class="themer" onclick="const r=document.documentElement;r.dataset.theme=r.dataset.theme==='dark'?'light':'dark'">Terang / Gelap</button>
+<script>
+document.querySelectorAll('.sw').forEach(s=>s.addEventListener('click',()=>s.classList.toggle('on')));
+</script>
+</body>
+</html>

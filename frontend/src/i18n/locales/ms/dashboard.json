@@ -82,7 +82,8 @@
   "pll": {
     "in": "Masuk",
     "out": "Keluar",
-    "debt": "Hutang"
+    "debt": "Hutang",
+    "vsYesterday": "berbanding semalam"
   },
   "sessionExpired": {
     "title": "Sesi awan tamat",

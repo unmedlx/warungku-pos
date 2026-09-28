@@ -115,7 +115,7 @@ const MoneyPanelAmount = React.forwardRef<HTMLSpanElement, MoneyPanelAmountProps
         className={cn(
           'flex items-baseline gap-1.5 tabular-nums whitespace-nowrap',
           'animate-amount-land motion-reduce:animate-none',
-          scale === 'hero' ? 'text-[2.6rem] leading-[1.02]' : 'text-metric leading-[1.05]',
+          scale === 'hero' ? 'text-[2.6rem] leading-[1.02]' : 'text-[2.23rem] leading-[1.05]',
           'font-extrabold tracking-[-0.035em]',
           className,
         )}
