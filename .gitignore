@@ -28,8 +28,8 @@ dev-dist
 coverage
 
 # Other
-.claude
-.impeccable
-admin
-backend
-landing
+.claude/
+.impeccable/
+admin/
+backend/
+landing/
