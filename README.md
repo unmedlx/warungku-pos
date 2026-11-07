@@ -1,6 +1,6 @@
 # 🧾 KanPOS
 
-A free, offline-first, open source Point of Sale (POS) Progressive Web App built for Indonesian Micro, Small, and Medium Enterprises (UMKM). All data is stored locally on the user's device — no server, no registration, no cost.
+An offline-first Point of Sale (POS) Progressive Web App built for Indonesian Micro, Small, and Medium Enterprises (UMKM). All data is stored locally on the user's device — no server, no registration, no cost.
 
 ---
 
@@ -228,41 +228,6 @@ When stock is received, COGS is automatically recalculated:
 New COGS = ((Old Stock × Old COGS) + (New Qty × Buy Price)) / (Old Stock + New Qty)
 ```
 
----
-
-## 💬 Feedback & Feature Requests
-
-Got suggestions, feature ideas, or found a bug? Submit and vote on our board:
-
-👉 **[kasirgratisan.fider.io](https://kasirgratisan.fider.io/)**
-
----
-
-## 👥 Community
-
-Join the Telegram group to discuss the app, ask questions, and share tips with other users:
-
-👉 **[t.me/kasirgratisan](https://t.me/kasirgratisan)**
-
----
-
-## ☕ Support the Developer
-
-KanPOS is built and maintained for free. If you find it useful, you can buy the developer a coffee to support continued development:
-
-👉 **[traktir.jipraks.com](https://traktir.jipraks.com/)**
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Here's how:
-
-1. Fork this repository
-2. Create a feature branch (`git checkout -b feature/new-feature`)
-3. Commit your changes (`git commit -m 'Add new feature'`)
-4. Push to the branch (`git push origin feature/new-feature`)
-5. Open a Pull Request
 
 ### Guidelines
 
@@ -277,13 +242,6 @@ Contributions are welcome! Here's how:
 - Use `useLiveQuery()` from `dexie-react-hooks` for reactive data binding
 - Gate sensitive UI/actions with the `can()` helper from `useAuth()` when multi-user is enabled
 
----
-
-## 📄 License
-
-[MIT License](LICENSE)
-
----
 
 ## 🙏 Credits
 
