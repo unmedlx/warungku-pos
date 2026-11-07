@@ -1,4 +1,4 @@
-# 🧾 KanPOS
+# 🧾 Warungku POS
 
 An offline-first Point of Sale (POS) Progressive Web App built for Indonesian Micro, Small, and Medium Enterprises (UMKM). All data is stored locally on the user's device — no server, no registration, no cost.
 
