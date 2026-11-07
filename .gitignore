@@ -26,3 +26,10 @@ dev-dist
 
 # Test coverage
 coverage
+
+# Other
+.claude
+.impeccable
+admin
+backend
+landing
