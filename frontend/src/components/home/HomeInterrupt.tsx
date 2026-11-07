@@ -4,9 +4,11 @@ import { formatDistanceToNow } from 'date-fns';
 import type { Locale } from 'date-fns';
 
 import { NewsCard } from '@/components/jokoui/news-card';
-import { SessionExpiredBanner, useSessionExpiredVisible } from '@/components/SessionExpiredBanner';
+// OFFLINE MODE: SessionExpiredBanner disabled
+// import { SessionExpiredBanner, useSessionExpiredVisible } from '@/components/SessionExpiredBanner';
 import { SetupChecklist, useSetupChecklistVisible } from '@/components/SetupChecklist';
-import { LinkAccountCard, useLinkAccountVisible } from '@/components/LinkAccountCard';
+// OFFLINE MODE: LinkAccountCard disabled
+// import { LinkAccountCard, useLinkAccountVisible } from '@/components/LinkAccountCard';
 import { InstallBanner, useInstallBannerVisible } from '@/components/InstallBanner';
 import { shouldShowBackupReminder, exportBackupData } from '@/components/BackupReminder';
 import { pickInterrupt } from '@/lib/home-interrupts';
@@ -42,20 +44,24 @@ export function HomeInterrupt({ lastBackupAt, canBackup, settingsLoaded, dateLoc
   const [backupDismissed, setBackupDismissed] = useState(false);
 
   const visible = {
-    'session-expired': useSessionExpiredVisible(),
+    // OFFLINE MODE: Session expired disabled
+    // 'session-expired': useSessionExpiredVisible(),
     setup: useSetupChecklistVisible(),
-    'link-account': useLinkAccountVisible(),
+    // OFFLINE MODE: Link account disabled
+    // 'link-account': useLinkAccountVisible(),
     backup: settingsLoaded && canBackup && !backupDismissed && shouldShowBackupReminder(lastBackupAt ?? null),
     install: useInstallBannerVisible(),
   };
 
   switch (pickInterrupt(visible)) {
-    case 'session-expired':
-      return <SessionExpiredBanner />;
+    // OFFLINE MODE: Session expired disabled
+    // case 'session-expired':
+    //   return <SessionExpiredBanner />;
     case 'setup':
       return <SetupChecklist />;
-    case 'link-account':
-      return <LinkAccountCard />;
+    // OFFLINE MODE: Link account disabled
+    // case 'link-account':
+    //   return <LinkAccountCard />;
     case 'backup':
       return (
         <NewsCard

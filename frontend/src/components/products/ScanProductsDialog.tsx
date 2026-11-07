@@ -29,7 +29,8 @@ import {
 import { compressImageForScan } from '@/lib/image-utils';
 import { trackEvent } from '@/lib/analytics';
 import { useAuth } from '@/hooks/use-auth';
-import { useCloudAuth } from '@/hooks/use-cloud-auth';
+// OFFLINE MODE: Cloud auth disabled
+// import { useCloudAuth } from '@/hooks/use-cloud-auth';
 import {
   CloudApiError,
   ScanAbortedError,
@@ -54,7 +55,8 @@ const MAX_FILE_MB = 6;
 export default function ScanProductsDialog({ open, onClose, onSaved }: Props) {
   const { t } = useTranslation('products');
   const { currentUser } = useAuth();
-  const { isLoggedIn, restoringSession } = useCloudAuth();
+  // OFFLINE MODE: Cloud auth disabled
+  // const { isLoggedIn, restoringSession } = useCloudAuth();
   const navigate = useNavigate();
 
   const products = useLiveQuery(() => db.products.where('isDeleted').equals(0).toArray());
@@ -91,14 +93,15 @@ export default function ScanProductsDialog({ open, onClose, onSaved }: Props) {
 
   // Kuota diambil saat dialog dibuka supaya angka sisa yang ditampilkan
   // adalah angka server, bukan tebakan dari sesi sebelumnya.
+  // OFFLINE MODE: Disabled in offline mode
   useEffect(() => {
-    if (!open || !online || !isLoggedIn) return;
-    setStatusLoading(true);
-    fetchScanStatus()
-      .then(setStatus)
-      .catch(() => setStatus(null))
-      .finally(() => setStatusLoading(false));
-  }, [open, online, isLoggedIn]);
+    // if (!open || !online || !isLoggedIn) return;
+    // setStatusLoading(true);
+    // fetchScanStatus()
+    //   .then(setStatus)
+    //   .catch(() => setStatus(null))
+    //   .finally(() => setStatusLoading(false));
+  }, [open, online]);
 
   useEffect(() => {
     if (open) return;
@@ -244,7 +247,8 @@ export default function ScanProductsDialog({ open, onClose, onSaved }: Props) {
 
   const quota = status?.quota;
   const noQuota = quota != null && quota.remaining <= 0;
-  const featureOff = status != null && !status.enabled;
+  // OFFLINE MODE: Always disabled in offline mode
+  const featureOff = true; // status != null && !status.enabled;
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
@@ -257,9 +261,10 @@ export default function ScanProductsDialog({ open, onClose, onSaved }: Props) {
 
         <div className="flex-1 overflow-y-auto pr-1 space-y-4">
           {/* ---------- Offline ---------- */}
+          {/* OFFLINE MODE: Disabled in offline mode */}
           {!online ? (
             <EmptyState icon={CloudAlert} title={t('scan.offlineTitle')} description={t('scan.offlineDesc')} />
-          ) : restoringSession ? (
+          ) : /* : restoringSession ? (
             <div className="py-14 grid place-items-center">
               <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
             </div>
@@ -280,7 +285,7 @@ export default function ScanProductsDialog({ open, onClose, onSaved }: Props) {
                 </Button>
               }
             />
-          ) : featureOff ? (
+          ) : */ featureOff ? (
             <EmptyState icon={Camera} title={t('scan.disabledTitle')} description={t('scan.disabledDesc')} />
           ) : stage === 'processing' ? (
             /* ---------- Memproses ---------- */
@@ -411,7 +416,9 @@ export default function ScanProductsDialog({ open, onClose, onSaved }: Props) {
         </div>
 
         {/* ---------- Footer ---------- */}
-        {online && isLoggedIn && !restoringSession && !featureOff && stage !== 'processing' && (
+        {/* OFFLINE MODE: Disabled in offline mode */}
+        {/* {online && isLoggedIn && !restoringSession && !featureOff && stage !== 'processing' && ( */}
+        {online && !featureOff && stage !== 'processing' && (
           <div className="flex gap-2 border-t border-border pt-3">
             {stage === 'review' ? (
               <>

@@ -5,10 +5,12 @@ import { useEffect } from 'react';
 import { Loader2, Store } from '@/components/icons';
 import BottomNav from './BottomNav';
 import { useThemeColor, useTheme } from '@/hooks/use-theme-color';
-import { useCloudAutoBackup } from '@/hooks/use-cloud-auto-backup';
-import AuthGate from '@/components/AuthGate';
+// import { useCloudAutoBackup } from '@/hooks/use-cloud-auto-backup';
+// OFFLINE MODE: AuthGate disabled, use Onboarding directly
+// import AuthGate from '@/components/AuthGate';
+import Onboarding from '@/components/Onboarding';
 import LoginScreen from '@/components/LoginScreen';
-import PushPermissionModal from '@/components/PushPermissionModal';
+// import PushPermissionModal from '@/components/PushPermissionModal';
 import { useAuth } from '@/hooks/use-auth';
 import { useTranslation } from 'react-i18next';
 
@@ -22,7 +24,7 @@ export default function AppLayout() {
   const { pathname } = useLocation();
   useThemeColor(); // Apply saved theme color on mount
   useTheme();      // Apply saved light/dark/system mode
-  useCloudAutoBackup(); // Auto cloud backup on app open (if enabled & subscribed)
+  // useCloudAutoBackup(); // Auto cloud backup on app open (if enabled & subscribed) - DISABLED
   const { multiUserEnabled, currentUser, loading } = useAuth();
 
   useEffect(() => {
@@ -38,13 +40,14 @@ export default function AppLayout() {
         <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-primary">
           <Store className="h-8 w-8" />
         </div>
-        <h1 className="text-lg font-semibold tracking-tight">KanPOS</h1>
+        <h1 className="text-lg font-semibold tracking-tight">Warungku POS</h1>
         <p className="text-sm text-muted-foreground mt-1 mb-6">{t('app.loading', { defaultValue: 'Menyiapkan aplikasi...' })}</p>
         <Loader2 className="w-6 h-6 animate-spin text-primary" />
       </div>
     );
   }
 
+  // OFFLINE MODE: Use Onboarding directly instead of AuthGate
   // Belum ada toko di perangkat ini → gerbang akun.
   //
   // `AuthGate` yang memutuskan apa yang tampil: masuk Google lalu memilih toko
@@ -56,7 +59,7 @@ export default function AppLayout() {
   // yang sudah jalan tidak boleh tiba-tiba disambut layar login, karena bagi
   // pemiliknya itu terbaca sebagai datanya hilang.
   if (!storeSettings || !storeSettings.onboardingDone) {
-    return <AuthGate onComplete={() => { /* Dexie live query will auto-refresh */ }} />;
+    return <Onboarding onComplete={() => { /* Dexie live query will auto-refresh */ }} />;
   }
 
   // Multi-user mode is on but no one is logged in → show login
@@ -70,7 +73,7 @@ export default function AppLayout() {
         <Outlet />
       </main>
       {isMainPage(pathname) && <BottomNav />}
-      <PushPermissionModal />
+      {/* <PushPermissionModal /> */}
     </div>
   );
 }

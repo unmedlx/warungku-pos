@@ -1,3 +1,14 @@
+/*
+ * ==========================================
+ * OFFLINE MODE - VERSION CHECK DISABLED
+ * ==========================================
+ * Version check functionality has been disabled for offline mode.
+ * All version-related features are now commented out.
+ *
+ * Original file content:
+ */
+
+/*
 import { db } from './db';
 import { APP_VERSION } from './app-version';
 
@@ -22,3 +33,4 @@ export async function checkVersion(): Promise<void> {
     // Silent fail — fire-and-forget
   }
 }
+*/

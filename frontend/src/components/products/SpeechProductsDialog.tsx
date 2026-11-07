@@ -33,7 +33,8 @@ import { useProductDictation } from '@/hooks/use-product-dictation';
 import { useBusinessMode } from '@/hooks/use-business-mode';
 import { trackEvent } from '@/lib/analytics';
 import { useAuth } from '@/hooks/use-auth';
-import { useCloudAuth } from '@/hooks/use-cloud-auth';
+// OFFLINE MODE: Cloud auth disabled
+// import { useCloudAuth } from '@/hooks/use-cloud-auth';
 import { cn } from '@/lib/utils';
 import {
   CloudApiError,
@@ -80,7 +81,8 @@ function isPending(r: DraftRow): boolean {
 export default function SpeechProductsDialog({ open, onClose, onSaved }: Props) {
   const { t } = useTranslation('products');
   const { currentUser } = useAuth();
-  const { isLoggedIn } = useCloudAuth();
+  // OFFLINE MODE: Cloud auth disabled
+  // const { isLoggedIn } = useCloudAuth();
   const { mode } = useBusinessMode();
 
   const products = useLiveQuery(() => db.products.where('isDeleted').equals(0).toArray());
@@ -121,7 +123,8 @@ export default function SpeechProductsDialog({ open, onClose, onSaved }: Props) 
   /** HP tanpa pengenal suara jatuh ke rekam-lalu-kirim. */
   const fallback = dictation.available === false;
   const { rows, setRows } = dictation;
-  const cloudReady = online && isLoggedIn;
+  // OFFLINE MODE: Cloud disabled
+  const cloudReady = false; // online && isLoggedIn;
 
   useEffect(() => {
     const on = () => setOnline(true);

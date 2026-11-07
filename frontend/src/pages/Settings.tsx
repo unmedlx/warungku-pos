@@ -3,7 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { Link } from 'react-router-dom';
 import { db } from '@/lib/db';
 import {
-  ChevronRight, ClipboardCheck, Cloud, CreditCard, Download, Globe, HandCoins, Info, LayoutGrid, LogOut,
+  ChevronRight, ClipboardCheck, CreditCard, Download, Globe, HandCoins, Info, LayoutGrid, LogOut,
   Palette, Printer, Receipt, Ruler, Settings as SettingsIcon, Sparkles, Store, Tag, Truck,
   Users as UsersIcon, Wallet, type IconComponent,
 } from '@/components/icons';
@@ -12,11 +12,13 @@ import { SettingsGroup, SettingsItem } from '@/components/jokoui/settings-group'
 import { Switch } from '@/components/jokoui/switch';
 import { Button } from '@/components/jokoui/button';
 import { TONE_CLASS, type SettingsTone } from '@/components/settings/SettingsTile';
-import { StatusStrip } from '@/components/settings/StatusStrip';
+// OFFLINE MODE: StatusStrip and Cloud status disabled
+// import { StatusStrip } from '@/components/settings/StatusStrip';
 import { StoreIdentityCard } from '@/components/settings/StoreIdentityCard';
 import { StoreProfileDialog } from '@/components/settings/StoreProfileDialog';
 import { LogoutDialog } from '@/components/settings/MultiUserDialogs';
-import { useCloudStatus } from '@/hooks/use-cloud-status';
+// OFFLINE MODE: Cloud status disabled
+// import { useCloudStatus } from '@/hooks/use-cloud-status';
 import { useAuth } from '@/hooks/use-auth';
 import { normalizeBusinessMode } from '@/lib/business-mode';
 import { getDefaultBluetoothPrinter, isNativePlatform } from '@/lib/printer';
@@ -51,7 +53,8 @@ interface Row {
 export default function Pengaturan() {
   const { t, i18n } = useTranslation('settings');
   const { multiUserEnabled, currentUser, isOwner, can, logout } = useAuth();
-  const cloud = useCloudStatus();
+  // OFFLINE MODE: Cloud status disabled
+  // const cloud = useCloudStatus();
 
   const storeSettings = useLiveQuery(() => db.storeSettings.toCollection().first());
   const paymentCount = useLiveQuery(() => db.paymentMethods.count());
@@ -138,16 +141,17 @@ export default function Pengaturan() {
     {
       title: t('hub.groups.data', { defaultValue: 'Data' }),
       rows: [
-        {
-          key: 'cloud', show: canBackup, to: '/settings/cloud-backup', icon: Cloud, tone: 'red',
-          label: t('cloudSync.title'),
-          description: cloud.meta ?? cloud.shortDescription,
-          value: (
-            <span className={cn('font-medium', cloud.needsAttention ? 'text-warning-text' : 'text-success-text')}>
-              {cloud.badge}
-            </span>
-          ),
-        },
+        // OFFLINE MODE: Cloud backup menu disabled
+        // {
+        //   key: 'cloud', show: canBackup, to: '/settings/cloud-backup', icon: Cloud, tone: 'red',
+        //   label: t('cloudSync.title'),
+        //   description: cloud.meta ?? cloud.shortDescription,
+        //   value: (
+        //     <span className={cn('font-medium', cloud.needsAttention ? 'text-warning-text' : 'text-success-text')}>
+        //       {cloud.badge}
+        //     </span>
+        //   ),
+        // },
         { key: 'backup', show: canBackup, to: '/settings/backup', icon: Download, tone: 'red', label: t('masterData.backup.title') },
       ],
     },
@@ -205,8 +209,9 @@ export default function Pengaturan() {
         />
       </div>
 
+      {/* OFFLINE MODE: Cloud warning strip disabled */}
       {/* Peringatan hanya saat ada yang perlu dikerjakan; kalau aman, cukup di baris Data. */}
-      {canBackup && cloud.needsAttention && (
+      {/* {canBackup && cloud.needsAttention && (
         <div className="mb-4">
           <StatusStrip
             to="/settings/cloud-backup"
@@ -218,7 +223,7 @@ export default function Pengaturan() {
             meta={cloud.meta}
           />
         </div>
-      )}
+      )} */}
 
       {groups.map(group => {
         const rows = group.rows.filter(r => r.show);
