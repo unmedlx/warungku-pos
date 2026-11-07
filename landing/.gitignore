@@ -1,5 +1,0 @@
-# Pola umum ada di .gitignore root
-.vite
-
-# Superdesign temporary files (never commit)
-.superdesign/tmp/

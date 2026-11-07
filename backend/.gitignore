@@ -1,4 +1,0 @@
-# Pola umum (node_modules, dist, .env*, log, coverage) ada di .gitignore root
-
-# Upload lokal (runtime)
-/uploads/
